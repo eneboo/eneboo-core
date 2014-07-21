@@ -52,12 +52,21 @@ QString FLLineEdit::text() const
     return text;
 
   bool ok = false;
+  bool minus = false;
 
   switch (type) {
     case QVariant::Double: {
+      if (text.left(1) == "-") {
+        minus = true;
+        text = text.mid(1);
+      }
+
       double val = aqApp->localeSystem().toDouble(text, &ok);
       if (ok)
         text.setNum(val, 'f', partDecimal);
+
+      if (minus)
+        text.prepend('-');
     }
     break;
     case QVariant::UInt: {
@@ -86,12 +95,21 @@ void FLLineEdit::setText(const QString &text)
 
   bool ok = false;
   QString s(text);
+  bool minus = false;
 
   switch (type) {
     case QVariant::Double: {
+      if (s.left(1) == "-") {
+        minus = true;
+        s = s.mid(1);
+      }
+
       double val = s.toDouble(&ok);
       if (ok)
         s = aqApp->localeSystem().toString(val, 'f', partDecimal);
+
+      if (minus)
+        s.prepend('-');
     }
     break;
     case QVariant::UInt: {
