@@ -36,7 +36,7 @@ rm -f $OUTDIR/config.tests/x11/xft.lib
 
 # check for the Xft library
 XDIRS=`sed -n -e '/^QMAKE_LIBDIR_X11[	]*=/ { s/[^=]*=[	 ]*//; s/-L/ /g; p; }' $XCONFIG`
-LIBDIRS="$IN_LIBDIRS $XDIRS /usr/shlib /usr/lib /lib"
+LIBDIRS="$IN_LIBDIRS $XDIRS /usr/shlib /usr/lib /lib /usr/lib32 /usr/lib64"
 F=
 LIBS="Xft2 Xft"
 for LIB in $LIBS; do
