@@ -93,7 +93,6 @@ FLReportViewer::FLReportViewer(QWidget *parent, const char *name, bool embedInPa
   setCentralWidget(rptViewer_);
   frEMail->hide();
   initCentralWidget_->hide();
-  guacaInit(); //Inicializamos guaca
   if (!embedInParent_) {
     spnResolution->setValue(FLUtil::readSettingEntry("rptViewer/dpi", QVariant(rptViewer_->resolution()).toString()).toInt());
     spnPixel->setValue(FLUtil::readSettingEntry("rptViewer/pixel",
@@ -153,7 +152,7 @@ void FLReportViewer::exec()
     fileTemp += QDateTime::currentDateTime().toString().replace(":", "").replace(" ", ""); //Esto lo cambiamos por un string con el tiempo
     fileTemp += ".pdf";
     
-    if (!soyGuaca_) /// Si no soy Guaca , me comporto normalmente.
+    if (!aqApp->isCloudMode()) /// Si no estoy en modo nube , me comporto normalmente.
     {
 
   if (loop) {
@@ -168,11 +167,9 @@ void FLReportViewer::exec()
   loop = true;
   QApplication::eventLoop()->enterLoop();
   clearWFlags(WShowModal);
-} else /// de lo contrario, soy Guaca
+} else /// de lo contrario, modo nube
           {
-          QClipboard *clipboard = QApplication::clipboard();
-           reportPrinted_ = rptViewer_->printReportToPDF(guacaFolder_ + fileTemp);
-           clipboard->setText("GUACA_IMPRIME" + fileTemp);  /// Pongo en el portapapeles la bandera
+           reportPrinted_ = rptViewer_->printReportToPDF(aqApp->cloudFolder() + "/downloads/" + fileTemp);
            } 
 }
 

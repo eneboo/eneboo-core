@@ -885,7 +885,29 @@ public slots:
   FLApplication *obj() {
     return obj_;
   }
+  /**
+  Informa si la aplicación está en modo nube
 
+  */
+  bool isCloudMode() const {
+   return obj_->cloudMode_;
+  }
+  
+  /**
+  Especifica el path de intercambio en modo nube
+  */
+  QString cloudFolder() const {
+    	return obj_->cloudFolder_;
+  }
+  /**
+  Cambia la ruta de intercambio en modo nube
+
+  @param path    La ruta de intercambio.
+  */
+  void setCloudFolder ( QString &path ) {
+    obj_->setCloudFolder(path);
+  }
+  
 signals:
 
   /**

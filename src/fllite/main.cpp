@@ -184,8 +184,8 @@ void aq_main(int argc, char **argv)
     p.setColor(QPalette::Disabled, QColorGroup::HighlightedText, Qt::black);
     }
 
-  QString formAlone, callFunction, arguments, strConn, silentConn;
-  bool quitAfterCall = false, autoLogin_ = false, noMax = false;
+  QString formAlone, callFunction, arguments, strConn, silentConn, cloudId, cloudFolder;
+  bool quitAfterCall = false, autoLogin_ = false, noMax = false, cloudMode = false;
 
   for (int i = 1; i < argc; i++) {
     if (qstrcmp(argv[i], "-f") == 0) {
@@ -219,7 +219,24 @@ void aq_main(int argc, char **argv)
       autoLogin_ = true;
     } else if (qstrcmp(argv[i], "-nomax") == 0) {
       noMax = true;
+    }  else if (qstrcmp(argv[i], "-cloudFolder") == 0) {
+      if (i != argc - 1) {
+        i++;
+        cloudFolder = QString::fromLatin1(argv[i]);
+      }
+    } else if (qstrcmp(argv[i], "-cloudId") == 0) {
+      if (i != argc - 1) {
+        i++;
+        cloudId = QString::fromLatin1(argv[i]);
+      }
     }
+    
+    if (cloudId && cloudId != "")
+    	{
+    	cloudMode = true;
+    	AQ_KEYBASE = cloudId + "/";
+    	}
+    
   }
 
 #if !defined(FL_DEBUG) && !defined(Q_OS_MACX)
@@ -234,6 +251,33 @@ void aq_main(int argc, char **argv)
 
   FLApplication *AbanQ = aqApp;
   QFont appFont;
+  
+  if (cloudMode)
+  	{
+#ifdef FL_DEBUG
+	qWarning("Cloud mode Activado");
+#endif
+  	AbanQ->setCloudMode(true);
+  	if (!cloudFolder || cloudFolder == "") {
+		cloudFolder = "/tmp";
+  	}
+  	if (!QDir( cloudFolder ).exists())
+          	QDir().mkdir( cloudFolder );
+	
+	if (!QDir( cloudFolder + "/x2canvas" ).exists())
+          	QDir().mkdir( cloudFolder + "/x2canvas" )
+	
+ 	if (!QDir( cloudFolder + "/x2canvas/" + cloudId ).exists())  //Inicializamos el fichero y creamos carpetas
+ 		{
+          	QDir().mkdir( cloudFolder + "/x2canvas/" + cloudId );
+		QDir().mkdir( cloudFolder + "/x2canvas/" + cloudId + "/downloads" ); //Ficheros para la descarga.
+		QDir().mkdir( cloudFolder + "/x2canvas/" + cloudId + "/uploads" ); //Ficheros subidos por el usuario remoto.
+		FLSettings::writeEntry("application/oldApi", true); 
+		}
+  	AbanQ->setCloudFolder(cloudFolder + "/x2canvas/" + cloudId );
+  	}
+  	
+  	
 
   QStringList paths(AbanQ->libraryPaths());
   QString pathApp(AQ_PREFIX + "/plugins");

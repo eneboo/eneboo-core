@@ -373,16 +373,6 @@ public slots:
   */
   void exportToOds();
  
-   /**
-  Inicializa opciones de guacamole
-  */ 
-  
-  void guacaInit()
-  {
-  	soyGuaca_ = FLUtil::readSettingEntry( "ebcomportamiento/guacaMode", "false" ).toBool();
-	if (soyGuaca_)
-        guacaFolder_ = FLUtil::readSettingEntry( "ebcomportamiento/guacaFolder", AQ_USRHOME ).toString();  	
-  }
 
 signals:
 
@@ -405,16 +395,6 @@ protected:
 
 private:
  
-  /**
-  Almacena si se ha activado la bandera guacaMode
-  */
-  bool soyGuaca_;
-  
-  /**
-  Almacena el path para intercambios
-  */
-  QString guacaFolder_;
-
   /**
   Almacena si se ha abierto el formulario con el método FLReportViewer::exec()
   */
