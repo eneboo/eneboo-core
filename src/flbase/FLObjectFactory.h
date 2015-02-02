@@ -907,7 +907,23 @@ public slots:
   void setCloudFolder ( QString &path ) {
     obj_->setCloudFolder(path);
   }
-  
+
+  /**
+  Especifica el Id de intercambio en modo nube
+  */
+  QString cloudId() const {
+    	return obj_->cloudId_;
+  }
+  /**
+  Cambia el Id de intercambio en modo nube
+
+  @param id    El id de intercambio.
+  */
+  void setCloudId ( QString &id ) {
+    obj_->setCloudId(id);
+  }
+
+
 signals:
 
   /**

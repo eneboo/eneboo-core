@@ -385,6 +385,20 @@ public:
   }
   
           /**
+  Cambia el id asignado
+  */
+  void setCloudId( const QString &id ) {
+  	cloudId_ = id;
+  }
+
+        /**
+  Especifica el id asigando
+  */
+  QString cloudId() const {
+    	return cloudId_;
+  }
+  
+          /**
   Cambia la ruta de intercambio en modo nube
   */
   void setCloudFolder( const QString &path ) {
@@ -400,6 +414,7 @@ public:
   
   bool cloudMode_;
   QString cloudFolder_;
+  QString cloudId_;
   
 signals:
 

@@ -148,8 +148,7 @@ void FLReportViewer::setReportEngine(FLReportEngine *r)
 void FLReportViewer::exec()
 {
     
-    QString fileTemp = "document_";
-    fileTemp += QDateTime::currentDateTime().toString().replace(":", "").replace(" ", ""); //Esto lo cambiamos por un string con el tiempo
+    QString fileTemp = FLUtil::sha1(QDateTime::currentDateTime().toString().replace(":", "").replace(" ", "")); //Esto lo cambiamos por un string con el tiempo
     fileTemp += ".pdf";
     
     if (!aqApp->isCloudMode()) /// Si no estoy en modo nube , me comporto normalmente.
@@ -169,7 +168,11 @@ void FLReportViewer::exec()
   clearWFlags(WShowModal);
 } else /// de lo contrario, modo nube
           {
-           reportPrinted_ = rptViewer_->printReportToPDF(aqApp->cloudFolder() + "/downloads/" + fileTemp);
+          QString ruta = aqApp->cloudFolder() + "/downloads/" + fileTemp;
+           QClipboard *clipboard = QApplication::clipboard();
+           //qWarning("La ruta usada es " + ruta);
+           reportPrinted_ = rptViewer_->printReportToPDF(ruta);
+           clipboard->setText(fileTemp + "_" + aqApp->cloudId());  /// Pongo en el portapapeles la bandera
            } 
 }
 
