@@ -264,20 +264,11 @@ void aq_main(int argc, char **argv)
 #ifdef FL_DEBUG
 	qWarning("CloudFolder es " + cloudFolder );
 #endif  	
-  	if (!QDir( cloudFolder ).exists())
-          	QDir().mkdir( cloudFolder );
-	
-	if (!QDir( cloudFolder + "/x2canvas" ).exists())
-          	QDir().mkdir( cloudFolder + "/x2canvas" );
-	
- 	if (!QDir( cloudFolder + "/x2canvas/" + cloudId ).exists())  //Inicializamos el fichero y creamos carpetas
- 		{
-          	QDir().mkdir( cloudFolder + "/x2canvas/" + cloudId );
-		QDir().mkdir( cloudFolder + "/x2canvas/" + cloudId + "/downloads" ); //Ficheros para la descarga.
-		QDir().mkdir( cloudFolder + "/x2canvas/" + cloudId + "/uploads" ); //Ficheros subidos por el usuario remoto.
-		FLSettings::writeEntry("application/oldApi", false); 
-		}
-  	AbanQ->setCloudFolder(cloudFolder + "/x2canvas/" + cloudId );
+
+	QDir().mkdir( cloudFolder + "/downloads" ); //Ficheros para la descarga.
+	QDir().mkdir( cloudFolder + "/uploads" ); //Ficheros subidos por el usuario remoto.
+	FLSettings::writeEntry("application/oldApi", false); 
+  	AbanQ->setCloudFolder(cloudFolder);
   	AbanQ->setCloudId(cloudId);
   	}
   	
