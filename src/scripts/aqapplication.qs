@@ -782,10 +782,12 @@ class MainWindow
     var texto = AQUtil.sqlSelect("flsettings", "valor", "flkey='verticalName'");
     if (texto)
     tL.text = texto;
-    tL2.text = sys.nameUser()+"@"+sys.nameBD();
-    if (sys.osName() == "MACX") 
-           tL2.text +="     ";
-    
+    if (AQUtil.sqlSelect("flsettings", "valor", "flkey='PosInfo'") != "true")
+    	{
+    	tL2.text = sys.nameUser()+"@"+sys.nameBD();
+    	if (sys.osName() == "MACX") 
+        tL2.text +="     ";
+    	}
     }
 
   function initDocks()
