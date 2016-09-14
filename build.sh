@@ -27,6 +27,7 @@ OPT_MAKE_SILENT=yes
 OPT_DEBUGGER=no
 OPT_NEBULA_BUILD=no
 OPT_FIXXP=no
+OPT_CONSOLE_DEBUG=no
 
 QT_CHECK=" -DQT_CHECK_NULL"
 QT_DEBUG=""
@@ -138,6 +139,9 @@ for a in "$@"; do
     -fixxp)
       OPT_FIXXP=yes
     ;;
+    -noConsoleDebug)
+      OPT_CONSOLE_DEBUG=yes
+    ;;
     -qws)
       OPT_QWS=yes
       OPT_QMAKESPEC="qws/linux-generic-g++"
@@ -199,6 +203,11 @@ if [ "$OPT_NEBULA_BUILD" == "yes" ]; then
   QT_DEBUG="$QT_DEBUG -DAQ_NEBULA_BUILD"
   BUILD_NUMBER="$BUILD_NUMBER-nebula"
 fi
+
+if [ "$OPT_CONSOLE_DEBUG" == "yes" ]; then
+  QT_DEBUG="$QTDEBUG -DAQ_NO_DEBUG_FUN"
+fi
+
 
 if [ "$OPT_MULTICORE" == "yes" ]; then
   PROCESSORS=$(expr  $(cat /proc/cpuinfo | grep processor | tail -n 1 | sed "s/.*:\(.*\)/\1/") + 1)
