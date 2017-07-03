@@ -984,7 +984,7 @@ function infoMsgBox(msg)
   msg += "\n";
   if (interactiveGUI()) {
     MessageBox.information(msg, MessageBox.Ok, MessageBox.NoButton,
-                           MessageBox.NoButton, "AbanQ");
+                           MessageBox.NoButton, "Eneboo");
   } else {
     debug("INFO: " + msg);
   }
