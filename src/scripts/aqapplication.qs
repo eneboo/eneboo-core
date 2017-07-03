@@ -690,19 +690,20 @@ class MainWindow
       connect(reInit, "activated()", this.actSigMap_, "map()");
       this.actSigMap_.setMapping(reInit, "activated():reinit():" + reInit.name);
       
-      var shConsole = new QAction(ag);
-      shConsole.name = "shConsoleAction";
-      shConsole.menuText = sys.translate("Mostrar Consola de mensajes");
-      shConsole.setIconSet(new QIconSet(AQS.Pixmap_fromMimeSource("consola.png")));
-      connect(shConsole, "activated()", this.actSigMap_, "map()");
-      this.actSigMap_.setMapping(shConsole, "activated():shConsole():" + shConsole.name);
+
 
 
               }
             }
       }
    }           
-
+   
+    var shConsole = new QAction(agm);
+    shConsole.name = "shConsoleAction";
+    shConsole.menuText = sys.translate("Mostrar Consola de mensajes");
+    shConsole.setIconSet(new QIconSet(AQS.Pixmap_fromMimeSource("consola.png")));
+    connect(shConsole, "activated()", this.actSigMap_, "map()");
+    this.actSigMap_.setMapping(shConsole, "activated():shConsole():" + shConsole.name);
 
     agm.addSeparator();
 

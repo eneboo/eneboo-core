@@ -951,17 +951,6 @@ void FLApplication::initToolBox()
         ag->add(newModuleAction);
         connect(newModuleAction, SIGNAL(activated()), this, SLOT(reinit()));
         
-        ++c;
-        descripModule = QString(QChar(c)) + QString::fromLatin1(": ") +
-                        tr("Mostrar Consola de mensajes");
-        newModuleAction = new FLWidgetAction(descripModule, descripModule, descripModule,
-                                             QKeySequence(QString("Ctrl+Shift+") + QString(QChar(c))),
-                                             newAreaBar, "shConsoleAction");
-        newModuleAction->setIconSet(QPixmap::fromMimeSource("consola.png"));
-        newModuleAction->setIdModule(*itM);
-        newModuleAction->addTo(newAreaBar);
-        ag->add(newModuleAction);
-        connect(newModuleAction, SIGNAL(activated()), this, SLOT(showConsole()));
 
 
                                   }
@@ -973,6 +962,20 @@ void FLApplication::initToolBox()
         ++c;
 #endif
       }
+
+        
+        descripModule = QString(QChar(c)) + QString::fromLatin1(": ") +
+                        tr("Mostrar Consola de mensajes");
+        newModuleAction = new FLWidgetAction(descripModule, descripModule, descripModule,
+                                             QKeySequence(QString("Ctrl+Shift+") + QString(QChar(c))),
+                                             newAreaBar, "shConsoleAction");
+        newModuleAction->setIconSet(QPixmap::fromMimeSource("consola.png"));
+        newModuleAction->setIdModule(*itM);
+        newModuleAction->addTo(newAreaBar);
+        ag->add(newModuleAction);
+        connect(newModuleAction, SIGNAL(activated()), this, SLOT(showConsole()));
+
+	++c;
 
       descripModule = QString(QChar(c)) + ": " + mngLoader_->idModuleToDescription(*itM);
       newModuleAction = new FLWidgetAction(tr(descripModule),
