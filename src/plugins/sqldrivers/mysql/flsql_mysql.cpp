@@ -1463,9 +1463,9 @@ bool QMYSQLDriver::tryConnect(const QString &db, const QString &user, const QStr
     setTransactionReadCommited(d->mysql);
 
     q.setForwardOnly(true);
-    q.exec("SHOW VARIABLES LIKE 'have_innodb'");
+    q.exec("SELECT SUPPORT FROM INFORMATION_SCHEMA.ENGINES WHERE ENGINE = 'InnoDB'");
     q.next();
-    if (q.value(1).toString().upper() != "YES") {
+    if (q.value(0).toString().upper() == "NO") {
       q.exec("SHOW VARIABLES LIKE 'version'");
       q.next();
       msgBoxCritical(tr("Conexión fallida"),
