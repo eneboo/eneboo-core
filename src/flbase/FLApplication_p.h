@@ -369,7 +369,53 @@ public:
   Especifica como usar las tablas fllarge (unica o múltiple)
   */
   bool singleFLLarge();
+   
+      /**
+  Especifica si la aplicación se comporta modo nube
+  */
+  bool isCloudMode() const {
+    return cloudMode_;
+  }
+  
+        /**
+  Especifica el path de intercambio en modo nube
+  */
+  QString cloudFolder() const {
+    	return cloudFolder_;
+  }
+  
+          /**
+  Cambia el id asignado
+  */
+  void setCloudId( const QString &id ) {
+  	cloudId_ = id;
+  }
 
+        /**
+  Especifica el id asigando
+  */
+  QString cloudId() const {
+    	return cloudId_;
+  }
+  
+          /**
+  Cambia la ruta de intercambio en modo nube
+  */
+  void setCloudFolder( const QString &path ) {
+  	cloudFolder_ = path;
+  }
+  
+          /**
+  Activa/Desactiva modo nube
+  */
+  void setCloudMode( bool active ) {
+  	cloudMode_ = active;
+  }
+  
+  bool cloudMode_;
+  QString cloudFolder_;
+  QString cloudId_;
+  
 signals:
 
   /**
@@ -920,6 +966,7 @@ protected:
   
  bool singleFLLarge_;
  bool initSingleFLLarge_;
+ 
 };
 
 #endif

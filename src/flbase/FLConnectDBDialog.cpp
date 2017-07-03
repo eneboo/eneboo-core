@@ -334,10 +334,11 @@ void FLConnectDBDialog::selectMark(const QString &mark)
   if (rememberPasswd_) {
     chkRemember->setChecked(true);
     lineEditPassword->setText(FLSettings::readEntry("DBA/password" + connectionPath_));
-  } else
+  }
+   else
         {
          chkRemember->setChecked(false);
-         lineEditPassword->setText("");
+//         lineEditPassword->setText("");
        }
 }
 

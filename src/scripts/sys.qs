@@ -22,7 +22,21 @@ function init() {
     var util: FLUtil = new FLUtil();
     var codEjercicio: String = flfactppal.iface.pub_ejercicioActual();
     var nombreEjercicio: String = util.sqlSelect("ejercicios", "nombre", "codejercicio='" + codEjercicio + "'");
-    setCaptionMainWidget(nombreEjercicio);
+    if (AQUtil.sqlSelect("flsettings", "valor", "flkey='PosInfo'") == "true")
+    	{
+   	var texto:String;
+   	if (nombreEjercicio)
+   		texto = "[ " + nombreEjercicio + " ]";
+   	
+   	texto = texto + " [ " + aqApp.db().driverNameToDriverAlias(aqApp.db().driverName()) + " ] * [ " + sys.nameBD() + " ] * [ " + sys.nameUser() + " ] ";
+   	
+    	setCaptionMainWidget(texto);
+    	}
+    	else
+    	{
+    	if (nombreEjercicio)
+    		setCaptionMainWidget(nombreEjercicio);
+    	}
     var settings = new AQSettings;
     var oldApi:Boolean = settings.readBoolEntry("application/oldApi");
  if (!oldApi)
