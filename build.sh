@@ -202,6 +202,9 @@ fi
 
 if [ "$OPT_MULTICORE" == "yes" ]; then
   PROCESSORS=$(expr  $(cat /proc/cpuinfo | grep processor | tail -n 1 | sed "s/.*:\(.*\)/\1/") + 1)
+  if [ ! -f /proc/cpuinfo ]; then
+    PROCESSORS=$(nproc)
+  fi
   # CMD_MAKE="make -k -j $PROCESSORS -s "
   CMD_MAKE="$CMD_MAKE -k -j $PROCESSORS "
 fi
