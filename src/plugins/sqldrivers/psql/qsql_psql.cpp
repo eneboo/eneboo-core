@@ -1122,7 +1122,11 @@ static inline QPSQLDriver::Protocol getPSQLVersion(PGconn *connection)
         else if (vMin < 2)
           return QPSQLDriver::Version91;
         return QPSQLDriver::Version92;
-      }
+      } else if (vMaj == 10) {
+		return QPSQLDriver::Version92;
+	  } else if (vMaj == 11) {
+		return QPSQLDriver::Version92;
+	  }
       return QPSQLDriver::Version7;
     }
   } else {
