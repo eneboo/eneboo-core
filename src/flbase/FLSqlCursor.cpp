@@ -1710,8 +1710,9 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
       activeWid = aqApp->activePopupWidget();
   if (!activeWid)
       activeWid = aqApp->activeWindow(); 
-
-qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1").arg(activeWid->name()));
+  
+    if (activeWid)
+	qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1").arg(activeWid->name()));
 
   FLFormRecordDB *f = new FLFormRecordDB(this, d->action_->name(),
                                          activeWid , cont);
