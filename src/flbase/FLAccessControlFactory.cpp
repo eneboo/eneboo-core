@@ -93,14 +93,21 @@ void FLAccessControlMainWindow::processObject(QObject *obj)
 
   QDictIterator < QString > it(*acosPerms_);
   for (; it.current(); ++it) {
-    QAction *a = ::qt_cast<QAction *>(mw->child(it.currentKey(), "QAction"));
-    if (a) {
+      QObjectList *l = mw->queryList( "QAction", it.currentKey() );
+      QObjectListIt ol( *l );
       QString perm = *(*it);
-      if (perm == "-w" || perm == "--")
-        a->setVisible(false);
+      QAction *a;
+      while ((a = ::qt_cast<QAction *>(ol.current())) != 0)
+		{
+		++ol;
+		QString aName(a->name());
+      		if ((perm == "-w" || perm == "--") && aName == it.currentKey())
+			{
+        		a->setVisible(false);
+			}
+		}
     }
   }
-}
 
 void FLAccessControlMainWindow::setFromObject(QObject *)
 {

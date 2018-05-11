@@ -901,6 +901,7 @@ class MainWindow
         else
           subMenuAg = new QActionGroup(ag);
         subMenuAg.menuText = sys.toUnicode(itn.attribute("text"), "UTF-8");
+	subMenuAg.name = menuAg.name + "Actions";
         subMenuAg.usesDropDown = true;
         addActions(itn, subMenuAg, w);
       }
