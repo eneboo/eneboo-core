@@ -28,6 +28,7 @@ OPT_DEBUGGER=no
 OPT_NEBULA_BUILD=no
 OPT_FIXXP=no
 OPT_CONSOLE_DEBUG=no
+OPT_CONSOLE=no
 
 QT_CHECK=" -DQT_CHECK_NULL"
 QT_DEBUG=""
@@ -120,6 +121,9 @@ for a in "$@"; do
     ;;
     -no-hoard)
       OPT_HOARD=no
+    ;;
+    -console)
+      OPT_CONSOLE=yes
     ;;
     -qwt)
       OPT_QWT=yes
@@ -324,6 +328,12 @@ echo -e "Compilando qmake y moc...\n"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$QTDIR/lib:../lib
 export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$QTDIR/lib:../lib
 cd $QTDIR
+
+if [ "$OPT_CONSOLE" = "yes" ]
+then
+  echo "CONFIG *= enable_console" >> settings.pro
+fi
+
 
 if [ "$OPT_HOARD" = "yes" ]
 then
