@@ -29,6 +29,7 @@ OPT_NEBULA_BUILD=no
 OPT_FIXXP=no
 OPT_CONSOLE_DEBUG=no
 OPT_CONSOLE=no
+OPT_GDB=no
 
 QT_CHECK=" -DQT_CHECK_NULL"
 QT_DEBUG=""
@@ -136,6 +137,9 @@ for a in "$@"; do
     ;;
     -win64)
       OPT_WIN64=yes
+    ;;
+    -gdb)
+      OPT_GDB=yes
     ;;
     -flfcgi)
       OPT_FLFCGI=yes    
@@ -554,12 +558,14 @@ if [ "$CROSS" == "i686-apple-darwin8-" -o "$CROSS" == "powerpc-apple-darwin8-" ]
     echo "DEFINES *= SQLITE_WITHOUT_ZONEMALLOC" >> settings.pro
 fi
 
+if [ "$OPT_GDB" = "yes" ]
+  then
+  echo "CONFIG *= debug" >> settings.pro
+  fi
+
+
 if [ "$OPT_DEBUG" = "yes" ]
   then
-  if [ "$OPT_DEBUGGER" = "yes" ]
-	then
-	echo "CONFIG *= debug" >> settings.pro
-	fi
   echo "DEFINES *= FL_DEBUG" >> settings.pro
 fi
 
