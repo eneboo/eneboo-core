@@ -554,10 +554,12 @@ if [ "$CROSS" == "i686-apple-darwin8-" -o "$CROSS" == "powerpc-apple-darwin8-" ]
     echo "DEFINES *= SQLITE_WITHOUT_ZONEMALLOC" >> settings.pro
 fi
 
-if [ "$OPT_DEBUG" = "yes" ];then
-  if [ "$OPT_DEBUGGER" = "yes" ];then
-  	echo "CONFIG *= debug" >> settings.pro
-  fi
+if [ "$OPT_DEBUG" = "yes" ]
+  then
+  if [ "$OPT_DEBUGGER" = "yes" ]
+	then
+	echo "CONFIG *= debug" >> settings.pro
+	fi
   echo "DEFINES *= FL_DEBUG" >> settings.pro
 fi
 
