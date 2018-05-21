@@ -329,11 +329,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$QTDIR/lib:../lib
 export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$QTDIR/lib:../lib
 cd $QTDIR
 
-if [ "$OPT_CONSOLE" = "yes" ]
-then
-  echo "CONFIG *= enable_console" >> settings.pro
-fi
-
 
 if [ "$OPT_HOARD" = "yes" ]
 then
@@ -607,6 +602,11 @@ fi
 if [ "$OPT_FIXXP" = "yes" ]
 then
  echo "DEFINES *= ENEBOO_FIXXP" >> settings.pro
+fi
+
+if [ "$OPT_CONSOLE" = "yes" ]
+then
+  echo "CONFIG *= enable_console" >> settings.pro
 fi
 
 if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" ];then
