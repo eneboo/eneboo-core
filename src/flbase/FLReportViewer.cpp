@@ -165,9 +165,9 @@ void FLReportViewer::exec()
 	
   if (!QWidget::isShown())
 	{
-	qWarning("No se muestra aún");
-	QWidget::show();
-
+	qWarning("No se muestra aún. Relanzando");
+	QTimer::singleShot(200, this, SLOT(exec()));
+	return;
 	}	
   
   if (embedInParent_)
