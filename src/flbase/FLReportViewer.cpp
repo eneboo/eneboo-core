@@ -151,7 +151,7 @@ void FLReportViewer::exec()
     QString fileTemp = FLUtil::sha1(QDateTime::currentDateTime().toString().replace(":", "").replace(" ", "")); //Esto lo cambiamos por un string con el tiempo
     fileTemp += ".pdf";
     
-    if (!aqApp->isCloudMode()) /// Si no estoy en modo nube , me comporto normalmente.
+    if (aqApp->isCloudMode() != true) /// Si no estoy en modo nube , me comporto normalmente.
     {
 
   if (loop) {
@@ -160,29 +160,15 @@ void FLReportViewer::exec()
 #endif
     return;
   }
-  qWarning("Mostrando");
   QWidget::show();
-	
-  if (!QWidget::isShown())
-	{
-	qWarning("No se muestra aún. Relanzando");
-	QTimer::singleShot(200, this, SLOT(exec()));
-	return;
-	}	
-  
   if (embedInParent_)
-	{
-	qWarning("Embebido");
     return;
-	}
   loop = true;
-    qWarning("Loop");
   QApplication::eventLoop()->enterLoop();
-    qWarning("Fin Loop");
   clearWFlags(WShowModal);
 } else /// de lo contrario, modo nube
           {
-	qWarning("En nube");
+	  qWarning("Folder cloud " + aqApp->cloudFolder());
           QString ruta = aqApp->cloudFolder() + "/downloads/" + fileTemp;
            QClipboard *clipboard = QApplication::clipboard();
            //qWarning("La ruta usada es " + ruta);
@@ -200,7 +186,7 @@ void FLReportViewer::closeEvent(QCloseEvent *e)
 {
   if (printing_)
     return;
-    qWarning("Close event!!");
+    
   QWidget::show();
   frameGeometry();
   QWidget::hide();
@@ -222,7 +208,7 @@ void FLReportViewer::closeEvent(QCloseEvent *e)
 void FLReportViewer::showEvent(QShowEvent *e)
 {
   QWidget::showEvent(e);
-	qWarning("Show event!!");
+
   if (!embedInParent_) {
     QRect geo(aqApp->geometryForm(QObject::name()));
     if (geo.isValid()) {

@@ -271,7 +271,10 @@ void aq_main(int argc, char **argv)
   	AbanQ->setCloudFolder(cloudFolder);
   	AbanQ->setCloudId(cloudId);
   	}
-  	
+  	else
+	{
+	qWarning("Cloud mode desactivado");
+	}
   	
 
   QStringList paths(AbanQ->libraryPaths());
