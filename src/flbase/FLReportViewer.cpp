@@ -162,6 +162,14 @@ void FLReportViewer::exec()
   }
   qWarning("Mostrando");
   QWidget::show();
+	
+  if (!QWidget::isShown())
+	{
+	qWarning("No se muestra aún");
+	QWidget::show();
+
+	}	
+  
   if (embedInParent_)
 	{
 	qWarning("Embebido");
@@ -192,7 +200,7 @@ void FLReportViewer::closeEvent(QCloseEvent *e)
 {
   if (printing_)
     return;
-    
+    qWarning("Close event!!");
   QWidget::show();
   frameGeometry();
   QWidget::hide();
@@ -214,7 +222,7 @@ void FLReportViewer::closeEvent(QCloseEvent *e)
 void FLReportViewer::showEvent(QShowEvent *e)
 {
   QWidget::showEvent(e);
-
+	qWarning("Show event!!");
   if (!embedInParent_) {
     QRect geo(aqApp->geometryForm(QObject::name()));
     if (geo.isValid()) {
