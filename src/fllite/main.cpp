@@ -274,6 +274,7 @@ void aq_main(int argc, char **argv)
   	else
 	{
 	qWarning("Cloud mode desactivado");
+	AbanQ->setCloudMode(false);
 	}
   	
 
