@@ -168,7 +168,7 @@ void FLReportViewer::exec()
   clearWFlags(WShowModal);
 } else /// de lo contrario, modo nube
           {
-	  qWarning("Folder cloud " + aqApp->cloudFolder() + " " +  QString(aqApp->isCloudMode()));
+	  qWarning("Folder cloud " + aqApp->cloudFolder());
           QString ruta = aqApp->cloudFolder() + "/downloads/" + fileTemp;
            QClipboard *clipboard = QApplication::clipboard();
            //qWarning("La ruta usada es " + ruta);
