@@ -271,6 +271,10 @@ void aq_main(int argc, char **argv)
   	AbanQ->setCloudFolder(cloudFolder);
   	AbanQ->setCloudId(cloudId);
   	}
+  else
+	{
+	AbanQ->setCloudMode(false);
+	}
   	
   	
 
