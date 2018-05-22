@@ -160,11 +160,17 @@ void FLReportViewer::exec()
 #endif
     return;
   }
+  qWarning("Mostrando");
   QWidget::show();
   if (embedInParent_)
+	{
+	qWarning("Embebido");
     return;
+	}
   loop = true;
+    qWarning("Loop");
   QApplication::eventLoop()->enterLoop();
+    qWarning("Fin Loop");
   clearWFlags(WShowModal);
 } else /// de lo contrario, modo nube
           {
