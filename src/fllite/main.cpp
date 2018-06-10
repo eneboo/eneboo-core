@@ -75,10 +75,10 @@ extern "C" {
 
     if (!hasSilentConn) {
       QMessageBox::critical(0, "AbanQ",
-                            "AbanQ ha detectado un error y debe cerrarse.\n\n" + log,
+                            "Eneboo ha detectado un error y debe cerrarse.\n\n" + log,
                             QMessageBox::Ok, QMessageBox::NoButton);
     }
-    printf("Terminate AbanQ %p\n", aqApp);
+    printf("Terminate Eneboo %p\n", aqApp);
     if (aqApp)
       delete aqApp;
     exit(EXIT_FAILURE);
