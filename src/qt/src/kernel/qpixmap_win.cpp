@@ -834,8 +834,10 @@ bool QPixmap::convertFromImage( const QImage &img, int conversion_flags )
     }
 
     if ( !hdc )
-        qDebug( "Qt: internal: No hdc! %s %d", __FILE__, __LINE__ );
-
+	{
+	qDebug( "Qt: internal: QPixmap::convertFromImage( w/h/d: %d/%d/%d, flags: %d) No hdc! %s %d", img.width(), img.height(), img.depth(), conversion_flags , __FILE__, __LINE__ );
+	return FALSE;
+	}
     uchar *dptr;
     long dbpr;
     bool freeBits = qt_GetBitmapBits( this, &dptr, dbpr );
