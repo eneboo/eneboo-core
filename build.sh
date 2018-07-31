@@ -575,7 +575,7 @@ then
   then
     echo "DEFINES *= FL_DEBUG" >> settings.pro
   fi
-  echo "DEFINES *= QSDEBUGGER QSDEBUGGER_VISUAL AQ_DEBUGGER FL_DEBUGGER DEBUG_QPIXMAP" >> settings.pro  
+  echo "DEFINES *= QSDEBUGGER QSDEBUGGER_VISUAL AQ_DEBUGGER FL_DEBUGGER" >> settings.pro  
 fi
 
 if [ "$OPT_AQ_DEBUG" = "yes" ]
