@@ -47,7 +47,7 @@
 
 #undef MITSHM
 
-#define DEBUG_QPIXMAP
+//#define DEBUG_QPIXMAP
 
 /*****************************************************************************
   Internal functions
@@ -375,13 +375,14 @@ void QPixmap::setOptimization( Optimization optimization )
 
 void QPixmap::fill( const QColor &fillColor )
 {
-#ifdef DEBUG_QPIXMAP
-    qDebug( "qpixmap_win.cpp: fill hdc = %X, hbm=%X, fillColor=(%d, %d, %d)", handle(), hbm(), fillColor.red(), fillColor.green(), fillColor.blue() );
-#endif
+
+
 
     if ( isNull() ) {
         return ;
     }
+
+qDebug( "qpixmap_win.cpp: fill hdc = %X, hbm=%X, fillColor=(%d, %d, %d) rgb %d data->w %d ", handle(), hbm(), fillColor.red(), fillColor.green(), fillColor.blue(), fillColor.rgb(), data->w);
 
     detach();     // detach other references
     RECT r;
