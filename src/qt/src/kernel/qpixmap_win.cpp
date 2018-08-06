@@ -199,9 +199,8 @@ void QPixmap::deref()
         if ( data->hbm_or_mcpi.hbm ) {
             SelectObject( hdc, data->old_hbm );
             if ( !DeleteObject( data->hbm_or_mcpi.hbm ) ) {
-#ifdef DEBUG_QPIXMAP
+
                 qDebug( "qpixmap_win.cpp: deref() failed deleting hbm=%X, GetLastError()=%d", data->hbm_or_mcpi.hbm, GetLastError() );
-#endif
 
             }
         }
@@ -826,7 +825,10 @@ bool QPixmap::convertFromImage( const QImage &img, int conversion_flags )
     }
 
     if ( !hdc )
+	{
         qDebug( "Qt: internal: No hdc! %s %d", __FILE__, __LINE__ );
+	hdc = CreateCompatibleDC( NULL );
+	}
 
     uchar *dptr;
     long dbpr;
