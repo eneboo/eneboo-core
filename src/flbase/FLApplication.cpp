@@ -960,11 +960,7 @@ void FLApplication::initToolBox()
 
 #else
         ++c;
-#endif
-      }
-
-        
-        descripModule = QString(QChar(c)) + QString::fromLatin1(": ") +
+	descripModule = QString(QChar(c)) + QString::fromLatin1(": ") +
                         tr("Mostrar Consola de mensajes");
         newModuleAction = new FLWidgetAction(descripModule, descripModule, descripModule,
                                              QKeySequence(QString("Ctrl+Shift+") + QString(QChar(c))),
@@ -974,7 +970,8 @@ void FLApplication::initToolBox()
         newModuleAction->addTo(newAreaBar);
         ag->add(newModuleAction);
         connect(newModuleAction, SIGNAL(activated()), this, SLOT(showConsole()));
-
+#endif
+      }
 	++c;
 
       descripModule = QString(QChar(c)) + ": " + mngLoader_->idModuleToDescription(*itM);
