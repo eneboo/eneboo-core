@@ -160,8 +160,8 @@ void QPixmap::init( int w, int h, int d, bool bitmap, Optimization optim )
         int bytes = ( w + 7 ) >> 3;
         int newbytes = ( bytes & 1 ) ? bytes + 1 : bytes; //WORD aligned
 
-        uchar *lpBits = new uchar[ newbytes * h ];
-        memset( lpBits, 0, newbytes * h );
+        uchar *lpBits = ( uchar* ) new uchar[ newbytes * h ];
+        memset( lpBits, 0, w * h / 8 );
         data->hbm_or_mcpi.hbm = CreateBitmap( w, h, 1, 1, lpBits ); // is faster
         delete lpBits;
 
@@ -244,7 +244,7 @@ QPixmap::QPixmap( int w, int h, const uchar *bits, bool isXbitmap )
     int bytes = ( w + 7 ) >> 3;
     int newbytes = ( bytes & 1 ) ? bytes + 1 : bytes; //WORD aligned
 
-    uchar *newbits = new uchar[ newbytes * h ];
+    uchar *newbits = ( uchar* ) new uchar[ newbytes * h ];
     for ( int i = 0; i < h; i++ ) {
         for ( int j = 0; j < bytes; j++ ) {
             newbits[ ( i * newbytes ) + j ] = ~( bits[ ( i * bytes ) + j ] );
@@ -375,14 +375,13 @@ void QPixmap::setOptimization( Optimization optimization )
 
 void QPixmap::fill( const QColor &fillColor )
 {
-
-
+#ifdef DEBUG_QPIXMAP
+    qDebug( "qpixmap_win.cpp: fill hdc = %X, hbm=%X, fillColor=(%d, %d, %d)", handle(), hbm(), fillColor.red(), fillColor.green(), fillColor.blue() );
+#endif
 
     if ( isNull() ) {
         return ;
     }
-
-qDebug( "qpixmap_win.cpp: fill hdc = %X, hbm=%X, fillColor=(%d, %d, %d) rgb %d data->w %d ", handle(), hbm(), fillColor.red(), fillColor.green(), fillColor.blue(), fillColor.rgb(), data->w);
 
     detach();     // detach other references
     RECT r;
@@ -397,25 +396,17 @@ qDebug( "qpixmap_win.cpp: fill hdc = %X, hbm=%X, fillColor=(%d, %d, %d) rgb %d d
         DeleteObject( hMyBrush );
         return ;
     } else {
-        if( data->d < 32) {
-          // OK, OK, this requires an explanation: ExtTextOut is a fast way to clear
-          // an area, because it doesn't need a BRUSH to fill it ...
-          COLORREF oldBkColor = SetBkColor( hdc, RGB( fillColor.red(), fillColor.green(), fillColor.blue() ) );
-          ExtTextOutA( hdc, 0, 0, ETO_OPAQUE, &r, ( LPCSTR ) "", 0, 0 ) ;
-          SetBkColor( hdc, oldBkColor );
-        } else {
-          uchar *bits;
-          long bpr;
-          // freeBits should never be true here!
-          bool freeBits = qt_GetBitmapBits( this, &bits, bpr );
-          uint pixel = fillColor.rgb();
-          for(int y = 0; y < data->h; y++) {
-              uint* pix = ( uint* ) ( bits + y * bpr );
-              for(int x = 0; x < data->w; x++) {
-                pix[x] = pixel;
-              }
-          }
-        }
+        // OK, OK, this requires an explanation: ExtTextOut is a fast way to clear
+        // an area, because it doesn't need a BRUSH to fill it ...
+        COLORREF oldBkColor = SetBkColor( hdc, RGB( fillColor.red(), fillColor.green(), fillColor.blue() ) );
+        bool ret = ExtTextOutA( hdc, 0, 0, ETO_OPAQUE, &r, ( LPCSTR ) "", 0, 0 ) ;
+        SetBkColor( hdc, oldBkColor );
+#ifdef DEBUG_QPIXMAP
+
+        if ( !ret )
+            qDebug( "qpixmap_win.cpp: fill failed GetLastError()=%d", GetLastError() );
+#endif
+
     }
 }
 
@@ -835,10 +826,8 @@ bool QPixmap::convertFromImage( const QImage &img, int conversion_flags )
     }
 
     if ( !hdc )
-	{
-	qDebug( "Qt: internal: QPixmap::convertFromImage( w/h/d: %d/%d/%d, flags: %d) No hdc! %s %d", img.width(), img.height(), img.depth(), conversion_flags , __FILE__, __LINE__ );
-	return FALSE;
-	}
+        qDebug( "Qt: internal: No hdc! %s %d", __FILE__, __LINE__ );
+
     uchar *dptr;
     long dbpr;
     bool freeBits = qt_GetBitmapBits( this, &dptr, dbpr );
@@ -1100,7 +1089,7 @@ QPixmap QPixmap::xForm( const QWMatrix &matrix ) const
     if ( bpp == 8 )
         memset( dptr, white.pixel(), dbytes );
     else
-        memset( dptr, 0xff, dbytes );
+        memset( dptr, 0, dbytes );
 
     int xbpr;
     if ( bpp == 1 ) {
@@ -1124,7 +1113,9 @@ QPixmap QPixmap::xForm( const QWMatrix &matrix ) const
 #if defined(QT_CHECK_RANGE)
         qWarning( "Qt: QPixmap::xForm: display not supported (bpp=%d)", bpp );
 #endif
-        return QPixmap();
+
+        QPixmap pm;
+        return pm;
     }
 
     if ( copyBits ) {
@@ -1145,7 +1136,11 @@ QPixmap QPixmap::xForm( const QWMatrix &matrix ) const
     } else if ( data->mask && data->realAlphaBits == 0 ) {
         pm.setMask( data->mask->xForm( matrix ) );
     }
-    pm.data->realAlphaBits = data->realAlphaBits;
+    if( bpp == 32 )
+        pm.data->realAlphaBits = (uchar*)1;
+    else
+        pm.data->realAlphaBits = data->realAlphaBits;
+
     return pm;
 }
 
