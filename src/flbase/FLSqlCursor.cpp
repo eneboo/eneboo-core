@@ -1705,14 +1705,16 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!refreshBuffer())
     return;
 
-  QWidget *activeWid = aqApp->activeModalWidget();
+  QWidget *activeWid = aqApp->mainWidget();
+  if (!activeWid)
+      aqApp->activeModalWidget();
   if (!activeWid)
       activeWid = aqApp->activePopupWidget();
   if (!activeWid)
       activeWid = aqApp->activeWindow(); 
   
     if (activeWid)
-	qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1").arg(activeWid->name()));
+	qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(activeWid->name(), d->action_->name()));
 
   FLFormRecordDB *f = new FLFormRecordDB(this, d->action_->name(),
                                          activeWid , cont);
