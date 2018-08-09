@@ -1705,7 +1705,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!refreshBuffer())
     return;
 
-  QWidget *activeWid = aqApp->mainWidget();
+  QWidget *activeWid = aqApp->activeWindow();
   if (!activeWid || activeWid->name() == "unnamed")
 	{
       qWarning(tr("FLSqlCursor::openFormInMode :: selecting activeWid aternative 1"));
@@ -1714,7 +1714,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!activeWid || activeWid->name() == "unnamed")
 	{
       qWarning(tr("FLSqlCursor::openFormInMode :: selecting activeWid aternative 2"));
-      activeWid = aqApp->activeWindow(); 
+      activeWid = aqApp->mainWidget(); 
 	}
 
   if (!activeWid || activeWid->name() == "unnamed")
