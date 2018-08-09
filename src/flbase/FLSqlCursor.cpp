@@ -1706,10 +1706,20 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
     return;
 
   QWidget *activeWid = aqApp->activeModalWidget();
-  if (!activeWid)
+  if (!activeWid || activeWid->name() == "unnamed")
+	{
       activeWid = aqApp->activePopupWidget();
-  if (!activeWid)
+	}
+  if (!activeWid || activeWid->name() == "unnamed")
+	{
       activeWid = aqApp->activeWindow(); 
+	}
+
+  if (!activeWid || activeWid->name() == "unnamed")
+	{
+	activeWid = aqApp->mainWidget();
+	}
+	
   
     if (activeWid)
 	qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1").arg(activeWid->name()));
