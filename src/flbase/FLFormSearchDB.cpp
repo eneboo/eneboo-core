@@ -26,7 +26,7 @@
 #include "FLAccessControlLists.h"
 
 FLFormSearchDB::FLFormSearchDB(const QString &actionName, QWidget *parent) :
-  FLFormDB(parent ? parent : aqApp->activeModalWidget(), actionName, Qt::WStyle_Customize | Qt::WStyle_Maximize | Qt::WStyle_Title
+  FLFormDB(parent ? parent : aqApp->mainWidget(), actionName, Qt::WStyle_Customize | Qt::WStyle_Maximize | Qt::WStyle_Title
            | Qt::WStyle_NormalBorder | Qt::WType_Dialog | Qt::WShowModal | Qt::WStyle_SysMenu),
   loop(false), acceptingRejecting_(false), inExec_(false)
 {
@@ -53,7 +53,7 @@ FLFormSearchDB::FLFormSearchDB(const QString &actionName, QWidget *parent) :
 }
 
 FLFormSearchDB::FLFormSearchDB(FLSqlCursor *cursor, const QString &actionName, QWidget *parent) :
-  FLFormDB(parent ? parent : aqApp->activeModalWidget() , actionName, Qt::WStyle_Customize | Qt::WStyle_Maximize | Qt::WStyle_Title
+  FLFormDB(parent ? parent : aqApp->mainWidget() , actionName, Qt::WStyle_Customize | Qt::WStyle_Maximize | Qt::WStyle_Title
            | Qt::WStyle_NormalBorder | Qt::WType_Dialog | Qt::WShowModal | Qt::WStyle_SysMenu),
   loop(false), acceptingRejecting_(false), inExec_(false)
 {
@@ -103,7 +103,7 @@ QVariant FLFormSearchDB::exec(const QString &n)
 #ifdef FL_DEBUG
     qWarning(tr("FLFormSearchDB::exec(): Se ha detectado una llamada recursiva"));
 #endif
-    QWidget::show();
+    FLFormDB::show();
     if (initFocusWidget_)
       initFocusWidget_->setFocus();
     return QVariant();
@@ -112,7 +112,7 @@ QVariant FLFormSearchDB::exec(const QString &n)
   inExec_ = true;
   acceptingRejecting_ = false;
 
-  QWidget::show();
+  FLFormDB::show();
   if (initFocusWidget_)
     initFocusWidget_->setFocus();
 
