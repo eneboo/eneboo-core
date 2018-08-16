@@ -897,11 +897,16 @@ class MainWindow
         if (itn.parentNode().toElement().tagName() == "item")
           continue;
         if (!reduced)
+	  {
           subMenuAg = new QActionGroup(menuAg);
+	  subMenuAg.name = menuAg.name + "Actions";
+          }
         else
+	  {
           subMenuAg = new QActionGroup(ag);
+          }
         subMenuAg.menuText = sys.toUnicode(itn.attribute("text"), "UTF-8");
-	subMenuAg.name = menuAg.name + "Actions";
+	
         subMenuAg.usesDropDown = true;
         addActions(itn, subMenuAg, w);
       }
