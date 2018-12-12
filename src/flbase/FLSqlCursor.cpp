@@ -1544,7 +1544,7 @@ QVariant FLSqlCursor::valueBufferCopy(const QString &fN) const
 
 void FLSqlCursor::deleteRecord()
 {
-  openFormInMode(DEL);
+  openFormInMode(DEL, true);
 }
 
 void FLSqlCursor::browseRecord()
@@ -1560,7 +1560,7 @@ void FLSqlCursor::browseRecord()
       seek(pos, false, true);
   }
 #endif
-  openFormInMode(BROWSE);
+  openFormInMode(BROWSE, true);
 }
 
 void FLSqlCursor::editRecord()
@@ -1575,12 +1575,14 @@ void FLSqlCursor::editRecord()
       seek(pos, false, true);
   }
 #endif
-  openFormInMode(EDIT);
+  openFormInMode(EDIT, true);
 }
 
 void FLSqlCursor::insertRecord()
 {
-  openFormInMode(INSERT);
+  qWarning("100");
+  openFormInMode(INSERT, true);
+  qWarning("101");
 }
 
 void FLSqlCursor::copyRecord()
@@ -1630,6 +1632,7 @@ void FLSqlCursor::copyRecord()
 
 void FLSqlCursor::openFormInMode(int m, bool cont)
 {
+  qWarning("0");
   if (!d->metadata_)
     return;
 
@@ -1708,7 +1711,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!refreshBuffer())
     return;
 
-  //qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(aqApp->mainWidget()->name(), d->action_->name()));
+  qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(aqApp->mainWidget()->name(), d->action_->name()));
 
 	qWarning("5");
   FLFormRecordDB *f = new FLFormRecordDB(this, d->action_->name(),
