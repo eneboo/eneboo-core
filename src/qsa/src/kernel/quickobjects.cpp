@@ -2542,8 +2542,12 @@ bool QuickScriptReceiver::qt_invoke(int id, QUObject *o)
         ip->call((*sit).ctx, (*sit).func, args);
     } else
       ip->call((*sit).qsctx, (*sit).func, args);
-    if (!handler || aqWasDeleted() || qobj.isNull())
-      break;
+    try {
+    	if (!handler || aqWasDeleted() || qobj.isNull())
+      	break;
+	} catch (e) {
+	break;
+	}
   }
   return true;
 }
