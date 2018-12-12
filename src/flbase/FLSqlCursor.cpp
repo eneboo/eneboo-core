@@ -1633,6 +1633,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!d->metadata_)
     return;
 
+  qWarning("1");
   if ((!isValid() || size() <= 0) && m != INSERT) {
     QMessageBox::warning(qApp->focusWidget(), tr("Aviso"),
                          tr("No hay ningún registro seleccionado"),
@@ -1663,6 +1664,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
     return;
   }
 
+  qWarning("2");
   d->modeAccess_ = m;
   if (d->buffer_)
     d->buffer_->clearValues(true);
@@ -1677,6 +1679,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
     return;
   }
 
+	qWarning("3");
   if (d->action_->formRecord().isEmpty()) {
     QMessageBox::warning(
       qApp->focusWidget(), tr("Aviso"),
@@ -1701,12 +1704,13 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
       return;
     }
   }
-
+	qWarning("4");
   if (!refreshBuffer())
     return;
 
-  qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(aqApp->mainWidget()->name(), d->action_->name()));
+  //qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(aqApp->mainWidget()->name(), d->action_->name()));
 
+	qWarning("5");
   FLFormRecordDB *f = new FLFormRecordDB(this, d->action_->name(),
                                          aqApp->mainWidget() , cont);
   if (refreshBuffer()) {
