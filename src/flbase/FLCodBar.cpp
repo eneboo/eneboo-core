@@ -152,7 +152,7 @@ void FLCodBar::createBarcode()
 
   writingStdout = true;
   qWarning(psBarcode);
-  qWarning("%d", bc->xoff + (bc->width * barcode.res / 72) + (2 * barcode.margin * barcode.res / 72))
+  qWarning("%d", bc->xoff + (bc->width * barcode.res / 72) + (2 * barcode.margin * barcode.res / 72));
   if (!proc->launch(psBarcode)) {
     pError.resize(300, 50);
     pError.fill(barcode.bg);
