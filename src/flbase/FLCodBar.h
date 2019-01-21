@@ -64,7 +64,7 @@ class FLCodBar : public QObject
 public:
 
   FLCodBar(const QString &value, int type, int margin, double scale, double cut, int rotation,
-           bool text_flag = false, QColor fg = Qt::black, QColor bg = Qt::white, int res = 100);
+           bool text_flag = false, QColor fg = Qt::black, QColor bg = Qt::white, int res = 72);
 
   FLCodBar(barcodeData *data);
 
