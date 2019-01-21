@@ -136,10 +136,10 @@ void FLCodBar::createBarcode()
   proc->addArgument("-sDEVICE=pnggray");
   proc->addArgument(
     QString("-g%1x%2")
-    .arg(bc->xoff + (bc->width * barcode.res / 72) +
-         (2 * barcode.margin * barcode.res / 72))
-    .arg(bc->yoff + (bc->height * barcode.res / 72) +
-         (2 * barcode.margin * barcode.res / 72))
+    .arg(bc->xoff + (bc->width * barcode.res / 100) +
+         (2 * barcode.margin * barcode.res / 100))
+    .arg(bc->yoff + (bc->height * barcode.res / 100) +
+         (2 * barcode.margin * barcode.res / 100))
   );
   QString res = QString::number(barcode.res);
   //proc->addArgument("-r" + res + "x" + res);
@@ -209,7 +209,7 @@ void FLCodBar::fillDefault(barcodeData *data)
   data->rotation = 0;
   data->caption = "Static";
   data->valid = false;
-  data->res = 72;
+  data->res = 100;
 }
 
 void FLCodBar::copyBarcode(barcodeData *src, barcodeData *dest)
