@@ -132,6 +132,7 @@ void FLCodBar::createBarcode()
   proc->addArgument("-q");
   proc->addArgument("-dBATCH");
   proc->addArgument("-dNOPAUSE");
+  proc->addArgument("-dSAFER");
   proc->addArgument("-sDEVICE=pnggray");
   proc->addArgument(
     QString("-g%1x%2")
@@ -141,13 +142,18 @@ void FLCodBar::createBarcode()
          (2 * barcode.margin * barcode.res / 72))
   );
   QString res = QString::number(barcode.res);
-  proc->addArgument("-r" + res + "x" + res);
+  //proc->addArgument("-r" + res + "x" + res);
+  proc->addArgument("-r" + res);
+  proc->addArgument("-dTextAlphaBits=4");
+  proc->addArgument("-dGraphicsAlphaBits=4");
   proc->addArgument("-sOutputFile=-");
   proc->addArgument("-");
 
   Barcode_Delete(bc);
 
   writingStdout = true;
+  //qWarning(psBarcode);
+  //qWarning("%d", bc->xoff + (bc->width * barcode.res / 72) + (2 * barcode.margin * barcode.res / 72));
   if (!proc->launch(psBarcode)) {
     pError.resize(300, 50);
     pError.fill(barcode.bg);
