@@ -25,7 +25,7 @@ MFieldObject::MFieldObject() :
   comma = 0;
   blankZero = 0;
   codbarType = FLCodBar::nameToType("code128");
-  codbarRes = 72;
+  codbarRes = 100;
   saveColor.setRgb(0, 0, 0);
 }
 
