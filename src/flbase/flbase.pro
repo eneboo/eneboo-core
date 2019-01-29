@@ -188,6 +188,7 @@ FORMS += FLWidgetAbout.ui \
     FLWidgetScriptEditor.ui \
     FLStaticLoaderUI.ui
 IMAGES += images/infosial.png \
+    images/snapshot.png \
     images/about.png \
     images/cascada.png \
     images/exit.png \

@@ -44,6 +44,7 @@ function cargarConfiguracion() {
 	w.child("leMaxPixImages").text = leerValorLocal("maxPixImages");
 	w.child("cbFLLarge").checked = leerValorGlobal("FLLargeMode");
 	w.child("cbPosInfo").checked = leerValorGlobal("PosInfo");
+	w.child("cb_snapshot").checked = leerValorLocal("show_snapshot_button");
 	w.child("leCO").hide();
 	if (leerValorLocal("colorObligatorio") == "")
 		w.child("leCO").paletteBackgroundColor = "#FFE9AD";
@@ -71,38 +72,47 @@ function grabarValorGlobal(valorName, value) {
 		util.sqlUpdate("flsettings", "valor", value, "flkey = '" + valorName + "'");
 }
 
-function leerValorLocal(valorName):String {
+function leerValorLocal(valor_name):String {
 	var util:FLUtil = new FLUtil();
 	var valor:String;
-	switch (valorName) {
+	var settings = new AQSettings;
+	switch (valor_name) {
 		case "isDebuggerMode":
-			var settings = new AQSettings;
-			valor = settings.readBoolEntry("application/" + valorName );
-		break;
+			{
+			valor = settings.readBoolEntry("application/" + valor_name );
+			break;
+			}
 		case "SLInterface":
 		case "SLConsola":
+		case "FLLargeMode":
+		case "PosInfo":
 		case "FLTableDoubleClick":
 		case "FLTableShortCut":
 		case "FLTableExport2Calc":
+		case "show_snapshot_button":
+			{
+			valor = settings.readBoolEntry("ebcomportamiento/" + valor_name );
+			break;
+			}			
 		default:
-			valor = util.readSettingEntry("ebcomportamiento/" + valorName, "");
-		break;
+			{
+			valor = util.readSettingEntry("ebcomportamiento/" + valor_name, "");
+			break;
+			}
 	}
 	return valor;
 }
 
-function grabarValorLocal(valorName, value) {
-	if (valorName == "maxPixImages" && value < 1 )
+function grabarValorLocal(valor_name, value) {
+	if (valor_name == "maxPixImages" && value < 1 )
 		value = 600;
-
-	switch (valorName) {
+	var settings = new AQSettings;
+	switch (valor_name) {
 		case "isDebuggerMode":
-			var settings = new AQSettings;
-			settings.writeEntry("application/" + valorName, value);
+			settings.writeEntry("application/" + valor_name, value);
 		break;
 		default:
-			var settings = new AQSettings;
-			settings.writeEntry("ebcomportamiento/" + valorName, value);
+			settings.writeEntry("ebcomportamiento/" + valor_name, value);
 		break;
 	}
 }
@@ -141,8 +151,9 @@ function guardar_clicked() {
 	grabarValorLocal("maxPixImages", w.child("leMaxPixImages").text);
 	grabarValorLocal("colorObligatorio", w.child("leCO").paletteBackgroundColor + "");
 	grabarValorLocal("ActionsMenuRed", w.child("cbActionsMenuRed").checked);
-	grabarValorGlobal("FLLargeMode",w.child("cbFLLarge").checked);
-	grabarValorGlobal("PosInfo",w.child("cbPosInfo").checked);
+	grabarValorGlobal("FLLargeMode", w.child("cbFLLarge").checked);
+	grabarValorGlobal("PosInfo", w.child("cbPosInfo").checked);
+	grabarValorLocal("show_snapshot_button"), w.child("cb_snapshot").checked);
 	cerrar_clicked();
 }
 
