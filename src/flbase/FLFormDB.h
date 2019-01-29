@@ -374,6 +374,10 @@ protected:
   Boton Debug Script
   */
   QPushButton *pushButtonDebug;
+  /**
+  Boton Snapshot
+  */
+  QPushButton *push_button_snapshot;
 #endif
 
   /**
