@@ -237,6 +237,10 @@ public slots:
   void debugScript();
 
   /**
+  Crea un SnapShot del formulario que contiene el botón
+  */
+  void saveSnapShot_auto();
+  /**
   Devuelve el script asociado al formulario
   */
   virtual QSScript *script() const;

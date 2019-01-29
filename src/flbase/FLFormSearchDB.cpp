@@ -274,14 +274,14 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
         	push_button_snapshot->sizePolicy().hasHeightForWidth()));
   		push_button_snapshot->setMinimumSize(pbSize);
   		push_button_snapshot->setMaximumSize(pbSize);
-  		QPixmap qsa(QPixmap::fromMimeSource("snapshot.png"));
-  		push_button_snapshot->setIconSet(qsa);
+  		QPixmap snap_shot(QPixmap::fromMimeSource("snapshot.png"));
+  		push_button_snapshot->setIconSet(snap_shot);
   		push_button_snapshot->setAccel(QKeySequence(Qt::Key_F7));
   		QToolTip::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
   		QWhatsThis::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
   		push_button_snapshot->setFocusPolicy(QWidget::NoFocus);
   		layoutButtons->addWidget(push_button_snapshot);
-  		connect(push_button_snapshot, SIGNAL(clicked()), this, SLOT(saveSnapShot()));
+  		connect(push_button_snapshot, SIGNAL(clicked()), this, SLOT(saveSnapShot_auto()));
 		}
 	}
 #endif
