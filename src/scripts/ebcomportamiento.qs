@@ -153,7 +153,7 @@ function guardar_clicked() {
 	grabarValorLocal("ActionsMenuRed", w.child("cbActionsMenuRed").checked);
 	grabarValorGlobal("FLLargeMode", w.child("cbFLLarge").checked);
 	grabarValorGlobal("PosInfo", w.child("cbPosInfo").checked);
-	grabarValorLocal("show_snapshot_button"), w.child("cb_snapshot").checked);
+	grabarValorLocal("show_snapshot_button", w.child("cb_snapshot").checked);
 	cerrar_clicked();
 }
 
