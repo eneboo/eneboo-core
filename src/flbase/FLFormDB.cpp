@@ -502,7 +502,7 @@ QImage FLFormDB::snapShot()
 
 void FLFormDB::saveSnapShot_auto()
 {
-QString path_(AQ_DISKCACHE_DIRPATH + "/Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png"));
+QString path_(AQ_DISKCACHE_DIRPATH + "/../../Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png"));
 saveSnapShot(path_);
 }
 
@@ -510,7 +510,7 @@ saveSnapShot(path_);
 void FLFormDB::saveSnapShot(const QString &pathFile)
 {
 
-  qWarning("FLFormDB : " + tr("Creando Snapshot en %1").arg(pathFile));
+  //qWarning("FLFormDB : " + tr("Creando Snapshot en %1").arg(pathFile));
   QFile fi(pathFile);
   if (!fi.open(IO_WriteOnly)) {
 #ifdef FL_DEBUG
