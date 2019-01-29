@@ -649,7 +649,7 @@ class MainWindow
       for (var j = 0; j < modules.length; ++j) {
         if (modules[j] == "sys" && sys.isUserBuild())
           continue;
-        var ac = new QAction(ag);
+        var ac = new QActionGroup(ag);
         ac.name = modules[j];
         if (sys.isQuickBuild()) {
             if (ac.name == "sys") {
