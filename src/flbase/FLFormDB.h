@@ -166,7 +166,7 @@ public:
 
   @param pathFile Ruta y nombre del fichero donde guardar la imagen
   */
-  void saveSnapShot(const QString &pathFile);
+  void saveSnapShot(const QString &pathFile = QString::null);
 
   /**
   Establece el título de la ventana.
