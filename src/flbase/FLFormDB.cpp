@@ -512,7 +512,7 @@ else
 	{
 	path_ = pathFile;
 	}
-
+  qWarning("FLFormDB : " + tr("Creando Snapshot en %1").arg(path_));
   QFile fi(path_);
   if (!fi.open(IO_WriteOnly)) {
 #ifdef FL_DEBUG
