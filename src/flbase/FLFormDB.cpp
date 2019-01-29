@@ -502,15 +502,21 @@ QImage FLFormDB::snapShot()
 void FLFormDB::saveSnapShot(const QString &pathFile)
 {
 
+QString path_;
+
 if (pathFile.isEmpty())
 	{	
-	pathFile = AQ_DISKCACHE_DIRPATH + "/Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png");
+	path_= AQ_DISKCACHE_DIRPATH + "/Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png");
+	}
+else
+	{
+	path_ = pathFile;
 	}
 
-  QFile fi(pathFile);
+  QFile fi(path_);
   if (!fi.open(IO_WriteOnly)) {
 #ifdef FL_DEBUG
-    qWarning("FLFormDB : " + tr("Error I/O al intentar escribir el fichero %1").arg(pathFile));
+    qWarning("FLFormDB : " + tr("Error I/O al intentar escribir el fichero %1").arg(path_));
 #endif
     return;
   }
