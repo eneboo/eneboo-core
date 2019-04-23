@@ -502,8 +502,15 @@ QImage FLFormDB::snapShot()
 
 void FLFormDB::saveSnapShot_auto()
 {
-QString path_(AQ_DISKCACHE_DIRPATH + "/../../Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png"));
-saveSnapShot(path_);
+QString filename_(AQ_DISKCACHE_DIRPATH + "/../../Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png"));
+QString savefilename = QFileDialog::getSaveFileName(QString::null, QString::null,this, filename_);
+  if (!savefilename.isEmpty())
+	{
+	filename_ = savefilename;
+	}
+
+
+saveSnapShot(filename_);
 }
 
 
