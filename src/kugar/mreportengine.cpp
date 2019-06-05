@@ -878,17 +878,17 @@ void MReportEngine::exportToOds(MPageCollection *pages)
     AQPaintItemMap::const_iterator itAux = map.end();
     --itAux;
 
-    if ((*itAux).r.y() >= AQ_ODS_ROWS_LIMIT) {
-      mapList.append(map);
-      map.clear();
-      painter->resetXForm();
-      yOffset = 0;
-      dirtyMap = false;
-    } else {
+   // if ((*itAux).r.y() >= AQ_ODS_ROWS_LIMIT) {
+   //   mapList.append(map);
+   //   map.clear();
+    //  painter->resetXForm();
+    //  yOffset = 0;
+    //  dirtyMap = false;
+   // } else {
       painter->translate(0, (*itAux).rr.y() - yOffset);
       yOffset = (*itAux).rr.y();
       dirtyMap = true;
-    }
+   // }
   }
   if (dirtyMap)
     mapList.append(map);
