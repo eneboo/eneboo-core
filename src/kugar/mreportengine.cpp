@@ -878,17 +878,17 @@ void MReportEngine::exportToOds(MPageCollection *pages)
     AQPaintItemMap::const_iterator itAux = map.end();
     --itAux;
 
-   // if ((*itAux).r.y() >= AQ_ODS_ROWS_LIMIT) {
-   //   mapList.append(map);
-   //   map.clear();
-    //  painter->resetXForm();
-    //  yOffset = 0;
-    //  dirtyMap = false;
-   // } else {
+    if ((*itAux).r.y() >= AQ_ODS_ROWS_LIMIT) {
+      mapList.append(map);
+      map.clear();
+      painter->resetXForm();
+      yOffset = 0;
+      dirtyMap = false;
+    } else {
       painter->translate(0, (*itAux).rr.y() - yOffset);
       yOffset = (*itAux).rr.y();
       dirtyMap = true;
-   // }
+    }
   }
   if (dirtyMap)
     mapList.append(map);
@@ -918,6 +918,7 @@ void MReportEngine::exportToOds(MPageCollection *pages)
     AQPaintItemMap map = *(itList);
     AQPaintItemMap::const_iterator it;
     for (it = map.begin(); it != map.end(); ++it, ++step) {
+	qWarning("+\n");
       if ((step % relSteps) == 0)
         emit signalRenderStatus((step / relSteps) % rowCount);
       if (cancelRender)
@@ -929,6 +930,7 @@ void MReportEngine::exportToOds(MPageCollection *pages)
         qWarning("** MReportEngine::exportToOds curNRow > cell.y()");
 
       if (curRow && curNRow < cell.y()) {
+	qWarning("** Reset!! %d\n", nRow);
         curRow->close();
         delete curRow;
         curRow = 0;
