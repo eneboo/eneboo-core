@@ -939,6 +939,7 @@ void MReportEngine::exportToOds(MPageCollection *pages)
 
       curNRow = cell.y();
       for (; nRow < curNRow; ++nRow) {
+	qWarning("** Linea comida!!");
         AQOdsRow row(sheet);
         row.coveredCell();
         row.close();
