@@ -943,6 +943,7 @@ void MReportEngine::exportToOds(MPageCollection *pages)
       }
 
       if (!curRow) {
+	qWarning("** Nueva linea %d\n", nRow);
         curRow = new AQOdsRow(sheet);
         curNCol = 0;
         nCol = 0;
@@ -1005,8 +1006,10 @@ void MReportEngine::exportToOds(MPageCollection *pages)
           cell.setWidth(1);
         }
       } else
+	{
+	qWarning("** Linea SALTADA!! %d\n", nRow);
         curRow->coveredCell();
-
+	}
       nCol += cell.width();
 
             printf("curNRow:%d nRow:%d curNCol:%d nCol:%d (%d %d %d %d) (%d %d %d %d) %s\n",
