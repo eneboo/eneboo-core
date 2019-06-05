@@ -516,7 +516,7 @@ public:
 };
 
 #define AQ_ODSCELL_WIDTH  80.0
-#define AQ_ODSCELL_HEIGHT 15.0
+#define AQ_ODSCELL_HEIGHT 8.0
 
 QRect mapToOdsCell(const QRect &r)
 {
