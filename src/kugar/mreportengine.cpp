@@ -960,6 +960,7 @@ void MReportEngine::exportToOds(MPageCollection *pages)
         curRow->coveredCell();
 
       QString str((*it).str);
+      qWarning("** --> %s\n", str);
       if (!str.isEmpty()) {
         QPixmap pix = (*it).pix;
         if (pix.isNull()) {
