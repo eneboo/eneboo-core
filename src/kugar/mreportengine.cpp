@@ -1009,20 +1009,20 @@ void MReportEngine::exportToOds(MPageCollection *pages)
 
       nCol += cell.width();
 
-      //      printf("curNRow:%d nRow:%d curNCol:%d nCol:%d (%d %d %d %d) (%d %d %d %d) %s\n",
-      //             curNRow,
-      //             nRow,
-      //             curNCol,
-      //             nCol,
-      //             (*it).rr.y(),
-      //             (*it).rr.x(),
-      //             (*it).rr.height(),
-      //             (*it).rr.width(),
-      //             cell.y(),
-      //             cell.x(),
-      //             cell.height(),
-      //             cell.width(),
-      //             (*it).str.latin1());
+            printf("curNRow:%d nRow:%d curNCol:%d nCol:%d (%d %d %d %d) (%d %d %d %d) %s\n",
+                   curNRow,
+                   nRow,
+                   curNCol,
+                   nCol,
+                   (*it).rr.y(),
+                   (*it).rr.x(),
+                   (*it).rr.height(),
+                   (*it).rr.width(),
+                   cell.y(),
+                   cell.x(),
+                   cell.height(),
+                   cell.width(),
+                   (*it).str.latin1());
     }
 
     if (curRow) {
