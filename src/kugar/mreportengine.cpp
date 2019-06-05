@@ -918,7 +918,6 @@ void MReportEngine::exportToOds(MPageCollection *pages)
     AQPaintItemMap map = *(itList);
     AQPaintItemMap::const_iterator it;
     for (it = map.begin(); it != map.end(); ++it, ++step) {
-	qWarning("+\n");
       if ((step % relSteps) == 0)
         emit signalRenderStatus((step / relSteps) % rowCount);
       if (cancelRender)
@@ -930,7 +929,6 @@ void MReportEngine::exportToOds(MPageCollection *pages)
         qWarning("** MReportEngine::exportToOds curNRow > cell.y()");
 
       if (curRow && curNRow < cell.y()) {
-	qWarning("** Reset!! %d\n", nRow);
         curRow->close();
         delete curRow;
         curRow = 0;
@@ -939,14 +937,12 @@ void MReportEngine::exportToOds(MPageCollection *pages)
 
       curNRow = cell.y();
       for (; nRow < curNRow; ++nRow) {
-	qWarning("** Linea comida!!");
         AQOdsRow row(sheet);
         row.coveredCell();
         row.close();
       }
 
       if (!curRow) {
-	qWarning("** Nueva linea %d\n", nRow);
         curRow = new AQOdsRow(sheet);
         curNCol = 0;
         nCol = 0;
@@ -960,7 +956,6 @@ void MReportEngine::exportToOds(MPageCollection *pages)
         curRow->coveredCell();
 
       QString str((*it).str);
-      qWarning("** --> %s\n", (*it).str.latin1());
       if (!str.isEmpty()) {
         QPixmap pix = (*it).pix;
         if (pix.isNull()) {
@@ -1010,10 +1005,8 @@ void MReportEngine::exportToOds(MPageCollection *pages)
           cell.setWidth(1);
         }
       } else
-	{
-	qWarning("** Linea SALTADA!! %d\n", nRow);
         curRow->coveredCell();
-	}
+
       nCol += cell.width();
 
             printf("curNRow:%d nRow:%d curNCol:%d nCol:%d (%d %d %d %d) (%d %d %d %d) %s\n",
