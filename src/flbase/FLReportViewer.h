@@ -92,7 +92,7 @@ public:
   bool renderReport(const int initRow = 0, const int initCol = 0,
                     const bool append = false, const bool displayReport = false);
 
-  bool renderReport(const int initRow = 0, const int initCol = 0, const uint flags = MReportViewer::Display);
+  bool renderReport(const int initRow = 0, const int initCol = 0, const int flags = MReportViewer::Display);
 
   /**
   Establece los datos del informe a partir de una consulta

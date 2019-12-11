@@ -237,12 +237,11 @@ bool FLReportViewer::renderReport(const int initRow, const int initCol, const bo
     return ret;
 }
 
-bool FLReportViewer::renderReport(const int initRow, const int initCol, const uint flags)
+bool FLReportViewer::renderReport(const int initRow, const int initCol, const int flags)
 {
   if (!rptEngine_)
     return false;
   qWarning("FLReportViewer ! %d", flags);
-
   bool ret = rptViewer_->renderReport(initRow, initCol, flags);
   report = rptViewer_->reportPages();
   return ret;
