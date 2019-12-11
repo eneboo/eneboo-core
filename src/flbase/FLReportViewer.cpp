@@ -237,7 +237,7 @@ bool FLReportViewer::renderReport(const int initRow, const int initCol, const bo
     return ret;
 }
 
-bool FLReportViewer::renderReport(const int initRow, const int initCol, const int flags)
+bool FLReportViewer::renderReport(const int initRow, const int initCol, const uint flags)
 {
   if (!rptEngine_)
     return false;
