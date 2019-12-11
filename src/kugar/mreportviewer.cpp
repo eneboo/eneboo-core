@@ -112,7 +112,7 @@ bool MReportViewer::renderReport(int initRow, int initCol,
   return  renderReport(
             initRow, initCol,
             (append ? MReportViewer::Append : 0) |
-            (uint)(displayReport ? MReportViewer::Display : 0)
+            (int)(displayReport ? MReportViewer::Display : 0)
           );
 }
 
