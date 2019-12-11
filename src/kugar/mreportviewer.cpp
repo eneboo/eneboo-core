@@ -112,29 +112,15 @@ bool MReportViewer::renderReport(int initRow, int initCol,
   return  renderReport(
             initRow, initCol,
             (append ? MReportViewer::Append : 0) |
-            (int)(displayReport ? MReportViewer::Display : 0)
+            (uint)(displayReport ? MReportViewer::Display : 0)
           );
 }
 
-bool MReportViewer::renderReport(int initRow, int initCol, int flags)
+bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
 {
   bool append = flags & MReportViewer::Append;
   bool displayReport = flags & MReportViewer::Display;
   bool pageBreak = flags & MReportViewer::PageBreak;
-	
-  qWarning("Visor ! %u" , flags);
-  if (append)
-	{
-  	qWarning("* append");
-	}
-  if (displayReport)
-	{
-  	qWarning("* display");
-	}
-  if (pageBreak)
-	{
-  	qWarning("* pageBreak");
-	}
 
   if (!rptEngine)
     return false;

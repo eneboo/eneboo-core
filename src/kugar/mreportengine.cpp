@@ -1069,8 +1069,6 @@ MPageCollection *MReportEngine::renderReport(int initRow, int initCol,
   QPicture *currentPage = 0;
   QPicture *currentPageCopy = 0;
   bool lastPageFound = false;
-  qWarning("**** engine!! %u", flags);
-
    if (pages == 0)
 	{
 	qWarning("*** No hay páginas!!");
