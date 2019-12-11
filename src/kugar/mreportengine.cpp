@@ -1071,17 +1071,17 @@ MPageCollection *MReportEngine::renderReport(int initRow, int initCol,
   bool lastPageFound = false;
    if (pages == 0)
 	{
-	printf("*** No hay páginas!!");
+	qWarning("*** No hay páginas!!");
 	}
 
    if (append)
 	{
-	printf("*** Happend detectado!");
+	qWarning("*** Happend detectado!");
 	}
 
 if (pageBreak)
 	{
-	printf("*** PageBreak detectado!");
+	qWarning("*** PageBreak detectado!");
 	}
 
   if (pages == 0) {
@@ -1092,7 +1092,7 @@ if (pageBreak)
     if (append && !pageBreak) {
       currX = leftMargin ;
       lastPageFound = true;
-      printf("Usando pagina previa");
+      qWarning("*** Usando pagina previa");
       currentPage = pages->getLastPage();
       p->painter()->end();
       if (currentPage) {
@@ -1117,7 +1117,7 @@ if (pageBreak)
   // Create the first page
   if (!lastPageFound)
 	{
-	printf("*** Creando nueva pagina");
+	qWarning("*** Creando nueva pagina");
     	startPage(pages);
 	}
   uint rowCount = records.length();
