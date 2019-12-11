@@ -1054,7 +1054,7 @@ void MReportEngine::exportToOds(MPageCollection *pages)
  *
  */
 MPageCollection *MReportEngine::renderReport(int initRow, int initCol,
-                                             MPageCollection *pages, uint flags)
+                                             MPageCollection *pages, int flags)
 {
   fillRecords_ = flags & MReportEngine::FillRecords;
   bool pageBreak = flags & MReportEngine::PageBreak;

@@ -74,7 +74,7 @@ public:
   bool renderReport(int initRow = 0, int initCol = 0,
                     bool append = false, bool display = true);
   bool renderReport(int initRow = 0, int initCol = 0,
-                    uint flags = MReportViewer::Display);
+                    int flags = MReportViewer::Display);
   void clearReport();
   bool printReport();
   bool printReportToPS(const QString &);

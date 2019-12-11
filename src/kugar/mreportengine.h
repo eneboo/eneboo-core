@@ -85,7 +85,7 @@ public:
 
   MPageCollection *renderReport(int initRow = 0, int initCol = 0,
                                 MPageCollection *pages = 0,
-                                uint flags = MReportEngine::Display);
+                                int flags = MReportEngine::Display);
 public slots:
 
   int getRenderSteps() {

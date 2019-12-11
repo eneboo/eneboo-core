@@ -116,7 +116,7 @@ bool MReportViewer::renderReport(int initRow, int initCol,
           );
 }
 
-bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
+bool MReportViewer::renderReport(int initRow, int initCol, int flags)
 {
   bool append = flags & MReportViewer::Append;
   bool displayReport = flags & MReportViewer::Display;
