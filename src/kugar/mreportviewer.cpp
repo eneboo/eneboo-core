@@ -122,7 +122,7 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   bool displayReport = flags & MReportViewer::Display;
   bool pageBreak = flags & MReportViewer::PageBreak;
 	
-  qWarning("Visor ! %d" , flags);
+  qWarning("Visor ! %u" , flags);
   if (append)
 	{
   	qWarning("* append");
