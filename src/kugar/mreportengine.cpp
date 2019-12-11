@@ -1074,6 +1074,7 @@ MPageCollection *MReportEngine::renderReport(int initRow, int initCol,
     currPage = 0;
   } else {
     if (append && !pageBreak) {
+      printf("No se encuentra pageBreak!!");
       currX = leftMargin ;
       lastPageFound = true;
       currentPage = pages->getLastPage();
