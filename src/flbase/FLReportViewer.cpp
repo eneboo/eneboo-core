@@ -224,7 +224,7 @@ bool FLReportViewer::renderReport(const int initRow, const int initCol, const bo
 {
     if (!rptEngine_)
         return false;
-    int flags = 0;
+    uint flags = 0;
     if (append) {
     	flags = flags | MReportViewer::Append;
     }
@@ -237,11 +237,10 @@ bool FLReportViewer::renderReport(const int initRow, const int initCol, const bo
     return ret;
 }
 
-bool FLReportViewer::renderReport(const int initRow, const int initCol, const int flags)
+bool FLReportViewer::renderReport(const int initRow, const int initCol, const uint flags)
 {
   if (!rptEngine_)
     return false;
-  qWarning("FLReportViewer ! %d", flags);
   bool ret = rptViewer_->renderReport(initRow, initCol, flags);
   report = rptViewer_->reportPages();
   return ret;
