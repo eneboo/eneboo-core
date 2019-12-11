@@ -7106,7 +7106,7 @@ public:
   enum RenderReportFlags {
     Append    = 0x00000001,
     Display   = 0x00000002,
-    PageBreak = 0x00000004
+    PageBreak = 0x0000000C
   };
 
   enum PrinterColorMode {
