@@ -7164,7 +7164,7 @@ public slots:
   bool renderReport(const int initRow = 0, const int initCol = 0, const bool append = false, const bool displayReport = true) {
     return obj_->renderReport(initRow, initCol, append, displayReport);
   }
-  bool renderReport2(const int initRow = 0, const int initCol = 0, const int flags = FLReportViewerInterface::Display) {
+  bool renderReport2(const int initRow = 0, const int initCol = 0, const uint flags = FLReportViewerInterface::Display) {
     return obj_->renderReport(initRow, initCol, flags);
   }
 
