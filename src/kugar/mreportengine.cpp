@@ -1069,14 +1069,30 @@ MPageCollection *MReportEngine::renderReport(int initRow, int initCol,
   QPicture *currentPage = 0;
   QPicture *currentPageCopy = 0;
   bool lastPageFound = false;
+   if (pages == 0)
+	{
+	printf("*** No hay páginas!!");
+	}
+
+   if (append)
+	{
+	printf("*** Happend detectado!");
+	}
+
+if (pageBreak)
+	{
+	printf("*** PageBreak detectado!");
+	}
+
   if (pages == 0) {
+    
     pages = new MPageCollection(this);
     currPage = 0;
   } else {
     if (append && !pageBreak) {
-      printf("No se encuentra pageBreak!!");
       currX = leftMargin ;
       lastPageFound = true;
+      printf("Usando pagina previa");
       currentPage = pages->getLastPage();
       p->painter()->end();
       if (currentPage) {
@@ -1100,7 +1116,10 @@ MPageCollection *MReportEngine::renderReport(int initRow, int initCol,
 
   // Create the first page
   if (!lastPageFound)
-    startPage(pages);
+	{
+	printf("*** Creando nueva pagina");
+    	startPage(pages);
+	}
   uint rowCount = records.length();
 
   if (rowCount <= 1)
