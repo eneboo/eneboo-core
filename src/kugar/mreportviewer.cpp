@@ -123,6 +123,18 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   bool pageBreak = flags & MReportViewer::PageBreak;
 	
   qWarning("Visor ! %d" , flags);
+  if (append)
+	{
+  	qWarning("* append");
+	}
+  if (displayReport)
+	{
+  	qWarning("* display");
+	}
+  if (pageBreak)
+	{
+  	qWarning("* pageBreak");
+	}
 
   if (!rptEngine)
     return false;
