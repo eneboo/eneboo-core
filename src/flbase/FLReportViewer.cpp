@@ -241,7 +241,7 @@ bool FLReportViewer::renderReport(const int initRow, const int initCol, const in
 {
   if (!rptEngine_)
     return false;
-  qWarning("FLReportViewer ! %u", flags);
+  qWarning("FLReportViewer ! %d", flags);
   bool ret = rptViewer_->renderReport(initRow, initCol, flags);
   report = rptViewer_->reportPages();
   return ret;
