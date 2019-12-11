@@ -224,7 +224,7 @@ bool FLReportViewer::renderReport(const int initRow, const int initCol, const bo
 {
     if (!rptEngine_)
         return false;
-    uint flags = 0;
+    int flags = 0;
     if (append) {
     	flags = flags | MReportViewer::Append;
     }
