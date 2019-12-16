@@ -203,6 +203,7 @@ bool MReportViewer::printGhostReport()
   int backupNumCopies = numCopies_;
   numCopies_ = 1;
   if (!printReportToPS(outPsFile)) {
+    qWarning("Saliendo 2");
     numCopies_ = backupNumCopies;
     return false;
   }
@@ -329,7 +330,7 @@ bool MReportViewer::printGhostReport()
     proc->addArgument(setupPsFile);
     proc->addArgument(outPsFile);
   }
-
+  qWarning("Fin printGhostReport");
   if (!proc->start()) {
     delete proc;
     return false;
@@ -754,7 +755,10 @@ bool MReportViewer::printReport()
   delete procTemp;
   if (gsOk) {
     if (printGhostReport())
-      return true;
+	{
+	qWarning("Saliendo 1");  	
+	return true;
+	}
   }
 
   QMessageBox *m = new QMessageBox(tr("Sugerencia"),
@@ -799,7 +803,7 @@ bool MReportViewer::printReport()
     printNow = true;
   else
     printNow = printer->setup(qApp->focusWidget());
-
+  qWarning("LLegando a printNow!");
   if (printNow) {
     QPicture *page;
     QPainter painter;
