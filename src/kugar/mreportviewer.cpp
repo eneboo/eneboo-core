@@ -403,6 +403,7 @@ bool MReportViewer::printGhostReportToPS(const QString &outPsFile)
   psprinter->setOutputFileName(outPsFile);
 
   QProgressDialog progress(tr("Imprimiendo Informe..."), tr("Cancelar"), totalSteps, this, tr("progreso"), true);
+  qWarning("Imprimiendo informe en printGhostReportToPS!!");
   progress.setMinimumDuration(M_PROGRESS_DELAY);
   QObject::connect(&progress, SIGNAL(cancelled()), this, SLOT(slotCancelPrinting()));
   progress.setProgress(0);
@@ -818,7 +819,7 @@ bool MReportViewer::printReport()
     int printCopies = printer->numCopies();
     int totalSteps = printCnt * printCopies;
     int currentStep = 1;
-
+    qWarning("QPrinter From 1 : %d\nTo : %d\nCopies : %d",  printFrom,  printTo, printCopies);
     // Set copies to 1, QPrinter copies does not appear to work ...
     printer->setNumCopies(1);
 
@@ -828,14 +829,14 @@ bool MReportViewer::printReport()
     QObject::connect(&progress, SIGNAL(cancelled()), this, SLOT(slotCancelPrinting()));
     progress.setProgress(0);
     qApp->processEvents();
-
+    
     // Start the printer
     painter.begin(printer);
     QPaintDeviceMetrics pdm(printer);
     QSize dim(report->pageDimensions());
     painter.setWindow(0, 0, dim.width(), dim.height());
     painter.setViewport(0, 0, pdm.width(), pdm.height());
-
+    qWarning("QPrinter From 2 : %d\nTo : %d\nCopies : %d",  printer->fromPage() -1 ,  printer->toPage() , printer->numCopies());
     // Print each copy
     for (int j = 0; j < printCopies; j++) {
       // Print each page in the collection
