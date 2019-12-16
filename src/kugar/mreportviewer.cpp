@@ -397,7 +397,7 @@ bool MReportViewer::printGhostReportToPS(const QString &outPsFile)
   int printCopies = psprinter->numCopies();
   int totalSteps = printCnt * printCopies;
   int currentStep = 1;
-
+  qWarning("From : %d\nTo : %d\nCopies : %d", printFrom, printTo, printCopies);
   psprinter->setNumCopies(1);
   psprinter->setOutputToFile(true);
   psprinter->setOutputFileName(outPsFile);
