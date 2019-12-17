@@ -31,7 +31,7 @@ function init() {
 }
 
 function cargarFicheroEnBD(nombre, contenido, log, directorio) {
-  if (!util.isFLDefFile(contenido) && !nombre.endsWith(".mod") && !nombre.endsWith(".xpm") && !nombre.endsWith(".signatures") && !nombre.endsWith(".checksum") && !nombre.endsWith(".certificates") && !nombre.endsWith(".qs") && !nombre.endsWith(".ar")) return;
+  if (!util.isFLDefFile(contenido) && !nombre.endsWith(".mod") && !nombre.endsWith(".xpm") && !nombre.endsWith(".signatures") && !nombre.endsWith(".checksum") && !nombre.endsWith(".certificates") && !nombre.endsWith(".qs") && !nombre.endsWith(".py") && !nombre.endsWith(".ar")) return;
 
   
   var cursorFicheros = new FLSqlCursor("flfiles");
@@ -182,6 +182,7 @@ function cargarDeDisco(directorio, comprobarLicencia) {
       cargarFicheros(directorio + "/forms/", "*.ui");
       cargarFicheros(directorio + "/tables/", "*.mtd");
       cargarFicheros(directorio + "/scripts/", "*.qs");
+      cargarFicheros(directorio + "/scripts/", "*.py");
       cargarFicheros(directorio + "/queries/", "*.qry");
       cargarFicheros(directorio + "/reports/", "*.kut");
       cargarFicheros(directorio + "/reports/", "*.ar");
@@ -260,6 +261,10 @@ function exportarADisco(directorio) {
             break;
           case ".qs":
             sys.write("ISO-8859-1", directorio + "/scripts/" + file, contenido);
+            log.append(util.translate("scripts", "* Exportando " + file + "."));
+            break;
+	  case ".py":
+            sys.write("UTF-8", directorio + "/scripts/" + file, contenido);
             log.append(util.translate("scripts", "* Exportando " + file + "."));
             break;
           case ".qry":
