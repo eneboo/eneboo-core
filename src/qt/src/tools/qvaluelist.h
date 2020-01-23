@@ -275,13 +275,13 @@ Q_INLINE_TEMPLATES QValueListPrivate<T>::QValueListPrivate( const QValueListPriv
 }
 
 template <class T>
-Q_INLINE_TEMPLATES QValueListPrivate<T>::~QValueListPrivate() {
-    //NodePtr p = node->next;
-    //while( p != node ) {
-    //	NodePtr x = p->next;
-    //	delete p;
-    //	p = x;
-    //}
+Q_INLINE_TEMPLATES QValueListPrivate<T>::~QValueListPrivate() { //Este while producce un segFault en ciertas circustancias ¡OJO! 
+    NodePtr p = node->next; 
+    while( p != node ) {
+    	NodePtr x = p->next;
+    	delete p;
+    	p = x;
+    }
     delete node;
 }
 
