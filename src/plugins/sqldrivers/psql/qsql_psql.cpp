@@ -2949,6 +2949,7 @@ QString QPSQLDriver::formatValue(const QSqlField *field, bool) const
 #ifndef FL_QUICK_CLIENT
 void QPSQLDriver::createIndex(const QString &fieldName, const QString &tableName, bool textOp, bool noUpper) const
 {
+  qWarning("CREANDO INDICES : " + tableName +"." + fieldName);
   if (!d->activeCreateIndex || !isOpen() || fieldName.isEmpty() || tableName.isEmpty())
     return;
 
@@ -3378,6 +3379,7 @@ void QPSQLDriver::Mr_Proper()
       continue;
     if (!mtdIdx->field(fieldIdx))
       continue;
+    qWarning(tr("Borrando índice %1").arg(qry.value(1).toString()));
     qry2.exec("drop index " + qry.value(1).toString());
   }
   FLUtil::destroyProgressDialog();
