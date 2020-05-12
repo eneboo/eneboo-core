@@ -271,6 +271,13 @@ bool MReportViewer::printGhostReport()
     proc->addArgument("-dBATCH");
     proc->addArgument("-dNOPAUSE");
     proc->addArgument("-dNODISPLAY");
+    proc->addArgument("-dSAFER");
+    proc->addArgument("-dCompatibilityLevel=1.4");
+    //proc->addArgument("-dPDFSETTINGS=/printer");
+    proc->addArgument("-dAutoFilterColorImages=false");
+    proc->addArgument("-sColorImageFilter=FlateEncode");
+    proc->addArgument("-dAutoFilterGrayImages=false");
+    proc->addArgument("-sGrayImageFilter=FlateEncode");
     proc->addArgument(QString("-r%1").arg(dpi_));
 
     switch ((QPrinter::PageSize) report->pageSize()) {
