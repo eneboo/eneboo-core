@@ -2687,7 +2687,7 @@ QSqlRecordInfo QPSQLDriver::recordInfo2(const QString &tablename) const
     case QPSQLDriver::Version91:
     case QPSQLDriver::Version92:
       stmt = "select pg_attribute.attname, pg_attribute.atttypid::int, pg_attribute.attnotnull, "
-             "pg_attribute.attlen, pg_attribute.atttypmod, pg_attrdef.adsrc "
+             "pg_attribute.attlen, pg_attribute.atttypmod, pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) "
              "from pg_class, pg_attribute "
              "left join pg_attrdef on (pg_attrdef.adrelid = pg_attribute.attrelid and pg_attrdef.adnum = pg_attribute.attnum) "
              "where lower(pg_class.relname) = '%1' "
