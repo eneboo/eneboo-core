@@ -2802,10 +2802,11 @@ QSqlRecordInfo QPSQLDriver::recordInfo(const QString &tablename) const
                               !field->allowNull(),
                               field->length(), field->partDecimal(), field->defaultValue()));
 #ifndef FL_QUICK_CLIENT
-    if (field->relationM1() || field->isPrimaryKey() || field->isCompoundKey()) {
+    qWarning("CHECK " + field->name() + ".isIndex?? " + field->isIndex());
+    if ((field->relationM1() || field->isPrimaryKey() || field->isCompoundKey()) && field->isIndex() ) {
       bool isTypeString = (fType == QVariant::String);
       createIndex(field->name(), tablename, isTypeString, !isTypeString);
-    } else if (field->type() == QVariant::Date || field->name() == "codigo") {
+    } else if ((field->type() == QVariant::Date || field->name() == "codigo") && field->isIndex()) {
       createIndex(field->name(), tablename, false , true);
       createIndex(field->name() + "," + mtd->primaryKey(), tablename, false, true);
     }
