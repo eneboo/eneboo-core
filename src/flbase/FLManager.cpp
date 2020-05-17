@@ -309,7 +309,7 @@ FLFieldMetaData *FLManager::metadataField(QDomElement *field, bool v, bool ed)
 
   bool ck = false;
   QString n, a, ol, rX, assocBy, assocWith, so;
-  bool aN = true, iPK = true, c = false, iNX = false, uNI = false,
+  bool aN = true, iPK = true, c = false, iNX = true, uNI = false,
        coun = false, oT = false, vG = true, fullCalc = false, trimm = false;
   int t = QVariant::Int, l = 0, pI = 4, pD = 0;
   QVariant dV = QVariant();
