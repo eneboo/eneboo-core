@@ -2802,7 +2802,7 @@ QSqlRecordInfo QPSQLDriver::recordInfo(const QString &tablename) const
                               !field->allowNull(),
                               field->length(), field->partDecimal(), field->defaultValue()));
 #ifndef FL_QUICK_CLIENT
-    qWarning("CHECK " + field->name() + ".isIndex?? " + field->isIndex());
+    //qWarning("CHECK " + field->name() + ".isIndex?? " + field->isIndex());
     if ((field->relationM1() || field->isPrimaryKey() || field->isCompoundKey()) && field->isIndex() ) {
       bool isTypeString = (fType == QVariant::String);
       createIndex(field->name(), tablename, isTypeString, !isTypeString);
@@ -2950,7 +2950,7 @@ QString QPSQLDriver::formatValue(const QSqlField *field, bool) const
 #ifndef FL_QUICK_CLIENT
 void QPSQLDriver::createIndex(const QString &fieldName, const QString &tableName, bool textOp, bool noUpper) const
 {
-  qWarning("CREANDO INDICES : " + tableName +"." + fieldName);
+  //qWarning("CREANDO INDICES : " + tableName +"." + fieldName);
   if (!d->activeCreateIndex || !isOpen() || fieldName.isEmpty() || tableName.isEmpty())
     return;
 
