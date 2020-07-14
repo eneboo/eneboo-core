@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qmainwindow.h>
@@ -50,14 +50,14 @@ public:
   /**
   Procesa objetos que heredan de la clase QMainWindow.
 
-  Sólo controla los hijos del objeto que son de la clase QAction, y sólo
+  Sï¿½lo controla los hijos del objeto que son de la clase QAction, y sï¿½lo
   permite hacerlos no visibles. Los permisos que acepta son :
 
   - "-w" o "--" (no_lectura/escritura o no_lectura/no_escritura) -> no visible
 
-  Esto permite eliminar opciones de las barras de menús y barras
-  de herramientas de las ventanas principales, así como opciones de
-  activación de módulos de la caja de herramientas principal, haciéndolas
+  Esto permite eliminar opciones de las barras de menï¿½s y barras
+  de herramientas de las ventanas principales, asï¿½ como opciones de
+  activaciï¿½n de mï¿½dulos de la caja de herramientas principal, haciï¿½ndolas
   no visibles para el usuario.
   */
   void processObject(QObject *obj);
@@ -112,7 +112,7 @@ void FLAccessControlMainWindow::processObject(QObject *obj)
 void FLAccessControlMainWindow::setFromObject(QObject *)
 {
 #ifdef FL_DEBUG
-  qWarning("FLAccessControlMainWindow::setFromObject " + QApplication::tr("No implementado todavía."));
+  qWarning("FLAccessControlMainWindow::setFromObject " + QApplication::tr("No implementado todavï¿½a."));
 #endif
 }
 
@@ -137,10 +137,10 @@ public:
   /**
   Procesa objetos que son de la clase FLFormDB.
 
-  Sólo controla los hijos del objeto que son de la clase QWidget,y sólo
+  Sï¿½lo controla los hijos del objeto que son de la clase QWidget,y sï¿½lo
   permite hacerlos no visibles o no editables. En realidad hacerlos
   no visibles significa que sean no editables y modficando la paleta para
-  que toda la región del componente sea mostrada en color negro. Los permisos
+  que toda la regiï¿½n del componente sea mostrada en color negro. Los permisos
   que acepta son :
 
   - "-w" o "--" (no_lectura/escritura o no_lectura/no_escritura) -> no visible
@@ -222,7 +222,7 @@ void FLAccessControlForm::processObject(QObject *obj)
 void FLAccessControlForm::setFromObject(QObject *)
 {
 #ifdef FL_DEBUG
-  qWarning("FLAccessControlForm::setFromObject " + QApplication::tr("No implementado todavía."));
+  qWarning("FLAccessControlForm::setFromObject " + QApplication::tr("No implementado todavï¿½a."));
 #endif
 }
 
@@ -247,11 +247,11 @@ public:
   /**
   Procesa objetos que son de la clase FLTableMetaData.
 
-  Sólo controla los objetos que pertenecen a él de la clase FLFieldMetaData
-  y sólo permite hacerlos no visibles o no editables. Esto en la práctica
+  Sï¿½lo controla los objetos que pertenecen a ï¿½l de la clase FLFieldMetaData
+  y sï¿½lo permite hacerlos no visibles o no editables. Esto en la prï¿½ctica
   significa que los componentes de los formularios de la clase FLFieldDB y
-  FLTableDB utilizarán los metadatos para autoconfigurarse y serán no visibles
-  o no editables si así lo establecen los objetos FLTableMetaData y FLFieldMetaData
+  FLTableDB utilizarï¿½n los metadatos para autoconfigurarse y serï¿½n no visibles
+  o no editables si asï¿½ lo establecen los objetos FLTableMetaData y FLFieldMetaData
   que definen esos metadatos.
 
   Los permisos que acepta son :
@@ -263,8 +263,8 @@ public:
   FLFormRecordDB y FLFormSearchDB) del tipo FLFieldDB o FLTableDB sea no visible
   o no editable a partir de los metadatos que utiliza para autoconfigurarse,
   independientemente del formulario en que se encuentre. Por ejemplo, si definimos
-  que el campo "nombre" de la tabla "clientes" es no visible, implicará que cada vez
-  que un componente tipo FLFieldDB forme parte de un formulario y esté enlazando con el campo
+  que el campo "nombre" de la tabla "clientes" es no visible, implicarï¿½ que cada vez
+  que un componente tipo FLFieldDB forme parte de un formulario y estï¿½ enlazando con el campo
   "nombre" de "clientes" su contenido sea no visible para el usuario.
   */
   void processObject(QObject *obj);
@@ -272,7 +272,7 @@ public:
   /**
   Crea la regla la regla de control de acceso a partir de objetos de la clase FLTableMetaData.
 
-  Al igual que en FLAccessControlTable::processObject() sólo tiene en cuenta
+  Al igual que en FLAccessControlTable::processObject() sï¿½lo tiene en cuenta
   las propiedades 'visible' y 'editable' de los campos, a partir de las cuales
   crea la regla.
   */
@@ -332,17 +332,24 @@ void FLAccessControlTable::processObject(QObject *obj)
 
     switch (maskFieldPerm) {
       case 0:
-        field->setVisible(false);
-        field->setEditable(false);
+        	field->setVisible(false);
+        	field->setEditable(false);
         break;
       case 1:
-        field->setVisible(false);
-        field->setEditable(true);
+        	field->setVisible(false);
+        	field->setEditable(true);
         break;
       case 2:
-        field->setVisible(true);
         field->setEditable(false);
+        if (!field->visible())
+          {
+          continue;    
+          }
+        else {
+          field->setVisible(true);        
+        }
         break;
+        
       case 3:
         field->setVisible(true);
         field->setEditable(true);
