@@ -827,12 +827,12 @@ static inline int precisionPartDecimal(const QString &str)
   QString strAux(str.stripWhiteSpace());
   QString partDecimal = strAux.right(strAux.length() - posComma - 1);
   int prec = partDecimal.length();
-  while (prec > 0) {
-    QCharRef ch = partDecimal.at(prec - 1);
-    if (ch.isDigit() && ch != '0')
-      break;
-    --prec;
-  }
+  //while (prec > 0) {
+  //  QCharRef ch = partDecimal.at(prec - 1);
+  //  if (ch.isDigit() && ch != '0')
+  //    break;
+  //  --prec;
+  //}
   return prec;
 }
 
@@ -1261,7 +1261,7 @@ void MReportEngine::drawDetail(MPageCollection *pages, int level, uint &currReco
 
     newPage(pages, level);
 
-    // Sólo dibujamos el detail header si no hemos dibujado ya el addOnHeader
+    // Sï¿½lo dibujamos el detail header si no hemos dibujado ya el addOnHeader
     if (!findAddOnHeader(level))
       drawDetailHeader(pages, level);
   } else {
@@ -1485,15 +1485,15 @@ bool MReportEngine::canDrawDetail(uint level, uint currRecord, uint yPos)
   if (addOnFooter)
     addOnFooterHeight = addOnFooter->getHeight();
 
-  // Control de fin de página
+  // Control de fin de pï¿½gina
   if (level == nextLevel) {
     if ((yPos + detailHeight + addOnFooterHeight) > currHeight) {
       return false;
     }
   } else if (level > nextLevel) {
     // El siguiente nivel es inferior: Se comprueba que es posible incluir un detalle del nivel actual
-    // más todas los pies de detalle desde el nivel actual hasta el siguiente nivel,
-    // más el addOnFooter del siguiente nivel
+    // mï¿½s todas los pies de detalle desde el nivel actual hasta el siguiente nivel,
+    // mï¿½s el addOnFooter del siguiente nivel
     int footersHeight = 0;
 
     for (int levelFooter = level; levelFooter > nextLevel; levelFooter--) {
@@ -1514,8 +1514,8 @@ bool MReportEngine::canDrawDetail(uint level, uint currRecord, uint yPos)
     }
   } else if (level < nextLevel) {
     // El siguiente nivel es superior: Se comprueba que es posible incluir un detalle del nivel actual
-    // más todas las cabeceras de detalle desde el nivel actual hasta el siguiente nivel
-    // más un detalle del siguiente nivel más el addOnFooter del siguiente nivel
+    // mï¿½s todas las cabeceras de detalle desde el nivel actual hasta el siguiente nivel
+    // mï¿½s un detalle del siguiente nivel mï¿½s el addOnFooter del siguiente nivel
     int headersHeight = 0;
 
     for (int levelFooter = (level + 1); levelFooter <= nextLevel; levelFooter++) {
