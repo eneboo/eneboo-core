@@ -2786,8 +2786,12 @@ void FLApplication::checkAndFixTransactionLevel(const QString &ctx)
   QDictIterator<FLSqlDatabase> it(*dictDb);
   while ((curDb = it.current()) != 0) {
     ++it;
+    
+    processEvents();
+    
     if (curDb->transactionLevel() <= 0)
       continue;
+    
     rollbackDone = true;
     if (curDb->lastActiveCursor())
       curDb->lastActiveCursor()->rollbackOpened(-1);
