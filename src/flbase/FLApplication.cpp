@@ -2787,10 +2787,17 @@ void FLApplication::checkAndFixTransactionLevel(const QString &ctx)
   while ((curDb = it.current()) != 0) {
     ++it;
     
-    processEvents();
     
     if (curDb->transactionLevel() <= 0)
       continue;
+    
+    for (int i = 0; i < 50000; ++i) {    
+      processEvents();
+    }
+    
+    if (curDb->transactionLevel() <= 0)
+      continue;
+    
     
     rollbackDone = true;
     if (curDb->lastActiveCursor())
