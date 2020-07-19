@@ -1686,7 +1686,7 @@ QString globalFunctionQSA = "flfactppal.exportFLTablesGranted";
 QVariant global_result = aqApp->call(globalFunctionQSA,args, 0).variant();
 QString global_ret = global_result.toString();
 if (!global_ret.isNull()) {
-  	ods_disabled = global_ret.toBool();  
+  	ods_disabled = global_result.toBool();  
   	}
 
 QString idMod(cursor_->db()->managerModules()->idModuleOfFile(cursor_->metadata()->name() + QString::fromLatin1(".mtd")));
@@ -1698,7 +1698,7 @@ if (!functionQSA.isEmpty()) {
  QVariant v = aqApp->call(functionQSA,args, 0).variant();
  QString ret = v.toString();
  if (!ret.isNull()) {
-     ods_disabled = ret.toBool();  
+     ods_disabled = v.toBool();  
   }
 }
   
