@@ -2791,13 +2791,7 @@ void FLApplication::checkAndFixTransactionLevel(const QString &ctx)
     if (curDb->transactionLevel() <= 0)
       continue;
     
-    for (int i = 0; i < 50000; ++i) {    
-      processEvents();
-    }
-    
-    if (curDb->transactionLevel() <= 0)
-      continue;
-    
+    printf("El cursor %s está en transacción", curDb->curName());    
     
     rollbackDone = true;
     if (curDb->lastActiveCursor())
