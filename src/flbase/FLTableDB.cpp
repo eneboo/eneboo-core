@@ -1671,14 +1671,46 @@ void FLTableDB::exportToOds()
 {
   if (!cursor_)
     return;
+
+bool ods_disabled = false;
+
+    
+
 //-->Aulla : Desactiva exportar a ODS
-if (FLSettings::readBoolEntry("ebcomportamiento/FLTableExport2Calc",false))
+if (FLSettings::readBoolEntry("ebcomportamiento/FLTableExport2Calc",false)) {
+	ods_disabled = true;
+	}
+
+QSArgumentList args = QSArgumentList();
+QString globalFunctionQSA = "flfactppal.exportFLTablesGranted";
+QVariant global_result = aqApp->call(globalFunctionQSA,args, 0).variant();
+QString global_ret = global_result.toString();
+if (!global_ret.isNull()) {
+  	ods_disabled = global_ret.toBool();  
+  	}
+
+QString idMod(cursor_->db()->managerModules()->idModuleOfFile(cursor_->metadata()->name() + QString::fromLatin1(".mtd")));
+QString functionQSA = idMod + QString::fromLatin1(".exportFLTableGranted_") + cursor_->metadata()->name();
+
+                                                   
+if (!functionQSA.isEmpty()) {
+    
+ QVariant v = aqApp->call(functionQSA,args, 0).variant();
+ QString ret = v.toString();
+ if (!ret.isNull()) {
+     ods_disabled = ret.toBool();  
+  }
+}
+  
+	
+if (ods_disabled)
 	{
 	QMessageBox::information(this, tr("Opción deshabilitada"),
-                                                 tr("Esta opción ha sido deshabilitada por el administrador"),
+                                                 tr("Esta opción ha sido deshabilitada"),
                                                   QMessageBox::Yes);
 	return;
 	}
+	
 //>--Aulla : Desactiva exportar a ODS
   FLTableMetaData *mtd = cursor_->metadata();
   if (!mtd)
