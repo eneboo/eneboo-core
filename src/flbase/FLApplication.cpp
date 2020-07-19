@@ -2791,7 +2791,9 @@ void FLApplication::checkAndFixTransactionLevel(const QString &ctx)
     if (curDb->transactionLevel() <= 0)
       continue;
     
-    printf("El cursor %s está en transacción nivel %d", curDb->lastActiveCursor()->curName(), curDb->transactionLevel());    
+    QString aviso( tr("El cursor %1 está en transacción nivel %2. Se fuerza rollBack").arg(curDb->lastActiveCursor()->curName()).arg(curDb->transactionLevel()));
+    
+    printf("%s\n", aviso.latin1());    
     
     rollbackDone = true;
     if (curDb->lastActiveCursor())
