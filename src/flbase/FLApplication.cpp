@@ -2720,7 +2720,7 @@ void FLApplication::aqAppIdle()
     return;
   if (aqQSARunning)
     return;
-  checkAndFixTransactionLevel("Application::aqAppIdle()");
+  //checkAndFixTransactionLevel("Application::aqAppIdle()");
 }
 
 void FLApplication::startTimerIdle()
@@ -2789,11 +2789,7 @@ void FLApplication::checkAndFixTransactionLevel(const QString &ctx)
     
     
     if (curDb->transactionLevel() <= 0)
-      continue;
-    
-    QString aviso( tr("El cursor %1 está en transacción nivel %2. Se fuerza rollBack").arg(curDb->lastActiveCursor()->curName()).arg(curDb->transactionLevel()));
-    
-    printf("%s\n", aviso.latin1());    
+      continue;  
     
     rollbackDone = true;
     if (curDb->lastActiveCursor())
