@@ -2513,7 +2513,7 @@ public slots:
    @return El identificador asociado internamente a la combinación de teclas aceleración insertada
    */
   int insertAccel(const QString &key) {
-    obj_->insertAccel(key);
+    return obj_->insertAccel(key);
   }
 
   /**
