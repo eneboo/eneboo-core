@@ -809,9 +809,12 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
              errLine, errColumn);
   } else {
     QString cntAux(docTmp.toString());
-    cntAux.replace("__HREF1__", "<text:a xlink:href");
-    cntAux.replace("__HREF2__", ">");
-    cntAux.replace("__HREF3__", "</text:a>");
+    cntAux.replace("value=\"__HREF1__", "value=\"&lt;text:a xlink:href");
+    cntAux.replace("__HREF3__\"", "\"&lt;/text:a>");
+    
+    cntAux.replace("p>__HREF1__", "p><text:a xlink:href");
+    cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
+    cntAux.replace("__HREF3__<", "</text:a><");
     filAux.close();
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
