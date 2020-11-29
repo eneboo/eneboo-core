@@ -808,7 +808,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
              fileNameContent.latin1(), errMsg.latin1(),
              errLine, errColumn);
   } else {
-    QString cntAux(docTmp.toString());
+    QString cntAux(docTmp.toString().latin1());
     cntAux.replace("__HREF1__", "<text:a xlink:href");
     cntAux.replace("__HREF2__", ">");
     cntAux.replace("__HREF3__", "</text:a>");
@@ -816,9 +816,9 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     qWarning("Fichero : %s", fileNameContent.latin1());
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
-      qWarning("'%s cntAux': XML error %s  line: %d  column: %d data: %s",
+      qWarning("'%s cntAux': XML error %s  line: %d  column: %d",
                fileNameContent.latin1(), errMsg.latin1(),
-               errLine, errColumn, cntAux.latin1());
+               errLine, errColumn);
     } else {
       QFile::remove(fileNameContent);
       filAux.open(IO_WriteOnly);
