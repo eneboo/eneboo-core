@@ -812,7 +812,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     cntAux.replace("__HREF1__", "<text:a xlink:href");
     cntAux.replace("__HREF2__", ">");
     cntAux.replace("__HREF3__", "</text:a>");
-    //filAux.close();
+    filAux.close();
     qWarning("Fichero : %s", fileNameContent.latin1());
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
@@ -930,7 +930,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   zip.addFile("META-INF/manifest.xml", mf);
   zip.close();
 
-  QFile::remove(fileNameContent);
+  //QFile::remove(fileNameContent);
 
   return true;
 }
