@@ -815,9 +815,8 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     filAux.close();
     qWarning("Fichero : %s", fileNameContent.latin1());
     
-    for (int it = 0; it < it.length(); ++it) {
-    	QCString chart(it);
-    	qWarning("%s" , chart);
+    for (int i = 0; i < cntAux.length(); ++i) {
+    	qWarning("%s" , cntAux.at(i));
     }
     
 
