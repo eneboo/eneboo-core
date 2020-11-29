@@ -815,7 +815,13 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     	cntAux.replace(pos_origen, cntAux.find("__HREF3__\""), "");
     }
     
-    
+    QFile filAux2(fileNameContent);
+    filAux2.open(IO_WriteOnly);
+    QTextStream tsAux2(&filAux2);
+    tsAux2 << cntAux;
+    filAux2.close();
+    qWarning("%s" , fileNameContent.latin1());
+    return true;
         
     cntAux.replace("__HREF1__", "<text:a xlink:href");
     cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
