@@ -809,18 +809,18 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
              errLine, errColumn);
   } else {
     QString cntAux(docTmp.toString());
-    cntAux.replace("__HREF1__", "<text:a xlink:href");
+    cntAux.replace("__HREF1__", "&lt;text:a xlink:href");
     cntAux.replace("__HREF2__", ">");
-    cntAux.replace("__HREF3__", "</text:a>");
+    cntAux.replace("__HREF3__", "&lt;/text:a>");
     filAux.close();
     
-    QFile filAux2(fileNameContent);
-    filAux2.open(IO_WriteOnly);
-    QTextStream tsAux2(&filAux2);
-    tsAux2 << cntAux;
-    filAux2.close();
-    qWarning("%s" , fileNameContent.latin1());
-    return true;
+    //QFile filAux2(fileNameContent);
+    //filAux2.open(IO_WriteOnly);
+    //QTextStream tsAux2(&filAux2);
+    //tsAux2 << cntAux;
+    //filAux2.close();
+    //qWarning("%s" , fileNameContent.latin1());
+    //return true;
     
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
