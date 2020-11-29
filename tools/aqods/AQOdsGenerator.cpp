@@ -808,9 +808,18 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
              fileNameContent.latin1(), errMsg.latin1(),
              errLine, errColumn);
   } else {
-    QString cntAux(docTmp.toString());
+  	
+  	QString cntAux(docTmp.toString());
+  	
+        while (cntAux.find("office:value=\"__HREF1__") > -1) {
+    	int pos_inicial = cntAux.find("office:value=\"__HREF1__");
+    	int pos_final = cntAux.find("__HREF3__\"");
+    	int to_pos = pos_final - pos_inicial;
+    	cntAux = cntAux.remove(pos_inicial, to_pos + 10);
+    }
+    
     cntAux.replace("__HREF1__", "<text:a xlink:href");
-    cntAux.replace("__HREF2__", ">");
+    cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
     cntAux.replace("__HREF3__", "</text:a>");
     filAux.close();
 
