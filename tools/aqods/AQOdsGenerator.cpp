@@ -816,17 +816,17 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     	int to_pos = pos_final - pos_inicial;
     	
     	qWarning("Eliminando pos ini : %d, fin : %d, size: %d" , pos_inicial, pos_final, to_pos);
-    	cntAux = cntAux.remove(pos_inicial, to_pos);
+    	cntAux = cntAux.remove(pos_inicial, to_pos + 10);
     	qWarning("ok!");
     }
     
-    QFile filAux2(fileNameContent);
-    filAux2.open(IO_WriteOnly);
-    QTextStream tsAux2(&filAux2);
-    tsAux2 << cntAux;
-    filAux2.close();
-    qWarning("%s" , fileNameContent.latin1());
-    return true;
+    //QFile filAux2(fileNameContent);
+    //filAux2.open(IO_WriteOnly);
+    //QTextStream tsAux2(&filAux2);
+    //tsAux2 << cntAux;
+    //filAux2.close();
+    //qWarning("%s" , fileNameContent.latin1());
+    //return true;
         
     cntAux.replace("__HREF1__", "<text:a xlink:href");
     cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
