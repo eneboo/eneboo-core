@@ -810,12 +810,16 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   } else {
     QString cntAux(docTmp.toString());
     
-    //cntAux.replace("value=\"__HREF1__", "value=\"__HREF1__");
-    //cntAux.replace("__HREF3__\"", "&lt;/text:a&gt;\"");
+    while (cntAux.find("office:value=\"__HREF1__") > -1) {
+    	int pos_origen = cntAux.find("office:value=\"__HREF1__");
+    	cntAux.replace(pos_origen, cntAux.find("__HREF3__\""), "");
+    }
     
-    cntAux.replace("p>__HREF1__", "p><text:a xlink:href");
+    
+        
+    cntAux.replace("__HREF1__", "<text:a xlink:href");
     cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
-    cntAux.replace("__HREF3__<", "</text:a><");
+    cntAux.replace("__HREF3__", "</text:a>");
     filAux.close();
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
