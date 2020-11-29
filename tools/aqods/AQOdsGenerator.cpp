@@ -810,15 +810,15 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   } else {
     QString cntAux(docTmp.toString());
     cntAux.replace("__HREF1__", "<text:a xlink:href");
-    //cntAux.replace("__HREF2__", ">");
+    cntAux.replace("__HREF2__", ">");
     cntAux.replace("__HREF3__", "</text:a>");
     filAux.close();
     qWarning("Fichero : %s", fileNameContent.latin1());
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
-      qWarning("'%s cntAux': XML error %s  line: %d  column: %d",
+      qWarning("'%s cntAux': XML error %s  line: %d  column: %d data: %s",
                fileNameContent.latin1(), errMsg.latin1(),
-               errLine, errColumn);
+               errLine, errColumn, cntAux.latin1());
     } else {
       QFile::remove(fileNameContent);
       filAux.open(IO_WriteOnly);
