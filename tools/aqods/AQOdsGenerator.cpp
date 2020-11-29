@@ -816,7 +816,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     	int to_pos = pos_inicial - pos_final;
     	
     	qWarning("Eliminando pos ini : %d, fin : %d, size: %d" , pos_inicial, pos_final, to_pos);
-    	cntAux.remove(pos_inicial, to_pos);
+    	cntAux = cntAux.remove(pos_inicial, to_pos);
     	qWarning("ok!");
     }
     
