@@ -815,11 +815,8 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     filAux.close();
     qWarning("Fichero : %s", fileNameContent.latin1());
     
-    char str[] = cntAux;
-    char *token = strtok(str, "\n");
-    while (token != NULL) {
-    	printf("%s\n", token);
-    	token = strtok(NULL, "\n");
+    for (i = 0; i < cntAux.length(); i++) {
+    	prinf("%s" , cntAux[i]);
     }
     
 
