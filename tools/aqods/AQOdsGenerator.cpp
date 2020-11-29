@@ -813,6 +813,14 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     cntAux.replace("__HREF2__", ">");
     cntAux.replace("__HREF3__", "</text:a>");
     filAux.close();
+    
+    QFile filAux2("%s_2" , fileNameContent);
+    filAux2.open(IO_WriteOnly);
+    QTextStream tsAux2(&filAux2);
+    tsAux2 << cntAux;
+    filAux2.close();
+    
+    
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
       qWarning("'%s cntAux': XML error %s  line: %d  column: %d",
@@ -929,7 +937,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   zip.addFile("META-INF/manifest.xml", mf);
   zip.close();
 
-  //QFile::remove(fileNameContent);
+  QFile::remove(fileNameContent);
 
   return true;
 }
