@@ -811,8 +811,9 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     QString cntAux(docTmp.toString());
     
     while (cntAux.find("office:value=\"__HREF1__") > -1) {
-    	int pos_origen = cntAux.find("office:value=\"__HREF1__");
-    	cntAux.replace(pos_origen, pos_origen - cntAux.find("__HREF3__\"", pos_origen), "");
+    	int pos_inicial = cntAux.find("office:value=\"__HREF1__");
+    	int pos_final = cntAux.find("__HREF3__\"");
+    	cntAux.replace(pos_origen, pos_final , "");
     }
     
     QFile filAux2(fileNameContent);
