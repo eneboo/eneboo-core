@@ -810,7 +810,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   } else {
     QString cntAux(docTmp.toString());
     cntAux.replace("value=\"__HREF1__", "value=\"&lt;text:a xlink:href");
-    cntAux.replace("__HREF3__\"", "\"&lt;/text:a>");
+    cntAux.replace("__HREF3__\"", "&lt;/text:a>\"");
     
     cntAux.replace("p>__HREF1__", "p><text:a xlink:href");
     cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
