@@ -808,23 +808,23 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
              fileNameContent.latin1(), errMsg.latin1(),
              errLine, errColumn);
   } else {
-    //QString cntAux(docTmp.toString());
-    //cntAux.replace("__HREF1__", "<text:a xlink:href");
-    //cntAux.replace("__HREF2__", ">");
-    //cntAux.replace("__HREF3__", "</text:a>");
-    //filAux.close();
+    QString cntAux(docTmp.toString());
+    cntAux.replace("__HREF1__", "<text:a xlink:href");
+    cntAux.replace("__HREF2__", ">");
+    cntAux.replace("__HREF3__", "</text:a>");
+    filAux.close();
 
-    //if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
-    //  qWarning("'%s cntAux': XML error %s  line: %d  column: %d",
-    //           fileNameContent.latin1(), errMsg.latin1(),
-    //           errLine, errColumn);
-    //} else {
+    if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
+      qWarning("'%s cntAux': XML error %s  line: %d  column: %d",
+               fileNameContent.latin1(), errMsg.latin1(),
+               errLine, errColumn);
+    } else {
       QFile::remove(fileNameContent);
       filAux.open(IO_WriteOnly);
       QTextStream tsAux(&filAux);
       docTmp.save(tsAux, 0);
       filAux.close();
-    //}
+    }
   }
   // ----------- ^^^^^                ^^^^^^
   QStringList charts;
@@ -929,7 +929,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   zip.addFile("META-INF/manifest.xml", mf);
   zip.close();
 
-  QFile::remove(fileNameContent);
+  //QFile::remove(fileNameContent);
 
   return true;
 }
