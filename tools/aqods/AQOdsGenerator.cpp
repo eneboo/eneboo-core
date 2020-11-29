@@ -812,7 +812,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     
     while (cntAux.find("office:value=\"__HREF1__") > -1) {
     	int pos_inicial = cntAux.find("office:value=\"__HREF1__");
-    	int pos_final = cntAux.find("__HREF3__\"");
+    	int pos_final = cntAux.find("__HREF3__");
     	cntAux.replace(pos_inicial, pos_inicial - pos_final , "");
     }
     
