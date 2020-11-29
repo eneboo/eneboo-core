@@ -812,8 +812,8 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     
     while (cntAux.find("office:value=\"__HREF1__") > -1) {
     	int pos_inicial = cntAux.find("office:value=\"__HREF1__");
-    	int pos_final = cntAux.find("__HREF3__");
-    	int to_pos = pos_inicial - pos_final;
+    	int pos_final = cntAux.find("__HREF3__\"");
+    	int to_pos = pos_final - pos_inicial;
     	
     	qWarning("Eliminando pos ini : %d, fin : %d, size: %d" , pos_inicial, pos_final, to_pos);
     	cntAux = cntAux.remove(pos_inicial, to_pos);
