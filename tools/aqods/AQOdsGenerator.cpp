@@ -813,8 +813,11 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     while (cntAux.find("office:value=\"__HREF1__") > -1) {
     	int pos_inicial = cntAux.find("office:value=\"__HREF1__");
     	int pos_final = cntAux.find("__HREF3__");
-    	qWarning("Eliminando pos ini : %d, fin : %d" , pos_inicial, pos_final);
-    	cntAux.replace(pos_inicial, pos_inicial - pos_final , "");
+    	int to_pos = pos_inicial - pos_final;
+    	
+    	qWarning("Eliminando pos ini : %d, fin : %d, size: %d" , pos_inicial, pos_final, to_pos);
+    	cntAux.remove(pos_inicial, to_pos);
+    	qWarning("ok!");
     }
     
     QFile filAux2(fileNameContent);
