@@ -820,7 +820,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     tsAux2 << cntAux;
     filAux2.close();
     qWarning("%s" , fileNameContent.latin1());
-    return true;
+    //return true;
     
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
