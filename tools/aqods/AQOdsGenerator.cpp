@@ -813,12 +813,6 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     cntAux.replace("__HREF2__", ">");
     cntAux.replace("__HREF3__", "</text:a>");
     filAux.close();
-    qWarning("Fichero : %s", fileNameContent.latin1());
-    
-    for (int i = 0; i < cntAux.length(); i++) {
-    	qWarning("%s" , cntAux[i]);
-    }
-    
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
       qWarning("'%s cntAux': XML error %s  line: %d  column: %d",
