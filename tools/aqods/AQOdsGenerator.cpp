@@ -808,10 +808,10 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
              fileNameContent.latin1(), errMsg.latin1(),
              errLine, errColumn);
   } else {
-    QString cntAux(docTmp.toString().latin1());
-    cntAux.replace("__HREF1__", "<text:a xlink:href");
-    cntAux.replace("__HREF2__", ">");
-    cntAux.replace("__HREF3__", "</text:a>");
+    QString cntAux(docTmp.toString());
+    //cntAux.replace("__HREF1__", "<text:a xlink:href");
+    //cntAux.replace("__HREF2__", ">");
+    //cntAux.replace("__HREF3__", "</text:a>");
     filAux.close();
     qWarning("Fichero : %s", fileNameContent.latin1());
 
