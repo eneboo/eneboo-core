@@ -824,7 +824,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
       QTextStream tsAux(&filAux);
       docTmp.save(tsAux, 0);
       filAux.close();
-    }
+    //}
   }
   // ----------- ^^^^^                ^^^^^^
   QStringList charts;
