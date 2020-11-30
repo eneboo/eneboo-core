@@ -829,8 +829,8 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     //return true;
         
     cntAux.replace("__HREF1__", "<text:a xlink:href");
-    cntAux.replace("__HREF2__", " xlink:type=\"simple\">");
-    cntAux.replace("__HREF3__", "</text:a>");
+    cntAux.replace("__HREF2__", " xlink:type=\"simple\">\n");
+    cntAux.replace("__HREF3__", "\n</text:a>");
     filAux.close();
 
     if (!docTmp.setContent(cntAux, &errMsg, &errLine, &errColumn)) {
