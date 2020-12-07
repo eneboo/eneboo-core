@@ -117,7 +117,7 @@ void FLAccessControlLists::process(QObject *obj)
   if (type.isEmpty() || name.isEmpty() || user.isEmpty())
     return;
     
-  QDict<QString> acls_list = new QDict<QString>(); 
+  QDict<QString> acls_list = new QDict<QString>(2); 
   
   acls_list << type + QString::fromLatin1("::") + name + QString::fromLatin1("::") + user;
   if (type == "mainwindow") {
