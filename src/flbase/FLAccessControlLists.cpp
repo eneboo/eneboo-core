@@ -127,9 +127,19 @@ void FLAccessControlLists::process(QObject *obj)
   
   QString *s = new QString("");
   acls_list_->insert(value, s);
+  #ifdef FL_DEBUG
+  		qWarning("FLAccessControlLists::PRE process 1: " +
+           	value);
+  #endif
+  
+  
   if (type == "mainwindow") {
   	const QString value2 = QString(type + QString::fromLatin1("::container::") + user);
   	acls_list_->insert(value2,s);
+  	#ifdef FL_DEBUG
+  		qWarning("FLAccessControlLists::PRE process 2: " +
+           	value2);
+  	#endif
   }
     
   QDictIterator < QString > it(*acls_list_);
