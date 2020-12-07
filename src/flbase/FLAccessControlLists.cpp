@@ -125,10 +125,11 @@ void FLAccessControlLists::process(QObject *obj)
   
   const QString value = QString(type + QString::fromLatin1("::") + name + QString::fromLatin1("::") + user);
   
-  acls_list_->insert(value, QString);
+  QString *s = new QString("");
+  acls_list_->insert(value, s);
   if (type == "mainwindow") {
   	const QString value2 = QString(type + QString::fromLatin1("::container::") + user);
-  	acls_list_->insert(value2, QString);
+  	acls_list_->insert(value2,s);
   }
     
   QDictIterator < QString > it(*acls_list_);
