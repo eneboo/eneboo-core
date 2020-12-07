@@ -123,9 +123,9 @@ void FLAccessControlLists::process(QObject *obj)
    		acls_list_->clear();
    	}
   
-  acls_list_ << type + QString::fromLatin1("::") + name + QString::fromLatin1("::") + user;
+  acls_list_->insert(new QString(type + QString::fromLatin1("::") + name + QString::fromLatin1("::") + user));
   if (type == "mainwindow") {
-  	acls_list_ << type + QString::fromLatin1("::container::") + user;
+  	acls_list_->insert(new QString(type + QString::fromLatin1("::container::") + user));
   }
     
   QDictIterator < QString > it(*acls_list_);
