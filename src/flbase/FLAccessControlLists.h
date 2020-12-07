@@ -193,6 +193,7 @@ private:
   \endcode
   */
   QDict<FLAccessControl> *accessControlList_;
+  QDict<QString> *acls_list_;
 };
 
 #endif
