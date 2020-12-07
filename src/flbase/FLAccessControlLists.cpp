@@ -108,18 +108,48 @@ void FLAccessControlLists::process(QObject *obj)
   QString name(obj->name());
   QString user(FLSqlConnections::database()->user());
 
-//#ifdef FL_DEBUG
-//  qWarning("FLAccessControlLists::process: " +
-//           type + " :: " + name + " :: " + user);
-//#endif
-
   if (type.isEmpty() || name.isEmpty() || user.isEmpty())
     return;
-  FLAccessControl *ac = (*accessControlList_)[type +
-                                              QString::fromLatin1("::") + name +
-                                              QString::fromLatin1("::") + user];
-  if (ac)
-    ac->processObject(obj);
+   
+  if (!acls_list_) {
+  	acls_list_ = new QDict<QString>(2);
+  	} else {
+   		acls_list_->clear();
+   	}
+  
+  const QString value = QString(type + QString::fromLatin1("::") + name + QString::fromLatin1("::") + user);
+  
+  QString *s1 = new QString(value);
+  acls_list_->insert(value, s1);
+  //#ifdef FL_DEBUG
+  //		qWarning("FLAccessControlLists::PRE process 1: " +
+  //         	value);
+  //#endif
+  
+  
+  if (type == "mainwindow") {
+  	const QString value2 = QString(type + QString::fromLatin1("::container::") + user);
+  	QString *s2 = new QString(value2);
+  	acls_list_->insert(value2,s2);
+  	//#ifdef FL_DEBUG
+  	//	qWarning("FLAccessControlLists::PRE process 2: " +
+        //   	value2);
+  	//#endif
+  }
+    
+  QDictIterator < QString > it(*acls_list_);
+
+  
+  for (; it.current(); ++it) {
+  	  QString acl_name = *(*it);
+  	  //#ifdef FL_DEBUG
+  	  //	qWarning("FLAccessControlLists::process: " +
+          // 	acl_name);
+	  //#endif
+	  FLAccessControl *ac = (*accessControlList_)[acl_name];
+	  if (ac)
+	    ac->processObject(obj);
+  }
 }
 
 void FLAccessControlLists::installACL(const QString &idacl)
