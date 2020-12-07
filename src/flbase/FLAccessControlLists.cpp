@@ -137,9 +137,9 @@ void FLAccessControlLists::process(QObject *obj)
   for (; it.current(); ++it) {
   	  #ifdef FL_DEBUG
   		qWarning("FLAccessControlLists::process: " +
-           	*it);
+           	it);
 	  #endif
-	  FLAccessControl *ac = (*accessControlList_)[*it];
+	  FLAccessControl *ac = (*accessControlList_)[it];
 	  if (ac)
 	    ac->processObject(obj);
   }
