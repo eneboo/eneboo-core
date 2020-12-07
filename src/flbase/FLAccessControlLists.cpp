@@ -125,8 +125,8 @@ void FLAccessControlLists::process(QObject *obj)
   
   const QString value = QString(type + QString::fromLatin1("::") + name + QString::fromLatin1("::") + user);
   
-  QString *s = new QString("");
-  acls_list_->insert(value, s);
+  //QString *s = new QString("");
+  acls_list_->insert(value, *value);
   #ifdef FL_DEBUG
   		qWarning("FLAccessControlLists::PRE process 1: " +
            	value);
@@ -135,7 +135,7 @@ void FLAccessControlLists::process(QObject *obj)
   
   if (type == "mainwindow") {
   	const QString value2 = QString(type + QString::fromLatin1("::container::") + user);
-  	acls_list_->insert(value2,s);
+  	acls_list_->insert(value2,*value2);
   	#ifdef FL_DEBUG
   		qWarning("FLAccessControlLists::PRE process 2: " +
            	value2);
