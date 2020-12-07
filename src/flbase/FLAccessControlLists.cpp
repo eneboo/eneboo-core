@@ -133,10 +133,10 @@ void FLAccessControlLists::process(QObject *obj)
   }
     
   QDictIterator < QString > it(*acls_list_);
-  QString acl_name = "";
+
   
   for (; it.current(); ++it) {
-  	  acl_name = QString(*it);
+  	  QString acl_name = *(*it);
   	  #ifdef FL_DEBUG
   		qWarning("FLAccessControlLists::process: " +
            	acl_name);
