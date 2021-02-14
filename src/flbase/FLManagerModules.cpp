@@ -732,6 +732,7 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
 
   QString key;
   QString *s = 0;
+  qWarning(QApplication::tr("FLManagerModules : ContentCached : buscando ... " + n));
 
   if (notSysTable) {
     if (dictKeyFiles)
@@ -752,12 +753,14 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
     return content(n);
 
   if (key.isEmpty()) {
+    qWarning(QApplication::tr("FLManagerModules : ContentCached : " + n + " no está registrado!"));
     str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
+    qWarning(QApplication::tr("FLManagerModules : ContentCached : " + n + " no se encuentra en caché!"));
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
@@ -765,7 +768,7 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
 #else
   str_ret = content(n);
 #endif
-
+  qWarning(QApplication::tr("FLManagerModules : ContentCached : " + n + " fin!"));
   return str_ret;
 }
 
