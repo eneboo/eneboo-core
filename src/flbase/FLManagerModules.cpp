@@ -760,7 +760,7 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
-    qWarning(QApplication::tr("FLManagerModules : ContentCached : " + n + " no se encuentra en caché!"));
+    qWarning(QApplication::tr("FLManagerModules : ContentCached : " + n + " no se encuentra en cache ..." + key));
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
