@@ -811,11 +811,17 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
   	
   	QString cntAux(docTmp.toString());
   	
+  	int pos_inicial, pos_final, to_pos;
+  	
         while (cntAux.find("office:value=\"__HREF1__") > -1) {
-    	int pos_inicial = cntAux.find("office:value=\"__HREF1__");
-    	int pos_final = cntAux.find("__HREF3__\"");
-    	int to_pos = pos_final - pos_inicial;
-    	cntAux = cntAux.remove(pos_inicial, to_pos + 10);
+    		pos_inicial = cntAux.find("office:value=\"__HREF1__");
+    		pos_final = cntAux.find("__HREF3__\"");
+    		if (pos_inicial < 0 || pos_final < 0) {
+    			break;
+    		}
+    		to_pos = pos_final - pos_inicial;
+    		cntAux = cntAux.remove(pos_inicial, to_pos + 10);
+    		
     }
     
     cntAux.replace("__HREF1__", "<text:a xlink:href");
