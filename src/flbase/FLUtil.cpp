@@ -1062,16 +1062,12 @@ bool FLUtil::execSql(const QString &sql, const QString &connName)
     tareas += ";";
 
   QSqlQuery q(FLSqlConnections::database(connName)->db());
-  QStringList commandList = QStringList::split(";", tareas);
-  for (QStringList::Iterator it = commandList.begin(); it != commandList.end(); ++it) {
-#ifdef FL_DEBUG
-    qWarning("FLUtil : " + QApplication::tr("Ejecutando la sentencia \"%1;\"").arg(QString(*it).replace("%","%%")));
-#endif
-    if (!q.exec(*it))
-      return false;
-  }
+  tareas = tareas.replace("%","%%");
 
-  return true;
+#ifdef FL_DEBUG
+    qWarning("FLUtil : " + QApplication::tr("Ejecutando la sentencia \"%1;\"").arg(tareas));
+#endif
+  return q.exec(tareas);
 }
 
 
