@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR="$( cd -P "$( dirname "$0" )" && pwd )"
 cd "$DIR"
-VER="2.5.2"
+VER="2.5.4"
 
 REBUILD_QT=auto
 OPT_PREFIX=""
