@@ -3401,7 +3401,7 @@ void QPSQLDriver::Mr_Proper()
       QString conte(db_->managerModules()->content(item + ".mtd"));
       if (!conte.isEmpty()) {
         QString msg(QApplication::tr(
-                      "B) La estructura de los metadatos de la tabla '%1' y su "
+                      "La estructura de los metadatos de la tabla '%1' y su "
                       "estructura interna en la base de datos no coinciden. "
                       "Intentando regenerarla."
                     ));
@@ -3876,9 +3876,6 @@ bool QPSQLDriver::mismatchedTable(const QString &table1,
   if (!mtd)
     return false;
 
-  QString texto1("mismatchedTable : Comprobando " + mtd->name());
-  qWarning(texto1);
-
   QSqlRecordInfo recInfoMtd = recordInfo(table2);
   QSqlRecordInfo recInfoBd = recordInfo2(table1);
   QSqlRecord recMtd = recInfoMtd.toRecord();
@@ -3895,14 +3892,10 @@ bool QPSQLDriver::mismatchedTable(const QString &table1,
                           recInfoBd.find(fieldMtd->name()),
                           recInfoMtd.find(fieldMtd->name()),
                           mtd->field(fieldMtd->name()))) {
-        QString texto2("mismatchedTable : No es igual " + fieldMtd->name());
-        qWarning(texto2);
         mismatch = true;
         break;
       }
     } else {
-        QString texto3("mismatchedTable : No exite " + fieldMtd->name() + " en la BD.");
-        qWarning(texto3);
       mismatch = true;
       break;
     }
