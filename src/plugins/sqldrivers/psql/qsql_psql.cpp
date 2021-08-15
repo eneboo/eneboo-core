@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 /****************************************************************************
 **
@@ -576,7 +576,7 @@ bool QPSQLResult::nextResult(int i)
       status = PQresultStatus(result);
       if (status != PGRES_COMMAND_OK) {
         //setLastError(
-        qMakeError(QApplication::tr("No se ha podido mover a una posición del cursor %1")
+        qMakeError(QApplication::tr("No se ha podido mover a una posiciï¿½n del cursor %1")
                    .arg(d->idCursor), QSqlError::Statement, d, q, result);
         //);
         PQclear(result);
@@ -585,7 +585,7 @@ bool QPSQLResult::nextResult(int i)
       moveRows = PQntuples(result);
       PQclear(result);
     } else if (currentResult < d->currentResult) {
-      qWarning(QApplication::tr("Esta consulta sólo puede posicionarse hacia adelante (isForwardOnly)"));
+      qWarning(QApplication::tr("Esta consulta sï¿½lo puede posicionarse hacia adelante (isForwardOnly)"));
       qWarning(d->qry);
       return false;
     }
@@ -887,7 +887,7 @@ void QPSQLResult::calcSize()
       int status = PQresultStatus(result);
       if (status != PGRES_COMMAND_OK) {
         //setLastError(
-        qMakeError(QApplication::tr("No se ha podido calcular el tamaño del cursor %1")
+        qMakeError(QApplication::tr("No se ha podido calcular el tamaï¿½o del cursor %1")
                    .arg(d->idCursor), QSqlError::Statement, d, qr, result);
         //);
       }
@@ -924,7 +924,7 @@ void QPSQLResult::calcSize()
         PQclear(result);
       } else {
         //setLastError(
-        qMakeError(QApplication::tr("No se ha podido calcular el tamaño del cursor %1")
+        qMakeError(QApplication::tr("No se ha podido calcular el tamaï¿½o del cursor %1")
                    .arg(d->idCursor), QSqlError::Statement, d, qr, result);
         //);
         PQclear(result);
@@ -1291,10 +1291,10 @@ bool QPSQLDriver::tryConnect(const QString &db, const QString &user, const QStri
 {
   if (!open("template1", user, password, host, port, db_->connectOptions())) {
     if (lastError().text().contains("template1"))
-      msgBoxCritical(tr("Conexión fallida"),
+      msgBoxCritical(tr("Conexiï¿½n fallida"),
                      tr("La base de datos template1 no existe."));
     else
-      msgBoxCritical(tr("Conexión fallida"),
+      msgBoxCritical(tr("Conexiï¿½n fallida"),
                      tr("No se pudo conectar con la base de datos %1.").arg(db));
     msgBoxCritical(tr("Error"), QString(lastError().driverText()) + "\n" +
                    QString(lastError().databaseText()));
@@ -1305,8 +1305,8 @@ bool QPSQLDriver::tryConnect(const QString &db, const QString &user, const QStri
   setLastError(QSqlError());
 
   if (protocol() < QPSQLDriver::Version74) {
-    msgBoxCritical(tr("Conexión fallida"),
-                   tr("La versión de PostgreSQL es inferior a la 7.4.\nSe necesita PostgreSQL 7.4 o superior."));
+    msgBoxCritical(tr("Conexiï¿½n fallida"),
+                   tr("La versiï¿½n de PostgreSQL es inferior a la 7.4.\nSe necesita PostgreSQL 7.4 o superior."));
     close();
     setOpenError(true);
     return false;
@@ -1315,7 +1315,7 @@ bool QPSQLDriver::tryConnect(const QString &db, const QString &user, const QStri
   if (!open(db, user, password, host, port, db_->connectOptions())) {
     if (lastError().type() == QSqlError::Connection) {
       if (db_->interactiveGUI() && lastError().text().contains(db)) {
-        int res = QMessageBox::question(0, tr("Crear base de datos"), tr("La base de datos %1 no existe. ¿Quiere crearla?").arg(db),
+        int res = QMessageBox::question(0, tr("Crear base de datos"), tr("La base de datos %1 no existe. ï¿½Quiere crearla?").arg(db),
                                         QMessageBox::Yes, QMessageBox::No);
         if (res == QMessageBox::Yes) {
           close();
@@ -1325,7 +1325,7 @@ bool QPSQLDriver::tryConnect(const QString &db, const QString &user, const QStri
           QSqlQuery *qry = new QSqlQuery(new QPSQLResult(this, d));
           qry->exec("CREATE DATABASE " + db + " WITH ENCODING = 'UNICODE';");
           if (lastError().type() != QSqlError::None) {
-            msgBoxCritical(tr("Creación fallida"), tr("No se pudo crear la base de datos %1.").arg(db));
+            msgBoxCritical(tr("Creaciï¿½n fallida"), tr("No se pudo crear la base de datos %1.").arg(db));
             msgBoxCritical(tr("Error"), QString(lastError().driverText()) + "\n" +
                            QString(lastError().databaseText()));
             delete qry;
@@ -1335,8 +1335,8 @@ bool QPSQLDriver::tryConnect(const QString &db, const QString &user, const QStri
             setOpenError(false);
             setLastError(QSqlError());
             if (!open(db, user, password, host, port, db_->connectOptions())) {
-              msgBoxCritical(tr("Conexión fallida"),
-                             tr("La base de datos %1 ha sido creada, pero no se pudo realizar la conexión.").arg(db));
+              msgBoxCritical(tr("Conexiï¿½n fallida"),
+                             tr("La base de datos %1 ha sido creada, pero no se pudo realizar la conexiï¿½n.").arg(db));
               msgBoxCritical(tr("Error"), QString(lastError().driverText()) + "\n" +
                              QString(lastError().databaseText()));
               delete qry;
@@ -1348,7 +1348,7 @@ bool QPSQLDriver::tryConnect(const QString &db, const QString &user, const QStri
       }
 
       if (lastError().type() != QSqlError::None) {
-        msgBoxCritical(tr("Conexión fallida"), tr("No se pudo conectar con la base de datos %1.").arg(db));
+        msgBoxCritical(tr("Conexiï¿½n fallida"), tr("No se pudo conectar con la base de datos %1.").arg(db));
         msgBoxCritical(tr("Error"), QString(lastError().driverText()) + "\n" +
                        QString(lastError().databaseText()));
         return false;
@@ -1386,7 +1386,7 @@ QString QPSQLDriver::sqlCreateTable(const FLTableMetaData *tmd)
   if (unlocks > 1) {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("No se ha podido crear la tabla ") + tmd->name());
-    qWarning("FLManager : " + QApplication::tr("Hay más de un campo tipo unlock. Solo puede haber uno."));
+    qWarning("FLManager : " + QApplication::tr("Hay mï¿½s de un campo tipo unlock. Solo puede haber uno."));
 #endif
     return QString::null;
   }
@@ -1464,7 +1464,7 @@ QString QPSQLDriver::sqlCreateTable(const FLTableMetaData *tmd)
         qWarning(QApplication::tr("FLManager : Tabla-> ") + tmd->name() +
                  QApplication::tr(" . Se ha intentado poner una segunda clave primaria para el campo ") +
                  field->name() + QApplication::tr(" , pero el campo ") + primaryKey +
-                 QApplication::tr(" ya es clave primaria. Sólo puede existir una clave primaria en FLTableMetaData, use FLCompoundKey para crear claves compuestas."));
+                 QApplication::tr(" ya es clave primaria. Sï¿½lo puede existir una clave primaria en FLTableMetaData, use FLCompoundKey para crear claves compuestas."));
 #endif
         return QString::null;
       }
@@ -1497,7 +1497,7 @@ QString QPSQLDriver::formatValueLike(int t, const QVariant &v, const bool upper)
   switch (t) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
+      if (s == QApplication::tr("Sï¿½").left(1).upper())
         res = "='t'";
       else if (s == QApplication::tr("No").left(1).upper())
         res = "='f'";
@@ -1542,7 +1542,7 @@ QString QPSQLDriver::formatValue(int t, const QVariant &v, const bool upper)
   switch (FLFieldMetaData::flDecodeType(t)) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
+      if (s == QApplication::tr("Sï¿½").left(1).upper())
         res = "'t'";
       else if (s == QApplication::tr("No").left(1).upper())
         res = "'f'";
@@ -1959,7 +1959,7 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
   if (constraintExists(constraintName) &&
       !q.exec("ALTER TABLE " + oldMTD->name() + " DROP CONSTRAINT " + constraintName)) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("En método alterTable, no se ha podido borrar el índice %1_pkey de la tabla antigua.").arg(oldMTD->name()));
+    qWarning("FLManager : " + QApplication::tr("En mï¿½todo alterTable, no se ha podido borrar el ï¿½ndice %1_pkey de la tabla antigua.").arg(oldMTD->name()));
 #endif
 
     db_->dbAux()->rollback();
@@ -1982,7 +1982,7 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
           !q.exec("ALTER TABLE " + oldMTD->name() + " DROP CONSTRAINT " + constraintName)) {
 #ifdef FL_DEBUG
         qWarning("FLManager : " +
-                 QApplication::tr("En método alterTable, no se ha podido borrar el índice %1_%2_key de la tabla antigua.")
+                 QApplication::tr("En mï¿½todo alterTable, no se ha podido borrar el ï¿½ndice %1_%2_key de la tabla antigua.")
                  .arg(oldMTD->name(), oldField->name()));
 #endif
 
@@ -2120,7 +2120,7 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
           if (v.isValid() && !v.isNull() && !v.cast(newBuffer->value(newField->name()).type())) {
 #ifdef FL_DEBUG
             qWarning("FLManager::alterTable : " +
-                     QApplication::tr("Los tipos del campo %1 no son compatibles. Se introducirá un valor nulo.")
+                     QApplication::tr("Los tipos del campo %1 no son compatibles. Se introducirï¿½ un valor nulo.")
                      .arg(newField->name()));
 #endif
           }
@@ -2328,7 +2328,7 @@ bool QPSQLDriver::beginTransaction()
   PGresult *res = PQexec(d->connection, "BEGIN");
   if (PQresultStatus(res) != PGRES_COMMAND_OK) {
     setLastError(
-      qMakeError(QApplication::tr("No se pudo iniciar transacción"),
+      qMakeError(QApplication::tr("No se pudo iniciar transacciï¿½n"),
                  QSqlError::Transaction, d, "BEGIN", res)
     );
     PQclear(res);
@@ -2350,7 +2350,7 @@ bool QPSQLDriver::commitTransaction()
   PGresult *res = PQexec(d->connection, "COMMIT");
   if (PQresultStatus(res) != PGRES_COMMAND_OK) {
     setLastError(
-      qMakeError(QApplication::tr("No se pudo aceptar la transacción"),
+      qMakeError(QApplication::tr("No se pudo aceptar la transacciï¿½n"),
                  QSqlError::Transaction, d, "COMMIT", res)
     );
     PQclear(res);
@@ -2372,7 +2372,7 @@ bool QPSQLDriver::rollbackTransaction()
   PGresult *res = PQexec(d->connection, "ROLLBACK");
   if (PQresultStatus(res) != PGRES_COMMAND_OK) {
     setLastError(
-      qMakeError(QApplication::tr("No se pudo deshacer la transacción"),
+      qMakeError(QApplication::tr("No se pudo deshacer la transacciï¿½n"),
                  QSqlError::Transaction, d, "ROLLBACK", res)
     );
     PQclear(res);
@@ -2983,7 +2983,7 @@ void QPSQLDriver::createIndex(const QString &fieldName, const QString &tableName
                "and pg_class.relname='" + tableName + "'");
     if (idxs->next()) {
 #ifdef FL_DEBUG
-      qWarning("No se puede crear índice, tabla bloqueada : " + tableName);
+      qWarning("No se puede crear ï¿½ndice, tabla bloqueada : " + tableName);
 #endif
       delete idxs;
       return;
@@ -3261,14 +3261,14 @@ void QPSQLDriver::Mr_Proper()
  QString item2;
 
  
-   QString mproperMsg(tr("¿ Limpiar fllarge ?"));
+   QString mproperMsg(tr("ï¿½ Limpiar fllarge ?"));
   int res = QMessageBox::question(0, tr("Mr. Proper"), mproperMsg, QMessageBox::Yes, QMessageBox::No);
   if (res != QMessageBox::Yes)
                fllarge = false;
 
   if (fllarge)
   	{    
-//     QString mproperMsg2(tr("¿ Usa múltiples tablas para FLLarge (modo AbanQ) ?"));
+//     QString mproperMsg2(tr("ï¿½ Usa mï¿½ltiples tablas para FLLarge (modo AbanQ) ?"));
 //  int res2 = QMessageBox::question(0, tr("Mr. Proper"), mproperMsg2, QMessageBox::Yes, QMessageBox::No);
 //  if (res2 != QMessageBox::Yes)
 
@@ -3283,13 +3283,13 @@ void QPSQLDriver::Mr_Proper()
 
 	}
 #if 0
-  QString mproperMsg(tr("Este proceso puede tener una larga duración, dependiendo\n"
-                        "del tamaño de la base de datos.\n"
+  QString mproperMsg(tr("Este proceso puede tener una larga duraciï¿½n, dependiendo\n"
+                        "del tamaï¿½o de la base de datos.\n"
                         "Antes de empezar debe asegurarse que durante todo el proceso\n"
-                        "no habrá otros usuarios conectados a esta base de datos, de lo\n"
-                        "contrario los resultados serán impredecibles. Asegúrese también\n"
+                        "no habrï¿½ otros usuarios conectados a esta base de datos, de lo\n"
+                        "contrario los resultados serï¿½n impredecibles. Asegï¿½rese tambiï¿½n\n"
                         "de tener una COPIA DE SEGURIDAD actualizada de esta base de datos\n"
-                        "antes de empezar.\n\n¿ Quiere continuar ?"));
+                        "antes de empezar.\n\nï¿½ Quiere continuar ?"));
   int res = QMessageBox::question(0, tr("Mr. Proper"), mproperMsg, QMessageBox::Yes, QMessageBox::No);
   if (res != QMessageBox::Yes)
     return;
@@ -3339,7 +3339,7 @@ void QPSQLDriver::Mr_Proper()
     FLUtil::setProgress(++steps);
   }
 
-  FLUtil::setLabelText(tr("Inicializando cachés"));
+  FLUtil::setLabelText(tr("Inicializando cachï¿½s"));
   FLUtil::setProgress(++steps);
   qry.exec("delete from flmetadata");
   qry.exec("delete from flvar");
@@ -3359,7 +3359,7 @@ void QPSQLDriver::Mr_Proper()
 #ifndef FL_QUICK_CLIENT
   steps = 0;
   qry.exec("select tablename,indexname from pg_indexes where indexname like '%_m1_idx'");
-  FLUtil::createProgressDialog(tr("Regenerando índices"), qry.size());
+  FLUtil::createProgressDialog(tr("Regenerando ï¿½ndices"), qry.size());
   QString tableIdx, fieldIdx;
   FLTableMetaData *mtdIdx = 0;
   while (qry.next()) {
@@ -3370,9 +3370,9 @@ void QPSQLDriver::Mr_Proper()
       fieldIdx.remove("up_m1_idx");
     else
       fieldIdx.remove("_m1_idx");
-    FLUtil::setLabelText(tr("Regenerando índice %1.%2").arg(tableIdx).arg(fieldIdx));
+    FLUtil::setLabelText(tr("Regenerando ï¿½ndice %1.%2").arg(tableIdx).arg(fieldIdx));
 #ifdef FL_DEBUG
-    qWarning(tr("Regenerando índice %1.%2").arg(tableIdx).arg(fieldIdx));
+    qWarning(tr("Regenerando ï¿½ndice %1.%2").arg(tableIdx).arg(fieldIdx));
 #endif
     FLUtil::setProgress(++steps);
     mtdIdx = db_->manager()->metadata(tableIdx);
@@ -3380,7 +3380,7 @@ void QPSQLDriver::Mr_Proper()
       continue;
     if (!mtdIdx->field(fieldIdx))
       continue;
-    qWarning(tr("Borrando índice %1").arg(qry.value(1).toString()));
+    qWarning(tr("Borrando ï¿½ndice %1").arg(qry.value(1).toString()));
     qry2.exec("drop index " + qry.value(1).toString());
   }
   FLUtil::destroyProgressDialog();
@@ -3401,7 +3401,7 @@ void QPSQLDriver::Mr_Proper()
       QString conte(db_->managerModules()->content(item + ".mtd"));
       if (!conte.isEmpty()) {
         QString msg(QApplication::tr(
-                      "La estructura de los metadatos de la tabla '%1' y su "
+                      "B) La estructura de los metadatos de la tabla '%1' y su "
                       "estructura interna en la base de datos no coinciden. "
                       "Intentando regenerarla."
                     ));
@@ -3426,7 +3426,7 @@ void QPSQLDriver::Mr_Proper()
     while (sqlQuery.next()) {
       item = sqlQuery.value(0).toString();
       FLUtil::setProgress(++steps);
-      FLUtil::setLabelText(tr("Creando índices para %1").arg(item));
+      FLUtil::setLabelText(tr("Creando ï¿½ndices para %1").arg(item));
       FLTableMetaData *mtd = db_->manager()->metadata(item);
       const FLTableMetaData::FLFieldMetaDataList *fl;
       if (!mtd || !(fl = mtd->fieldList()))
@@ -3462,9 +3462,9 @@ void QPSQLDriver::Mr_Proper()
              if (v2.isEmpty())
                  continue;
                     //qWarning("FLLARGE -> " + item + " : " +  v2);
-		    //Añadiendo a listado ...
+		    //Aï¿½adiendo a listado ...
 		     listadoFLLarge.append(v2);
-//		     	qWarning("PASO !: Añadiendo tabla ... fllarge_" + v2.section('@', 1, 1));
+//		     	qWarning("PASO !: Aï¿½adiendo tabla ... fllarge_" + v2.section('@', 1, 1));
 		     if (multiFlLarge)
 		     	    listadoTablasFLLarge.append("fllarge_" + v2.section('@', 1, 1));
                    } 
@@ -3500,7 +3500,7 @@ void QPSQLDriver::Mr_Proper()
 //     qWarning("IT " + (*it));
      if ((*it) == item2)
      		{
-//    		qWarning("¡¡ Encontrado !! ");        
+//    		qWarning("ï¿½ï¿½ Encontrado !! ");        
      		found = true;
      		break;
      		}

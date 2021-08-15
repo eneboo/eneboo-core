@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qdom.h>
@@ -741,7 +741,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
   if (!quick && ret && aqApp->consoleShown() &&
       !ret->isQuery() && db_->mismatchedTable(n, ret)) {
     QString msg(QApplication::tr(
-                  "La estructura de los metadatos de la tabla '%1' y su "
+                  "C) La estructura de los metadatos de la tabla '%1' y su "
                   "estructura interna en la base de datos no coinciden. "
                   "Debe regenerar la base de datos."
                 ));
@@ -827,7 +827,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
   if (!quick && !isSysTable && aqApp->consoleShown() &&
       !ret->isQuery() && db_->mismatchedTable(n, ret)) {
     QString msg(QApplication::tr(
-                  "La estructura de los metadatos de la tabla '%1' y su "
+                  "A) La estructura de los metadatos de la tabla '%1' y su "
                   "estructura interna en la base de datos no coinciden. "
                   "Debe regenerar la base de datos."
                 ));
@@ -1235,7 +1235,7 @@ FLAction *FLManager::action(const QString &n)
 
         QDomNodeList nl(e.elementsByTagName("name"));
         if (nl.count() == 0) {
-          qWarning("Debe indicar la etiqueta <name> en acción '%s'", n.latin1());
+          qWarning("Debe indicar la etiqueta <name> en acciï¿½n '%s'", n.latin1());
           no = no.nextSibling();
           continue;
         } else {
@@ -1509,7 +1509,7 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
              QString::fromLatin1(".mtd"));
     if (!fi.open(IO_ReadOnly)) {
 #ifdef FL_DEBUG
-      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no están definidos").arg(n));
+      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no estï¿½n definidos").arg(n));
 #endif
     } else {
       QTextStream t;
@@ -1553,13 +1553,13 @@ bool FLManager::isSystemTable(const QString &n)
                       "flsettings,"
                       "flseqs,"
                       "flupdates");
-//--> FLLarge único           
+//--> FLLarge ï¿½nico           
   if (aqApp->singleFLLarge())
                {
                systemTable = systemTable + QString::fromLatin1(",fllarge");       
                }
                
-//<-- FLLarge único                      
+//<-- FLLarge ï¿½nico                      
   if (n.endsWith(".mtd"))
     return systemTable.contains(n.left(n.length() - 4));
   return systemTable.contains(n);
@@ -1574,7 +1574,7 @@ QString FLManager::storeLargeValue(FLTableMetaData *mtd, const QString &largeVal
   if (isSystemTable(tableName))
     return QString::null;
 
-// --> FLLarge único
+// --> FLLarge ï¿½nico
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1600,7 +1600,7 @@ QString tableLarge;
 
 
 
-//<-- FLLarge único
+//<-- FLLarge ï¿½nico
 
   
   /*if (!existsTable(tableLarge)) {
@@ -1646,7 +1646,7 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
 {
   if (refKey.left(3) != "RK@")
     return QVariant();
-// --> FLLarge único
+// --> FLLarge ï¿½nico
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1655,7 +1655,7 @@ QString tableLarge;
   tableLarge = QString::fromLatin1("fllarge_") + refKey.section('@', 1, 1);
 
   
-//<-- FLLarge único
+//<-- FLLarge ï¿½nico
 
   if (!existsTable(tableLarge))
     return QVariant();
