@@ -741,7 +741,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
   if (!quick && ret && aqApp->consoleShown() &&
       !ret->isQuery() && db_->mismatchedTable(n, ret)) {
     QString msg(QApplication::tr(
-                  "C) La estructura de los metadatos de la tabla '%1' y su "
+                  "La estructura de los metadatos de la tabla '%1' y su "
                   "estructura interna en la base de datos no coinciden. "
                   "Debe regenerar la base de datos."
                 ));
@@ -824,15 +824,18 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
   if (acl)
     acl->process(ret);
 
+#ifndef FL_QUICK_CLIENT
   if (!quick && !isSysTable && aqApp->consoleShown() &&
       !ret->isQuery() && db_->mismatchedTable(n, ret)) {
+
     QString msg(QApplication::tr(
-                  "A) La estructura de los metadatos de la tabla '%1' y su "
+                  "La estructura de los metadatos de la tabla '%1' y su "
                   "estructura interna en la base de datos no coinciden. "
                   "Debe regenerar la base de datos."
                 ));
     throwMsgWarning(db_, msg.arg(n));
   }
+#endif
 
   return ret;
 #endif
