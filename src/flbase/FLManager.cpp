@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  t�rminos  de  la  Licencia  P�blica General de GNU   en  su
- versi�n 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
+ versión 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qdom.h>
@@ -1237,7 +1237,7 @@ FLAction *FLManager::action(const QString &n)
 
         QDomNodeList nl(e.elementsByTagName("name"));
         if (nl.count() == 0) {
-          qWarning("Debe indicar la etiqueta <name> en acci�n '%s'", n.latin1());
+          qWarning("Debe indicar la etiqueta <name> en acción '%s'", n.latin1());
           no = no.nextSibling();
           continue;
         } else {
@@ -1511,7 +1511,7 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
              QString::fromLatin1(".mtd"));
     if (!fi.open(IO_ReadOnly)) {
 #ifdef FL_DEBUG
-      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no est�n definidos").arg(n));
+      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no están definidos").arg(n));
 #endif
     } else {
       QTextStream t;
@@ -1555,13 +1555,13 @@ bool FLManager::isSystemTable(const QString &n)
                       "flsettings,"
                       "flseqs,"
                       "flupdates");
-//--> FLLarge �nico           
+//--> FLLarge único           
   if (aqApp->singleFLLarge())
                {
                systemTable = systemTable + QString::fromLatin1(",fllarge");       
                }
                
-//<-- FLLarge �nico                      
+//<-- FLLarge único                      
   if (n.endsWith(".mtd"))
     return systemTable.contains(n.left(n.length() - 4));
   return systemTable.contains(n);
@@ -1576,7 +1576,7 @@ QString FLManager::storeLargeValue(FLTableMetaData *mtd, const QString &largeVal
   if (isSystemTable(tableName))
     return QString::null;
 
-// --> FLLarge �nico
+// --> FLLarge único
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1602,7 +1602,7 @@ QString tableLarge;
 
 
 
-//<-- FLLarge �nico
+//<-- FLLarge único
 
   
   /*if (!existsTable(tableLarge)) {
@@ -1648,7 +1648,7 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
 {
   if (refKey.left(3) != "RK@")
     return QVariant();
-// --> FLLarge �nico
+// --> FLLarge único
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1657,7 +1657,7 @@ QString tableLarge;
   tableLarge = QString::fromLatin1("fllarge_") + refKey.section('@', 1, 1);
 
   
-//<-- FLLarge �nico
+//<-- FLLarge único
 
   if (!existsTable(tableLarge))
     return QVariant();
