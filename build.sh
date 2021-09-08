@@ -9,7 +9,7 @@ OPT_QMAKESPEC=""
 OPT_DEBUG=yes
 OPT_SQLLOG=no
 OPT_FLFCGI=no
-
+OPT_MAC64=""
 OPT_HOARD=no
 # Hoard se desactiva por defecto. Eneboo funciona principalmente con un 
 # único hilo y hoard es un "memory allocator" orientado a mejorar la 
@@ -147,6 +147,9 @@ for a in "$@"; do
     -fixxp)
       OPT_FIXXP=yes
     ;;
+    -mac64)
+      OPT_MAC64="-m64"
+    ;;
     -noConsoleDebug)
       OPT_CONSOLE_DEBUG=yes
     ;;
@@ -254,7 +257,10 @@ echo -e "(C) 2003-2013 InfoSiAL, S.L. http://infosial.com - http://abanq.org\n"
 echo -e "(C) 2012 Gestiweb Integración de Soluciones Web S.L.  http://www.gestiweb.com \n"
 
 if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cross" ];then
-  export CC=${CROSS}gcc
+  if [ "$OPT_MAC64" != "" ];then
+     echo -e "Compilación 64bits activada"
+  fi
+  export CC=${CROSS}gcc ${OPT_MAC64}
   export CXX=${CROSS}g++
   export LD=${CROSS}ld
   export AR=${CROSS}ar
