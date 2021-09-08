@@ -389,7 +389,7 @@ else
       else
         ./configure $QT_CONFIG_VERBOSE -platform linux-g++ -xplatform $OPT_QMAKESPEC $QT_DEBUG -prefix $PREFIX -thread -stl -no-pch \
                     -no-exceptions -buildkey $BUILD_KEY -disable-opengl -no-cups -no-ipv6 -no-nas-sound -no-nis -qt-libjpeg \
-                    -qt-gif -qt-libmng -qt-libpng -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng || exit 1
+                    -qt-gif -qt-libmng -qt-libpng -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng $OPT_MAC64 || exit 1
       fi
     else
       # Configure informa de que no se encuentra MySQL o PostgreSQL, pero si se agrega:
