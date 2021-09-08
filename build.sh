@@ -260,7 +260,7 @@ if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cro
   if [ "$OPT_MAC64" != "" ];then
      echo -e "Compilación 64bits activada"
   fi
-  export CC=${CROSS}gcc ${OPT_MAC64}
+  export CC=${CROSS}gcc
   export CXX=${CROSS}g++
   export LD=${CROSS}ld
   export AR=${CROSS}ar
@@ -385,7 +385,7 @@ else
       if [ "$OPT_QMAKESPEC" == "macx-g++" ]; then
         ./configure $QT_CONFIG_VERBOSE -platform $OPT_QMAKESPEC $QT_DEBUG -prefix $PREFIX -thread -stl -no-pch -no-exceptions \
                     -buildkey $BUILD_KEY -disable-opengl -no-cups -no-ipv6 -no-nas-sound -no-nis -qt-libjpeg \
-                    -qt-gif -qt-libmng -qt-libpng -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng || exit 1
+                    -qt-gif -qt-libmng -qt-libpng -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng $OPT_MAC64 || exit 1
       else
         ./configure $QT_CONFIG_VERBOSE -platform linux-g++ -xplatform $OPT_QMAKESPEC $QT_DEBUG -prefix $PREFIX -thread -stl -no-pch \
                     -no-exceptions -buildkey $BUILD_KEY -disable-opengl -no-cups -no-ipv6 -no-nas-sound -no-nis -qt-libjpeg \
@@ -692,7 +692,11 @@ if  [ "$OPT_QMAKESPEC" == "macx-g++-cross" ];then
   esac
 ln -s /opt/mac/SDKs/MacOSX10.4u.sdk/usr/lib/libiconv.dylib $PWD/src/qt/lib/libiconv.dylib
 if  [ "$CROSS" == "i686-apple-darwin8-" ];then
-ln -s /opt/mac/cross/libz_i686.dylib $PWD/src/qt/lib/libz.dylib
+if [ "$OPT_MAC64" == "" ];then
+  ln -s /opt/mac/cross/libz_i686.dylib $PWD/src/qt/lib/libz.dylib
+else
+  ln -s /opt/mac/cross/libz_x64.dylib $PWD/src/qt/lib/libz.dylib
+fi 
 else
 ln -s /opt/mac/cross/libz.1.2.7_ppc.dylib $PWD/src/qt/lib/libz.dylib
 fi
