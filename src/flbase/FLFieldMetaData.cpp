@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLFieldMetaData.h"
@@ -123,7 +123,7 @@ void FLFieldMetaData::addRelationMD(FLRelationMetaData *r)
   if (isRelM1 && d->relationM1_) {
 #ifdef FL_DEBUG
     qWarning
-    ("FLFieldMetaData: Se ha intentado crear más de una relación muchos a uno para el mismo campo");
+    ("FLFieldMetaData: Se ha intentado crear mï¿½s de una relaciï¿½n muchos a uno para el mismo campo");
 #endif
     return;
   }
@@ -197,6 +197,9 @@ QVariant::Type FLFieldMetaData::flDecodeType(int fltype)
       break;
     case QVariant::ByteArray:
       type = QVariant::ByteArray;
+      break;
+    case QVariant::DateTime:
+      type=QVariant::DateTime;
       break;
   }
   return type;

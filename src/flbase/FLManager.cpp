@@ -368,6 +368,8 @@ FLFieldMetaData *FLManager::metadataField(QDomElement *field, bool v, bool ed)
           t = FLFieldMetaData::Unlock;
         else if (e.text() == "serial")
           t = FLFieldMetaData::Serial;
+        else if (e.text() == "timestamp")
+          t = QVariant::DateTime;
         no = no.nextSibling();
         continue;
       }
@@ -1117,6 +1119,8 @@ FLParameterQuery *FLManager::queryParameter(QDomElement *parameter)
           t = FLFieldMetaData::Serial;
         else if (e.text() == "bytearray")
           t = QVariant::ByteArray;
+        else if (e.text() == "timestamp")
+          t = QVariant::DateTime;
         no = no.nextSibling();
         continue;
       }
