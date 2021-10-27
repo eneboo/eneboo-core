@@ -756,8 +756,6 @@ QVariant QPSQLResult::data(int i)
       else
         return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
     }
-    case QVariant::DateTime:
-    	return QVariant(val);
     
     case QVariant::Point:
       return QVariant(pointFromString(val));
@@ -1786,7 +1784,7 @@ bool QPSQLDriver::alterTable(FLTableMetaData *newMTD)
             v = QTime::currentTime();
             break;
           case QVariant::DateTime:
-            v = QDateTime.currentDateTime();
+            v = QDateTime::currentDateTime();
             break;
           case QVariant::Date:
             v = QDate::currentDate();
@@ -2890,13 +2888,7 @@ QString QPSQLDriver::formatValue(const QSqlField *field, bool) const
           r = nullText();
         }
         break;
-      case QVariant::DateTime:
-      		if (field->value().toDateTime().isValid()) {
-      			r = "'" + field->value().toDateTime().toString() + "'";
-      		} else {
-      			r = nullText();
-      		}
-      	break;
+
       case QVariant::Time:
         if (field->value().toTime().isValid()) {
           r = field->value().toTime().toString(Qt::ISODate);
