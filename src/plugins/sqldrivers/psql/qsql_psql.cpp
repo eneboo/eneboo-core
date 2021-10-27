@@ -2160,7 +2160,7 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
               v = QTime::currentTime();
               break;
             case QVariant::DateTime:
-              v = QDateTime.currentDateTime();
+              v = QDateTime::currentDateTime();
             break;
             case QVariant::Date:
               v = QDate::currentDate();
