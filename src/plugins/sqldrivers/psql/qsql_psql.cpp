@@ -753,6 +753,7 @@ QVariant QPSQLResult::data(int i)
         return QVariant(QDateTime());
       else
         return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
+    }
     
     case QVariant::Point:
       return QVariant(pointFromString(val));
