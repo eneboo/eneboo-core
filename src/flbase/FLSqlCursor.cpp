@@ -507,8 +507,8 @@ bool FLSqlCursor::refreshBuffer()
           if (type == FLFieldMetaData::Serial)
             d->buffer_->setValue(fiName, d->db_->nextSerialVal(d->metadata_->name(), fiName).toUInt());
           
-          if (type == QVariant::DateTime && defVal.toString().isEmpty()) {  
-            qWarning(QString(tr("Hola %1 defval:%2").arg(fiName).arg(QDateTime().toString())));	
+          if (type == QVariant::DateTime && defVal.toString().isEmpty() && !field->allowNull()) {  
+            qWarning(QString(tr("Hola %1 defval:%2").arg(fiName).arg(defVal.toString())));	
             d->buffer_->setValue(fiName, QDateTime().toString());
 	}
           if (field->isCounter()) {
