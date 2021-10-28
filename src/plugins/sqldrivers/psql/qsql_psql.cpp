@@ -745,6 +745,10 @@ QVariant QPSQLResult::data(int i)
       return QVariant(QTime::fromString(val, Qt::ISODate));
     case QVariant::DateTime: {
       QString dtval = val;
+      if (dtval.at(dtval.length() - 3) == '+')
+        dtval.truncate(dtval.length() - 3);
+      if (dtval.at(dtval.length() - 3).isPunct())
+        dtval += '0';
       if (dtval.isEmpty())
         return QVariant(QDateTime());
       else
