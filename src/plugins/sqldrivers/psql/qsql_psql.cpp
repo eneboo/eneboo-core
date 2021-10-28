@@ -744,8 +744,6 @@ QVariant QPSQLResult::data(int i)
         return QVariant(QTime::fromString(val.left(val.length() - 3), Qt::ISODate));
       return QVariant(QTime::fromString(val, Qt::ISODate));
     case QVariant::DateTime: {
-      if (val.length() < 10)
-        return QVariant(QDateTime());
       QString dtval = val;
       if (dtval.at(dtval.length() - 3) == '+')
         dtval.truncate(dtval.length() - 3);
@@ -755,7 +753,6 @@ QVariant QPSQLResult::data(int i)
         return QVariant(QDateTime());
       else
         return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
-    }
     
     case QVariant::Point:
       return QVariant(pointFromString(val));
