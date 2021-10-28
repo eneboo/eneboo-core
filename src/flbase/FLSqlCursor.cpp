@@ -507,7 +507,7 @@ bool FLSqlCursor::refreshBuffer()
           if (type == FLFieldMetaData::Serial)
             d->buffer_->setValue(fiName, d->db_->nextSerialVal(d->metadata_->name(), fiName).toUInt());
           
-          if (type == QVariant::DateTime && !defaVal.isEmpty()) 
+          if (type == QVariant::DateTime && !defVal.isEmpty()) 
             d->buffer_->setValue(fiName, QDateTime());
 
           if (field->isCounter()) {
