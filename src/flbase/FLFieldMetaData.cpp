@@ -198,6 +198,9 @@ QVariant::Type FLFieldMetaData::flDecodeType(int fltype)
     case QVariant::ByteArray:
       type = QVariant::ByteArray;
       break;
+    case QVariant::DateTime:
+      type=QVariant::DateTime;
+      break;
   }
   return type;
 }

@@ -551,7 +551,8 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
       }
     }
     break;
-
+    
+    case QVariant::DateTime:
     case QVariant::String: {
       text = field->value().toString();
       if (fieldTMD->hasOptionsList()) {

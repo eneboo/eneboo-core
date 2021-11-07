@@ -506,6 +506,12 @@ bool FLSqlCursor::refreshBuffer()
 
           if (type == FLFieldMetaData::Serial)
             d->buffer_->setValue(fiName, d->db_->nextSerialVal(d->metadata_->name(), fiName).toUInt());
+           
+          if (type == QVariant::DateTime && !field->allowNull() && d->buffer_->isNull(fiName)) {
+          	qWarning(tr("FLSqlCursor::refreshBuffer() Creando timestamp para ") + fiName);
+          	d->buffer_->setValue(fiName, QDateTime::currentDateTime());
+          }
+ 
 
           if (field->isCounter()) {
             if (d->ctxt_) {

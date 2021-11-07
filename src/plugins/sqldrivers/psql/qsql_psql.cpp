@@ -744,8 +744,6 @@ QVariant QPSQLResult::data(int i)
         return QVariant(QTime::fromString(val.left(val.length() - 3), Qt::ISODate));
       return QVariant(QTime::fromString(val, Qt::ISODate));
     case QVariant::DateTime: {
-      if (val.length() < 10)
-        return QVariant(QDateTime());
       QString dtval = val;
       if (dtval.at(dtval.length() - 3) == '+')
         dtval.truncate(dtval.length() - 3);
@@ -756,6 +754,7 @@ QVariant QPSQLResult::data(int i)
       else
         return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
     }
+    
     case QVariant::Point:
       return QVariant(pointFromString(val));
     case QVariant::Rect: {
@@ -1420,6 +1419,10 @@ QString QPSQLDriver::sqlCreateTable(const FLTableMetaData *tmd)
       case QVariant::Date:
         sql += " DATE";
         break;
+      
+      case QVariant::DateTime:
+      	sql += " TIMESTAMPTZ";
+      	break;
 
       case QVariant::Pixmap:
         sql += " TEXT";
@@ -1553,6 +1556,11 @@ QString QPSQLDriver::formatValue(int t, const QVariant &v, const bool upper)
     case QVariant::Date:
       res = "'" + FLUtil::dateDMAtoAMD(v.toString()) + "'";
       break;
+      
+    case QVariant::DateTime:
+    	res = "'" + v.toString() + "'";
+    	break;
+    	
     case QVariant::Time: {
       QTime t(v.toTime());
       if (t.isValid() && !t.isNull())
@@ -1772,6 +1780,9 @@ bool QPSQLDriver::alterTable(FLTableMetaData *newMTD)
             break;
           case QVariant::Time:
             v = QTime::currentTime();
+            break;
+          case QVariant::DateTime:
+            v = QDateTime::currentDateTime();
             break;
           case QVariant::Date:
             v = QDate::currentDate();
@@ -2146,6 +2157,9 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
             case QVariant::Time:
               v = QTime::currentTime();
               break;
+            case QVariant::DateTime:
+              v = QDateTime::currentDateTime();
+            break;
             case QVariant::Date:
               v = QDate::currentDate();
               break;
@@ -2872,6 +2886,7 @@ QString QPSQLDriver::formatValue(const QSqlField *field, bool) const
           r = nullText();
         }
         break;
+
       case QVariant::Time:
         if (field->value().toTime().isValid()) {
           r = field->value().toTime().toString(Qt::ISODate);
@@ -3158,6 +3173,9 @@ static inline bool notEqualsTypes(int mtdType, int bdType, bool relax)
       break;
     case QVariant::Date:
       return bdType != DATEOID;
+      break;
+    case QVariant::DateTime:
+      return bdType != TIMESTAMPTZOID;
       break;
     case QVariant::String:
       if (relax)
