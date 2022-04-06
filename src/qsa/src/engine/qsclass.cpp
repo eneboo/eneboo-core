@@ -79,8 +79,9 @@ void QSClass::clear()
 		  }
         }
     }
-    if (mmap)
+    if (mmap->isValid()) {
     	delete mmap;
+    }
     mmap = 0;
   }
   staticMembers.clear();
