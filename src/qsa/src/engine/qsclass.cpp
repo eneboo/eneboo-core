@@ -69,8 +69,9 @@ void QSClass::clear()
 {
   //Q_ASSERT(mmap);
   if (mmap) {
+  	bool fail = false;
     for (QSMemberMap::ConstIterator it = mmap->begin(); it != mmap->end(); ++it) {
-     if((*it).type())
+     if((*it).type()) {
       if ((*it).type() == QSMember::ScriptFunction) {
         //Q_ASSERT((*it).scriptFunction);
         if ((*it).scriptFunction) {
@@ -78,8 +79,13 @@ void QSClass::clear()
             delete(*it).scriptFunction;
 		  }
         }
+        
+      } else {
+      	fail = true;
+      }
     }
-    if (mmap->isValid()) {
+    
+    if (!fail) {
     	delete mmap;
     }
     mmap = 0;
