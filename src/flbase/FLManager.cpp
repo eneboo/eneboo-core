@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  tÃ©rminos  de  la  Licencia  PÃºblica General de GNU   en  su
- versiÃ³n 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
+ versión 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qdom.h>
@@ -1241,7 +1241,7 @@ FLAction *FLManager::action(const QString &n)
 
         QDomNodeList nl(e.elementsByTagName("name"));
         if (nl.count() == 0) {
-          qWarning("Debe indicar la etiqueta <name> en acciÃ³n '%s'", n.latin1());
+          qWarning("Debe indicar la etiqueta <name> en acción '%s'", n.latin1());
           no = no.nextSibling();
           continue;
         } else {
@@ -1559,13 +1559,13 @@ bool FLManager::isSystemTable(const QString &n)
                       "flsettings,"
                       "flseqs,"
                       "flupdates");
-//--> FLLarge Ãºnico           
+//--> FLLarge único           
   if (aqApp->singleFLLarge())
                {
                systemTable = systemTable + QString::fromLatin1(",fllarge");       
                }
                
-//<-- FLLarge Ãºnico                      
+//<-- FLLarge único                      
   if (n.endsWith(".mtd"))
     return systemTable.contains(n.left(n.length() - 4));
   return systemTable.contains(n);
@@ -1580,7 +1580,7 @@ QString FLManager::storeLargeValue(FLTableMetaData *mtd, const QString &largeVal
   if (isSystemTable(tableName))
     return QString::null;
 
-// --> FLLarge Ãºnico
+// --> FLLarge único
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1606,7 +1606,7 @@ QString tableLarge;
 
 
 
-//<-- FLLarge Ãºnico
+//<-- FLLarge único
 
   
   /*if (!existsTable(tableLarge)) {
@@ -1652,7 +1652,7 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
 {
   if (refKey.left(3) != "RK@")
     return QVariant();
-// --> FLLarge Ãºnico
+// --> FLLarge único
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1661,7 +1661,7 @@ QString tableLarge;
   tableLarge = QString::fromLatin1("fllarge_") + refKey.section('@', 1, 1);
 
   
-//<-- FLLarge Ãºnico
+//<-- FLLarge único
 
   if (!existsTable(tableLarge))
     return QVariant();
