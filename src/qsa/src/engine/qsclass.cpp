@@ -70,16 +70,15 @@ void QSClass::clear()
   //Q_ASSERT(mmap);
   if (mmap) {
     for (QSMemberMap::ConstIterator it = mmap->begin(); it != mmap->end(); ++it) {
-     if((*it).type())
       if ((*it).type() == QSMember::ScriptFunction) {
         //Q_ASSERT((*it).scriptFunction);
         if ((*it).scriptFunction) {
           if ((*it).scriptFunction->scopeDefinition() && (*it).scriptFunction->deref())
             delete(*it).scriptFunction;
-		  }
         }
+      }
     }
-    //delete mmap;
+    delete mmap;
     mmap = 0;
   }
   staticMembers.clear();
@@ -1359,15 +1358,8 @@ QString QSFunctionScopeClass::identifier() const
 
 void QSFunctionScopeClass::clear()
 {
-	  if (body_node)
-//Eneboo 
-#if defined(ENEBOO_FIXXP)
-	//qDebug("nodo saltado : %s",identifier());
-	//En windows xp y ejecutables dba , scopeDef produce errores al setearla a 0.
-#else
-    	body_node->setScopeDefinition(0);
-#endif
-//Eneboo
+  if (body_node)
+    body_node->setScopeDefinition(0);
   body_node = 0;
   QSWritableClass::clear();
 }
