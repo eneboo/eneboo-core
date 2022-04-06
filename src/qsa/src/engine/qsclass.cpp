@@ -77,7 +77,7 @@ void QSClass::clear()
             delete(*it).scriptFunction;
         }
       } else {
-      	qWarning( "QSClass::clear() ignoring %s", (*it).type() );
+      	qWarning( "QSClass::clear() ignoring %d", (*it).type() );
       }
     }
     delete mmap;
