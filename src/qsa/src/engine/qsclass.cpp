@@ -70,15 +70,17 @@ void QSClass::clear()
   //Q_ASSERT(mmap);
   if (mmap) {
     for (QSMemberMap::ConstIterator it = mmap->begin(); it != mmap->end(); ++it) {
+     if((*it).type())
       if ((*it).type() == QSMember::ScriptFunction) {
         //Q_ASSERT((*it).scriptFunction);
         if ((*it).scriptFunction) {
           if ((*it).scriptFunction->scopeDefinition() && (*it).scriptFunction->deref())
             delete(*it).scriptFunction;
+		  }
         }
-      }
     }
-    delete mmap;
+    if (mmap)
+    	delete mmap;
     mmap = 0;
   }
   staticMembers.clear();
