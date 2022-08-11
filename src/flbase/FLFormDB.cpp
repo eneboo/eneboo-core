@@ -29,32 +29,33 @@
 #include "FLAccessControlLists.h"
 #include "FLSqlConnections.h"
 
-FLFormDB::FLFormDB(QWidget *parent, const char *name, WFlags f) :
-  QWidget(parent ? parent : aqApp->mainWidget(), name, f),
-  cursor_(0), layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0), showed(false),
-  iface(0), oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0), oldFormObj(0),
-  accepted_(false)
+FLFormDB::FLFormDB(QWidget *parent, const char *name, WFlags f) : QWidget(parent ? parent : aqApp->mainWidget(), name, f),
+                                                                  cursor_(0), layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0), showed(false),
+                                                                  iface(0), oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0), oldFormObj(0),
+                                                                  accepted_(false)
 {
 }
 
-FLFormDB::FLFormDB(const QString &actionName, QWidget *parent, WFlags f) :
-  QWidget(parent ? parent : aqApp->mainWidget(), actionName, f),
-  layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0), showed(false), iface(0),
-  oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0), oldFormObj(0),
-  accepted_(false)
+FLFormDB::FLFormDB(const QString &actionName, QWidget *parent, WFlags f) : QWidget(parent ? parent : aqApp->mainWidget(), actionName, f),
+                                                                           layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0), showed(false), iface(0),
+                                                                           oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0), oldFormObj(0),
+                                                                           accepted_(false)
 {
 
   setFocusPolicy(QWidget::NoFocus);
 
-  if (actionName.isEmpty()) {
+  if (actionName.isEmpty())
+  {
     action_ = 0;
 #ifdef FL_DEBUG
     qWarning(tr("FLFormDB : Nombre de acción vacío"));
 #endif
     return;
-  } else
+  }
+  else
     action_ = FLSqlConnections::database()->manager()->action(actionName);
-  if (!action_) {
+  if (!action_)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLFormDB : No existe la acción " + actionName));
 #endif
@@ -66,11 +67,10 @@ FLFormDB::FLFormDB(const QString &actionName, QWidget *parent, WFlags f) :
   initForm();
 }
 
-FLFormDB::FLFormDB(FLSqlCursor *cursor, const QString &actionName, QWidget *parent, WFlags f) :
-  QWidget(parent ? parent : aqApp->mainWidget(), actionName, f),
-  cursor_(cursor), layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0),
-  showed(false), iface(0), oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0),
-  oldFormObj(0), accepted_(false)
+FLFormDB::FLFormDB(FLSqlCursor *cursor, const QString &actionName, QWidget *parent, WFlags f) : QWidget(parent ? parent : aqApp->mainWidget(), actionName, f),
+                                                                                                cursor_(cursor), layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0),
+                                                                                                showed(false), iface(0), oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0),
+                                                                                                oldFormObj(0), accepted_(false)
 {
   setFocusPolicy(QWidget::NoFocus);
 
@@ -100,9 +100,11 @@ bool FLFormDB::close()
 
 void FLFormDB::initForm()
 {
-  if (cursor_ && cursor_->metadata()) {
+  if (cursor_ && cursor_->metadata())
+  {
     QString caption;
-    if (action_) {
+    if (action_)
+    {
       cursor_->setAction(action_);
       caption = action_->caption();
       if (!action_->description().isEmpty())
@@ -116,7 +118,8 @@ void FLFormDB::initForm()
 
     bindIface();
     setCursor(cursor_);
-  } else
+  }
+  else
     setCaption(tr("No hay metadatos"));
 }
 
@@ -125,10 +128,12 @@ void FLFormDB::setMainWidget(QWidget *w)
   if (!cursor_ || !w)
     return;
 
-  if (showed) {
+  if (showed)
+  {
     if (mainWidget_ && mainWidget_ != w)
       initMainWidget(w);
-  } else
+  }
+  else
     w->hide();
 
   if (layout)
@@ -147,44 +152,44 @@ void FLFormDB::setMainWidget(QWidget *w)
   wt->show();
 
 #ifdef QSDEBUGGER
-if (FLSettings::readBoolEntry("application/isDebuggerMode"))
-	{
-  	pushButtonDebug = new QPushButton(this, "pushButtonDebug");
-  	pushButtonDebug->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0, 0, 0,
-        pushButtonDebug->sizePolicy().hasHeightForWidth()));
-  	pushButtonDebug->setMinimumSize(pbSize);
-  	pushButtonDebug->setMaximumSize(pbSize);
-  	QPixmap qsa(QPixmap::fromMimeSource("bug.png"));
-  	pushButtonDebug->setIconSet(qsa);
-  	pushButtonDebug->setAccel(QKeySequence(Qt::Key_F3));
-  	QToolTip::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
-  	QWhatsThis::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
-  	pushButtonDebug->setFocusPolicy(QWidget::NoFocus);
-  	layoutButtons->addWidget(pushButtonDebug);
-  	connect(pushButtonDebug, SIGNAL(clicked()), this, SLOT(debugScript()));
-	if (FLSettings::readBoolEntry("ebcomportamiento/show_snapshot_button"))
-		{
-		push_button_snapshot = new QPushButton(this, "pushButtonSnapShot");
-  		push_button_snapshot->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0, 0, 0,
-        	push_button_snapshot->sizePolicy().hasHeightForWidth()));
-  		push_button_snapshot->setMinimumSize(pbSize);
-  		push_button_snapshot->setMaximumSize(pbSize);
-  		QPixmap snap_shot(QPixmap::fromMimeSource("snapshot.png"));
-  		push_button_snapshot->setIconSet(snap_shot);
-  		push_button_snapshot->setAccel(QKeySequence(Qt::Key_F7));
-  		QToolTip::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
-  		QWhatsThis::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
-  		push_button_snapshot->setFocusPolicy(QWidget::NoFocus);
-  		layoutButtons->addWidget(push_button_snapshot);
-  		connect(push_button_snapshot, SIGNAL(clicked()), this, SLOT(saveSnapShot_auto()));
-		}
-  	}
+  if (FLSettings::readBoolEntry("application/isDebuggerMode"))
+  {
+    pushButtonDebug = new QPushButton(this, "pushButtonDebug");
+    pushButtonDebug->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0,
+                                               pushButtonDebug->sizePolicy().hasHeightForWidth()));
+    pushButtonDebug->setMinimumSize(pbSize);
+    pushButtonDebug->setMaximumSize(pbSize);
+    QPixmap qsa(QPixmap::fromMimeSource("bug.png"));
+    pushButtonDebug->setIconSet(qsa);
+    pushButtonDebug->setAccel(QKeySequence(Qt::Key_F3));
+    QToolTip::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
+    QWhatsThis::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
+    pushButtonDebug->setFocusPolicy(QWidget::NoFocus);
+    layoutButtons->addWidget(pushButtonDebug);
+    connect(pushButtonDebug, SIGNAL(clicked()), this, SLOT(debugScript()));
+    if (FLSettings::readBoolEntry("ebcomportamiento/show_snapshot_button"))
+    {
+      push_button_snapshot = new QPushButton(this, "pushButtonSnapShot");
+      push_button_snapshot->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0,
+                                                      push_button_snapshot->sizePolicy().hasHeightForWidth()));
+      push_button_snapshot->setMinimumSize(pbSize);
+      push_button_snapshot->setMaximumSize(pbSize);
+      QPixmap snap_shot(QPixmap::fromMimeSource("snapshot.png"));
+      push_button_snapshot->setIconSet(snap_shot);
+      push_button_snapshot->setAccel(QKeySequence(Qt::Key_F7));
+      QToolTip::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
+      QWhatsThis::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
+      push_button_snapshot->setFocusPolicy(QWidget::NoFocus);
+      layoutButtons->addWidget(push_button_snapshot);
+      connect(push_button_snapshot, SIGNAL(clicked()), this, SLOT(saveSnapShot_auto()));
+    }
+  }
 #endif
 
   layoutButtons->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
   pushButtonCancel = new QPushButton(this, "pushButtonCancel");
-  pushButtonCancel->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0,
+  pushButtonCancel->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0,
                                               0, 0,
                                               pushButtonCancel->sizePolicy().hasHeightForWidth()));
   pushButtonCancel->setMinimumSize(pbSize);
@@ -204,7 +209,8 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
 
 bool FLFormDB::initScript()
 {
-  if (iface) {
+  if (iface)
+  {
     aqApp->call("init", QSArgumentList(), iface);
     return true;
   }
@@ -240,9 +246,11 @@ void FLFormDB::setMainWidget(const QString &uiFileName)
 void FLFormDB::closeEvent(QCloseEvent *e)
 {
   frameGeometry();
-  if (focusWidget()) {
+  if (focusWidget())
+  {
     FLFieldDB *fdb = ::qt_cast<FLFieldDB *>(focusWidget()->parentWidget());
-    if (fdb && fdb->autoComFrame_ && fdb->autoComFrame_->isVisible()) {
+    if (fdb && fdb->autoComFrame_ && fdb->autoComFrame_->isVisible())
+    {
       fdb->autoComFrame_->hide();
       return;
     }
@@ -258,17 +266,24 @@ void FLFormDB::closeEvent(QCloseEvent *e)
 void FLFormDB::hideEvent(QHideEvent *h)
 {
   QWidget *pW = parentWidget();
-  if (pW && pW->isA("QWorkspaceChild")) {
+  if (pW && pW->isA("QWorkspaceChild"))
+  {
     QRect geo(pW->x(), pW->y(), pW->width(), pW->height());
-    if (isMinimized()) {
+    if (isMinimized())
+    {
       geo.setWidth(1);
       aqApp->saveGeometryForm(geoName(), geo);
-    } else if (isMaximized()) {
+    }
+    else if (isMaximized())
+    {
       geo.setWidth(9999);
       aqApp->saveGeometryForm(geoName(), geo);
-    } else
+    }
+    else
       aqApp->saveGeometryForm(geoName(), geo);
-  } else {
+  }
+  else
+  {
     QRect geo(x(), y(), width(), height());
     aqApp->saveGeometryForm(geoName(), geo);
   }
@@ -276,9 +291,11 @@ void FLFormDB::hideEvent(QHideEvent *h)
 
 void FLFormDB::showEvent(QShowEvent *e)
 {
-  if (!showed && mainWidget_) {
+  if (!showed && mainWidget_)
+  {
     showed = true;
-    if (cursor_ && iface) {
+    if (cursor_ && iface)
+    {
       QVariant v(aqApp->call("preloadMainFilter", QSArgumentList(), iface).variant());
       if (v.isValid() && v.type() == QVariant::String)
         cursor_->setMainFilter(v.toString(), false);
@@ -301,11 +318,13 @@ void FLFormDB::callInitScript()
 void FLFormDB::initMainWidget(QWidget *w)
 {
   QWidget *mWidget = w ? w : mainWidget_;
-  if (mWidget) {
+  if (mWidget)
+  {
     QObjectList *l = static_cast<QObject *>(mWidget)->queryList("FLTableDB");
     QObjectListIt itt(*l);
     FLTableDB *tdb;
-    while ((tdb = static_cast<FLTableDB *>(itt.current())) != 0) {
+    while ((tdb = static_cast<FLTableDB *>(itt.current())) != 0)
+    {
       ++itt;
       tdb->initCursor();
     }
@@ -314,7 +333,8 @@ void FLFormDB::initMainWidget(QWidget *w)
     l = static_cast<QObject *>(mWidget)->queryList("FLFieldDB");
     QObjectListIt itf(*l);
     FLFieldDB *fdb;
-    while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0) {
+    while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0)
+    {
       ++itf;
       fdb->initCursor();
       fdb->initEditor();
@@ -331,122 +351,68 @@ void FLFormDB::initMainWidget(QWidget *w)
       acl->process(this);
 
     QWidget *pW = parentWidget();
-    QRect desk;
-    bool parentIsDesktop = true;
-    
-    if (!(pW && pW->isA("QWorkspaceChild"))) {
-        desk = QApplication::desktop()->availableGeometry(this);
-        pW = this;
-    } else {
-        desk = pW->parentWidget()->rect();
-        parentIsDesktop = false;
+
+    if (pW && pW->isA("QWorkspaceChild"))
+    {
+      QRect geo(aqApp->geometryForm(geoName()));
+      if (geo.width() == 9999)
+      {
+        pW->resize(size().expandedTo(mWidget->size()));
+        pW->showMaximized();
+      }
+      else if (geo.width() == 1)
+      {
+        pW->resize(size().expandedTo(mWidget->size()));
+        pW->showMinimized();
+      }
+      else if (geo.isValid())
+      {
+        QRect desk = QApplication::desktop()->availableGeometry(this);
+        QRect inter = desk.intersect(geo);
+        pW->resize(geo.size());
+        if (inter.width() * inter.height() > (geo.width() * geo.height() / 20))
+          pW->move(geo.topLeft());
+      }
+      else
+        pW->resize(size().expandedTo(mWidget->size()));
+    }
+    else
+    {
+      QRect geo(aqApp->geometryForm(geoName()));
+      if (geo.width() == 9999)
+      {
+        resize(size().expandedTo(mWidget->size()));
+        showMaximized();
+      }
+      else if (geo.width() == 1)
+      {
+        resize(size().expandedTo(mWidget->size()));
+        showMinimized();
+      }
+      else if (geo.isValid())
+      {
+        QRect desk = QApplication::desktop()->availableGeometry(this);
+        QRect inter = desk.intersect(geo);
+        resize(geo.size());
+        if (inter.width() * inter.height() > (geo.width() * geo.height() / 20))
+#if defined(Q_OS_WIN32)
+          setGeometry(geo);
+#else
+          move(geo.topLeft());
+#endif
+      }
+      else
+        resize(size().expandedTo(mWidget->size()));
     }
 
-    QRect geo(aqApp->geometryForm(QObject::name()));
-    pW->show();
-    QSize oSz = mWidget->size();
-    mWidget->updateGeometry();
-    QSize bSz = mWidget->baseSize();
-    QSize SzH = mWidget->sizeHint();
-    int border = 5, border_b = 48;
-    /*
-    qDebug("geo: " + QString::number(geo.width()) + "x"  + QString::number(geo.height()));
-    qDebug("oSz: " + QString::number(oSz.width()) + "x"  + QString::number(oSz.height()));
-    qDebug("bSz: " + QString::number(bSz.width()) + "x"  + QString::number(bSz.height()));
-    qDebug("SzH: " + QString::number(SzH.width()) + "x"  + QString::number(SzH.height()));
-    */
-
-    if (geo.width() < 100 || geo.width()>9000) {
-        // qDebug(" -- reset Form Size and position -- ");
-        geo.setWidth(oSz.width());
-        geo.setHeight(oSz.height());
-        geo.moveCenter(desk.center());
-        
-        if (!parentIsDesktop) {
-            geo.moveTop(desk.top() + border - geo.top()+1);
-        }
-    }
-
-    if (geo.width() < SzH.width()) {
-        // qDebug(" -- geo width too small -- ");
-        geo.setWidth(SzH.width());
-    }
-    if (geo.height() < SzH.height()) {
-        // qDebug(" -- geo height too small -- ");
-        geo.setHeight(SzH.height());
-    }
-    // Exceeds available horizontal area:
-    if (geo.width() > desk.width() - border * 2) {
-        // qDebug(" -- geo width too big -- ");
-        geo.setWidth(desk.width() - border * 2 - 5);
-    }
-    // Exceeds available vertical area:
-    if (geo.height() > desk.height() - border - border_b) {
-        // qDebug(" -- geo height too big -- ");
-        geo.setHeight(desk.height() - border - border_b - 5);
-    }
-    if (parentIsDesktop) {
-        // Invalid position values, re-center
-        if (  geo.right() > 9000
-         || geo.left() < 1
-         || geo.bottom() > 9000
-         || geo.top() < 1 ) {
-            // qDebug(" -- geo invalid position -- ");
-            geo.moveCenter(desk.center());
-        }
-    
-
-        if ( geo.top() < desk.top() + border)  {
-            // qDebug(" -- geo position too high -- ");
-            geo.moveTop(desk.top() + border - geo.top()+1);
-        }
-
-        if ( geo.left() < desk.left() + border) {
-            // qDebug(" -- geo position too left -- ");
-            geo.moveLeft(desk.left() + border - geo.left()+1);
-        }
-
-        if ( geo.bottom() > desk.bottom() - border_b ) {
-            int diff = geo.bottom() - desk.bottom() - border_b;
-            // qDebug(" -- geo position too low -- ");
-            geo.moveTop(-diff-1);
-        }
-
-        if ( geo.right() > desk.right() - border) {
-            int diff = geo.right() - desk.right() - border;
-            // qDebug(" -- geo position too right -- ");
-            geo.moveLeft(-diff-1);
-        }
-
-        // Outside of screen, re-center:
-        if (  geo.right() > desk.right() - border  
-         || geo.left() < desk.left() + border
-         || geo.bottom() > desk.bottom() - border_b
-         || geo.top() < desk.top() + border ) {
-            // qDebug(" -- geo position out of screen -- ");
-            geo.moveCenter(desk.center());
-        }
-    }
-    mWidget->resize(geo.size());
-
-    pW->updateGeometry();
-    QSize tSz= pW->size();
-    QSize tSzH = pW->sizeHint();
-    if (tSz.width() < tSzH.width()) {
-        tSz.setWidth(tSzH.width());
-    }
-    if (tSz.height() < tSzH.height()) {
-        tSz.setHeight(tSzH.height());
-    }
-    pW->resize(tSz.expandedTo(mWidget->size()));
-    
-    pW->move(geo.topLeft());
-
-    if (!initFocusWidget_) {
+    if (!initFocusWidget_)
+    {
       itf.toFirst();
-      while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0) {
+      while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0)
+      {
         ++itf;
-        if (fdb->isEnabled()) {
+        if (fdb->isEnabled())
+        {
           initFocusWidget_ = fdb;
           break;
         }
@@ -460,9 +426,11 @@ void FLFormDB::initMainWidget(QWidget *w)
     delete l;
 
     QWidget *focWid = qApp->focusWidget();
-    if (focWid) {
+    if (focWid)
+    {
       QWidget *topWidget = focWid->topLevelWidget();
-      if (topWidget && !topWidget->inherits("FLFormDB")) {
+      if (topWidget && !topWidget->inherits("FLFormDB"))
+      {
         QWidget *topWid = focWid->parentWidget();
         while (topWid && !topWid->inherits("FLFormDB"))
           topWid = topWid->parentWidget();
@@ -470,8 +438,9 @@ void FLFormDB::initMainWidget(QWidget *w)
       }
       if (topWidget != this)
         setFocus();
-    } else setFocus();
-    
+    }
+    else
+      setFocus();
   }
 }
 
@@ -487,7 +456,8 @@ void FLFormDB::setCursor(FLSqlCursor *c)
     disconnect(cursor_, SIGNAL(destroyed(QObject *)), this, SLOT(cursorDestroyed(QObject *)));
   cursor_ = c;
   connect(cursor_, SIGNAL(destroyed(QObject *)), this, SLOT(cursorDestroyed(QObject *)));
-  if (iface && cursor_) {
+  if (iface && cursor_)
+  {
     oldCursorCtxt = cursor_->context();
     cursor_->setContext(iface);
   }
@@ -499,27 +469,25 @@ QImage FLFormDB::snapShot()
   return pix.convertToImage();
 }
 
-
 void FLFormDB::saveSnapShot_auto()
 {
-QString filename_(AQ_DISKCACHE_DIRPATH + "/../../Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png"));
-QString savefilename = QFileDialog::getSaveFileName(QString::null, QString::null,this, filename_);
+  QString filename_(AQ_DISKCACHE_DIRPATH + "/../../Snapshot_" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + QString::fromLatin1(".png"));
+  QString savefilename = QFileDialog::getSaveFileName(QString::null, QString::null, this, filename_);
   if (!savefilename.isEmpty())
-	{
-	filename_ = savefilename;
-	}
+  {
+    filename_ = savefilename;
+  }
 
-
-saveSnapShot(filename_);
+  saveSnapShot(filename_);
 }
-
 
 void FLFormDB::saveSnapShot(const QString &pathFile)
 {
 
-  //qWarning("FLFormDB : " + tr("Creando Snapshot en %1").arg(pathFile));
+  // qWarning("FLFormDB : " + tr("Creando Snapshot en %1").arg(pathFile));
   QFile fi(pathFile);
-  if (!fi.open(IO_WriteOnly)) {
+  if (!fi.open(IO_WriteOnly))
+  {
 #ifdef FL_DEBUG
     qWarning("FLFormDB : " + tr("Error I/O al intentar escribir el fichero %1").arg(pathFile));
 #endif
@@ -592,13 +560,16 @@ void FLFormDB::bindIface()
   if (!ifc)
     return;
 
-  if (ifc->obj() != this) {
-    if (oldFormObj) {
+  if (ifc->obj() != this)
+  {
+    if (oldFormObj)
+    {
       disconnect(oldFormObj, SIGNAL(destroyed()),
                  this, SLOT(oldFormObjDestroyed()));
     }
     oldFormObj = ifc->obj();
-    if (oldFormObj) {
+    if (oldFormObj)
+    {
       connect(oldFormObj, SIGNAL(destroyed()),
               this, SLOT(oldFormObjDestroyed()));
     }
@@ -659,10 +630,10 @@ QVariant FLFormDB::exec(const QString &)
 }
 
 // Silix
-void FLFormDB::setCaptionWidget(const QString &text) {
+void FLFormDB::setCaptionWidget(const QString &text)
+{
   if (text.isEmpty())
     return;
 
   setCaption(text);
 }
-

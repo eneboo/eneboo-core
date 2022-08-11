@@ -27,13 +27,11 @@
 #include "FLAccessControlLists.h"
 
 FLFormRecordDB::FLFormRecordDB(FLSqlCursor *cursor, const QString &actionName, QWidget *parent,
-                               bool showAcceptContinue) :
-  FLFormDB(parent, actionName, Qt::WStyle_Customize | Qt::WStyle_Maximize | Qt::WStyle_Title
-           | Qt::WStyle_NormalBorder | Qt::WType_Dialog | Qt::WShowModal | Qt::WStyle_SysMenu),
-  pushButtonAccept(0), pushButtonAcceptContinue(0), pushButtonFirst(0), pushButtonPrevious(0),
-  pushButtonNext(0), pushButtonLast(0), showAcceptContinue_(showAcceptContinue),
-  accepting(false), initTransLevel(0), initialModeAccess(cursor ? cursor->modeAccess()
-                                                         : FLSqlCursor::BROWSE)
+                               bool showAcceptContinue) : FLFormDB(parent, actionName, Qt::WStyle_Customize | Qt::WStyle_Maximize | Qt::WStyle_Title | Qt::WStyle_NormalBorder | Qt::WType_Dialog | Qt::WShowModal | Qt::WStyle_SysMenu),
+                                                          pushButtonAccept(0), pushButtonAcceptContinue(0), pushButtonFirst(0), pushButtonPrevious(0),
+                                                          pushButtonNext(0), pushButtonLast(0), showAcceptContinue_(showAcceptContinue),
+                                                          accepting(false), initTransLevel(0), initialModeAccess(cursor ? cursor->modeAccess()
+                                                                                                                        : FLSqlCursor::BROWSE)
 {
   setFocusPolicy(QWidget::NoFocus);
 
@@ -56,9 +54,11 @@ FLFormRecordDB::~FLFormRecordDB()
 
 void FLFormRecordDB::initForm()
 {
-  if (cursor_ && cursor_->metadata()) {
+  if (cursor_ && cursor_->metadata())
+  {
     QString caption;
-    if (action_) {
+    if (action_)
+    {
       cursor_->setAction(action_);
       caption = action_->caption();
       if (!action_->description().isEmpty())
@@ -72,29 +72,31 @@ void FLFormRecordDB::initForm()
     if (caption.isEmpty())
       caption = cursor_->metadata()->alias();
 
-    switch (cursor_->modeAccess()) {
-      case FLSqlCursor::INSERT:
-        cursor_->transaction();
-        initTransLevel = cursor_->transactionLevel();
-        setCaption(tr("Insertar ") + caption);
-        break;
+    switch (cursor_->modeAccess())
+    {
+    case FLSqlCursor::INSERT:
+      cursor_->transaction();
+      initTransLevel = cursor_->transactionLevel();
+      setCaption(tr("Insertar ") + caption);
+      break;
 
-      case FLSqlCursor::EDIT:
-        cursor_->transaction();
-        initTransLevel = cursor_->transactionLevel();
-        setCaption(tr("Editar ") + caption);
-        break;
+    case FLSqlCursor::EDIT:
+      cursor_->transaction();
+      initTransLevel = cursor_->transactionLevel();
+      setCaption(tr("Editar ") + caption);
+      break;
 
-      case FLSqlCursor::DEL:
-        break;
+    case FLSqlCursor::DEL:
+      break;
 
-      case FLSqlCursor::BROWSE:
-        cursor_->transaction();
-        initTransLevel = cursor_->transactionLevel();
-        setCaption(tr("Visualizar ") + caption);
-        break;
+    case FLSqlCursor::BROWSE:
+      cursor_->transaction();
+      initTransLevel = cursor_->transactionLevel();
+      setCaption(tr("Visualizar ") + caption);
+      break;
     }
-  } else
+  }
+  else
     setCaption(tr("No hay metadatos"));
 }
 
@@ -106,10 +108,12 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
   if (!cursor_->metadata())
     return;
 
-  if (showed) {
+  if (showed)
+  {
     if (mainWidget_ && mainWidget_ != w)
       initMainWidget(w);
-  } else
+  }
+  else
     w->hide();
 
   if (pushButtonAcceptContinue)
@@ -144,8 +148,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
   QRect desk = QApplication::desktop()->availableGeometry(this);
   QRect geo = w->geometry();
   bool tooLarge = false;
+  const int numScreens = QApplication::desktop()->numScreens();
 
-  if (geo.width() > desk.width() || geo.height() > desk.height()) {
+  if ((geo.width() > desk.width() || geo.height() > desk.height()) && numScreens == 1)
+  {
     QScrollView *sv = new QScrollView(this);
     sv->setResizePolicy(QScrollView::AutoOneFit);
     sv->hide();
@@ -156,7 +162,9 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     layoutButtons = new QHBoxLayout(layout, 3, "hlay" + name_);
     connect(this, SIGNAL(formReady()), sv, SLOT(show()));
     tooLarge = true;
-  } else {
+  }
+  else
+  {
     layout = new QVBoxLayout(this, 2, 3, "vlay" + name_);
     layout->add(w);
     layoutButtons = new QHBoxLayout(layout, 3, "hlay" + name_);
@@ -170,49 +178,51 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
   wt->show();
 
 #ifdef QSDEBUGGER
-if (FLSettings::readBoolEntry("application/isDebuggerMode"))
-	{
-  	pushButtonDebug = new QPushButton(this, "pushButtonDebug");
-  	pushButtonDebug->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0, 0, 0,
-        pushButtonDebug->sizePolicy().hasHeightForWidth()));
-  	pushButtonDebug->setMinimumSize(pbSize);
-  	pushButtonDebug->setMaximumSize(pbSize);
-  	QPixmap qsa(QPixmap::fromMimeSource("bug.png"));
-  	pushButtonDebug->setIconSet(qsa);
-  	pushButtonDebug->setAccel(QKeySequence(Qt::Key_F3));
-  	QToolTip::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
-  	QWhatsThis::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
-  	pushButtonDebug->setFocusPolicy(QWidget::NoFocus);
-  	layoutButtons->addWidget(pushButtonDebug);
-  	connect(pushButtonDebug, SIGNAL(clicked()), this, SLOT(debugScript()));
-	if (FLSettings::readBoolEntry("ebcomportamiento/show_snapshot_button"))
-		{
-		push_button_snapshot = new QPushButton(this, "pushButtonSnapShot");
-  		push_button_snapshot->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0, 0, 0,
-        	push_button_snapshot->sizePolicy().hasHeightForWidth()));
-  		push_button_snapshot->setMinimumSize(pbSize);
-  		push_button_snapshot->setMaximumSize(pbSize);
-  		QPixmap snap_shot(QPixmap::fromMimeSource("snapshot.png"));
-  		push_button_snapshot->setIconSet(snap_shot);
-  		push_button_snapshot->setAccel(QKeySequence(Qt::Key_F7));
-  		QToolTip::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
-  		QWhatsThis::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
-  		push_button_snapshot->setFocusPolicy(QWidget::NoFocus);
-  		layoutButtons->addWidget(push_button_snapshot);
-  		connect(push_button_snapshot, SIGNAL(clicked()), this, SLOT(saveSnapShot_auto()));
-		}
-  	}
+  if (FLSettings::readBoolEntry("application/isDebuggerMode"))
+  {
+    pushButtonDebug = new QPushButton(this, "pushButtonDebug");
+    pushButtonDebug->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0,
+                                               pushButtonDebug->sizePolicy().hasHeightForWidth()));
+    pushButtonDebug->setMinimumSize(pbSize);
+    pushButtonDebug->setMaximumSize(pbSize);
+    QPixmap qsa(QPixmap::fromMimeSource("bug.png"));
+    pushButtonDebug->setIconSet(qsa);
+    pushButtonDebug->setAccel(QKeySequence(Qt::Key_F3));
+    QToolTip::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
+    QWhatsThis::add(pushButtonDebug, tr("Abrir Depurador (F3)"));
+    pushButtonDebug->setFocusPolicy(QWidget::NoFocus);
+    layoutButtons->addWidget(pushButtonDebug);
+    connect(pushButtonDebug, SIGNAL(clicked()), this, SLOT(debugScript()));
+    if (FLSettings::readBoolEntry("ebcomportamiento/show_snapshot_button"))
+    {
+      push_button_snapshot = new QPushButton(this, "pushButtonSnapShot");
+      push_button_snapshot->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0,
+                                                      push_button_snapshot->sizePolicy().hasHeightForWidth()));
+      push_button_snapshot->setMinimumSize(pbSize);
+      push_button_snapshot->setMaximumSize(pbSize);
+      QPixmap snap_shot(QPixmap::fromMimeSource("snapshot.png"));
+      push_button_snapshot->setIconSet(snap_shot);
+      push_button_snapshot->setAccel(QKeySequence(Qt::Key_F7));
+      QToolTip::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
+      QWhatsThis::add(push_button_snapshot, tr("Hacer captura del formulario. (F7)"));
+      push_button_snapshot->setFocusPolicy(QWidget::NoFocus);
+      layoutButtons->addWidget(push_button_snapshot);
+      connect(push_button_snapshot, SIGNAL(clicked()), this, SLOT(saveSnapShot_auto()));
+    }
+  }
 #endif
 
   layoutButtons->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-  if (cursor_->modeAccess() == FLSqlCursor::EDIT || cursor_->modeAccess() == FLSqlCursor::BROWSE) {
-    if (!pushButtonFirst) {
+  if (cursor_->modeAccess() == FLSqlCursor::EDIT || cursor_->modeAccess() == FLSqlCursor::BROWSE)
+  {
+    if (!pushButtonFirst)
+    {
       pushButtonFirst = new QPushButton(this, "pushButtonFirst");
       connect(pushButtonFirst, SIGNAL(clicked()), this, SLOT(firstRecord()));
     }
-    pushButtonFirst->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0,
-                                               (QSizePolicy::SizeType) 0, 0, 0,
+    pushButtonFirst->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0,
+                                               (QSizePolicy::SizeType)0, 0, 0,
                                                pushButtonFirst->sizePolicy().hasHeightForWidth()));
     pushButtonFirst->setMinimumSize(pbSize);
     pushButtonFirst->setMaximumSize(pbSize);
@@ -225,17 +235,18 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
     layoutButtons->addWidget(pushButtonFirst);
     pushButtonFirst->show();
 
-    if (!pushButtonPrevious) {
+    if (!pushButtonPrevious)
+    {
       pushButtonPrevious = new QPushButton(this, "pushButtonPrevious");
       connect(pushButtonPrevious, SIGNAL(clicked()), this, SLOT(previousRecord()));
     }
     pushButtonPrevious->setSizePolicy(
-      QSizePolicy(
-        (QSizePolicy::SizeType) 0,
-        (QSizePolicy::SizeType) 0,
-        0,
-        0,
-        pushButtonPrevious->sizePolicy().hasHeightForWidth()));
+        QSizePolicy(
+            (QSizePolicy::SizeType)0,
+            (QSizePolicy::SizeType)0,
+            0,
+            0,
+            pushButtonPrevious->sizePolicy().hasHeightForWidth()));
     pushButtonPrevious->setMinimumSize(pbSize);
     pushButtonPrevious->setMaximumSize(pbSize);
     QPixmap rld2(QPixmap::fromMimeSource("previous.png"));
@@ -247,11 +258,12 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
     layoutButtons->addWidget(pushButtonPrevious);
     pushButtonPrevious->show();
 
-    if (!pushButtonNext) {
+    if (!pushButtonNext)
+    {
       pushButtonNext = new QPushButton(this, "pushButtonNext");
       connect(pushButtonNext, SIGNAL(clicked()), this, SLOT(nextRecord()));
     }
-    pushButtonNext->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0,
+    pushButtonNext->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0,
                                               0, 0,
                                               pushButtonNext->sizePolicy().hasHeightForWidth()));
     pushButtonNext->setMinimumSize(pbSize);
@@ -265,11 +277,12 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
     layoutButtons->addWidget(pushButtonNext);
     pushButtonNext->show();
 
-    if (!pushButtonLast) {
+    if (!pushButtonLast)
+    {
       pushButtonLast = new QPushButton(this, "pushButtonLast");
       connect(pushButtonLast, SIGNAL(clicked()), this, SLOT(lastRecord()));
     }
-    pushButtonLast->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0,
+    pushButtonLast->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0,
                                               0, 0,
                                               pushButtonLast->sizePolicy().hasHeightForWidth()));
     pushButtonLast->setMinimumSize(pbSize);
@@ -284,19 +297,22 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
     pushButtonLast->show();
   }
 
-  if (cursor_->modeAccess() != FLSqlCursor::BROWSE) {
-    if (showAcceptContinue_) {
-      if (!pushButtonAcceptContinue) {
+  if (cursor_->modeAccess() != FLSqlCursor::BROWSE)
+  {
+    if (showAcceptContinue_)
+    {
+      if (!pushButtonAcceptContinue)
+      {
         pushButtonAcceptContinue = new QPushButton(this, "pushButtonAcceptContinue");
         connect(pushButtonAcceptContinue, SIGNAL(clicked()), this, SLOT(acceptContinue()));
       }
       pushButtonAcceptContinue->setSizePolicy(
-        QSizePolicy(
-          (QSizePolicy::SizeType) 0,
-          (QSizePolicy::SizeType) 0,
-          0,
-          0,
-          pushButtonAcceptContinue->sizePolicy().hasHeightForWidth()));
+          QSizePolicy(
+              (QSizePolicy::SizeType)0,
+              (QSizePolicy::SizeType)0,
+              0,
+              0,
+              pushButtonAcceptContinue->sizePolicy().hasHeightForWidth()));
       pushButtonAcceptContinue->setMinimumSize(pbSize);
       pushButtonAcceptContinue->setMaximumSize(pbSize);
       QPixmap rld(QPixmap::fromMimeSource("reload.png"));
@@ -306,18 +322,19 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
       QToolTip::add(pushButtonAcceptContinue,
                     tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
       QWhatsThis::add(
-        pushButtonAcceptContinue,
-        tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
+          pushButtonAcceptContinue,
+          tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
       layoutButtons->addWidget(pushButtonAcceptContinue);
       pushButtonAcceptContinue->show();
     }
 
-    if (!pushButtonAccept) {
+    if (!pushButtonAccept)
+    {
       pushButtonAccept = new QPushButton(this, "pushButtonAccept");
       connect(pushButtonAccept, SIGNAL(clicked()), this, SLOT(accept()));
     }
-    pushButtonAccept->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0,
-                                                (QSizePolicy::SizeType) 0, 0, 0,
+    pushButtonAccept->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0,
+                                                (QSizePolicy::SizeType)0, 0, 0,
                                                 pushButtonAccept->sizePolicy().hasHeightForWidth()));
     pushButtonAccept->setMinimumSize(pbSize);
     pushButtonAccept->setMaximumSize(pbSize);
@@ -331,24 +348,28 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
     pushButtonAccept->show();
   }
 
-  if (!pushButtonCancel) {
+  if (!pushButtonCancel)
+  {
     pushButtonCancel = new QPushButton(this, "pushButtonCancel");
     connect(cursor_, SIGNAL(autoCommit()), this, SLOT(disablePushButtonCancel()));
     connect(pushButtonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   }
-  pushButtonCancel->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 0, (QSizePolicy::SizeType) 0,
+  pushButtonCancel->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0,
                                               0, 0,
                                               pushButtonCancel->sizePolicy().hasHeightForWidth()));
   pushButtonCancel->setMinimumSize(pbSize);
   pushButtonCancel->setMaximumSize(pbSize);
   QPixmap cancel(QPixmap::fromMimeSource("button_cancel.png"));
   pushButtonCancel->setIconSet(cancel);
-  if (cursor_->modeAccess() != FLSqlCursor::BROWSE) {
+  if (cursor_->modeAccess() != FLSqlCursor::BROWSE)
+  {
     pushButtonCancel->setFocusPolicy(QWidget::NoFocus);
     pushButtonCancel->setAccel(4096);
     QToolTip::add(pushButtonCancel, tr("Cancelar los cambios y cerrar formulario (Esc)"));
     QWhatsThis::add(pushButtonCancel, tr("Cancelar los cambios y cerrar formulario (Esc)"));
-  } else {
+  }
+  else
+  {
     QPixmap ok(QPixmap::fromMimeSource("button_cancel.png"));
     pushButtonCancel->setIconSet(ok);
     pushButtonCancel->setFocusPolicy(QWidget::StrongFocus);
@@ -369,7 +390,8 @@ if (FLSettings::readBoolEntry("application/isDebuggerMode"))
   mainWidget_ = w;
   mainWidget_->setFocusPolicy(QWidget::NoFocus);
 
-  if (!tooLarge) {
+  if (!tooLarge)
+  {
     int mWidth = mainWidget_->width();
     int mHeight = mainWidget_->height();
     QPoint p = desk.center() - QPoint(mWidth / 2, mHeight / 2);
@@ -397,7 +419,8 @@ void FLFormRecordDB::setMainWidget()
 
 bool FLFormRecordDB::initScript()
 {
-  if (iface && cursor_) {
+  if (iface && cursor_)
+  {
     aqApp->call("init", QSArgumentList(), iface);
     return true;
   }
@@ -436,16 +459,16 @@ bool FLFormRecordDB::validateForm()
   if (!mtd)
     return true;
 
-  if (cursor_->modeAccess() == FLSqlCursor::EDIT && mtd->concurWarn()) {
+  if (cursor_->modeAccess() == FLSqlCursor::EDIT && mtd->concurWarn())
+  {
     QStringList colFields(cursor_->concurrencyFields());
 
-    if (!colFields.isEmpty()) {
+    if (!colFields.isEmpty())
+    {
       QString pKN(mtd->primaryKey());
       QString pKWhere(
-        cursor_->db()->manager()->formatAssignValue(
-          mtd->field(pKN), cursor_->valueBuffer(pKN)
-        )
-      );
+          cursor_->db()->manager()->formatAssignValue(
+              mtd->field(pKN), cursor_->valueBuffer(pKN)));
 
       FLSqlQuery q(0, cursor_->db()->connectionName());
       q.setTablesList(mtd->name());
@@ -454,26 +477,26 @@ bool FLFormRecordDB::validateForm()
       q.setWhere(pKWhere);
       q.setForwardOnly(true);
 
-      if (q.exec() && q.next()) {
-        for (QStringList::const_iterator it = colFields.begin(); it != colFields.end(); ++it) {
+      if (q.exec() && q.next())
+      {
+        for (QStringList::const_iterator it = colFields.begin(); it != colFields.end(); ++it)
+        {
           QString msg(
-            tr("El campo '%1' con valor '%2' ha sido modificado\npor otro usuario con el valor '%3'")
-            .arg(mtd->fieldNameToAlias(*it))
-            .arg(cursor_->valueBuffer(*it).toString().left(50))
-            .arg(q.value(*it).toString().left(50))
-          );
+              tr("El campo '%1' con valor '%2' ha sido modificado\npor otro usuario con el valor '%3'")
+                  .arg(mtd->fieldNameToAlias(*it))
+                  .arg(cursor_->valueBuffer(*it).toString().left(50))
+                  .arg(q.value(*it).toString().left(50)));
 
           int res =
-            QMessageBox::warning(
-              qApp->focusWidget(),
-              tr("Aviso de concurrencia"),
-              msg + "\n\n" +
-              tr("¿ Desea realmente modificar este campo ?") + "\n\n" +
-              tr("Sí : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
-              tr("No : Respeta el cambio del otro usuario e ignora el valor que ha introducido\n") +
-              tr("Cancelar : Cancela el guardado del registro y vuelve a la edición del registro\n\n"),
-              QMessageBox::Yes | QMessageBox::Default, QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape
-            );
+              QMessageBox::warning(
+                  qApp->focusWidget(),
+                  tr("Aviso de concurrencia"),
+                  msg + "\n\n" +
+                      tr("¿ Desea realmente modificar este campo ?") + "\n\n" +
+                      tr("Sí : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
+                      tr("No : Respeta el cambio del otro usuario e ignora el valor que ha introducido\n") +
+                      tr("Cancelar : Cancela el guardado del registro y vuelve a la edición del registro\n\n"),
+                  QMessageBox::Yes | QMessageBox::Default, QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape);
           if (res == QMessageBox::Cancel)
             return false;
           if (res == QMessageBox::No)
@@ -484,7 +507,8 @@ bool FLFormRecordDB::validateForm()
   }
 
   if (iface && (cursor_->modeAccess() == FLSqlCursor::INSERT ||
-                cursor_->modeAccess() == FLSqlCursor::EDIT)) {
+                cursor_->modeAccess() == FLSqlCursor::EDIT))
+  {
     QVariant v(aqApp->call("validateForm", QSArgumentList(), iface).variant());
     if (v.isValid() && !v.toBool())
       return false;
@@ -500,26 +524,33 @@ void FLFormRecordDB::accept()
 
   accepting = true;
 
-  if (!cursor_) {
+  if (!cursor_)
+  {
     close();
     accepting = false;
     return;
   }
 
-  if (!validateForm()) {
+  if (!validateForm())
+  {
     accepting = false;
     return;
   }
 
-  if (cursor_->checkIntegrity()) {
+  if (cursor_->checkIntegrity())
+  {
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    if (!cursor_->commitBuffer()) {
+    if (!cursor_->commitBuffer())
+    {
       accepting = false;
       return;
-    } else
+    }
+    else
       cursor_->setActivatedCheckIntegrity(true);
-  } else {
+  }
+  else
+  {
     accepting = false;
     return;
   }
@@ -537,21 +568,25 @@ void FLFormRecordDB::acceptContinue()
 
   accepting = true;
 
-  if (!cursor_) {
+  if (!cursor_)
+  {
     close();
     accepting = false;
     return;
   }
 
-  if (!validateForm()) {
+  if (!validateForm())
+  {
     accepting = false;
     return;
   }
 
-  if (cursor_->checkIntegrity()) {
+  if (cursor_->checkIntegrity())
+  {
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    if (cursor_->commitBuffer()) {
+    if (cursor_->commitBuffer())
+    {
       cursor_->setActivatedCheckIntegrity(true);
       cursor_->commit();
       cursor_->setModeAccess(FLSqlCursor::INSERT);
@@ -582,31 +617,37 @@ void FLFormRecordDB::reject()
 void FLFormRecordDB::closeEvent(QCloseEvent *e)
 {
   frameGeometry();
-  if (focusWidget()) {
+  if (focusWidget())
+  {
     FLFieldDB *fdb = ::qt_cast<FLFieldDB *>(focusWidget()->parentWidget());
-    if (fdb && fdb->autoComFrame_ && fdb->autoComFrame_->isVisible()) {
+    if (fdb && fdb->autoComFrame_ && fdb->autoComFrame_->isVisible())
+    {
       fdb->autoComFrame_->hide();
       return;
     }
   }
 
-  if (cursor_) {
+  if (cursor_)
+  {
     int levels = cursor_->transactionLevel() - initTransLevel;
-    if (levels > 0) {
+    if (levels > 0)
+    {
       cursor_->rollbackOpened(
-        levels, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
-                   "Se van a cancelar las transacciones pendientes.\n"
-                   "Los últimos datos introducidos no han sido guardados, por favor\n"
-                   "revise sus últimas acciones y repita las operaciones que no\n"
-                   "se han guardado.\n") +
-        QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name())
-      );
+          levels, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+                     "Se van a cancelar las transacciones pendientes.\n"
+                     "Los últimos datos introducidos no han sido guardados, por favor\n"
+                     "revise sus últimas acciones y repita las operaciones que no\n"
+                     "se han guardado.\n") +
+                      QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
     }
-    if (accepted_) {
+    if (accepted_)
+    {
       if (!cursor_->commit())
         return;
       afterCommitTransaction();
-    } else {
+    }
+    else
+    {
       if (!cursor_->rollback())
         return;
       else
@@ -614,7 +655,8 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     }
     emit closed();
     setCursor(0);
-  } else
+  }
+  else
     emit closed();
   QWidget::closeEvent(e);
   deleteLater();
@@ -622,13 +664,16 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
 
 void FLFormRecordDB::firstRecord()
 {
-  if (cursor_ && cursor_->at() != 0) {
+  if (cursor_ && cursor_->at() != 0)
+  {
     if (!validateForm())
       return;
-    if (cursor_->checkIntegrity()) {
+    if (cursor_->checkIntegrity())
+    {
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer()) {
+      if (cursor_->commitBuffer())
+      {
         cursor_->setActivatedCheckIntegrity(true);
         cursor_->commit();
         cursor_->setModeAccess(initialModeAccess);
@@ -643,17 +688,21 @@ void FLFormRecordDB::firstRecord()
 
 void FLFormRecordDB::nextRecord()
 {
-  if (cursor_ && cursor_->isValid()) {
-    if (cursor_->at() == (cursor_->size() - 1)) {
+  if (cursor_ && cursor_->isValid())
+  {
+    if (cursor_->at() == (cursor_->size() - 1))
+    {
       firstRecord();
       return;
     }
     if (!validateForm())
       return;
-    if (cursor_->checkIntegrity()) {
+    if (cursor_->checkIntegrity())
+    {
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer()) {
+      if (cursor_->commitBuffer())
+      {
         cursor_->setActivatedCheckIntegrity(true);
         cursor_->commit();
         cursor_->setModeAccess(initialModeAccess);
@@ -668,17 +717,21 @@ void FLFormRecordDB::nextRecord()
 
 void FLFormRecordDB::previousRecord()
 {
-  if (cursor_ && cursor_->isValid()) {
-    if (cursor_->at() == 0) {
+  if (cursor_ && cursor_->isValid())
+  {
+    if (cursor_->at() == 0)
+    {
       lastRecord();
       return;
     }
     if (!validateForm())
       return;
-    if (cursor_->checkIntegrity()) {
+    if (cursor_->checkIntegrity())
+    {
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer()) {
+      if (cursor_->commitBuffer())
+      {
         cursor_->setActivatedCheckIntegrity(true);
         cursor_->commit();
         cursor_->setModeAccess(initialModeAccess);
@@ -693,13 +746,16 @@ void FLFormRecordDB::previousRecord()
 
 void FLFormRecordDB::lastRecord()
 {
-  if (cursor_ && cursor_->at() != (cursor_->size() - 1)) {
+  if (cursor_ && cursor_->at() != (cursor_->size() - 1))
+  {
     if (!validateForm())
       return;
-    if (cursor_->checkIntegrity()) {
+    if (cursor_->checkIntegrity())
+    {
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer()) {
+      if (cursor_->commitBuffer())
+      {
         cursor_->setActivatedCheckIntegrity(true);
         cursor_->commit();
         cursor_->setModeAccess(initialModeAccess);
@@ -748,13 +804,16 @@ void FLFormRecordDB::bindIface()
   if (!ifc)
     return;
 
-  if (ifc->obj() != this) {
-    if (oldFormObj) {
+  if (ifc->obj() != this)
+  {
+    if (oldFormObj)
+    {
       disconnect(oldFormObj, SIGNAL(destroyed()),
                  this, SLOT(oldFormObjDestroyed()));
     }
     oldFormObj = ifc->obj();
-    if (oldFormObj) {
+    if (oldFormObj)
+    {
       connect(oldFormObj, SIGNAL(destroyed()),
               this, SLOT(oldFormObjDestroyed()));
     }
@@ -785,21 +844,23 @@ QString FLFormRecordDB::formClassName() const
 }
 
 // Silix
-void FLFormRecordDB::setCaptionWidget(const QString &text) {
+void FLFormRecordDB::setCaptionWidget(const QString &text)
+{
   if (text.isEmpty())
     return;
 
-  switch (cursor_->modeAccess()) {
-    case FLSqlCursor::INSERT:
-      setCaption(tr("Insertar ") + text);
-      break;
+  switch (cursor_->modeAccess())
+  {
+  case FLSqlCursor::INSERT:
+    setCaption(tr("Insertar ") + text);
+    break;
 
-    case FLSqlCursor::EDIT:
-      setCaption(tr("Editar ") + text);
-      break;
+  case FLSqlCursor::EDIT:
+    setCaption(tr("Editar ") + text);
+    break;
 
-    case FLSqlCursor::BROWSE:
-      setCaption(tr("Visualizar ") + text);
-      break;
+  case FLSqlCursor::BROWSE:
+    setCaption(tr("Visualizar ") + text);
+    break;
   }
 }
