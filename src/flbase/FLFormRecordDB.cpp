@@ -640,36 +640,31 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
                      "se han guardado.\n") +
                       QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
     }
-    if (FLSettings::readBoolEntry("application/delegate_commit"))
+
+    if (accepted_)
     {
-      qDebug("Llamando a sys.delegateCommit");
-      QVariant v = aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys").variant();
-      if (v.isValid() && !v.toBool())
+      if (FLSettings::readBoolEntry("application/delegateCommit"))
       {
-        qDebug("delegateCommit devolvió false");
-        return;
+        qDebug("Llamando a sys.delegateCommit");
+        QVariant v = aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys").variant();
+        if (v.isValid() && !v.toBool())
+        {
+          return;
+        }
       }
       else
-      {
-        qDebug("delegateCommit devolvió ok");
-      }
-    }
-    else
-
-    {
-      if (accepted_)
       {
         if (!cursor_->commit())
           return;
         afterCommitTransaction();
       }
+    }
+    else
+    {
+      if (!cursor_->rollback())
+        return;
       else
-      {
-        if (!cursor_->rollback())
-          return;
-        else
-          cursor_->QSqlCursor::select();
-      }
+        cursor_->QSqlCursor::select();
     }
 
     emit closed();
