@@ -643,7 +643,8 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     if (FLSettings::readBoolEntry("application/delegate_commit"))
     {
       qDebug("Llamando a sys.delegateCommit");
-      if (!aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys"))
+      QVariant v = aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys").variant();
+      if (v.isValid() && !v.toBool())
       {
         qDebug("delegateCommit devolvió false");
         return;
