@@ -2462,3 +2462,8 @@ function serverTime()
   }
   return ahora;
 }
+
+function delegateCommit(cursor) {
+	debug("delegateCommit " + cursor.curName());
+	return true;
+}
