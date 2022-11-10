@@ -605,6 +605,10 @@ void FLFormRecordDB::acceptContinue()
       {
         cursor_->commit();
       }
+      else
+      {
+        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+      }
 
       cursor_->setModeAccess(FLSqlCursor::INSERT);
       accepted_ = false;
@@ -666,7 +670,6 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     {
       if (delegate_commit)
       {
-        qDebug("Llamando a sys.delegateCommit");
         QVariant v = aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys").variant();
         if (v.isValid() && !v.toBool())
         {
@@ -715,6 +718,11 @@ void FLFormRecordDB::firstRecord()
         {
           cursor_->commit();
         }
+        else
+        {
+          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+        }
+
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!delegate_commit)
@@ -750,6 +758,10 @@ void FLFormRecordDB::nextRecord()
         if (!delegate_commit)
         {
           cursor_->commit();
+        }
+        else
+        {
+          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
         }
 
         cursor_->setModeAccess(initialModeAccess);
@@ -789,6 +801,10 @@ void FLFormRecordDB::previousRecord()
         {
           cursor_->commit();
         }
+        else
+        {
+          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+        }
 
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
@@ -822,6 +838,11 @@ void FLFormRecordDB::lastRecord()
         {
           cursor_->commit();
         }
+        else
+        {
+          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+        }
+
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!delegate_commit)
