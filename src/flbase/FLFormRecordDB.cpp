@@ -55,7 +55,7 @@ FLFormRecordDB::~FLFormRecordDB()
 void FLFormRecordDB::initForm()
 {
 
-  bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+  delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
 
   if (cursor_ && cursor_->metadata())
   {
@@ -553,7 +553,17 @@ void FLFormRecordDB::accept()
   {
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    if (!cursor_->commitBuffer())
+    bool result_commit_buffer = true;
+    if (!delegate_commit)
+    {
+      result_commit_buffer = cursor_->commitBuffer();
+    }
+    else
+    {
+      aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+    }
+
+    if (!result_commit_buffer)
     {
       accepting = false;
       return;
@@ -595,19 +605,25 @@ void FLFormRecordDB::acceptContinue()
 
   if (cursor_->checkIntegrity())
   {
-    bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    if (cursor_->commitBuffer())
+    bool result_commit_buffer = true;
+    if (!delegate_commit)
+    {
+      result_commit_buffer = cursor_->commitBuffer();
+    }
+    else
+    {
+      aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+    }
+
+    if (result_commit_buffer)
     {
       cursor_->setActivatedCheckIntegrity(true);
       if (!delegate_commit)
       {
         cursor_->commit();
-      }
-      else
-      {
-        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
       }
 
       cursor_->setModeAccess(FLSqlCursor::INSERT);
@@ -640,7 +656,7 @@ void FLFormRecordDB::reject()
 
 void FLFormRecordDB::closeEvent(QCloseEvent *e)
 {
-  bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
   frameGeometry();
   if (focusWidget())
   {
@@ -668,15 +684,7 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
 
     if (accepted_)
     {
-      if (delegate_commit)
-      {
-        QVariant v = aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys").variant();
-        if (v.isValid() && !v.toBool())
-        {
-          return;
-        }
-      }
-      else
+      if (!delegate_commit)
       {
         if (!cursor_->commit())
           return;
@@ -708,19 +716,25 @@ void FLFormRecordDB::firstRecord()
       return;
     if (cursor_->checkIntegrity())
     {
-      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+      bool result_commit_buffer = true;
+      if (!delegate_commit)
+      {
+        result_commit_buffer = cursor_->commitBuffer();
+      }
+      else
+      {
+        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+      }
+
+      if (result_commit_buffer)
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
         {
           cursor_->commit();
-        }
-        else
-        {
-          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
         }
 
         cursor_->setModeAccess(initialModeAccess);
@@ -749,19 +763,25 @@ void FLFormRecordDB::nextRecord()
       return;
     if (cursor_->checkIntegrity())
     {
-      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+      bool result_commit_buffer = true;
+      if (!delegate_commit)
+      {
+        result_commit_buffer = cursor_->commitBuffer();
+      }
+      else
+      {
+        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+      }
+
+      if (result_commit_buffer)
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
         {
           cursor_->commit();
-        }
-        else
-        {
-          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
         }
 
         cursor_->setModeAccess(initialModeAccess);
@@ -791,19 +811,25 @@ void FLFormRecordDB::previousRecord()
       return;
     if (cursor_->checkIntegrity())
     {
-      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+      bool result_commit_buffer = true;
+      if (!delegate_commit)
+      {
+        result_commit_buffer = cursor_->commitBuffer();
+      }
+      else
+      {
+        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+      }
+
+      if (result_commit_buffer)
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
         {
           cursor_->commit();
-        }
-        else
-        {
-          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
         }
 
         cursor_->setModeAccess(initialModeAccess);
@@ -828,21 +854,25 @@ void FLFormRecordDB::lastRecord()
       return;
     if (cursor_->checkIntegrity())
     {
-      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+      bool result_commit_buffer = true;
+      if (!delegate_commit)
+      {
+        result_commit_buffer = cursor_->commitBuffer();
+      }
+      else
+      {
+        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
+      }
+      if (result_commit_buffer)
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
         {
           cursor_->commit();
         }
-        else
-        {
-          aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-        }
-
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!delegate_commit)

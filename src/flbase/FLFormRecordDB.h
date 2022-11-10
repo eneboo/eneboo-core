@@ -43,12 +43,11 @@ edición de registros definidos en los metadatos
 
 @author InfoSiAL S.L.
 */
-class FLFormRecordDB: public FLFormDB
+class FLFormRecordDB : public FLFormDB
 {
   Q_OBJECT
 
 public:
-
   /**
   constructor.
 
@@ -92,7 +91,6 @@ public:
   QString formClassName() const;
 
 protected:
-
   /**
   Inicialización
   */
@@ -198,8 +196,8 @@ protected:
   Boton Ultimo
   */
   QPushButton *pushButtonLast;
-  
-    #ifdef QSDEBUGGER
+
+#ifdef QSDEBUGGER
   /**
   Boton Debug Script
   */
@@ -232,7 +230,6 @@ public slots:
   Devuelve el script asociado al formulario
   */
   virtual QSScript *script() const;
-  
 
 protected slots:
 
@@ -262,7 +259,6 @@ protected slots:
   void disablePushButtonCancel();
 
 private:
-
   /**
   Indica si se debe mostrar el botón Aceptar y Continuar
   */
@@ -282,6 +278,11 @@ private:
   Registra el nivel de anidamiento de transacciones en el que se entra al iniciar el formulario
   */
   int initTransLevel;
+
+  /**
+  Gestiona delegateCommit
+  */
+  bool delegate_commit;
 };
 
 #endif
