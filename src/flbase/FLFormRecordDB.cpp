@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLFormRecordDB.h"
@@ -54,6 +54,9 @@ FLFormRecordDB::~FLFormRecordDB()
 
 void FLFormRecordDB::initForm()
 {
+
+  bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+
   if (cursor_ && cursor_->metadata())
   {
     QString caption;
@@ -75,14 +78,20 @@ void FLFormRecordDB::initForm()
     switch (cursor_->modeAccess())
     {
     case FLSqlCursor::INSERT:
-      cursor_->transaction();
-      initTransLevel = cursor_->transactionLevel();
+      if (!delegate_commit)
+      {
+        cursor_->transaction();
+        initTransLevel = cursor_->transactionLevel();
+      }
       setCaption(tr("Insertar ") + caption);
       break;
 
     case FLSqlCursor::EDIT:
-      cursor_->transaction();
-      initTransLevel = cursor_->transactionLevel();
+      if (!delegate_commit)
+      {
+        cursor_->transaction();
+        initTransLevel = cursor_->transactionLevel();
+      }
       setCaption(tr("Editar ") + caption);
       break;
 
@@ -90,8 +99,11 @@ void FLFormRecordDB::initForm()
       break;
 
     case FLSqlCursor::BROWSE:
-      cursor_->transaction();
-      initTransLevel = cursor_->transactionLevel();
+      if (!delegate_commit)
+      {
+        cursor_->transaction();
+        initTransLevel = cursor_->transactionLevel();
+      }
       setCaption(tr("Visualizar ") + caption);
       break;
     }
@@ -290,8 +302,8 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     QPixmap rld4(QPixmap::fromMimeSource("last.png"));
     pushButtonLast->setIconSet(rld4);
     pushButtonLast->setAccel(QKeySequence(Qt::Key_F8));
-    QToolTip::add(pushButtonLast, tr("Aceptar los cambios e ir al último registro (F8)"));
-    QWhatsThis::add(pushButtonLast, tr("Aceptar los cambios e ir al último registro (F8)"));
+    QToolTip::add(pushButtonLast, tr("Aceptar los cambios e ir al ï¿½ltimo registro (F8)"));
+    QWhatsThis::add(pushButtonLast, tr("Aceptar los cambios e ir al ï¿½ltimo registro (F8)"));
     pushButtonLast->setFocusPolicy(QWidget::NoFocus);
     layoutButtons->addWidget(pushButtonLast);
     pushButtonLast->show();
@@ -320,10 +332,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
       pushButtonAcceptContinue->setFocusPolicy(QWidget::NoFocus);
       pushButtonAcceptContinue->setAccel(QKeySequence(Qt::Key_F9));
       QToolTip::add(pushButtonAcceptContinue,
-                    tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
+                    tr("Aceptar los cambios y continuar con la ediciï¿½n de un nuevo registro (F9)"));
       QWhatsThis::add(
           pushButtonAcceptContinue,
-          tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
+          tr("Aceptar los cambios y continuar con la ediciï¿½n de un nuevo registro (F9)"));
       layoutButtons->addWidget(pushButtonAcceptContinue);
       pushButtonAcceptContinue->show();
     }
@@ -492,10 +504,10 @@ bool FLFormRecordDB::validateForm()
                   qApp->focusWidget(),
                   tr("Aviso de concurrencia"),
                   msg + "\n\n" +
-                      tr("¿ Desea realmente modificar este campo ?") + "\n\n" +
-                      tr("Sí : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
+                      tr("ï¿½ Desea realmente modificar este campo ?") + "\n\n" +
+                      tr("Sï¿½ : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
                       tr("No : Respeta el cambio del otro usuario e ignora el valor que ha introducido\n") +
-                      tr("Cancelar : Cancela el guardado del registro y vuelve a la edición del registro\n\n"),
+                      tr("Cancelar : Cancela el guardado del registro y vuelve a la ediciï¿½n del registro\n\n"),
                   QMessageBox::Yes | QMessageBox::Default, QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape);
           if (res == QMessageBox::Cancel)
             return false;
@@ -583,12 +595,17 @@ void FLFormRecordDB::acceptContinue()
 
   if (cursor_->checkIntegrity())
   {
+    bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
     if (cursor_->commitBuffer())
     {
       cursor_->setActivatedCheckIntegrity(true);
-      cursor_->commit();
+      if (!delegate_commit)
+      {
+        cursor_->commit();
+      }
+
       cursor_->setModeAccess(FLSqlCursor::INSERT);
       accepted_ = false;
       QString caption;
@@ -596,7 +613,10 @@ void FLFormRecordDB::acceptContinue()
         caption = action_->caption();
       if (caption.isEmpty())
         caption = cursor_->metadata()->alias();
-      cursor_->transaction();
+      if (!delegate_commit)
+      {
+        cursor_->transaction();
+      }
       setCaption(tr("Insertar ") + caption);
       if (initFocusWidget_)
         initFocusWidget_->setFocus();
@@ -616,6 +636,7 @@ void FLFormRecordDB::reject()
 
 void FLFormRecordDB::closeEvent(QCloseEvent *e)
 {
+  bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
   frameGeometry();
   if (focusWidget())
   {
@@ -633,17 +654,17 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     if (levels > 0)
     {
       cursor_->rollbackOpened(
-          levels, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+          levels, tr("Se han detectado transacciones no finalizadas en la ï¿½ltima operaciï¿½n.\n"
                      "Se van a cancelar las transacciones pendientes.\n"
-                     "Los últimos datos introducidos no han sido guardados, por favor\n"
-                     "revise sus últimas acciones y repita las operaciones que no\n"
+                     "Los ï¿½ltimos datos introducidos no han sido guardados, por favor\n"
+                     "revise sus ï¿½ltimas acciones y repita las operaciones que no\n"
                      "se han guardado.\n") +
                       QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
     }
 
     if (accepted_)
     {
-      if (FLSettings::readBoolEntry("application/delegateCommit"))
+      if (delegate_commit)
       {
         qDebug("Llamando a sys.delegateCommit");
         QVariant v = aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys").variant();
@@ -661,7 +682,7 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     }
     else
     {
-      if (!cursor_->rollback())
+      if (!delegate_commit && !cursor_->rollback())
         return;
       else
         cursor_->QSqlCursor::select();
@@ -684,15 +705,22 @@ void FLFormRecordDB::firstRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
       if (cursor_->commitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        if (!delegate_commit)
+        {
+          cursor_->commit();
+        }
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!delegate_commit)
+        {
+          cursor_->transaction();
+        }
         cursor_->first();
         initScript();
       }
@@ -713,15 +741,24 @@ void FLFormRecordDB::nextRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
       if (cursor_->commitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        if (!delegate_commit)
+        {
+          cursor_->commit();
+        }
+
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!delegate_commit)
+        {
+          cursor_->transaction();
+        }
+
         cursor_->next();
         initScript();
       }
@@ -742,15 +779,24 @@ void FLFormRecordDB::previousRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
       if (cursor_->commitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        if (!delegate_commit)
+        {
+          cursor_->commit();
+        }
+
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!delegate_commit)
+        {
+          cursor_->transaction();
+        }
+
         cursor_->prev();
         initScript();
       }
@@ -766,15 +812,22 @@ void FLFormRecordDB::lastRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+      bool delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
       if (cursor_->commitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        if (!delegate_commit)
+        {
+          cursor_->commit();
+        }
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!delegate_commit)
+        {
+          cursor_->transaction();
+        }
         cursor_->last();
         initScript();
       }
