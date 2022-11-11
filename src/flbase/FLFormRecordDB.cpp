@@ -954,7 +954,7 @@ bool FLFormRecordDB::doCommitBuffer()
   else
   {
     last_delegate_commit_result = true;
-    FLSqlCursorInterface cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
+    FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
     QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
     if (v.isValid())
     {
