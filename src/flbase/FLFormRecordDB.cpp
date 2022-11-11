@@ -553,17 +553,8 @@ void FLFormRecordDB::accept()
   {
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    bool result_commit_buffer = true;
-    if (!delegate_commit)
-    {
-      result_commit_buffer = cursor_->commitBuffer();
-    }
-    else
-    {
-      aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-    }
 
-    if (!result_commit_buffer)
+    if (!doCommitBuffer())
     {
       accepting = false;
       return;
@@ -608,17 +599,8 @@ void FLFormRecordDB::acceptContinue()
 
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    bool result_commit_buffer = true;
-    if (!delegate_commit)
-    {
-      result_commit_buffer = cursor_->commitBuffer();
-    }
-    else
-    {
-      aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-    }
 
-    if (result_commit_buffer)
+    if (doCommitBuffer())
     {
       cursor_->setActivatedCheckIntegrity(true);
       if (!delegate_commit)
@@ -690,13 +672,25 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
           return;
         afterCommitTransaction();
       }
+      else
+      {
+        if (!last_delegate_commit_result)
+          return;
+      }
     }
     else
     {
-      if (!delegate_commit && !cursor_->rollback())
+      if (!delegate_commit)
+      {
+        if (!cursor_->rollback())
+        {
+          return;
+        }
+      }
+      else if (!last_delegate_commit_result)
         return;
-      else
-        cursor_->QSqlCursor::select();
+
+      cursor_->QSqlCursor::select();
     }
 
     emit closed();
@@ -719,17 +713,8 @@ void FLFormRecordDB::firstRecord()
 
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      bool result_commit_buffer = true;
-      if (!delegate_commit)
-      {
-        result_commit_buffer = cursor_->commitBuffer();
-      }
-      else
-      {
-        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-      }
 
-      if (result_commit_buffer)
+      if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
@@ -766,17 +751,8 @@ void FLFormRecordDB::nextRecord()
 
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      bool result_commit_buffer = true;
-      if (!delegate_commit)
-      {
-        result_commit_buffer = cursor_->commitBuffer();
-      }
-      else
-      {
-        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-      }
 
-      if (result_commit_buffer)
+      if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
@@ -814,17 +790,8 @@ void FLFormRecordDB::previousRecord()
 
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      bool result_commit_buffer = true;
-      if (!delegate_commit)
-      {
-        result_commit_buffer = cursor_->commitBuffer();
-      }
-      else
-      {
-        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-      }
 
-      if (result_commit_buffer)
+      if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
@@ -857,16 +824,8 @@ void FLFormRecordDB::lastRecord()
 
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      bool result_commit_buffer = true;
-      if (!delegate_commit)
-      {
-        result_commit_buffer = cursor_->commitBuffer();
-      }
-      else
-      {
-        aqApp->call("delegateCommit", QSArgumentList(cursor_), "sys");
-      }
-      if (result_commit_buffer)
+
+      if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
         if (!delegate_commit)
@@ -980,5 +939,28 @@ void FLFormRecordDB::setCaptionWidget(const QString &text)
   case FLSqlCursor::BROWSE:
     setCaption(tr("Visualizar ") + text);
     break;
+  }
+}
+
+bool FLFormRecordDB::doCommitBuffer()
+{
+  bool result = true;
+  // Si no es delegate_commit o es system_table
+  if (!delegate_commit || cursor_->db()->manager()->isSystemTable(cursor_->metadata()->name()))
+  {
+
+    result = cursor_->commitBuffer();
+  }
+  else
+  {
+    last_delegate_commit_result = true;
+    FLSqlCursorInterface cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
+    QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
+    if (v.isValid())
+    {
+      result = last_delegate_commit_result = v.toBool();
+    }
+
+    return result;
   }
 }

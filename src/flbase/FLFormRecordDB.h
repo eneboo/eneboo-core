@@ -101,6 +101,12 @@ protected:
   */
   QString formName() const;
 
+  /***
+  Lanza commitBuffer o llama a sys.delegateCommit según proceda.
+  */
+
+  bool doCommitBuffer();
+
   /**
   Une la interfaz de script al objeto del formulario
   */
@@ -283,6 +289,7 @@ private:
   Gestiona delegateCommit
   */
   bool delegate_commit;
+  bool last_delegate_commit_result;
 };
 
 #endif
