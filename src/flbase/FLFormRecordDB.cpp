@@ -56,6 +56,7 @@ void FLFormRecordDB::initForm()
 {
 
   delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
+  last_delegate_commit_result = true;
 
   if (cursor_ && cursor_->metadata())
   {
