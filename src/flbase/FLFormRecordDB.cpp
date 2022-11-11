@@ -960,9 +960,8 @@ bool FLFormRecordDB::doCommitBuffer()
     {
       result = last_delegate_commit_result = v.toBool();
     }
-
-    return result;
   }
+  return result;
 }
 
 bool FLFormRecordDB::useDelegateCommit()
