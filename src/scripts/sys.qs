@@ -2464,6 +2464,6 @@ function serverTime()
 }
 
 function delegateCommit(cursor) {
-	debug("delegateCommit " + cursor.curName());
+	debug("delegateCommit " + cursor.action());
 	return true;
 }

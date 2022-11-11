@@ -108,6 +108,12 @@ protected:
   bool doCommitBuffer();
 
   /**
+   Retorna si se cumplen las condiciones para usar delegateCommit.
+  */
+
+  bool useDelegateCommit();
+
+  /**
   Une la interfaz de script al objeto del formulario
   */
   void bindIface();

@@ -78,7 +78,7 @@ void FLFormRecordDB::initForm()
     switch (cursor_->modeAccess())
     {
     case FLSqlCursor::INSERT:
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         cursor_->transaction();
         initTransLevel = cursor_->transactionLevel();
@@ -87,7 +87,7 @@ void FLFormRecordDB::initForm()
       break;
 
     case FLSqlCursor::EDIT:
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         cursor_->transaction();
         initTransLevel = cursor_->transactionLevel();
@@ -99,7 +99,7 @@ void FLFormRecordDB::initForm()
       break;
 
     case FLSqlCursor::BROWSE:
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         cursor_->transaction();
         initTransLevel = cursor_->transactionLevel();
@@ -603,7 +603,7 @@ void FLFormRecordDB::acceptContinue()
     if (doCommitBuffer())
     {
       cursor_->setActivatedCheckIntegrity(true);
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         cursor_->commit();
       }
@@ -615,7 +615,7 @@ void FLFormRecordDB::acceptContinue()
         caption = action_->caption();
       if (caption.isEmpty())
         caption = cursor_->metadata()->alias();
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         cursor_->transaction();
       }
@@ -666,7 +666,7 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
 
     if (accepted_)
     {
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         if (!cursor_->commit())
           return;
@@ -680,7 +680,7 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     }
     else
     {
-      if (!delegate_commit)
+      if (!useDelegateCommit())
       {
         if (!cursor_->rollback())
         {
@@ -717,14 +717,14 @@ void FLFormRecordDB::firstRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->commit();
         }
 
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -755,14 +755,14 @@ void FLFormRecordDB::nextRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->commit();
         }
 
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -794,14 +794,14 @@ void FLFormRecordDB::previousRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->commit();
         }
 
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -828,13 +828,13 @@ void FLFormRecordDB::lastRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->commit();
         }
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!delegate_commit)
+        if (!useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -945,8 +945,8 @@ void FLFormRecordDB::setCaptionWidget(const QString &text)
 bool FLFormRecordDB::doCommitBuffer()
 {
   bool result = true;
-  // Si no es delegate_commit o es system_table
-  if (!delegate_commit || cursor_->db()->manager()->isSystemTable(cursor_->metadata()->name()))
+
+  if (!useDelegateCommit())
   {
 
     result = cursor_->commitBuffer();
@@ -963,4 +963,9 @@ bool FLFormRecordDB::doCommitBuffer()
 
     return result;
   }
+}
+
+bool FLFormRecordDB::useDelegateCommit()
+{
+  return delegate_commit && !cursor_->db()->manager()->isSystemTable(cursor_->metadata()->name());
 }
