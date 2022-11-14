@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
- versiï¿½n 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
+ versión 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLFormRecordDB.h"
@@ -55,11 +55,11 @@ FLFormRecordDB::~FLFormRecordDB()
 void FLFormRecordDB::initForm()
 {
 
-  delegate_commit = FLSettings::readBoolEntry("application/delegateCommit");
   last_delegate_commit_result = true;
 
   if (cursor_ && cursor_->metadata())
   {
+    cursor_->isDelegateCommit = FLSettings::readBoolEntry("application/delegateCommit");
     QString caption;
     if (action_)
     {
@@ -303,8 +303,8 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     QPixmap rld4(QPixmap::fromMimeSource("last.png"));
     pushButtonLast->setIconSet(rld4);
     pushButtonLast->setAccel(QKeySequence(Qt::Key_F8));
-    QToolTip::add(pushButtonLast, tr("Aceptar los cambios e ir al ï¿½ltimo registro (F8)"));
-    QWhatsThis::add(pushButtonLast, tr("Aceptar los cambios e ir al ï¿½ltimo registro (F8)"));
+    QToolTip::add(pushButtonLast, tr("Aceptar los cambios e ir al último registro (F8)"));
+    QWhatsThis::add(pushButtonLast, tr("Aceptar los cambios e ir al último registro (F8)"));
     pushButtonLast->setFocusPolicy(QWidget::NoFocus);
     layoutButtons->addWidget(pushButtonLast);
     pushButtonLast->show();
@@ -333,10 +333,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
       pushButtonAcceptContinue->setFocusPolicy(QWidget::NoFocus);
       pushButtonAcceptContinue->setAccel(QKeySequence(Qt::Key_F9));
       QToolTip::add(pushButtonAcceptContinue,
-                    tr("Aceptar los cambios y continuar con la ediciï¿½n de un nuevo registro (F9)"));
+                    tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
       QWhatsThis::add(
           pushButtonAcceptContinue,
-          tr("Aceptar los cambios y continuar con la ediciï¿½n de un nuevo registro (F9)"));
+          tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
       layoutButtons->addWidget(pushButtonAcceptContinue);
       pushButtonAcceptContinue->show();
     }
@@ -505,10 +505,10 @@ bool FLFormRecordDB::validateForm()
                   qApp->focusWidget(),
                   tr("Aviso de concurrencia"),
                   msg + "\n\n" +
-                      tr("ï¿½ Desea realmente modificar este campo ?") + "\n\n" +
-                      tr("Sï¿½ : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
+                      tr("¿ Desea realmente modificar este campo ?") + "\n\n" +
+                      tr("Sí : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
                       tr("No : Respeta el cambio del otro usuario e ignora el valor que ha introducido\n") +
-                      tr("Cancelar : Cancela el guardado del registro y vuelve a la ediciï¿½n del registro\n\n"),
+                      tr("Cancelar : Cancela el guardado del registro y vuelve a la edición del registro\n\n"),
                   QMessageBox::Yes | QMessageBox::Default, QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape);
           if (res == QMessageBox::Cancel)
             return false;
@@ -604,10 +604,7 @@ void FLFormRecordDB::acceptContinue()
     if (doCommitBuffer())
     {
       cursor_->setActivatedCheckIntegrity(true);
-      if (!useDelegateCommit())
-      {
-        cursor_->commit();
-      }
+      doCommit();
 
       cursor_->setModeAccess(FLSqlCursor::INSERT);
       accepted_ = false;
@@ -657,39 +654,28 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     if (levels > 0)
     {
       cursor_->rollbackOpened(
-          levels, tr("Se han detectado transacciones no finalizadas en la ï¿½ltima operaciï¿½n.\n"
+          levels, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
                      "Se van a cancelar las transacciones pendientes.\n"
-                     "Los ï¿½ltimos datos introducidos no han sido guardados, por favor\n"
-                     "revise sus ï¿½ltimas acciones y repita las operaciones que no\n"
+                     "Los últimos datos introducidos no han sido guardados, por favor\n"
+                     "revise sus últimas acciones y repita las operaciones que no\n"
                      "se han guardado.\n") +
                       QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
     }
 
     if (accepted_)
     {
+      if (!doCommit())
+        return;
       if (!useDelegateCommit())
-      {
-        if (!cursor_->commit())
-          return;
         afterCommitTransaction();
-      }
-      else
-      {
-        if (!last_delegate_commit_result)
-          return;
-      }
     }
     else
     {
       if (!useDelegateCommit())
       {
         if (!cursor_->rollback())
-        {
           return;
-        }
       }
-      else if (!last_delegate_commit_result)
-        return;
 
       cursor_->QSqlCursor::select();
     }
@@ -718,11 +704,7 @@ void FLFormRecordDB::firstRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!useDelegateCommit())
-        {
-          cursor_->commit();
-        }
-
+        doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!useDelegateCommit())
@@ -756,11 +738,7 @@ void FLFormRecordDB::nextRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!useDelegateCommit())
-        {
-          cursor_->commit();
-        }
-
+        doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!useDelegateCommit())
@@ -795,11 +773,7 @@ void FLFormRecordDB::previousRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!useDelegateCommit())
-        {
-          cursor_->commit();
-        }
-
+        doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!useDelegateCommit())
@@ -829,10 +803,7 @@ void FLFormRecordDB::lastRecord()
       if (doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        if (!useDelegateCommit())
-        {
-          cursor_->commit();
-        }
+        doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         if (!useDelegateCommit())
@@ -949,11 +920,15 @@ bool FLFormRecordDB::doCommitBuffer()
 
   if (!useDelegateCommit())
   {
-
     result = cursor_->commitBuffer();
   }
   else
   {
+
+    QString pKName = cursor_->metadata()->primaryKey();
+    QVariant pKValue(cursor_->valueBuffer(cursor_->metadata()->primaryKey()));
+    bool isModeInsert = cursor_->modeAccess() == cursor_->Insert;
+
     last_delegate_commit_result = true;
     FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
     QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
@@ -961,11 +936,26 @@ bool FLFormRecordDB::doCommitBuffer()
     {
       result = last_delegate_commit_result = v.toBool();
     }
+    if (result)
+    {
+      qWarning("doCommitBuffer ok");
+      if (isModeInsert)
+      {
+        qWarning("Modo Insert!, reposicionando!");
+        QString pKWhere(cursor_->db()->manager()->formatAssignValue(cursor_->metadata()->field(pKName), pKValue));
+        cursor_->select(pKWhere);
+      }
+    }
   }
   return result;
 }
 
 bool FLFormRecordDB::useDelegateCommit()
 {
-  return delegate_commit && !cursor_->db()->manager()->isSystemTable(cursor_->metadata()->name());
+  return cursor_->isDelegateCommit && !cursor_->db()->manager()->isSystemTable(cursor_->metadata()->name());
+}
+
+bool FLFormRecordDB::doCommit()
+{
+  return (useDelegateCommit() ? last_delegate_commit_result : cursor_->commit());
 }

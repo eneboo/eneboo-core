@@ -101,11 +101,17 @@ protected:
   */
   QString formName() const;
 
-  /***
+  /**
   Lanza commitBuffer o llama a sys.delegateCommit según proceda.
   */
 
   bool doCommitBuffer();
+
+  /**
+  Lanza commit del cursor o reposiciona el cusor, sengun proceda.
+  */
+
+  bool doCommit();
 
   /**
    Retorna si se cumplen las condiciones para usar delegateCommit.
@@ -294,7 +300,7 @@ private:
   /**
   Gestiona delegateCommit
   */
-  bool delegate_commit;
+
   bool last_delegate_commit_result;
 };
 
