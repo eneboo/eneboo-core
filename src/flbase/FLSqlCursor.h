@@ -1176,6 +1176,12 @@ public slots:
   */
   void changeConnection(const QString &connName);
 
+  /**
+  Marca si el cursor está en modo delgateCommit.
+  */
+
+  bool isDelegateCommit;
+
 private:
   friend class FLDataTable;
   friend class FLSqlDatabase;
@@ -1210,12 +1216,6 @@ private:
   void setExtraFieldAttributes();
   void clearMapCalcFields();
   QVariant valueBufferRaw(const QString &fN);
-
-  /**
-  Marca si el cursor está en modo delgateCommit.
-  */
-
-  bool isDelegateCommit;
 
   /**
   Lanza llamada sengun proceda el deletateCommit o commitBuffer del cursorRelation.
