@@ -3053,7 +3053,7 @@ bool FLSqlCursor::doCommitBuffer()
       if (is_insert_) // Si es modo insert.
       {
         int current_pos = atFrom();
-        qWarning(label + "Modo Insert!, reposicionando cursor a pos actual : %s").arg(current_pos);
+        qWarning(label + QString("Modo Insert!, reposicionando cursor a pos actual : %s").arg(current_pos));
         if (!seek(current_pos, false, true)) // Si no se reposiciona.
         {
           qWarning(label + "ERROR reposicionando");
