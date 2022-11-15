@@ -1220,7 +1220,7 @@ private:
   /**
   Lanza llamada sengun proceda el deletateCommit o commitBuffer del cursorRelation.
   */
-  bool FLSqlCursor::doCommitBufferCursorRelation();
+  bool doCommitBufferCursorRelation();
 
 signals:
 
