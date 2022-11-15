@@ -239,6 +239,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 {
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   isDelegateCommit = false;
+  lastDelegateCommitResult = false;
 
   if (delMtd)
   {
@@ -452,7 +453,7 @@ bool FLSqlCursor::commitBufferCursorRelation()
         if (activeWid && activeWidEnabled)
           activeWid->setEnabled(false);
 
-        if (!doCommitBufferCursorRelation())
+        if (!d->cursorRelation_->doCommitBuffer())
         {
           d->modeAccess_ = BROWSE;
           ok = false;
@@ -487,7 +488,7 @@ bool FLSqlCursor::commitBufferCursorRelation()
         if (activeWid && activeWidEnabled)
           activeWid->setEnabled(false);
 
-        if (!doCommitBufferCursorRelation())
+        if (!d->cursorRelation_->doCommitBuffer())
         {
           d->modeAccess_ = BROWSE;
           ok = false;
@@ -3030,33 +3031,44 @@ QString FLSqlCursor::filterAssoc(const QString &fieldName, FLTableMetaData *tabl
   return QString::null;
 }
 
-bool FLSqlCursor::doCommitBufferCursorRelation()
+bool FLSqlCursor::doCommitBuffer()
 {
   bool result_ = true;
 
-  if (isDelegateCommit)
+  if (useDelegateCommit())
   {
-    QString pKName = d->cursorRelation_->metadata()->primaryKey();
-    QVariant pKValue(d->cursorRelation_->valueBuffer(d->cursorRelation_->metadata()->primaryKey()));
-
-    FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(d->cursorRelation_);
+    QString cur_name = metadata()->name();
+    FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
     QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
     if (v.isValid())
     {
-      result_ = v.toBool();
+      result_ = lastDelegateCommitResult = v.toBool();
     }
     if (result_)
     {
-      qWarning("doCommitBuffer ok");
-      qWarning("Modo Insert!, reposicionando!");
-      QString pKWhere(d->cursorRelation_->db()->manager()->formatAssignValue(metadata()->field(pKName), pKValue));
-      d->cursorRelation_->select(pKWhere);
+      qWarning(cur_name + ", doCommitBuffer ok");
+      qWarning(cur_name + ", Modo Insert!, reposicionando!");
+      int current_pos = atFrom();
+      if (!seek(current_pos, false, true))
+      {
+        qWarning(cur_name + ", ERROR reposicionando pos:" + current_pos);
+      }
     }
   }
   else
   {
-    result_ = d->cursorRelation_->commitBuffer();
+    result_ = commitBuffer();
   }
 
   return result_;
+}
+
+bool FLSqlCursor::useDelegateCommit()
+{
+  return isDelegateCommit && !db()->manager()->isSystemTable(metadata()->name());
+}
+
+bool FLSqlCursor::doCommit()
+{
+  return (useDelegateCommit() ? lastDelegateCommitResult : commit());
 }

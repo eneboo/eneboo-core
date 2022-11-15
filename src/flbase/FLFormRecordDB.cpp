@@ -55,8 +55,6 @@ FLFormRecordDB::~FLFormRecordDB()
 void FLFormRecordDB::initForm()
 {
 
-  last_delegate_commit_result = true;
-
   if (cursor_ && cursor_->metadata())
   {
     cursor_->isDelegateCommit = FLSettings::readBoolEntry("application/delegateCommit");
@@ -79,7 +77,7 @@ void FLFormRecordDB::initForm()
     switch (cursor_->modeAccess())
     {
     case FLSqlCursor::INSERT:
-      if (!useDelegateCommit())
+      if (!cursor_->useDelegateCommit())
       {
         cursor_->transaction();
         initTransLevel = cursor_->transactionLevel();
@@ -88,7 +86,7 @@ void FLFormRecordDB::initForm()
       break;
 
     case FLSqlCursor::EDIT:
-      if (!useDelegateCommit())
+      if (!cursor_->useDelegateCommit())
       {
         cursor_->transaction();
         initTransLevel = cursor_->transactionLevel();
@@ -100,7 +98,7 @@ void FLFormRecordDB::initForm()
       break;
 
     case FLSqlCursor::BROWSE:
-      if (!useDelegateCommit())
+      if (!cursor_->useDelegateCommit())
       {
         cursor_->transaction();
         initTransLevel = cursor_->transactionLevel();
@@ -555,7 +553,7 @@ void FLFormRecordDB::accept()
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
 
-    if (!doCommitBuffer())
+    if (!cursor_->doCommitBuffer())
     {
       accepting = false;
       return;
@@ -601,10 +599,10 @@ void FLFormRecordDB::acceptContinue()
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
 
-    if (doCommitBuffer())
+    if (cursor_->doCommitBuffer())
     {
       cursor_->setActivatedCheckIntegrity(true);
-      doCommit();
+      cursor_->doCommit();
 
       cursor_->setModeAccess(FLSqlCursor::INSERT);
       accepted_ = false;
@@ -613,7 +611,7 @@ void FLFormRecordDB::acceptContinue()
         caption = action_->caption();
       if (caption.isEmpty())
         caption = cursor_->metadata()->alias();
-      if (!useDelegateCommit())
+      if (!cursor_->useDelegateCommit())
       {
         cursor_->transaction();
       }
@@ -664,14 +662,14 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
 
     if (accepted_)
     {
-      if (!doCommit())
+      if (!cursor_->doCommit())
         return;
-      if (!useDelegateCommit())
+      if (!cursor_->useDelegateCommit())
         afterCommitTransaction();
     }
     else
     {
-      if (!useDelegateCommit())
+      if (!cursor_->useDelegateCommit())
       {
         if (!cursor_->rollback())
           return;
@@ -701,13 +699,13 @@ void FLFormRecordDB::firstRecord()
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
 
-      if (doCommitBuffer())
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        doCommit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!useDelegateCommit())
+        if (!cursor_->useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -735,13 +733,13 @@ void FLFormRecordDB::nextRecord()
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
 
-      if (doCommitBuffer())
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        doCommit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!useDelegateCommit())
+        if (!cursor_->useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -770,13 +768,13 @@ void FLFormRecordDB::previousRecord()
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
 
-      if (doCommitBuffer())
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        doCommit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!useDelegateCommit())
+        if (!cursor_->useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -800,13 +798,13 @@ void FLFormRecordDB::lastRecord()
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
 
-      if (doCommitBuffer())
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        doCommit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        if (!useDelegateCommit())
+        if (!cursor_->useDelegateCommit())
         {
           cursor_->transaction();
         }
@@ -912,50 +910,4 @@ void FLFormRecordDB::setCaptionWidget(const QString &text)
     setCaption(tr("Visualizar ") + text);
     break;
   }
-}
-
-bool FLFormRecordDB::doCommitBuffer()
-{
-  bool result = true;
-
-  if (!useDelegateCommit())
-  {
-    result = cursor_->commitBuffer();
-  }
-  else
-  {
-
-    QString pKName = cursor_->metadata()->primaryKey();
-    QVariant pKValue(cursor_->valueBuffer(cursor_->metadata()->primaryKey()));
-    bool isModeInsert = cursor_->modeAccess() == cursor_->Insert;
-
-    last_delegate_commit_result = true;
-    FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
-    QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
-    if (v.isValid())
-    {
-      result = last_delegate_commit_result = v.toBool();
-    }
-    if (result)
-    {
-      qWarning("doCommitBuffer ok");
-      if (isModeInsert)
-      {
-        qWarning("Modo Insert!, reposicionando!");
-        QString pKWhere(cursor_->db()->manager()->formatAssignValue(cursor_->metadata()->field(pKName), pKValue));
-        cursor_->select(pKWhere);
-      }
-    }
-  }
-  return result;
-}
-
-bool FLFormRecordDB::useDelegateCommit()
-{
-  return cursor_->isDelegateCommit && !cursor_->db()->manager()->isSystemTable(cursor_->metadata()->name());
-}
-
-bool FLFormRecordDB::doCommit()
-{
-  return (useDelegateCommit() ? last_delegate_commit_result : cursor_->commit());
 }

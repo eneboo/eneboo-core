@@ -1182,6 +1182,29 @@ public slots:
 
   bool isDelegateCommit;
 
+  /**
+  Lanza llamada sengun proceda el deletateCommit o commitBuffer del cursorRelation.
+  */
+  bool doCommitBuffer();
+
+  /**
+  Lanza commit del cursor o reposiciona el cusor, sengun proceda.
+  */
+
+  bool doCommit();
+
+  /**
+   Retorna si se cumplen las condiciones para usar delegateCommit.
+  */
+
+  bool useDelegateCommit();
+
+  /**
+  Gestiona delegateCommit
+  */
+
+  bool lastDelegateCommitResult;
+
 private:
   friend class FLDataTable;
   friend class FLSqlDatabase;
@@ -1216,11 +1239,6 @@ private:
   void setExtraFieldAttributes();
   void clearMapCalcFields();
   QVariant valueBufferRaw(const QString &fN);
-
-  /**
-  Lanza llamada sengun proceda el deletateCommit o commitBuffer del cursorRelation.
-  */
-  bool doCommitBufferCursorRelation();
 
 signals:
 

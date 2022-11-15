@@ -102,24 +102,6 @@ protected:
   QString formName() const;
 
   /**
-  Lanza commitBuffer o llama a sys.delegateCommit según proceda.
-  */
-
-  bool doCommitBuffer();
-
-  /**
-  Lanza commit del cursor o reposiciona el cusor, sengun proceda.
-  */
-
-  bool doCommit();
-
-  /**
-   Retorna si se cumplen las condiciones para usar delegateCommit.
-  */
-
-  bool useDelegateCommit();
-
-  /**
   Une la interfaz de script al objeto del formulario
   */
   void bindIface();
@@ -296,12 +278,6 @@ private:
   Registra el nivel de anidamiento de transacciones en el que se entra al iniciar el formulario
   */
   int initTransLevel;
-
-  /**
-  Gestiona delegateCommit
-  */
-
-  bool last_delegate_commit_result;
 };
 
 #endif
