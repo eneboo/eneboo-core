@@ -3037,7 +3037,8 @@ bool FLSqlCursor::doCommitBuffer()
 
   if (useDelegateCommit())
   {
-    QString cur_name = metadata()->name();
+
+    bool is_insert_ = modeAccess_ == FLSqlCursor::INSERT;
     FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
     QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
     if (v.isValid())
@@ -3046,12 +3047,18 @@ bool FLSqlCursor::doCommitBuffer()
     }
     if (result_)
     {
-      qWarning(cur_name + ", doCommitBuffer ok");
-      qWarning(cur_name + ", Modo Insert!, reposicionando!");
-      int current_pos = atFrom();
-      if (!seek(current_pos, false, true))
+
+      QString label = "DelegateCommit (" + metadata()->name() + ") ";
+
+      qWarning(label + "ok");
+      if (is_insert_)
       {
-        qWarning(cur_name + ", ERROR reposicionando pos:" + current_pos);
+        qWarning(label + "Modo Insert!, reposicionando cursor");
+        int current_pos = atFrom();
+        if (!seek(current_pos, false, true))
+        {
+          qWarning(label + "ERROR reposicionando pos:" + current_pos);
+        }
       }
     }
   }
