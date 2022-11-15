@@ -3039,18 +3039,17 @@ bool FLSqlCursor::doCommitBuffer()
   {
 
     bool is_insert_ = modeAccess() == INSERT;
+    QString label = "DelegateCommit (" + metadata()->name() + "): ";
     FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
     QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
     if (v.isValid())
     {
       result_ = lastDelegateCommitResult = v.toBool();
     }
+
+    qWarning(label + "retornó " + (result_ ? "true" : "false"));
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
-
-      QString label = "DelegateCommit (" + metadata()->name() + "): ";
-
-      qWarning(label + "ok");
       if (is_insert_) // Si es modo insert.
       {
         qWarning(label + "Modo Insert!, reposicionando cursor");
