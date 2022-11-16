@@ -2464,6 +2464,5 @@ function serverTime()
 }
 
 function delegateCommit(cursor) {
-	debug("delegateCommit " + cursor.action());
-	return true;
+	return formHTTP.iface.saveCursor(cursor);
 }
