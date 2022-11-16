@@ -3047,12 +3047,12 @@ bool FLSqlCursor::doCommitBuffer()
       result_ = lastDelegateCommitResult = v.toBool();
     }
 
-    qWarning(label + " delegado retorna " + (result_ ? "true" : "false"));
+    qWarning(label + "delegado retorna " + (result_ ? "true" : "false"));
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
       if (is_insert_) // Si es modo insert.
       {
-        qWarning(label + " delegado modo Insert. Emitiendo cursorUpdated");
+        qWarning(label + "delegado modo Insert. Emitiendo cursorUpdated");
         emit cursorUpdated();
       }
     }
