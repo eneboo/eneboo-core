@@ -3046,7 +3046,7 @@ bool FLSqlCursor::doCommitBuffer()
 
     if (!id_mod_.isEmpty())
     {
-      fun_module_ = id_mod_ + ".iface";
+      fun_module_ = id_mod_;
     }
     QString fun_name_ = fun_module_ + ".delegateCommit";
 
