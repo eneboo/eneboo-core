@@ -3039,21 +3039,32 @@ bool FLSqlCursor::doCommitBuffer()
   {
 
     bool is_insert_ = modeAccess() == INSERT;
-    QString label = "FLSqlCursor::doCommitBuffer (" + metadata()->name() + "): ";
+    QString label_ = "FLSqlCursor::doCommitBuffer (" + metadata()->name() + "): ";
+
+    QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata() > name() + QString::fromLatin1(".mtd"));
+    QString fun_module_ = "sys";
+
+    if (!id_mod_.isEmpty())
+    {
+      fun_module_ = id_mod_;
+    }
+    QString fun_name_ = fun_module_ + ".delegateCommit";
+
     FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
-    QVariant v = aqApp->call("delegateCommit", QSArgumentList(cI), "sys").variant();
+    QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), "sys").variant();
     if (v.isValid())
     {
       result_ = lastDelegateCommitResult = v.toBool();
     }
 
-    qWarning(label + "delegado retorna " + (result_ ? "true" : "false"));
+    qWarning(label_ + fun_name_ + "(cursor) retorna " + (result_ ? "true" : "false"));
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
       if (is_insert_) // Si es modo insert.
       {
-        qWarning(label + "delegado modo Insert. Emitiendo cursorUpdated");
+        qWarning(label_ + "delegado modo Insert. Emitiendo cursorUpdated");
         emit cursorUpdated();
+        emit bufferCommited();
       }
     }
   }
