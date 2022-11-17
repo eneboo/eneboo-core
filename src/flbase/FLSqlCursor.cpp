@@ -3051,13 +3051,18 @@ bool FLSqlCursor::doCommitBuffer()
     QString fun_name_ = fun_module_ + ".delegateCommit";
 
     FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
-    QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), "sys").variant();
+    QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
     if (v.isValid())
     {
       result_ = v.toBool();
+      qWarning(label_ + fun_name_ + "(cursor) retorna " + (result_ ? "true" : "false"));
+    }
+    else
+    {
+      qWarning(label_ + "No hay respuesta de " + fun_name_ + "(cursor). Asumiento true");
     }
     lastDelegateCommitResult = result_;
-    qWarning(label_ + fun_name_ + "(cursor) retorna " + (result_ ? "true" : "false"));
+
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
       if (is_insert_) // Si es modo insert.
