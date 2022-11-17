@@ -3069,8 +3069,8 @@ bool FLSqlCursor::doCommitBuffer()
       {
         qWarning(label_ + "delegado modo Insert. Emitiendo cursorUpdated");
         emit cursorUpdated();
-        emit bufferCommited();
       }
+      emit bufferCommited();
     }
   }
   else
