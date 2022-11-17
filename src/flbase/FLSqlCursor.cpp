@@ -3041,7 +3041,7 @@ bool FLSqlCursor::doCommitBuffer()
     bool is_insert_ = modeAccess() == INSERT;
     QString label_ = "FLSqlCursor::doCommitBuffer (" + metadata()->name() + "): ";
 
-    QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata() > name() + QString::fromLatin1(".mtd"));
+    QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata()->name() + QString::fromLatin1(".mtd"));
     QString fun_module_ = "sys";
 
     if (!id_mod_.isEmpty())
