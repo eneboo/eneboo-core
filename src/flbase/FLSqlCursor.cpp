@@ -3054,9 +3054,9 @@ bool FLSqlCursor::doCommitBuffer()
     QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), "sys").variant();
     if (v.isValid())
     {
-      result_ = lastDelegateCommitResult = v.toBool();
+      result_ = v.toBool();
     }
-
+    lastDelegateCommitResult = result_;
     qWarning(label_ + fun_name_ + "(cursor) retorna " + (result_ ? "true" : "false"));
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
