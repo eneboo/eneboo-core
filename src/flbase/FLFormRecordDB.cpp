@@ -57,7 +57,6 @@ void FLFormRecordDB::initForm()
 
   if (cursor_ && cursor_->metadata())
   {
-    cursor_->isDelegateCommit = FLSettings::readBoolEntry("application/delegateCommit");
     QString caption;
     if (action_)
     {
@@ -743,7 +742,6 @@ void FLFormRecordDB::nextRecord()
         {
           cursor_->transaction();
         }
-
         cursor_->next();
         initScript();
       }
@@ -778,7 +776,6 @@ void FLFormRecordDB::previousRecord()
         {
           cursor_->transaction();
         }
-
         cursor_->prev();
         initScript();
       }

@@ -1836,15 +1836,37 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
     d->modeAccess_ = DEL;
     if (!refreshBuffer())
     {
-      commit();
+      if (!useDelegateCommit())
+      {
+        doCommit();
+      }
     }
     else
     {
-      if (!commitBuffer())
-        rollback();
+      if (!doCommitBuffer())
+      {
+        if (!useDelegateCommit())
+        {
+          rollback();
+        }
+      }
       else
-        commit();
+      {
+        doCommit();
+      }
     }
+
+    // if (!refreshBuffer())
+    //{
+    //   commit();
+    // }
+    // else
+    //{
+    //   if (!commitBuffer())
+    //     rollback();
+    //   else
+    //     commit();
+    // }
     return;
   }
 
@@ -3088,5 +3110,10 @@ bool FLSqlCursor::useDelegateCommit()
 
 bool FLSqlCursor::doCommit()
 {
-  return (useDelegateCommit() ? lastDelegateCommitResult : commit());
+  if (useDelegateCommit())
+  {
+    setModeAccess(BROWSE);
+    return lastDelegateCommitResult;
+  }
+  return commit();
 }
