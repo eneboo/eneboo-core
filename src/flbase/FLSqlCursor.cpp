@@ -3060,7 +3060,7 @@ bool FLSqlCursor::doCommitBuffer()
   if (useDelegateCommit())
   {
 
-    bool is_insert_ = modeAccess() == INSERT;
+    bool is_insert_or_delete = modeAccess() == INSERT || modeAccess() == DEL;
     QString label_ = "FLSqlCursor::doCommitBuffer (" + metadata()->name() + "): ";
 
     QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata()->name() + QString::fromLatin1(".mtd"));
@@ -3087,9 +3087,9 @@ bool FLSqlCursor::doCommitBuffer()
 
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
-      if (is_insert_) // Si es modo insert.
+      if (is_insert_or_delete) // Si es modo insert.
       {
-        qWarning(label_ + "delegado modo Insert. Emitiendo cursorUpdated");
+        qWarning(label_ + "delegado modo " + (modeAccess() == INSERT ? "Insert" : "Delete") + ". Emitiendo cursorUpdated");
         emit cursorUpdated();
       }
       emit bufferCommited();
