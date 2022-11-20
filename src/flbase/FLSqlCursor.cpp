@@ -3089,11 +3089,7 @@ bool FLSqlCursor::doCommitBuffer()
 
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
-      if (is_insert_or_delete) // Si es modo insert.
-      {
-        qWarning(label_ + "delegado modo " + (modeAccess() == INSERT ? "Insert" : "Delete") + ". Emitiendo cursorUpdated");
-        emit cursorUpdated();
-      }
+      emit cursorUpdated();
       emit bufferCommited();
     }
   }
