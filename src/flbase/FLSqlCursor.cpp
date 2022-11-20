@@ -1831,8 +1831,10 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
         QMessageBox::No | QMessageBox::Default | QMessageBox::Escape);
     if (res == QMessageBox::No)
       return;
-
-    transaction();
+    if (!useDelegateCommit())
+    {
+      transaction();
+    }
     d->modeAccess_ = DEL;
     if (!refreshBuffer())
     {
