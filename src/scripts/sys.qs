@@ -18,6 +18,7 @@ var form = this;
  ***************************************************************************/
 
 function init() {
+  sys.keepAlive();
   if (isLoadedModule("flfactppal")) {
     var util: FLUtil = new FLUtil();
     var codEjercicio: String = flfactppal.iface.pub_ejercicioActual();
@@ -2461,4 +2462,15 @@ function serverTime()
     ahora = q.value(0);
   }
   return ahora;
+}
+
+
+function keepAlive()
+{
+ debug("keep alive!!");
+ const connectionsList = sys.dictDatabases();
+ for (connection in connectionsList) {
+ 	debug("* " + connection);
+ }
+ sys.AQTimer.singleShot(300000, sys.keepAlive);
 }
