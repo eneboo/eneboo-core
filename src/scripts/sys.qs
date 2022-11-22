@@ -2475,5 +2475,5 @@ function keepAlive()
  	AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
  }
 
- sys.AQTimer.singleShot(300000, sys.keepAlive);
+ sys.AQTimer.singleShot(60000, sys.keepAlive);
 }
