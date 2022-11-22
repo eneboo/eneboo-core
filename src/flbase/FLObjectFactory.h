@@ -496,8 +496,7 @@ public slots:
     QStringList result;
     QDict<FLSqlDatabase> *dictDb = FLSqlConnections::dictDatabases();
     QDictIterator<FLSqlDatabase> it(*dictDb);
-    FLSqlDatabase *curDb;
-    while ((curDb = it.current()) != 0)
+    while (it.current())
     {
       result << it.current()->connectionName();
       ++it;
