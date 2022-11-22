@@ -2467,11 +2467,12 @@ function serverTime()
 
 function keepAlive()
 {
- debug("keep alive!!");
- const connectionsList = sys.dictDatabases();
- for (connection in connectionsList) {
- 	debug("* " + connection);
+ debug("keep alive");
+ const connections = sys.dictDatabases();
+ for (var i=0; i<connections.length; i++) {
+ 	const connName = connections[i];
+ 	AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
  }
- debug("** " + connectionsList);
+
  sys.AQTimer.singleShot(300000, sys.keepAlive);
 }
