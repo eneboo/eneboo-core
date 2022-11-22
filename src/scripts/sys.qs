@@ -2472,5 +2472,6 @@ function keepAlive()
  for (connection in connectionsList) {
  	debug("* " + connection);
  }
+ debug("** " + connectionsList);
  sys.AQTimer.singleShot(300000, sys.keepAlive);
 }
