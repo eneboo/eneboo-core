@@ -69,8 +69,7 @@ class FLDomNodeInterface;
 class FLDomNodesCache;
 class FLSqlQueryInterface;
 
-#define DN_ ( dn_ ? dn_ : newNode() )
-
+#define DN_ (dn_ ? dn_ : newNode())
 
 //! Clase general de la aplicación
 /**
@@ -79,15 +78,15 @@ class FLSqlQueryInterface;
 
  @author InfoSiAL S.L.
  */
-class  FLApplicationInterface : public QObject
+class FLApplicationInterface : public QObject
 {
 
   Q_OBJECT
   Q_ENUMS(FLScaleMode)
 
 public:
-
-  enum FLScaleMode {
+  enum FLScaleMode
+  {
     ScaleFree,
     ScaleMin,
     ScaleMax
@@ -96,7 +95,8 @@ public:
   /**
    construtor
    */
-  FLApplicationInterface(FLApplication *obj) : QObject(obj) {
+  FLApplicationInterface(FLApplication *obj) : QObject(obj)
+  {
     obj_ = obj;
     connect(obj_, SIGNAL(databaseLockDetected()), this, SIGNAL(databaseLockDetected()));
   }
@@ -108,21 +108,24 @@ public slots:
 
   @return Objeto QWidget que corresponde con el widget principal del formulario
   */
-  QWidget *mainWidget() const {
+  QWidget *mainWidget() const
+  {
     return obj_->mainWidget();
   }
 
   /**
   @return La ventana principal de un módulo
   */
-  QWidget *modMainWidget(const QString &idModulo) const {
+  QWidget *modMainWidget(const QString &idModulo) const
+  {
     return obj_->modMainWidget(idModulo);
   }
 
   /**
    Cambia el mensaje de estado en toda la barra de estado temporalmente
    */
-  void statusHelpMsg(const QString &text) {
+  void statusHelpMsg(const QString &text)
+  {
     obj_->statusHelpMsg(text);
   }
 
@@ -132,7 +135,8 @@ public slots:
    @param n Nombre de la acción asociada al formulario maestro
    @param p Imagen QPixmap que sirve de icono para el formulario
    */
-  void openMasterForm(const QString &n, const QPixmap &p = QPixmap()) {
+  void openMasterForm(const QString &n, const QPixmap &p = QPixmap())
+  {
     obj_->openMasterForm(n, p);
   }
 
@@ -141,14 +145,16 @@ public slots:
 
    @param n Nombre de la acción
    */
-  void execMainScript(const QString &n) {
+  void execMainScript(const QString &n)
+  {
     obj_->execMainScript(n);
   }
 
   /**
    Fuerza a que los eventos pendientes de la aplicación sean procesados
    */
-  void processEvents() {
+  void processEvents()
+  {
     obj_->processEvents();
   }
 
@@ -160,7 +166,8 @@ public slots:
 
    @return Cadena que contiene la lista con formato nombreObjeto1/descObjeto1*nomObjeto2/descObj2*...
    */
-  QString getWidgetList(const QString &wN, const QString &c) {
+  QString getWidgetList(const QString &wN, const QString &c)
+  {
     return obj_->getWidgetList(wN, c);
   }
 
@@ -172,7 +179,8 @@ public slots:
 
    @return Cadena que contiene la lista con formato nomPestaña1/descPestaña1*nomPestaña2/descPestaña2*...
    */
-  QString getTabWidgetPages(const QString &wN, const QString &n) {
+  QString getTabWidgetPages(const QString &wN, const QString &n)
+  {
     return obj_->getTabWidgetPages(wN, n);
   }
 
@@ -181,7 +189,8 @@ public slots:
 
    @return Cadena que contiene el prefijo de instalación
    */
-  QString installPrefix() {
+  QString installPrefix()
+  {
     return AQ_PREFIX;
   }
 
@@ -189,7 +198,8 @@ public slots:
    @return El directorio principal utilizado por la caché de disco
    para almacenar los archivos
    */
-  QString diskCacheAbsDirPath() {
+  QString diskCacheAbsDirPath()
+  {
     return AQ_DISKCACHE_DIRPATH;
   }
 
@@ -198,14 +208,16 @@ public slots:
 
    @return Cadena que contiene número de versión
    */
-  QString version() {
+  QString version()
+  {
     return AQ_VERSION;
   }
 
   /**
    Actualiza las areas cargadas en el sistema
    */
-  void updateAreas() {
+  void updateAreas()
+  {
     obj_->initToolBox();
   }
 
@@ -216,7 +228,8 @@ public slots:
    @param connName Nombre de la conexion
    @return TRUE en caso de que el módulo esté cargado, FALSE en caso contrario
    */
-  bool isLoadedModule(const QString &idM, const QString &connName = "default") {
+  bool isLoadedModule(const QString &idM, const QString &connName = "default")
+  {
     return FLSqlConnections::database(connName)->managerModules()->listAllIdModules().contains(idM);
   }
 
@@ -225,7 +238,8 @@ public slots:
 
    @return TRUE en caso de que la aplicación se compilara en modo DEBUG, FALSE en caso contrario
    */
-  bool isDebugEnabled() {
+  bool isDebugEnabled()
+  {
 #ifdef FL_DEBUG
     return true;
 #endif
@@ -237,7 +251,8 @@ public slots:
 
    @return TRUE en caso de que la aplicación se compilara en modo DEBUGGER, FALSE en caso contrario
    */
-  bool isDebuggerEnabled() {
+  bool isDebuggerEnabled()
+  {
 #ifdef QSDEBUGGER
     return true;
 #endif
@@ -249,7 +264,8 @@ public slots:
 
    @return TRUE en caso de que la aplicación se ejecuta en modo DEBUGGER, FALSE en caso contrario
    */
-  bool isDebuggerMode() {
+  bool isDebuggerMode()
+  {
 #ifdef QSDEBUGGER
     return FLSettings::readBoolEntry("application/isDebuggerMode");
 #endif
@@ -261,7 +277,8 @@ public slots:
 
    @return TRUE en caso de que la aplicación se compilara en modo TEST, FALSE en caso contrario
    */
-  bool isTestEnabled() {
+  bool isTestEnabled()
+  {
     return false;
   }
 
@@ -272,14 +289,16 @@ public slots:
    @param connName Nombre de la conexion
    @return Cadena con la versión
    */
-  QString versionModule(const QString &idM, const QString &connName = "default") {
+  QString versionModule(const QString &idM, const QString &connName = "default")
+  {
     return FLSqlConnections::database(connName)->managerModules()->versionModule(idM);
   }
 
   /**
   OBSOLETA no usar
   */
-  QString nameObjectScript(const QString &nFS) {
+  QString nameObjectScript(const QString &nFS)
+  {
     qWarning("nameObjectScript: OBSOLETA no usar");
     return QString::null;
   }
@@ -289,7 +308,8 @@ public slots:
 
    @param url Dirección url de la página
    */
-  void showDocPage(const QString &url) {
+  void showDocPage(const QString &url)
+  {
     obj_->showDocPage(url);
   }
 
@@ -301,7 +321,8 @@ public slots:
    @param context Nombre del objeto contexto para el script.
    */
   QSArgument call(const QString &function, const QSArgumentList &arguments = QSArgumentList(),
-                  const QString &nameObjectContext = QString::null) {
+                  const QString &nameObjectContext = QString::null)
+  {
     return obj_->call(function, arguments, nameObjectContext);
   }
 
@@ -311,7 +332,8 @@ public slots:
    @param function Nombre de la función.
    @param context Nombre del objeto contexto para el script.
    */
-  QSArgument call(const QString &function, const QString &nameObjectContext) {
+  QSArgument call(const QString &function, const QString &nameObjectContext)
+  {
     return obj_->call(function, QSArgumentList(), nameObjectContext);
   }
 
@@ -323,14 +345,16 @@ public slots:
 
    @text Texto a establecer en el título de la ventana principal
    */
-  void setCaptionMainWidget(const QString &text) {
+  void setCaptionMainWidget(const QString &text)
+  {
     obj_->setCaptionMainWidget(text);
   }
 
   /**
    Obtiene el último texto establecido con FLApplication::setCaptionMainWidget para el título de la ventana principal
    */
-  QString lastTextCaption() const {
+  QString lastTextCaption() const
+  {
     return obj_->lastTextCaption();
   }
 
@@ -340,7 +364,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Nombre del driver
    */
-  QString nameDriver(const QString &connName = "default") const {
+  QString nameDriver(const QString &connName = "default") const
+  {
     return FLSqlConnections::database(connName)->driverName();
   }
 
@@ -350,7 +375,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Nombre del usuario
    */
-  QString nameUser(const QString &connName = "default") const {
+  QString nameUser(const QString &connName = "default") const
+  {
     return FLSqlConnections::database(connName)->user();
   }
 
@@ -360,7 +386,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Contraseña del usuario
    */
-  QString passUser(const QString &connName = "default") const {
+  QString passUser(const QString &connName = "default") const
+  {
     return FLSqlConnections::database(connName)->password();
   }
 
@@ -370,7 +397,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Nombre de la base de datos
    */
-  QString nameBD(const QString &connName = "default") const {
+  QString nameBD(const QString &connName = "default") const
+  {
     return FLSqlConnections::database(connName)->database();
   }
 
@@ -380,7 +408,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Nombre del host
    */
-  QString nameHost(const QString &connName = "default") const {
+  QString nameHost(const QString &connName = "default") const
+  {
     return FLSqlConnections::database(connName)->host();
   }
 
@@ -390,7 +419,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Número de puerto
    */
-  int portBD(const QString &connName = "default") const {
+  int portBD(const QString &connName = "default") const
+  {
     return FLSqlConnections::database(connName)->port();
   }
 
@@ -399,7 +429,8 @@ public slots:
 
    @param idacl Identificador del registro de la tabla "flacls" a utilizar para crear "acl.xml".
    */
-  void installACL(const QString &idacl) {
+  void installACL(const QString &idacl)
+  {
     FLAccessControlLists *acl = obj_->acl();
     if (acl)
       acl->installACL(idacl);
@@ -410,8 +441,9 @@ public slots:
 
    @return Identificador de sesión
    */
-  QString idSession() {
-    return aqApp ->timeUser().toString(Qt::ISODate);
+  QString idSession()
+  {
+    return aqApp->timeUser().toString(Qt::ISODate);
   }
 
   /**
@@ -419,7 +451,8 @@ public slots:
 
    @param editor Objeto QTextEdit del que imprimir su contenido
    */
-  void printTextEdit(QTextEdit *editor) {
+  void printTextEdit(QTextEdit *editor)
+  {
     obj_->printTextEdit(editor);
   }
 
@@ -429,7 +462,8 @@ public slots:
    Vuelve a cargar las traducciones, los scripts y reinicializa
    la caja de herramientas.
    */
-  void reinit() {
+  void reinit()
+  {
     QTimer::singleShot(0, obj_, SLOT(reinit()));
   }
 
@@ -439,7 +473,8 @@ public slots:
 
    @param connName Nombre de la conexion
    */
-  void cleanupMetaData(const QString &connName = "default") {
+  void cleanupMetaData(const QString &connName = "default")
+  {
     FLSqlConnections::database(connName)->manager()->cleanupMetaData();
   }
 
@@ -448,8 +483,17 @@ public slots:
 
    @param connName Nombre de la conexion
    */
-  void Mr_Proper(const QString &connName = "default") {
+  void Mr_Proper(const QString &connName = "default")
+  {
     FLSqlConnections::database(connName)->Mr_Proper();
+  }
+
+  /**
+    Retorna una lista de las conexiones existentes
+  */
+  QDict dictDatabases()
+  {
+    return FLSqlConnections::dictDatabases();
   }
 
   /**
@@ -473,7 +517,8 @@ public slots:
    */
   bool addDatabase(const QString &driverAlias, const QString &nameDB, const QString &user,
                    const QString &password, const QString &host, int port,
-                   const QString &connectionName, const QString &connectOptions = QString::null) {
+                   const QString &connectionName, const QString &connectOptions = QString::null)
+  {
     return FLSqlConnections::addDatabase(driverAlias, nameDB, user, password, host, port,
                                          connectionName, connectOptions);
   }
@@ -485,7 +530,8 @@ public slots:
    @param sourceConnName Nombre de una conexión existente a utilizar como origen de los datos de conexión
    @return TRUE si se pudo realizar la conexión, FALSE en caso contrario
    */
-  bool addDatabase(const QString &newConnName, const QString &sourceConnName = "default") {
+  bool addDatabase(const QString &newConnName, const QString &sourceConnName = "default")
+  {
     FLSqlDatabase *srcDb = FLSqlConnections::database(sourceConnName);
     if (!srcDb)
       return false;
@@ -502,7 +548,8 @@ public slots:
    @param connectionName Nombre de la conexion
    @return TRUE si se pudo eliminar la base de datos, FALSE en caso contrario
    */
-  bool removeDatabase(const QString &connectionName) {
+  bool removeDatabase(const QString &connectionName)
+  {
     return FLSqlConnections::removeDatabase(connectionName);
   }
 
@@ -512,40 +559,45 @@ public slots:
    @param codec Nombre de la codificación del texto
    @param text Texto a convertir
    */
-  QString toUnicode(const QString &text, const QString &codecName) {
+  QString toUnicode(const QString &text, const QString &codecName)
+  {
     QTextCodec *codec = QTextCodec::codecForName(codecName);
-    if (codec) {
+    if (codec)
+    {
       return codec->toUnicode(text);
-    } else {
+    }
+    else
+    {
       return text;
     }
   }
 
-    /**
-   Crea un fichero con la codificación especificada
+  /**
+ Crea un fichero con la codificación especificada
 
-   @param file Nombre del fichero a escribir
-   @param encode Codificación. Puede ser ISO-8859-1 o UTF8
-   @param contenido Datos a grabar en el fichero
-   */
-  void write(const QString &encode, const QString &file, const QString &text) {
-      QFile f(file);
-       if (f.open(IO_WriteOnly))
-     {
-     QTextStream dt(&f);
-     
-     if (encode == "ISO-8859-1")
-         {
-         dt.setCodec( QTextCodec::codecForName("ISO-8859-1") ); 
-         dt << text.latin1();
-         } 
-    else
-         {
-         dt.setCodec( QTextCodec::codecForName("UTF-8") );
-         dt << text.latin1();
-         }
-     f.close();
-     }
+ @param file Nombre del fichero a escribir
+ @param encode Codificación. Puede ser ISO-8859-1 o UTF8
+ @param contenido Datos a grabar en el fichero
+ */
+  void write(const QString &encode, const QString &file, const QString &text)
+  {
+    QFile f(file);
+    if (f.open(IO_WriteOnly))
+    {
+      QTextStream dt(&f);
+
+      if (encode == "ISO-8859-1")
+      {
+        dt.setCodec(QTextCodec::codecForName("ISO-8859-1"));
+        dt << text.latin1();
+      }
+      else
+      {
+        dt.setCodec(QTextCodec::codecForName("UTF-8"));
+        dt << text.latin1();
+      }
+      f.close();
+    }
   }
   /**
    Convierte una cadena en Unicode a la codificacion indicada
@@ -553,7 +605,8 @@ public slots:
    @param codec Nombre de la codificación a utilizar
    @param text Texto a convertir
    */
-  QCString fromUnicode(const QString &text, const QString &codecName) {
+  QCString fromUnicode(const QString &text, const QString &codecName)
+  {
     QTextCodec *codec = QTextCodec::codecForName(codecName);
     if (codec)
       return codec->fromUnicode(text);
@@ -562,42 +615,50 @@ public slots:
   }
 
   /** wrap a text without CR-LF chars on the 76 character boundary.*/
-  QCString canonicalForm(const QString &str) {
+  QCString canonicalForm(const QString &str)
+  {
     return MIMECodec::canonicalForm(str.ascii());
   }
 
   /** translate a MIME-encoded text.*/
-  QString mimeTranslate(const QString &str) {
+  QString mimeTranslate(const QString &str)
+  {
     return MIMECodec::translate(str.ascii());
   }
 
   /** MIME-fold text (used for headers).*/
-  QCString fold(const QString &str) {
+  QCString fold(const QString &str)
+  {
     return MIMECodec::fold(str.ascii());
   }
 
   /** unfold MIME-folded text.*/
-  QCString unfold(const QString &str) {
+  QCString unfold(const QString &str)
+  {
     return MIMECodec::unfold(str.ascii());
   }
 
   /** encode UNIX text (cr-ended) into MIME text (crlf-ended).*/
-  QCString encodeEndLine(const QString &str) {
+  QCString encodeEndLine(const QString &str)
+  {
     return MIMECodec::encodeEndLine(str.ascii());
   }
 
   /** decode MIME text (crlf-ended) into UNIX text (cr-ended).*/
-  QCString decodeEndLine(const QString &str) {
+  QCString decodeEndLine(const QString &str)
+  {
     return MIMECodec::decodeEndLine(str.ascii());
   }
 
   /** encode text in quoted-printable format (the bool parameter forces extra MIME gateway compatibility).*/
-  QCString encodeQuotedPrintable(const QString &str, bool compat = false) {
+  QCString encodeQuotedPrintable(const QString &str, bool compat = false)
+  {
     return MIMECodec::encodeQuotedPrintable(str.ascii(), compat);
   }
 
   /** decode quoted-printable encoded text.*/
-  QCString decodeQuotedPrintable(const QString &str) {
+  QCString decodeQuotedPrintable(const QString &str)
+  {
     return MIMECodec::decodeQuotedPrintable(str.ascii());
   }
 
@@ -614,7 +675,8 @@ public slots:
    Convierte si es posible el valor QVariant a un QPixmap
    */
   QPixmap toPixmap(const QVariant &v);
-  QPixmap toPixmap(const QString &s) {
+  QPixmap toPixmap(const QString &s)
+  {
     return toPixmap(QVariant(s));
   }
 
@@ -632,24 +694,27 @@ public slots:
   /**
   Ver QPixmap::fromMimeSource()
   */
-  QPixmap pixmapFromMimeSource(const QString &abs_name) {
+  QPixmap pixmapFromMimeSource(const QString &abs_name)
+  {
     return QPixmap::fromMimeSource(abs_name);
   }
 
   /**
    @return El nivel actual de anidamiento de transacciones, 0 no hay transaccion
    */
-  int transactionLevel() {
+  int transactionLevel()
+  {
     return (obj_->db() ? obj_->db()->transactionLevel() : 0);
   }
 
-   /**
-   @return Array de cursores
-   */
-  QValueStack<int> cursorsOpened() {
+  /**
+  @return Array de cursores
+  */
+  QValueStack<int> cursorsOpened()
+  {
     return obj_->db()->cursorsOpened;
   }
-  
+
   /**
    Añade código script al objeto sys, para poder ejecutarlo dinámicamente.
 
@@ -658,14 +723,16 @@ public slots:
    @param scriptEntryFunction Funcion del código del script a ejecutar despues de evaluarlo
    @return TRUE si se añadió el código, FALSE si el código ya existe.
    */
-  bool addSysCode(const QString &code, const QString &scriptEntryFunction = QString::null) {
+  bool addSysCode(const QString &code, const QString &scriptEntryFunction = QString::null)
+  {
     return obj_->addSysCode(code, scriptEntryFunction);
   }
 
   /**
    Establece el nombre de la funcion de entrada tras evaluar el código
    */
-  void setScriptEntryFunction(const QString &scriptEntryFunction) {
+  void setScriptEntryFunction(const QString &scriptEntryFunction)
+  {
     obj_->setScriptEntryFunction(scriptEntryFunction);
   }
 
@@ -691,7 +758,8 @@ public slots:
    */
   void setDatabaseLockDetection(bool on = true, int msecLapsus = 30000, int limChecks = -1,
                                 bool showWarn = true, const QString &msgWarn = QString::null,
-                                const QString &connectionName = "default") {
+                                const QString &connectionName = "default")
+  {
     obj_->setDatabaseLockDetection(on, msecLapsus, limChecks, showWarn, msgWarn, connectionName);
   }
 
@@ -714,7 +782,8 @@ public slots:
    @param  connectionName  Nombre de la conexion a la base de datos
    @return Lista con información de los bloqueos, si es vacia no hay bloqueos.
    */
-  QStringList locksStatus(const QString &connectionName = "default") {
+  QStringList locksStatus(const QString &connectionName = "default")
+  {
     return FLSqlConnections::database(connectionName)->locksStatus();
   }
 
@@ -726,7 +795,8 @@ public slots:
    @param  connectionName  Nombre de la conexion a la base de datos
    @return Lista con información de los bloqueos, si es vacia no hay bloqueos.
    */
-  QStringList detectLocks(const QString &connectionName = "default") {
+  QStringList detectLocks(const QString &connectionName = "default")
+  {
     return FLSqlConnections::database(connectionName)->detectLocks();
   }
 
@@ -743,7 +813,8 @@ public slots:
    @return Lista con información de los bloqueos, si es vacia no hay bloqueos.
    */
   QStringList detectRisksLocks(const QString &table = QString::null, const QString &primaryKeyValue = QString::null,
-                               const QString &connectionName = "default") {
+                               const QString &connectionName = "default")
+  {
     return FLSqlConnections::database(connectionName)->detectRisksLocks(table, primaryKeyValue);
   }
 
@@ -783,10 +854,12 @@ public slots:
   @param s        Cadena de texto a traducir
   @return         Devuelve la cadena traducida al idioma local
   */
-  QString translate(const QString &contexto, const QString &s) const {
+  QString translate(const QString &contexto, const QString &s) const
+  {
     return obj_->translate(contexto, s);
   }
-  QString translate(const QString &s) const {
+  QString translate(const QString &s) const
+  {
     return obj_->translate("scripts", s);
   }
 
@@ -797,7 +870,8 @@ public slots:
   @param l  Identificador del idioma (ES, EN, IT, CA, etc..) al que traducir
   @return   La cadena de texto traducida al idioma indicado
   */
-  QString trMulti(const QString &s, const QString &l) {
+  QString trMulti(const QString &s, const QString &l)
+  {
     return obj_->trMulti(s, l);
   }
 
@@ -812,28 +886,32 @@ public slots:
   @param langid   Identificador del idioma a utilizar para la traducción multiidioma. Si 'enable' es FALSE
                   o es vacio este parámetro será ignorado, y se seguirá utilizando el último idioma establecido.
   */
-  void setMultiLang(bool enable = true, const QString &langid = QString::null) {
+  void setMultiLang(bool enable = true, const QString &langid = QString::null)
+  {
     obj_->setMultiLang(enable, langid);
   }
 
   /**
   @return Si la traducción dinámica multiidioma está activada
   */
-  bool multiLangEnabled() const {
+  bool multiLangEnabled() const
+  {
     return obj_->multiLangEnabled();
   }
 
   /**
   @return El identificador del idioma actualmente establedico para la traducción dinámica multiidioma
   */
-  QString multiLangId() const {
+  QString multiLangId() const
+  {
     return obj_->multiLangId();
   }
 
   /**
   Abre el entorno integrado de desarrollo de scripts QSA Workbench
   */
-  void openQSWorkbench() {
+  void openQSWorkbench()
+  {
     obj_->openQSWorkbench();
   }
 
@@ -843,86 +921,97 @@ public slots:
   Si se ha establecido una funcion de entrada con setScriptEntryFunction(),
   justo antes de llamar a este método, esta es invocada tras la evaluacion.
   */
-  void evaluateProject() {
+  void evaluateProject()
+  {
     obj_->evaluateProject();
   }
 
-  QString osName() const {
+  QString osName() const
+  {
     return FLUtil::getOS();
   }
 
-  QString localLang() const {
+  QString localLang() const
+  {
     return FLUtil::getIdioma();
   }
 
-  QString localEncoding() const {
+  QString localEncoding() const
+  {
     QTextCodec *codec = QTextCodec::codecForLocale();
     return (codec ? codec->mimeName() : "");
   }
 
-  bool isQuickBuild() const {
+  bool isQuickBuild() const
+  {
 #ifdef FL_QUICK_CLIENT
     return true;
 #endif
     return false;
   }
 
-  bool isDebuggerBuild() const {
+  bool isDebuggerBuild() const
+  {
 #ifdef AQ_DEBUGGER
     return true;
 #endif
     return false;
   }
 
-  bool isNebulaBuild() const {
+  bool isNebulaBuild() const
+  {
 #ifdef AQ_NEBULA_BUILD
     return true;
 #endif
     return false;
   }
 
-
-  FLApplication *obj() {
+  FLApplication *obj()
+  {
     return obj_;
   }
   /**
   Informa si la aplicación está en modo nube
 
   */
-  bool isCloudMode() const {
-   return obj_->cloudMode_;
+  bool isCloudMode() const
+  {
+    return obj_->cloudMode_;
   }
-  
+
   /**
   Especifica el path de intercambio en modo nube
   */
-  QString cloudFolder() const {
-    	return obj_->cloudFolder_;
+  QString cloudFolder() const
+  {
+    return obj_->cloudFolder_;
   }
   /**
   Cambia la ruta de intercambio en modo nube
 
   @param path    La ruta de intercambio.
   */
-  void setCloudFolder ( QString &path ) {
+  void setCloudFolder(QString &path)
+  {
     obj_->setCloudFolder(path);
   }
 
   /**
   Especifica el Id de intercambio en modo nube
   */
-  QString cloudId() const {
-    	return obj_->cloudId_;
+  QString cloudId() const
+  {
+    return obj_->cloudId_;
   }
   /**
   Cambia el Id de intercambio en modo nube
 
   @param id    El id de intercambio.
   */
-  void setCloudId ( QString &id ) {
+  void setCloudId(QString &id)
+  {
     obj_->setCloudId(id);
   }
-
 
 signals:
 
@@ -932,7 +1021,6 @@ signals:
   void databaseLockDetected();
 
 private:
-
   FLApplication *obj_;
 };
 
@@ -945,22 +1033,23 @@ class FLSqlCursorsCache;
 
  @author InfoSiAL S.L.
  */
-class  FLSqlCursorInterface : public QObject
+class FLSqlCursorInterface : public QObject
 {
   Q_OBJECT
   Q_ENUMS(Mode)
   Q_ENUMS(AcosConditionEval)
 
 public:
-
-  enum Mode {
+  enum Mode
+  {
     Insert = 0,
     Edit = 1,
     Del = 2,
     Browse = 3
   };
 
-  enum AcosConditionEval {
+  enum AcosConditionEval
+  {
     Value = 0,
     Regexp = 1,
     Function = 2
@@ -970,9 +1059,10 @@ public:
    Constructor
    */
   FLSqlCursorInterface(const QString &n = QString::null,
-                       const QString &connName = "default") :
-    QObject(0), obj_(0), cursorRelation_(0), cached_(false) {
-    if (!n.isEmpty()) {
+                       const QString &connName = "default") : QObject(0), obj_(0), cursorRelation_(0), cached_(false)
+  {
+    if (!n.isEmpty())
+    {
       obj_ = new FLSqlCursor(n, true, connName, 0, 0, this);
       if (obj_->cursorRelation())
         cursorRelation_ = sqlCursorInterface(obj_->cursorRelation());
@@ -983,15 +1073,16 @@ public:
   /**
    Constructor
    */
-  FLSqlCursorInterface(QObject *obj) :
-    QObject(obj), obj_(0), cursorRelation_(0), cached_(false) {
+  FLSqlCursorInterface(QObject *obj) : QObject(obj), obj_(0), cursorRelation_(0), cached_(false)
+  {
     setObj(::qt_cast<FLSqlCursor *>(obj));
   }
 
   /**
    Destructor
    */
-  ~FLSqlCursorInterface() {
+  ~FLSqlCursorInterface()
+  {
     if (cached_ && obj_)
       removeCache();
   }
@@ -1015,7 +1106,8 @@ public slots:
 
    @return Constante FLSqlCursorInterface::Mode que define el modo de acceso actual del cursor
    */
-  int modeAccess() const {
+  int modeAccess() const
+  {
     return (obj_ ? obj_->modeAccess() : 0);
   }
 
@@ -1024,7 +1116,8 @@ public slots:
 
    @return True si el cursor está en modo Edit o estaba en modo Insert y ha pasado con éxito a modo Edit
    */
-  bool setEditMode() {
+  bool setEditMode()
+  {
     return (obj_ ? obj_->setEditMode() : false);
   }
 
@@ -1033,7 +1126,8 @@ public slots:
 
    @return Cadena de texto con el filtro principal
    */
-  QString mainFilter() const {
+  QString mainFilter() const
+  {
     return (obj_ ? obj_->mainFilter() : QString::null);
   }
 
@@ -1042,7 +1136,8 @@ public slots:
 
    @param f Cadena con el filtro, corresponde con una clausura WHERE
    */
-  void setMainFilter(const QString &f) {
+  void setMainFilter(const QString &f)
+  {
     if (obj_)
       obj_->setMainFilter(QString(f).replace("NaN", ""));
   }
@@ -1052,12 +1147,14 @@ public slots:
 
    @param m Constante FLSqlCursorInterface::Mode que indica en que modo de acceso se quiere establecer el cursor
    */
-  void setModeAccess(const int m) {
+  void setModeAccess(const int m)
+  {
     if (obj_)
       obj_->setModeAccess(m);
   }
 
-  QString connectionName() const {
+  QString connectionName() const
+  {
     return obj_->connectionName();
   }
 
@@ -1073,7 +1170,8 @@ public slots:
    @param fN Nombre del campo
    @param functionName Nombre de la función a invocar del script
    */
-  void setAtomicValueBuffer(const QString &fN, const QString &functionName) {
+  void setAtomicValueBuffer(const QString &fN, const QString &functionName)
+  {
     if (obj_)
       obj_->setAtomicValueBuffer(fN, functionName);
   }
@@ -1084,10 +1182,14 @@ public slots:
    @param fN Nombre del campo
    @param v Valor a establecer para el campo
    */
-  void setValueBuffer(const QString &fN, const QVariant &v) {
-    if (obj_) {
-      if (v.isValid() && !v.isNull()) {
-        if (v.toString().upper() == "NAN") {
+  void setValueBuffer(const QString &fN, const QVariant &v)
+  {
+    if (obj_)
+    {
+      if (v.isValid() && !v.isNull())
+      {
+        if (v.toString().upper() == "NAN")
+        {
           obj_->setValueBuffer(fN, QVariant());
           return;
         }
@@ -1095,16 +1197,20 @@ public slots:
       obj_->setValueBuffer(fN, v);
     }
   }
-  void setValueBuffer(const QString &fN, const QString &v) {
+  void setValueBuffer(const QString &fN, const QString &v)
+  {
     setValueBuffer(fN, QVariant(v));
   }
-  void setValueBuffer(const QString &fN, bool v) {
+  void setValueBuffer(const QString &fN, bool v)
+  {
     setValueBuffer(fN, QVariant(v));
   }
-  void setValueBuffer(const QString &fN, double v) {
+  void setValueBuffer(const QString &fN, double v)
+  {
     setValueBuffer(fN, QVariant(v));
   }
-  void setValueBuffer(const QString &fN, int v) {
+  void setValueBuffer(const QString &fN, int v)
+  {
     setValueBuffer(fN, QVariant(v));
   }
 
@@ -1113,7 +1219,8 @@ public slots:
 
    @param fN Nombre del campo
    */
-  QVariant valueBuffer(const QString &fN) const {
+  QVariant valueBuffer(const QString &fN) const
+  {
     return (obj_ ? obj_->valueBuffer(fN) : QVariant());
   }
 
@@ -1122,7 +1229,8 @@ public slots:
 
    @param fN Nombre del campo
    */
-  QVariant valueBufferCopy(const QString &fN) const {
+  QVariant valueBufferCopy(const QString &fN) const
+  {
     return (obj_ ? obj_->valueBufferCopy(fN) : QVariant());
   }
 
@@ -1131,7 +1239,8 @@ public slots:
 
    @param name Nombre del campo en el buffer
    */
-  bool isNull(const QString &name) const {
+  bool isNull(const QString &name) const
+  {
     return (obj_ ? obj_->bufferIsNull(name) : false);
   }
 
@@ -1140,7 +1249,8 @@ public slots:
 
    @param name Nombre del campo en el buffer
    */
-  void setNull(const QString &name) {
+  void setNull(const QString &name)
+  {
     if (obj_)
       obj_->bufferSetNull(name);
   }
@@ -1150,7 +1260,8 @@ public slots:
 
    @param name Nombre del campo en el bufferCopy
    */
-  bool isCopyNull(const QString &name) const {
+  bool isCopyNull(const QString &name) const
+  {
     return (obj_ ? obj_->bufferCopyIsNull(name) : false);
   }
 
@@ -1159,7 +1270,8 @@ public slots:
 
    @param name Nombre del campo en el bufferCopy
    */
-  void setCopyNull(const QString &name) {
+  void setCopyNull(const QString &name)
+  {
     if (obj_)
       obj_->bufferCopySetNull(name);
   }
@@ -1169,7 +1281,8 @@ public slots:
 
    @param b TRUE o FALSE
    */
-  void setEdition(bool b) {
+  void setEdition(bool b)
+  {
     if (obj_)
       obj_->setEdition(b);
   }
@@ -1179,7 +1292,8 @@ public slots:
 
    @param b TRUE o FALSE
    */
-  void setBrowse(bool b) {
+  void setBrowse(bool b)
+  {
     if (obj_)
       obj_->setBrowse(b);
   }
@@ -1196,7 +1310,8 @@ public slots:
    @param fN Nombre del campo a comprobar
    @return TRUE si está deshabilitado y FALSE en caso contrario
    */
-  bool fieldDisabled(const QString &fN) {
+  bool fieldDisabled(const QString &fN)
+  {
     return (obj_ ? obj_->fieldDisabled(fN) : false);
   }
 
@@ -1205,7 +1320,8 @@ public slots:
 
    @return TRUE si hay una transaccion en curso, FALSE en caso contrario
    */
-  bool inTransaction() {
+  bool inTransaction()
+  {
     return (obj_ ? obj_->inTransaction() : false);
   }
 
@@ -1218,7 +1334,8 @@ public slots:
 
    @return TRUE si la operación tuvo exito
    */
-  bool transaction(bool lock) {
+  bool transaction(bool lock)
+  {
     return (obj_ ? obj_->transaction(lock) : false);
   }
 
@@ -1227,7 +1344,8 @@ public slots:
 
    @return TRUE si la operación tuvo exito
    */
-  bool rollback() {
+  bool rollback()
+  {
     return (obj_ ? obj_->rollback() : false);
   }
 
@@ -1238,7 +1356,8 @@ public slots:
    si FALSE no hace ninguna de estas dos cosas y emite la señal de autoCommit
    @return TRUE si la operación tuvo exito
    */
-  bool commit() {
+  bool commit()
+  {
     return (obj_ ? obj_->commit() : false);
   }
 
@@ -1247,7 +1366,8 @@ public slots:
 
    @param a Valor a establecer (TRUE o FALSE)
    */
-  void setAskForCancelChanges(bool a) {
+  void setAskForCancelChanges(bool a)
+  {
     if (obj_)
       obj_->setAskForCancelChanges(a);
   }
@@ -1257,7 +1377,8 @@ public slots:
 
    @param a TRUE los activa y FALSE los desactiva
    */
-  void setActivatedCheckIntegrity(bool a) {
+  void setActivatedCheckIntegrity(bool a)
+  {
     if (obj_)
       obj_->setActivatedCheckIntegrity(a);
   }
@@ -1267,7 +1388,8 @@ public slots:
 
    @param a TRUE las activa y FALSE las desactiva
    */
-  void setActivatedCommitActions(bool a) {
+  void setActivatedCommitActions(bool a)
+  {
     if (obj_)
       obj_->setActivatedCommitActions(a);
   }
@@ -1277,7 +1399,8 @@ public slots:
    claves primarias y si hay nulos en campos que no lo permiten cuando se inserta o se edita.
    Si alguna comprobacion falla devuelve un mensaje describiendo el fallo.
    */
-  QString msgCheckIntegrity() {
+  QString msgCheckIntegrity()
+  {
     return (obj_ ? obj_->msgCheckIntegrity() : QString::null);
   }
 
@@ -1294,7 +1417,8 @@ public slots:
    @return TRUE si se ha podido entregar el buffer al cursor, y FALSE si ha fallado alguna comprobacion
    de integridad
    */
-  bool checkIntegrity(bool showError = true) {
+  bool checkIntegrity(bool showError = true)
+  {
     return (obj_ ? obj_->checkIntegrity(showError) : false);
   }
 
@@ -1309,7 +1433,8 @@ public slots:
 
    @param fN Nombre del campo de buffer que ha cambiado
    */
-  void refresh(const QString &fN = QString::null) {
+  void refresh(const QString &fN = QString::null)
+  {
     if (obj_)
       obj_->refresh(fN);
   }
@@ -1325,7 +1450,8 @@ public slots:
    como argumento el nombre del campo contador y debe devolver el valor que debe contener
    ese campo.
    */
-  bool refreshBuffer() {
+  bool refreshBuffer()
+  {
     return (obj_ ? obj_->refreshBuffer() : false);
   }
 
@@ -1334,7 +1460,8 @@ public slots:
 
    Ver QSqlCursor::at()
    */
-  int at() {
+  int at()
+  {
     return (obj_ ? obj_->at() : -1);
   }
 
@@ -1346,7 +1473,8 @@ public slots:
 
    @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
    */
-  bool seek(int i, bool relative = false, bool emite = false) {
+  bool seek(int i, bool relative = false, bool emite = false)
+  {
     return (obj_ ? obj_->seek(i, relative, emite) : false);
   }
 
@@ -1358,7 +1486,8 @@ public slots:
 
    @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
    */
-  bool next(bool emite = true) {
+  bool next(bool emite = true)
+  {
     return (obj_ ? obj_->next(emite) : false);
   }
 
@@ -1370,7 +1499,8 @@ public slots:
 
    @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
    */
-  bool prev(bool emite = true) {
+  bool prev(bool emite = true)
+  {
     return (obj_ ? obj_->prev(emite) : false);
   }
 
@@ -1382,7 +1512,8 @@ public slots:
 
    @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
    */
-  bool first(bool emite = true) {
+  bool first(bool emite = true)
+  {
     return (obj_ ? obj_->first(emite) : false);
   }
 
@@ -1394,7 +1525,8 @@ public slots:
 
    @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
    */
-  bool last(bool emite = true) {
+  bool last(bool emite = true)
+  {
     return (obj_ ? obj_->last(emite) : false);
   }
 
@@ -1404,14 +1536,16 @@ public slots:
    Este método invoca al método del() original de QSqlCursor() y comprueba si hay borrado
    en cascada, en caso afirmativo borrar también los registros relacionados en cardinalidad 1M.
    */
-  int del(bool invalidate = true) {
+  int del(bool invalidate = true)
+  {
     return (obj_ ? obj_->del(invalidate) : false);
   }
 
   /**
    Redefinición del método select() de QSqlCursor
    */
-  bool select(const QString &filter, const QSqlIndex &sort = QSqlIndex()) {
+  bool select(const QString &filter, const QSqlIndex &sort = QSqlIndex())
+  {
     if (!obj_ || obj_->aqWasDeleted())
       return false;
     return obj_->select(QString(filter).replace("NaN", ""), sort);
@@ -1420,7 +1554,8 @@ public slots:
   /**
    Redefinicion del método select() de QSqlCursor
    */
-  bool select() {
+  bool select()
+  {
     if (!obj_ || obj_->aqWasDeleted())
       return false;
     obj_->QSqlCursor::setFilter(obj_->curFilter());
@@ -1432,7 +1567,8 @@ public slots:
 
    @return Número de filas
    */
-  int size() {
+  int size()
+  {
     return (obj_ ? obj_->size() : 0);
   }
 
@@ -1447,7 +1583,8 @@ public slots:
 
    @return Posición del registro dentro del cursor, o 0 si no encuentra coincidencia.
    */
-  int atFrom() {
+  int atFrom()
+  {
     return (obj_ ? obj_->atFrom() : -1);
   }
 
@@ -1467,7 +1604,8 @@ public slots:
    @param  orderAsc TRUE (por defecto) si el orden es ascendente, FALSE si es descendente
    @return Posición del registro dentro del cursor, o 0 si no encuentra coincidencia.
    */
-  int atFromBinarySearch(const QString &fN, const QString &v, bool orderAsc = true) {
+  int atFromBinarySearch(const QString &fN, const QString &v, bool orderAsc = true)
+  {
     return (obj_ ? obj_->atFromBinarySearch(fN, v, orderAsc) : -1);
   }
 
@@ -1490,7 +1628,8 @@ public slots:
    @param  checkLocks  True para comprobar riesgos de bloqueos para esta tabla y el registro actual
    @return TRUE si se ha podido entregar el buffer al cursor, y FALSE si ha fallado la entrega
    */
-  bool commitBuffer(bool checkLocks = false) {
+  bool commitBuffer(bool checkLocks = false)
+  {
     return (obj_ ? obj_->commitBuffer(true, checkLocks) : false);
   }
 
@@ -1500,14 +1639,16 @@ public slots:
    Hace efectivos todos los cambios en el buffer del cursor relacionado posiconándose en el registro
    correspondiente que recibe los cambios.
    */
-  bool commitBufferCursorRelation() {
+  bool commitBufferCursorRelation()
+  {
     return (obj_ ? obj_->commitBufferCursorRelation() : false);
   }
 
   /**
    Devuelve el cursor relacionado con este.
    */
-  FLSqlCursorInterface *cursorRelation() {
+  FLSqlCursorInterface *cursorRelation()
+  {
     return cursorRelation_;
   }
 
@@ -1518,7 +1659,8 @@ public slots:
 
    @param c Contexto de ejecucion
    */
-  void setContext(QObject *c) {
+  void setContext(QObject *c)
+  {
     if (obj_)
       obj_->setContext(c);
   }
@@ -1530,7 +1672,8 @@ public slots:
 
    @return Contexto de ejecución
    */
-  QObject *context() const {
+  QObject *context() const
+  {
     return (obj_ ? obj_->context() : 0);
   }
 
@@ -1539,12 +1682,13 @@ public slots:
 
    @return  Objeto FLAction
    */
-  QString action() {
+  QString action()
+  {
     if (!obj_)
       return QString::null;
     if (!obj_->action())
       return QString::null;
-    return obj_->action() ->name();
+    return obj_->action()->name();
   }
 
   /**
@@ -1552,8 +1696,10 @@ public slots:
 
    @param a Objeto FLAction
    */
-  void setAction(const QString &action) {
-    if (obj_) {
+  void setAction(const QString &action)
+  {
+    if (obj_)
+    {
       FLAction *a = obj_->db()->manager()->action(action);
       if (a)
         obj_->setAction(a);
@@ -1566,7 +1712,8 @@ public slots:
    @param fN Nombre del campo
    @param v Valor para el campo unlock
    */
-  void setUnLock(const QString &fN, bool v) {
+  void setUnLock(const QString &fN, bool v)
+  {
     if (obj_)
       obj_->setUnLock(fN, v);
   }
@@ -1576,7 +1723,8 @@ public slots:
 
    @return TRUE si está bloqueado, FALSE en caso contrario.
    */
-  bool isLocked() {
+  bool isLocked()
+  {
     return (obj_ ? obj_->isLocked() : false);
   }
 
@@ -1584,9 +1732,12 @@ public slots:
    Abre el formulario de edicion de registro definido en los metadatos (FLTableMetaData) listo
    para editar el registro activo del cursor.
    */
-  void editRecord() {
-    if (obj_) {
-      if (obj_->parent() == this) {
+  void editRecord()
+  {
+    if (obj_)
+    {
+      if (obj_->parent() == this)
+      {
         removeChild(obj_);
         if (qApp->focusWidget())
           qApp->focusWidget()->insertChild(obj_);
@@ -1599,9 +1750,12 @@ public slots:
    Abre el formulario de inserción de registro definido en los metadatos (FLTableMetaData) listo
    para insertar el registro activo del cursor.
    */
-  void insertRecord() {
-    if (obj_) {
-      if (obj_->parent() == this) {
+  void insertRecord()
+  {
+    if (obj_)
+    {
+      if (obj_->parent() == this)
+      {
         removeChild(obj_);
         if (qApp->focusWidget())
           qApp->focusWidget()->insertChild(obj_);
@@ -1614,9 +1768,12 @@ public slots:
    Abre el formulario de edicion de registro definido en los metadatos (FLTableMetaData) listo
    para visualizar el registro activo del cursor.
    */
-  void browseRecord() {
-    if (obj_) {
-      if (obj_->parent() == this) {
+  void browseRecord()
+  {
+    if (obj_)
+    {
+      if (obj_->parent() == this)
+      {
         removeChild(obj_);
         if (qApp->focusWidget())
           qApp->focusWidget()->insertChild(obj_);
@@ -1630,7 +1787,8 @@ public slots:
    edición de registro,llamando al método FLSqlCursor::editRecord(), si la bandera FLSqlCursor::edition
    indica TRUE, si indica FALSE este método no hace nada
    */
-  void chooseRecord() {
+  void chooseRecord()
+  {
     if (obj_)
       obj_->chooseRecord();
   }
@@ -1640,8 +1798,9 @@ public slots:
 
    @return Cadena que contiene la tabla asociada al cursor
    */
-  QString table() const {
-    return (obj_ ? (obj_->metadata() ? obj_->metadata() ->name() : QString::null) : QString::null);
+  QString table() const
+  {
+    return (obj_ ? (obj_->metadata() ? obj_->metadata()->name() : QString::null) : QString::null);
   }
 
   /**
@@ -1651,8 +1810,9 @@ public slots:
 
    @return Entero con el código del tipo de dato del campo
    */
-  const int fieldType(const QString &fN) const {
-    return (obj_ ? (obj_->metadata() ? obj_->metadata() ->fieldType(fN) : 0) : 0);
+  const int fieldType(const QString &fN) const
+  {
+    return (obj_ ? (obj_->metadata() ? obj_->metadata()->fieldType(fN) : 0) : 0);
   }
 
   /**
@@ -1660,14 +1820,16 @@ public slots:
 
    @return Cadena que contiene el nombre del campo que es clave primaria de la tabla
    */
-  QString primaryKey() const {
-    return (obj_ ? (obj_->metadata() ? obj_->metadata() ->primaryKey() : QString::null) : QString::null);
+  QString primaryKey() const
+  {
+    return (obj_ ? (obj_->metadata() ? obj_->metadata()->primaryKey() : QString::null) : QString::null);
   }
 
   /**
    QSqlCursor::isValid()
    */
-  bool isValid() const {
+  bool isValid() const
+  {
     return (obj_ ? obj_->isValid() : false);
   }
 
@@ -1678,21 +1840,24 @@ public slots:
 
    @return TRUE si el buffer y la copia son distintas, FALSE en caso contrario
    */
-  bool isModifiedBuffer() {
+  bool isModifiedBuffer()
+  {
     return (obj_ ? obj_->isModifiedBuffer() : false);
   }
 
   /**
    @return El nivel actual de anidamiento de transacciones, 0 no hay transaccion
    */
-  int transactionLevel() {
+  int transactionLevel()
+  {
     return (obj_ ? obj_->transactionLevel() : 0);
   }
 
   /**
    @return La lista con los niveles de las transacciones que ha iniciado este cursor y continuan abiertas
    */
-  QStringList transactionsOpened() {
+  QStringList transactionsOpened()
+  {
     return (obj_ ? obj_->transactionsOpened() : QStringList());
   }
 
@@ -1703,7 +1868,8 @@ public slots:
    @param msg    Cadena de texto que se muestra en un cuadro de diálogo antes de deshacer las transacciones.
    Si es vacía no muestra nada.
    */
-  void rollbackOpened(int count = -1, const QString &msg = QString::null) {
+  void rollbackOpened(int count = -1, const QString &msg = QString::null)
+  {
     if (obj_)
       obj_->rollbackOpened(count, msg);
   }
@@ -1715,7 +1881,8 @@ public slots:
    @param msg    Cadena de texto que se muestra en un cuadro de diálogo antes de terminar las transacciones.
    Si es vacía no muestra nada.
    */
-  void commitOpened(int count = -1, const QString &msg = QString::null) {
+  void commitOpened(int count = -1, const QString &msg = QString::null)
+  {
     if (obj_)
       obj_->commitOpened(count, msg);
   }
@@ -1728,7 +1895,8 @@ public slots:
 
    @param  terminate True terminará el bucle de comprobaciones si está activo
    */
-  void checkRisksLocks(bool terminate = false) {
+  void checkRisksLocks(bool terminate = false)
+  {
     if (obj_)
       obj_->checkRisksLocks(terminate);
   }
@@ -1740,7 +1908,8 @@ public slots:
 
    @param  ac Permiso global; p.e.: "r-", "-w"
    */
-  void setAcTable(const QString &ac) {
+  void setAcTable(const QString &ac)
+  {
     if (obj_)
       obj_->setAcTable(ac);
   }
@@ -1756,7 +1925,8 @@ public slots:
 
    @param acos Lista de cadenas de texto con los nombre de campos y permisos.
    */
-  void setAcosTable(const QStringList &acos) {
+  void setAcosTable(const QStringList &acos)
+  {
     if (obj_)
       obj_->setAcosTable(acos);
   }
@@ -1785,9 +1955,10 @@ public slots:
 
    @param  condVal   Valor que hace que la condicion sea cierta
    */
-  void setAcosCondition(const QString &condName, int cond, const QVariant &condVal) {
+  void setAcosCondition(const QString &condName, int cond, const QVariant &condVal)
+  {
     if (obj_)
-      obj_->setAcosCondition(condName, (FLSqlCursor::AcosConditionEval) cond, condVal);
+      obj_->setAcosCondition(condName, (FLSqlCursor::AcosConditionEval)cond, condVal);
   }
 
   /**
@@ -1797,7 +1968,8 @@ public slots:
    ninguna regla de acceso. Se debe utilizar FLSqlCursor::setAcosCondition() para habilitar de nuevo
    una condicion de evaluación.
    */
-  void clearAcosCondition() {
+  void clearAcosCondition()
+  {
     if (obj_)
       obj_->setAcosCondition(QString::null, FLSqlCursor::VALUE, QVariant());
   }
@@ -1805,7 +1977,8 @@ public slots:
   /**
   QSqlCursor::setForwardOnly()
   */
-  void setForwardOnly(bool forward) {
+  void setForwardOnly(bool forward)
+  {
     obj_->setForwardOnly(forward);
   }
 
@@ -1814,50 +1987,62 @@ public slots:
 
   @return Lista con los nombres de los campos que colisionan
   */
-  QStringList concurrencyFields() {
+  QStringList concurrencyFields()
+  {
     return obj_->concurrencyFields();
   }
 
   /**
   Cambia el cursor a otra conexión de base de datos
   */
-  void changeConnection(const QString &connName) {
+  void changeConnection(const QString &connName)
+  {
     obj_->changeConnection(connName);
   }
 
-  QSqlCursor *qSqlCursor() const {
+  QSqlCursor *qSqlCursor() const
+  {
     return static_cast<QSqlCursor *>(obj_);
   }
 
-  FLSqlCursor *obj() {
+  FLSqlCursor *obj()
+  {
     return obj_;
   }
 
   /**
   Uso interno. Obsoleto
   */
-  void emitNewBuffer() {
+  void emitNewBuffer()
+  {
     emit newBuffer();
   }
-  void emitBufferChanged(const QString &v) {
+  void emitBufferChanged(const QString &v)
+  {
     emit bufferChanged(v);
   }
-  void emitCursorUpdated() {
+  void emitCursorUpdated()
+  {
     emit cursorUpdated();
   }
-  void emitRecordChoosed() {
+  void emitRecordChoosed()
+  {
     emit recordChoosed();
   }
-  void emitCurrentChanged(int v) {
+  void emitCurrentChanged(int v)
+  {
     emit currentChanged(v);
   }
-  void emitAutoCommit() {
+  void emitAutoCommit()
+  {
     emit autoCommit();
   }
-  void emitBufferCommited() {
+  void emitBufferCommited()
+  {
     emit bufferCommited();
   }
-  void emitCommited() {
+  void emitCommited()
+  {
     emit commited();
   }
 
@@ -1909,9 +2094,7 @@ signals:
    */
   void commited();
 
-
 private:
-
   void connects() const;
   void removeCache();
 
@@ -1931,16 +2114,16 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLSqlQueryInterface : public QObject
+class FLSqlQueryInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLSqlQueryInterface(const QString &n = QString::null, const QString &connName = "default") : QObject(0) {
+  FLSqlQueryInterface(const QString &n = QString::null, const QString &connName = "default") : QObject(0)
+  {
     if (n.isEmpty())
       obj_ = new FLSqlQuery(this, connName);
     else
@@ -1950,7 +2133,8 @@ public:
   /**
    Constructor
    */
-  FLSqlQueryInterface(FLSqlQuery *obj) : QObject(obj), obj_(0) {
+  FLSqlQueryInterface(FLSqlQuery *obj) : QObject(obj), obj_(0)
+  {
     obj_ = obj;
   }
 
@@ -1959,28 +2143,32 @@ public slots:
   /**
    Obtiene la parte SELECT de la sentencia SQL de la consulta
    */
-  QString select() const {
+  QString select() const
+  {
     return obj_->select();
   }
 
   /**
    Obtiene la parte FROM de la sentencia SQL de la consulta
    */
-  QString from() const {
+  QString from() const
+  {
     return obj_->from();
   }
 
   /**
    Obtiene la parte WHERE de la sentencia SQL de la consulta
    */
-  QString where() const {
+  QString where() const
+  {
     return obj_->where();
   }
 
   /**
    Para obtener la parte ORDER BY de la sentencia SQL de la consulta
    */
-  QString orderBy() const {
+  QString orderBy() const
+  {
     return obj_->orderBy();
   }
 
@@ -1995,7 +2183,8 @@ public slots:
    @param  sep Cadena utilizada como separador en la lista de campos. Por defecto
    se utiliza la coma.
    */
-  void setSelect(const QString &s, const QString &sep = QString::fromLatin1(",")) {
+  void setSelect(const QString &s, const QString &sep = QString::fromLatin1(","))
+  {
     obj_->setSelect(s, sep);
   }
 
@@ -2005,7 +2194,8 @@ public slots:
    @param f Cadena de texto con la parte FROM de la sentencia SQL que
    genera la consulta
    */
-  void setFrom(const QString &f) {
+  void setFrom(const QString &f)
+  {
     obj_->setFrom(QString(f).replace("NaN", ""));
   }
 
@@ -2015,7 +2205,8 @@ public slots:
    @param s Cadena de texto con la parte WHERE de la sentencia SQL que
    genera la consulta
    */
-  void setWhere(const QString &w) {
+  void setWhere(const QString &w)
+  {
     obj_->setWhere(QString(w).replace("NaN", ""));
   }
 
@@ -2025,7 +2216,8 @@ public slots:
    @param s Cadena de texto con la parte ORDER BY de la sentencia SQL que
    genera la consulta
    */
-  void setOrderBy(const QString &oB) {
+  void setOrderBy(const QString &oB)
+  {
     obj_->setOrderBy(QString(oB).replace("NaN", ""));
   }
 
@@ -2038,18 +2230,21 @@ public slots:
 
    @return Cadena de texto con la sentencia completa SQL que genera la consulta
    */
-  QString sql() const {
+  QString sql() const
+  {
     return obj_->sql();
   }
 
   /**
    Reimplementación de QSqlQuery::value(int)
    */
-  QVariant value(int i) const {
+  QVariant value(int i) const
+  {
     return obj_->value(i);
   }
 
-  QVariant value(const QString &n) const {
+  QVariant value(const QString &n) const
+  {
     return obj_->value(n);
   }
 
@@ -2058,7 +2253,8 @@ public slots:
 
    @param i Posicion del campo en el buffer
    */
-  bool isNull(int i) const {
+  bool isNull(int i) const
+  {
     return obj_->isNull(i);
   }
 
@@ -2067,11 +2263,10 @@ public slots:
 
    @param n nombre del del campo en la sentencia SELECT
    */
-  bool isNull(QString n) const {
+  bool isNull(QString n) const
+  {
     return obj_->isNull(n);
   }
-
-
 
   /**
    Devuelve el nombre de campo, dada su posicion en la consulta.
@@ -2081,7 +2276,8 @@ public slots:
    @return Nombre del campo correspondiente. Si no existe el campo devuelve
    QString::null
    */
-  QString posToFieldName(const int p) const {
+  QString posToFieldName(const int p) const
+  {
     return obj_->posToFieldName(p);
   }
 
@@ -2091,7 +2287,8 @@ public slots:
    @param n Nombre del campo
    @return Posicion del campo en la consulta. Si no existe el campo devuelve -1
    */
-  int fieldNameToPos(const QString &n) const {
+  int fieldNameToPos(const QString &n) const
+  {
     return obj_->fieldNameToPos(n);
   }
 
@@ -2101,7 +2298,8 @@ public slots:
    @param tl Cadena de texto con los nombres de las tablas
    separados por comas, p.e. "tabla1,tabla2,tabla3"
    */
-  void setTablesList(const QString &tl) {
+  void setTablesList(const QString &tl)
+  {
     obj_->setTablesList(tl);
   }
 
@@ -2110,7 +2308,8 @@ public slots:
 
    @param name Nombre del parámetro.
    */
-  QVariant valueParam(const QString &name) const {
+  QVariant valueParam(const QString &name) const
+  {
     return obj_->valueParam(name);
   }
 
@@ -2120,7 +2319,8 @@ public slots:
    @param name Nombre del parámetro
    @param v Valor para el parámetros
    */
-  void setValueParam(const QString &name, const QVariant &v) {
+  void setValueParam(const QString &name, const QVariant &v)
+  {
     obj_->setValueParam(name, v);
   }
 
@@ -2129,7 +2329,8 @@ public slots:
 
    @return TRUE si existe un siguiente registro, FALSE si no existe.
    */
-  bool next() {
+  bool next()
+  {
     return obj_->next();
   }
 
@@ -2138,7 +2339,8 @@ public slots:
 
    @return TRUE si existe un anterior registro, FALSE si no existe.
    */
-  bool prev() {
+  bool prev()
+  {
     return obj_->prev();
   }
 
@@ -2147,7 +2349,8 @@ public slots:
 
    @return TRUE si existe un primer registro, FALSE si no existe.
    */
-  bool first() {
+  bool first()
+  {
     return obj_->first();
   }
 
@@ -2156,14 +2359,16 @@ public slots:
 
    @return TRUE si existe un último registro, FALSE si no existe.
    */
-  bool last() {
+  bool last()
+  {
     return obj_->last();
   }
 
   /**
    Ejecuta la consulta
    */
-  bool exec() {
+  bool exec()
+  {
     return obj_->exec();
   }
 
@@ -2172,7 +2377,8 @@ public slots:
 
    Está pensado sólo para tareas de depuración
    */
-  void showDebug() {
+  void showDebug()
+  {
     obj_->showDebug();
   }
 
@@ -2181,20 +2387,22 @@ public slots:
 
    @return Número de líneas (-1 si la consulta no está activa o la BD no da información sobre número de filas)
    */
-  int size() const {
+  int size() const
+  {
     return obj_->size();
   }
 
-  void setForwardOnly(bool forward) {
+  void setForwardOnly(bool forward)
+  {
     obj_->setForwardOnly(forward);
   }
 
-  FLSqlQuery *obj() {
+  FLSqlQuery *obj()
+  {
     return obj_;
   }
 
 private:
-
   FLSqlQuery *obj_;
 };
 
@@ -2205,7 +2413,7 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLFieldDBInterface : public QObject
+class FLFieldDBInterface : public QObject
 {
   Q_OBJECT
 
@@ -2224,8 +2432,8 @@ class  FLFieldDBInterface : public QObject
   Q_ENUMS(AutoCompMode)
 
 public:
-
-  enum AutoCompMode {
+  enum AutoCompMode
+  {
     NeverAuto = 0,
     OnDemandF4,
     AlwaysAuto
@@ -2234,7 +2442,8 @@ public:
   /**
    Constructor
    */
-  FLFieldDBInterface(QWidget *p, const QString &n) : QObject(p) {
+  FLFieldDBInterface(QWidget *p, const QString &n) : QObject(p)
+  {
     obj_ = new FLFieldDB(p, n);
     if (obj_)
       connects();
@@ -2243,7 +2452,8 @@ public:
   /**
    Constructor
    */
-  FLFieldDBInterface(FLFieldDB *obj) : QObject(obj) {
+  FLFieldDBInterface(FLFieldDB *obj) : QObject(obj)
+  {
     obj_ = obj;
     if (obj_)
       connects();
@@ -2261,7 +2471,8 @@ public slots:
 
    @return Cursor del formulario
    */
-  FLSqlCursorInterface *cursor() {
+  FLSqlCursorInterface *cursor()
+  {
     if (!obj_)
       return new FLSqlCursorInterface();
     return FLSqlCursorInterface::sqlCursorInterface(obj_->cursor());
@@ -2272,7 +2483,8 @@ public slots:
 
    @param b. TRUE si hay que inhabilitar el campo, FALSE si hay que habilitarlo
    */
-  void setDisabled(const bool b) {
+  void setDisabled(const bool b)
+  {
     obj_->setDisabled(b);
     obj_->setKeepDisabled(b);
   }
@@ -2282,7 +2494,8 @@ public slots:
 
    @return Nombre de la accion
    */
-  QString actionName() const {
+  QString actionName() const
+  {
     return obj_->actionName();
   }
 
@@ -2291,7 +2504,8 @@ public slots:
 
    @param aN Nombre de la accion
    */
-  void setActionName(const QString &aN) {
+  void setActionName(const QString &aN)
+  {
     obj_->setActionName(aN);
   }
 
@@ -2300,7 +2514,8 @@ public slots:
 
    @return Nombre del campo
    */
-  QString fieldName() const {
+  QString fieldName() const
+  {
     return obj_->fieldName();
   }
 
@@ -2309,7 +2524,8 @@ public slots:
 
    @param fN Nombre del campo
    */
-  void setFieldName(const QString &fN) {
+  void setFieldName(const QString &fN)
+  {
     obj_->setFieldName(fN);
   }
 
@@ -2318,7 +2534,8 @@ public slots:
 
    @return Nombre de la tabla
    */
-  QString tableName() const {
+  QString tableName() const
+  {
     return obj_->tableName();
   }
 
@@ -2327,7 +2544,8 @@ public slots:
 
    @param fT Nombre de la tabla
    */
-  void setTableName(const QString &fT) {
+  void setTableName(const QString &fT)
+  {
     obj_->setTableName(fT);
   }
 
@@ -2336,7 +2554,8 @@ public slots:
 
    @return Nombre del campo
    */
-  QString foreignField() const {
+  QString foreignField() const
+  {
     return obj_->foreignField();
   }
 
@@ -2345,7 +2564,8 @@ public slots:
 
    @param fN Nombre del campo
    */
-  void setForeignField(const QString &fN) {
+  void setForeignField(const QString &fN)
+  {
     obj_->setForeignField(fN);
   }
 
@@ -2354,14 +2574,16 @@ public slots:
 
    @return Nombre del campo
    */
-  QString fieldRelation() const {
+  QString fieldRelation() const
+  {
     return obj_->fieldRelation();
   }
 
   /**
    @return Alias del campo, es el valor mostrado en la etiqueta
    */
-  QString fieldAlias() const {
+  QString fieldAlias() const
+  {
     return obj_->fieldAlias();
   }
 
@@ -2370,7 +2592,8 @@ public slots:
 
    @return Objeto con el editor del campo
    */
-  QWidget *editor() const {
+  QWidget *editor() const
+  {
     return obj_->editor();
   }
 
@@ -2378,7 +2601,8 @@ public slots:
    Añade un filtro al cursor.
 
    */
-  void setFilter(const QString &f) {
+  void setFilter(const QString &f)
+  {
     obj_->setFilter(f);
   }
 
@@ -2386,7 +2610,8 @@ public slots:
    Obtiene el filtro del cursor.
 
    */
-  QString filter() const {
+  QString filter() const
+  {
     return obj_->filter();
   }
 
@@ -2395,7 +2620,8 @@ public slots:
 
    @param fN Nombre del campo
    */
-  void setFieldRelation(const QString &fN) {
+  void setFieldRelation(const QString &fN)
+  {
     obj_->setFieldRelation(fN);
   }
 
@@ -2404,7 +2630,8 @@ public slots:
 
    @param alias Alias del campo, es el valor de la etiqueta. Si es vacio no hace nada.
    */
-  void setFieldAlias(const QString &alias) {
+  void setFieldAlias(const QString &alias)
+  {
     obj_->setFieldAlias(alias);
   }
 
@@ -2413,25 +2640,32 @@ public slots:
 
    @param v Valor a establecer
    */
-  void setValue(const QVariant &v) {
-    if (v.isValid() && !v.isNull()) {
-      if (v.toString().upper() == "NAN") {
+  void setValue(const QVariant &v)
+  {
+    if (v.isValid() && !v.isNull())
+    {
+      if (v.toString().upper() == "NAN")
+      {
         obj_->setValue(QVariant());
         return;
       }
     }
     obj_->setValue(v);
   }
-  void setValue(const QString &v) {
+  void setValue(const QString &v)
+  {
     setValue(QVariant(v));
   }
-  void setValue(bool v) {
+  void setValue(bool v)
+  {
     setValue(QVariant(v));
   }
-  void setValue(double v) {
+  void setValue(double v)
+  {
     setValue(QVariant(v));
   }
-  void setValue(int v) {
+  void setValue(int v)
+  {
     setValue(QVariant(v));
   }
 
@@ -2440,7 +2674,8 @@ public slots:
 
    @param filename Ruta del fichero que contiene la imagen
    */
-  void setPixmap(const QString &filename) {
+  void setPixmap(const QString &filename)
+  {
     obj_->setPixmap(filename);
   }
 
@@ -2452,7 +2687,8 @@ public slots:
   @param h: alto preferido de la imagen
   @author Silix
   */
-  void setPixmapFromPixmap(const QPixmap &pixmap, const int w = 0, const int h = 0) {
+  void setPixmapFromPixmap(const QPixmap &pixmap, const int w = 0, const int h = 0)
+  {
     obj_->setPixmapFromPixmap(pixmap, w, h);
   }
 
@@ -2463,7 +2699,8 @@ public slots:
   @param fmt Indica el formato con el que guardar la imagen
   @author Silix
   */
-  void savePixmap(const QString &filename, const char *format) {
+  void savePixmap(const QString &filename, const char *format)
+  {
     obj_->savePixmap(filename, format);
   }
 
@@ -2473,28 +2710,32 @@ public slots:
   @return imagen asociada al campo
   @author Silix
   */
-  QPixmap pixmap() {
+  QPixmap pixmap()
+  {
     return obj_->pixmap();
   }
 
   /**
    Hace que el control tome el foco
    */
-  void setFocus() {
+  void setFocus()
+  {
     obj_->setFocus();
   }
 
   /**
    Marca como seleccionado el contenido del campo.
    */
-  void selectAll() {
+  void selectAll()
+  {
     obj_->selectAll();
   }
 
   /**
    Obtiene el valor contenido en el campo.
    */
-  QVariant value() {
+  QVariant value()
+  {
     obj_->showWidget();
     return obj_->value();
   }
@@ -2502,7 +2743,8 @@ public slots:
   /**
    Esconde el campo
    */
-  void close() {
+  void close()
+  {
     obj_->close();
   }
 
@@ -2512,7 +2754,8 @@ public slots:
    @param key Cadena de texto que representa la combinación de teclas (p.e. "Ctrl+Shift+O")
    @return El identificador asociado internamente a la combinación de teclas aceleración insertada
    */
-  int insertAccel(const QString &key) {
+  int insertAccel(const QString &key)
+  {
     return obj_->insertAccel(key);
   }
 
@@ -2521,7 +2764,8 @@ public slots:
 
    @param id Identificador de la combinación de teclas de aceleración
    */
-  void removeAccel(int id) {
+  void removeAccel(int id)
+  {
     obj_->removeAccel(id);
   }
 
@@ -2530,28 +2774,35 @@ public slots:
 
    @param f Formato del campo
    */
-  void setTextFormat(int f) {
+  void setTextFormat(int f)
+  {
     Qt::TextFormat tt;
-    switch (f) {
-      case 0: {
-        tt = Qt::PlainText;
-        break;
-      }
-      case 1: {
-        tt = Qt::RichText;
-        break;
-      }
-      case 2: {
-        tt = Qt::AutoText;
-        break;
-      }
-      case 3: {
-        tt = Qt::LogText;
-        break;
-      }
-      default : {
-        return;
-      }
+    switch (f)
+    {
+    case 0:
+    {
+      tt = Qt::PlainText;
+      break;
+    }
+    case 1:
+    {
+      tt = Qt::RichText;
+      break;
+    }
+    case 2:
+    {
+      tt = Qt::AutoText;
+      break;
+    }
+    case 3:
+    {
+      tt = Qt::LogText;
+      break;
+    }
+    default:
+    {
+      return;
+    }
     }
     obj_->setTextFormat(tt);
   }
@@ -2559,7 +2810,8 @@ public slots:
   /**
    @return El formato del texto
    */
-  int textFormat() const {
+  int textFormat() const
+  {
     return obj_->textFormat();
   }
 
@@ -2568,14 +2820,16 @@ public slots:
 
   @param m Modo (Normal, NoEcho, Password)
   */
-  void setEchoMode(int m) {
+  void setEchoMode(int m)
+  {
     obj_->setEchoMode(m);
   }
 
   /**
   @return El mode de "echo" (Normal, NoEcho, Password)
   */
-  int echoMode() const {
+  int echoMode() const
+  {
     return obj_->echoMode();
   }
 
@@ -2583,7 +2837,8 @@ public slots:
    Cuando se pulsa una combinación de teclas de aceleración se emite esta señal indicando el identificador
    de la combinación de teclas pulsada
    */
-  void emitActivatedAccel(int id) {
+  void emitActivatedAccel(int id)
+  {
     emit activatedAccel(id);
   }
 
@@ -2592,46 +2847,54 @@ public slots:
    usada para saber si hay que mostrar el alias cuando se está
    en modo de cursor relacionado.
    */
-  bool showAlias() const {
+  bool showAlias() const
+  {
     return obj_->showAlias();
   }
 
   /**
    Establece el estado de la propiedad showAlias.
    */
-  void setShowAlias(const bool value) {
+  void setShowAlias(const bool value)
+  {
     obj_->setShowAlias(value);
   }
 
   /**
    Devuelve el valor de la propiedad showEditor.
    */
-  bool showEditor() const {
+  bool showEditor() const
+  {
     return obj_->showEditor();
   }
 
   /**
    Establece el valor de la propiedad showEditor.
    */
-  void setShowEditor(const bool show) {
+  void setShowEditor(const bool show)
+  {
     obj_->setShowEditor(show);
   }
 
-  void setPartDecimal(int d) {
+  void setPartDecimal(int d)
+  {
     obj_->setPartDecimal(d);
   }
 
   /**
   Para asistente de completado automático.
   */
-  void setAutoCompletionMode(AutoCompMode m) {
-    obj_->setAutoCompletionMode((FLFieldDB::AutoCompMode) m);
+  void setAutoCompletionMode(AutoCompMode m)
+  {
+    obj_->setAutoCompletionMode((FLFieldDB::AutoCompMode)m);
   }
-  AutoCompMode autoCompletionMode() const {
-    return (FLFieldDBInterface::AutoCompMode) obj_->autoCompletionMode();
+  AutoCompMode autoCompletionMode() const
+  {
+    return (FLFieldDBInterface::AutoCompMode)obj_->autoCompletionMode();
   }
 
-  FLFieldDB *obj() {
+  FLFieldDB *obj()
+  {
     return obj_;
   }
 
@@ -2664,7 +2927,6 @@ signals:
   void lostFocus();
 
 private:
-
   void connects() const;
 
   FLFieldDB *obj_;
@@ -2677,7 +2939,7 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLTableDBInterface : public QObject
+class FLTableDBInterface : public QObject
 {
   Q_OBJECT
 
@@ -2693,11 +2955,11 @@ class  FLTableDBInterface : public QObject
   Q_PROPERTY(bool onlyTable READ onlyTable WRITE setOnlyTable)
 
 public:
-
   /**
    Constructor
    */
-  FLTableDBInterface(QWidget *p, const QString &n) : QObject(p) {
+  FLTableDBInterface(QWidget *p, const QString &n) : QObject(p)
+  {
     obj_ = new FLTableDB(p, n);
     if (obj_)
       connects();
@@ -2706,7 +2968,8 @@ public:
   /**
    Constructor
    */
-  FLTableDBInterface(FLTableDB *obj) : QObject(obj) {
+  FLTableDBInterface(FLTableDB *obj) : QObject(obj)
+  {
     obj_ = obj;
     if (obj_)
       connects();
@@ -2724,7 +2987,8 @@ public slots:
 
    @return Nombre de la tabla asociado
    */
-  QString tableName() const {
+  QString tableName() const
+  {
     return obj_->tableName();
   }
 
@@ -2733,7 +2997,8 @@ public slots:
 
    @param fT Nombre de la tabla asociada
    */
-  void setTableName(const QString &fT) {
+  void setTableName(const QString &fT)
+  {
     obj_->setTableName(fT);
   }
 
@@ -2742,7 +3007,8 @@ public slots:
 
    @return Nombre del campo
    */
-  QString foreignField() const {
+  QString foreignField() const
+  {
     return obj_->foreignField();
   }
 
@@ -2751,7 +3017,8 @@ public slots:
 
    @param fN Nombre del campo
    */
-  void setForeignField(const QString &fN) {
+  void setForeignField(const QString &fN)
+  {
     obj_->setForeignField(fN);
   }
 
@@ -2760,7 +3027,8 @@ public slots:
 
    @return Nombre del campo
    */
-  QString fieldRelation() const {
+  QString fieldRelation() const
+  {
     return obj_->fieldRelation();
   }
 
@@ -2769,95 +3037,108 @@ public slots:
 
    @param fN Nombre del campo
    */
-  void setFieldRelation(const QString &fN) {
+  void setFieldRelation(const QString &fN)
+  {
     obj_->setFieldRelation(fN);
   }
 
   /**
    Establece si el componente esta en modo solo lectura o no.
    */
-  void setReadOnly(const bool mode) {
+  void setReadOnly(const bool mode)
+  {
     obj_->setReadOnly(mode);
   }
 
   /**
    Establece el nombre de función a llamar cuando cambia el filtro de búsqueda
    */
-  void setFilterRecordsFunction( QString fn) {
+  void setFilterRecordsFunction(QString fn)
+  {
     obj_->setFilterRecordsFunction(fn);
-    
-  } 
+  }
   /**
    Establece si el componente esta en modo solo edición o no.
    */
-  void setEditOnly(const bool mode) {
+  void setEditOnly(const bool mode)
+  {
     obj_->setEditOnly(mode);
   }
 
   /**
    Establece el componente a sólo inserción o no.
    */
-  void setInsertOnly(const bool mode) {
+  void setInsertOnly(const bool mode)
+  {
     obj_->setInsertOnly(mode);
   }
 
   /**
    Actualiza el conjunto de registros.
    */
-  void refresh() {
+  void refresh()
+  {
     obj_->refresh(false, true);
   }
 
-  void refresh(const bool refreshHead, const bool refreshData) {
+  void refresh(const bool refreshHead, const bool refreshData)
+  {
     obj_->refresh(refreshHead, refreshData);
   }
 
   /**
    Invoca al método FLSqlCursor::insertRecord()
    */
-  void insertRecord() {
+  void insertRecord()
+  {
     obj_->insertRecord();
   }
 
   /**
    Invoca al método FLSqlCursor::editRecord()
    */
-  void editRecord() {
+  void editRecord()
+  {
     obj_->editRecord();
   }
 
   /**
    Invoca al método FLSqlCursor::browseRecord()
    */
-  void browseRecord() {
+  void browseRecord()
+  {
     obj_->browseRecord();
   }
 
   /**
    Invoca al método FLSqlCursor::deleteRecord()
    */
-  void deleteRecord() {
+  void deleteRecord()
+  {
     obj_->deleteRecord();
   }
 
   /**
    Invoca al método FLSqlCursor::copyRecord()
    */
-  void copyRecord() {
+  void copyRecord()
+  {
     obj_->copyRecord();
   }
 
   /**
    Redefinida por conveniencia
    */
-  void show() {
+  void show()
+  {
     obj_->show();
   }
 
   /**
    Hace que el la tabla tome el foco
    */
-  void setFocus() {
+  void setFocus()
+  {
     obj_->setFocus();
   }
 
@@ -2865,7 +3146,8 @@ public slots:
    Hace que la tabla aplique un filtro
    @param f: Filtro a aplicar
    */
-  void setFilter(const QString &f) {
+  void setFilter(const QString &f)
+  {
     obj_->setFilter(f);
   }
 
@@ -2873,30 +3155,35 @@ public slots:
    Obtiene el filtro actual de la tabla
    @return Filtro
    */
-  QString filter() {
+  QString filter()
+  {
     return obj_->filter();
   }
-  
-  bool isSortOrderAscending() {
-    return obj_->isSortOrderAscending();  
+
+  bool isSortOrderAscending()
+  {
+    return obj_->isSortOrderAscending();
   }
-  
-  void setSortOrder(int ascending) {
-    obj_->setSortOrder(ascending);  
+
+  void setSortOrder(int ascending)
+  {
+    obj_->setSortOrder(ascending);
   }
-  
+
   /**
    Obtiene el filtro impuesto en el Find.
 
    */
-  QString findFilter() const {
+  QString findFilter() const
+  {
     return obj_->findFilter();
   }
 
   /**
    Establece el filtro inicial de búsqueda
    */
-  void setInitSearch(const QString &iS) {
+  void setInitSearch(const QString &iS)
+  {
     obj_->setInitSearch(iS);
   }
 
@@ -2905,32 +3192,38 @@ public slots:
 
    return Objeto FLSqlCursor con el cursor que contiene los registros para ser utilizados en el formulario
    */
-  FLSqlCursorInterface *cursor() {
+  FLSqlCursorInterface *cursor()
+  {
     if (!obj_)
       return new FLSqlCursorInterface();
     return FLSqlCursorInterface::sqlCursorInterface(obj_->cursor());
   }
 
-  void emitReadOnlyChanged(bool b) {
+  void emitReadOnlyChanged(bool b)
+  {
     emit readOnlyChanged(b);
   }
 
-  void emitEditOnlyChanged(bool b) {
+  void emitEditOnlyChanged(bool b)
+  {
     emit editOnlyChanged(b);
   }
 
-  void emitInsertOnlyChanged(bool b) {
+  void emitInsertOnlyChanged(bool b)
+  {
     emit insertOnlyChanged(b);
   }
 
-  void emitRefreshed() {
+  void emitRefreshed()
+  {
     emit refreshed();
   }
 
   /**
    Emite la señal currentChanged, cuando el objeto tableRecords envía dicha señal
    */
-  void emitCurrentChanged() {
+  void emitCurrentChanged()
+  {
     emit currentChanged();
   }
 
@@ -2939,9 +3232,11 @@ public slots:
 
    @param r. Índice de la fila
    */
-  void setCurrentRow(const int r) {
+  void setCurrentRow(const int r)
+  {
     FLDataTable *t = obj_->tableRecords();
-    if (t) {
+    if (t)
+    {
       obj_->showWidget();
       t->selectRow(r);
     }
@@ -2952,9 +3247,11 @@ public slots:
 
    @return Índice de la fila actual
    */
-  int currentRow(void) {
+  int currentRow(void)
+  {
     FLDataTable *t = obj_->tableRecords();
-    if (t) {
+    if (t)
+    {
       obj_->showWidget();
       return t->currentRow();
     }
@@ -2964,11 +3261,13 @@ public slots:
   /**
    Esconde la tabla
    */
-  void close() {
+  void close()
+  {
     obj_->close();
   }
 
-  FLTableDB *obj() {
+  FLTableDB *obj()
+  {
     return obj_;
   }
 
@@ -2977,14 +3276,16 @@ public slots:
 
    @param b. TRUE si hay que inhabilitar la tabla, FALSE si hay que habilitarla
    */
-  void setDisabled(const bool b) {
+  void setDisabled(const bool b)
+  {
     obj_->setDisabled(b);
   }
 
   /**
    Establece el campo de búsqueda
    */
-  void putFirstCol(const QString &c) {
+  void putFirstCol(const QString &c)
+  {
     obj_->putFirstCol(c);
   }
 
@@ -2993,7 +3294,8 @@ public slots:
 
   @author Silix - dpinelo
   */
-  void putSecondCol(const QString &c) {
+  void putSecondCol(const QString &c)
+  {
     obj_->putSecondCol(c);
   }
 
@@ -3003,7 +3305,8 @@ public slots:
    @param  from  Nombre del campo de la columna de origen
    @param  to    Nombre del campo de la columna de destino
    */
-  void moveCol(const QString &from, const QString &to) {
+  void moveCol(const QString &from, const QString &to)
+  {
     obj_->moveCol(from, to);
   }
 
@@ -3012,14 +3315,16 @@ public slots:
 
    @param fields Lista de los nombres de los campos ordenada según se desea que aparezcan en la tabla
    */
-  void setOrderCols(QStringList &fields) {
+  void setOrderCols(QStringList &fields)
+  {
     obj_->setOrderCols(fields);
   }
 
   /**
    Devuelve la lista de los campos ordenada por sus columnas en la tabla de izquierda a derecha
    */
-  QStringList orderCols() {
+  QStringList orderCols()
+  {
     return obj_->orderCols();
   }
 
@@ -3027,14 +3332,16 @@ public slots:
   Conmuta el sentido de la ordenación de los registros de la tabla, de ascendente a descendente y
   viceversa. Los registros siempre se ordenan por la primera columna.
   */
-  void switchSortOrder(int col = -1) {
+  void switchSortOrder(int col = -1)
+  {
     obj_->switchSortOrder(col);
   }
 
   /**
    Obtiene si la columna de selección está activada
    */
-  bool checkColumnEnabled() const {
+  bool checkColumnEnabled() const
+  {
     return obj_->checkColumnEnabled();
   }
 
@@ -3043,14 +3350,16 @@ public slots:
 
    El cambio de estado no será efectivo hasta el siguiente refresh.
    */
-  void setCheckColumnEnabled(bool b) {
+  void setCheckColumnEnabled(bool b)
+  {
     obj_->setCheckColumnEnabled(b);
   }
 
   /**
    Obiente el texto de la etiqueta de encabezado para la columna de selección
    */
-  QString aliasCheckColumn() const {
+  QString aliasCheckColumn() const
+  {
     return obj_->aliasCheckColumn();
   }
 
@@ -3059,7 +3368,8 @@ public slots:
 
    El cambio del texto de la etiqueta no será efectivo hasta el próximo refresh
    */
-  void setAliasCheckColumn(const QString &t) {
+  void setAliasCheckColumn(const QString &t)
+  {
     obj_->setAliasCheckColumn(t);
   }
 
@@ -3071,7 +3381,8 @@ public slots:
   /**
    Limpia la lista con las claves primarias de los registros seleccionados por chequeo
    */
-  void clearChecked() {
+  void clearChecked()
+  {
     FLDataTable *dt = obj_->tableRecords();
     if (dt)
       dt->clearChecked();
@@ -3080,7 +3391,8 @@ public slots:
   /**
    Establece el estado seleccionado por chequeo para un registro, indicando el valor de su clave primaria
    */
-  void setPrimaryKeyChecked(const QVariant &primaryKeyValue, bool on) {
+  void setPrimaryKeyChecked(const QVariant &primaryKeyValue, bool on)
+  {
     FLDataTable *dt = obj_->tableRecords();
     if (dt)
       dt->setPrimaryKeyChecked(primaryKeyValue, on);
@@ -3095,14 +3407,16 @@ public slots:
    @param  primaryKeyValue El valor de la clave primaria del registro correspondiente
    @param  on  El nuevo estado; TRUE chequeo activado, FALSE chequeo desactivado
    */
-  void emitPrimaryKeyToggled(const QVariant &primaryKeyValue, bool on) {
+  void emitPrimaryKeyToggled(const QVariant &primaryKeyValue, bool on)
+  {
     emit primaryKeyToggled(primaryKeyValue, on);
   }
 
   /**
    Obtiene si el marco de búsqueda está oculto
    */
-  bool findHidden() const {
+  bool findHidden() const
+  {
     return obj_->findHidden();
   }
 
@@ -3111,14 +3425,16 @@ public slots:
 
    @param  h TRUE lo oculta, FALSE lo muestra
    */
-  void setFindHidden(bool h) {
+  void setFindHidden(bool h)
+  {
     obj_->setFindHidden(h);
   }
 
   /**
    Obtiene si el marco para conmutar entre datos y filtro está oculto
    */
-  bool filterHidden() const {
+  bool filterHidden() const
+  {
     return obj_->filterHidden();
   }
 
@@ -3127,7 +3443,8 @@ public slots:
 
    @param  h TRUE lo oculta, FALSE lo muestra
    */
-  void setFilterHidden(bool h) {
+  void setFilterHidden(bool h)
+  {
     obj_->setFilterHidden(h);
   }
 
@@ -3137,14 +3454,16 @@ public slots:
    @param  field Nombre del campo de la base de datos correspondiente a la columna
    @param  w     Ancho de la columna
    */
-  void setColumnWidth(const QString &field, int w) {
+  void setColumnWidth(const QString &field, int w)
+  {
     obj_->setColumnWidth(field, w);
   }
 
   /**
    @return Ancho de la columna
    */
-  int columnWidth(int c) {
+  int columnWidth(int c)
+  {
     return obj_->columnWidth(c);
   }
 
@@ -3154,52 +3473,60 @@ public slots:
    @param  row Número de orden de la fila, empezando en 0
    @param  h   Alto de la fila
    */
-  void setRowHeight(int row, int h) {
+  void setRowHeight(int row, int h)
+  {
     obj_->setRowHeight(row, h);
   }
 
   /**
    @return Alto de la fila
    */
-  int rowHeight(int row) {
+  int rowHeight(int row)
+  {
     return obj_->rowHeight(row);
   }
 
   /**
    Ver FLTableDB::showAllPixmaps_
    */
-  bool showAllPixmaps() const {
+  bool showAllPixmaps() const
+  {
     return obj_->showAllPixmaps();
   }
 
   /**
    Ver FLTableDB::showAllPixmaps_
    */
-  void setShowAllPixmaps(bool s) {
+  void setShowAllPixmaps(bool s)
+  {
     obj_->setShowAllPixmaps(s);
   }
 
   /**
    Ver FLTableDB::functionGetColor_
    */
-  QString functionGetColor() const {
+  QString functionGetColor() const
+  {
     return obj_->functionGetColor();
   }
 
   /**
    Ver FLTableDB::functionGetColor_
    */
-  void setFunctionGetColor(const QString &f) {
+  void setFunctionGetColor(const QString &f)
+  {
     obj_->setFunctionGetColor(f);
   }
 
   /**
     Ver FLTableDB::onlyTable_
     */
-  void setOnlyTable(bool on = true) {
+  void setOnlyTable(bool on = true)
+  {
     obj_->setOnlyTable(on);
   }
-  bool onlyTable() const {
+  bool onlyTable() const
+  {
     return obj_->onlyTable();
   }
 
@@ -3242,7 +3569,6 @@ signals:
   void primaryKeyToggled(const QVariant &, bool);
 
 private:
-
   void connects() const;
 
   FLTableDB *obj_;
@@ -3255,7 +3581,12 @@ private:
 
  @author InfoSiAL S.L.
  */
-#define NEW_TABLE if (!obj_) { obj_ = new FLTable(qApp->mainWidget()); connects(); }
+#define NEW_TABLE                           \
+  if (!obj_)                                \
+  {                                         \
+    obj_ = new FLTable(qApp->mainWidget()); \
+    connects();                             \
+  }
 
 class FLTableInterface : public QObject
 {
@@ -3263,11 +3594,11 @@ class FLTableInterface : public QObject
   Q_ENUMS(CellAlignment)
 
 public:
-
   /**
    Constructor
    */
-  FLTableInterface(QWidget *p, const QString &n) : QObject(p) {
+  FLTableInterface(QWidget *p, const QString &n) : QObject(p)
+  {
     obj_ = new FLTable(p, n);
     if (obj_)
       connects();
@@ -3281,11 +3612,13 @@ public:
   /**
    Constructor
    */
-  FLTableInterface(QTable *t) : QObject(t), obj_(t) {
+  FLTableInterface(QTable *t) : QObject(t), obj_(t)
+  {
     connects();
   }
 
-  enum CellAlignment {
+  enum CellAlignment
+  {
     AlignAuto = Qt::AlignAuto,
     AlignLeft = Qt::AlignLeft,
     AlignRight = Qt::AlignRight,
@@ -3305,7 +3638,8 @@ public slots:
    @param row. número de fila
    @param ro. TRUE si la fila es de sólo lectura, FALSE si no lo es
    */
-  void setRowReadOnly(int row, bool ro) {
+  void setRowReadOnly(int row, bool ro)
+  {
     NEW_TABLE
     obj_->setRowReadOnly(row, ro);
   }
@@ -3317,7 +3651,8 @@ public slots:
    @param ascending. Orden ascendente (true) o descendente (false)
    @param wholeRows. Ordenar sólo la columna (false) o las filas enteras (true)
    */
-  void sortColumn(int col, bool ascending = true, bool wholeRows = false) {
+  void sortColumn(int col, bool ascending = true, bool wholeRows = false)
+  {
     NEW_TABLE
     obj_->sortColumn(col, ascending, wholeRows);
   }
@@ -3328,7 +3663,8 @@ public slots:
    @param col. número de columna
    @param ro. TRUE si la fila es de sólo lectura, FALSE si no lo es
    */
-  void setColumnReadOnly(int col, bool ro) {
+  void setColumnReadOnly(int col, bool ro)
+  {
     NEW_TABLE
     obj_->setColumnReadOnly(col, ro);
   }
@@ -3338,7 +3674,8 @@ public slots:
 
    @param row.número de la fila a eliminar
    */
-  void removeRow(int row) {
+  void removeRow(int row)
+  {
     NEW_TABLE
     obj_->removeRow(row);
   }
@@ -3354,7 +3691,8 @@ public slots:
    @param fil. número de la fila
    @param col. número de la columna
    */
-  void editCell(int row, int col) {
+  void editCell(int row, int col)
+  {
     NEW_TABLE
     obj_->editCell(row, col, false);
   }
@@ -3364,7 +3702,8 @@ public slots:
 
    @param col. número de la columna
    */
-  void hideColumn(int col) {
+  void hideColumn(int col)
+  {
     NEW_TABLE
     obj_->hideColumn(col);
   }
@@ -3374,7 +3713,8 @@ public slots:
 
    @param row. número de la fila
    */
-  void hideRow(int row) {
+  void hideRow(int row)
+  {
     NEW_TABLE
     obj_->hideRow(row);
   }
@@ -3384,7 +3724,8 @@ public slots:
 
    @param col. número de la columna
    */
-  void showColumn(int col) {
+  void showColumn(int col)
+  {
     NEW_TABLE
     obj_->showColumn(col);
   }
@@ -3394,7 +3735,8 @@ public slots:
 
    @param row. número de la fila
    */
-  void showRow(int row) {
+  void showRow(int row)
+  {
     NEW_TABLE
     obj_->showRow(row);
   }
@@ -3405,7 +3747,8 @@ public slots:
    @param row. número de la fila de la casilla
    @param col. número de la columna de la casilla
    */
-  QString text(int row, int col) {
+  QString text(int row, int col)
+  {
     NEW_TABLE
     return obj_->text(row, col);
   }
@@ -3416,7 +3759,8 @@ public slots:
    @param sep. Caracter separador de los títulos
    @param str. Lista de títulos separados por el carácter separador
    */
-  void setColumnLabels(const QString &sep, const QString &str) {
+  void setColumnLabels(const QString &sep, const QString &str)
+  {
     NEW_TABLE
     QStringList sL = QStringList::split(sep, str);
     obj_->setColumnLabels(sL);
@@ -3428,7 +3772,8 @@ public slots:
    @param sep. Caracter separador de los títulos
    @param str. Lista de títulos separados por el carácter separador
    */
-  void setRowLabels(const QString &sep, const QString &str) {
+  void setRowLabels(const QString &sep, const QString &str)
+  {
     NEW_TABLE
     QStringList sL = QStringList::split(sep, str);
     obj_->setRowLabels(sL);
@@ -3439,7 +3784,8 @@ public slots:
 
    @param m. Margen
    */
-  void setLeftMargin(int m) {
+  void setLeftMargin(int m)
+  {
     NEW_TABLE
     obj_->setLeftMargin(m);
   }
@@ -3449,7 +3795,8 @@ public slots:
 
    @param m. Margen
    */
-  void setTopMargin(int m) {
+  void setTopMargin(int m)
+  {
     NEW_TABLE
     obj_->setTopMargin(m);
   }
@@ -3459,7 +3806,8 @@ public slots:
 
    @param c. número de columnas que tendrá la tabla
    */
-  void setNumCols(const int c) {
+  void setNumCols(const int c)
+  {
     NEW_TABLE
     obj_->setNumCols(c);
   }
@@ -3469,7 +3817,8 @@ public slots:
 
    @param c. número de filas que tendrá la tabla
    */
-  void setNumRows(const int r) {
+  void setNumRows(const int r)
+  {
     NEW_TABLE
     obj_->setNumRows(r);
   }
@@ -3479,7 +3828,8 @@ public slots:
    @param c. Número de la columna
    @param w. Anchura
    */
-  void setColumnWidth(const int c, const int w) {
+  void setColumnWidth(const int c, const int w)
+  {
     NEW_TABLE
     obj_->setColumnWidth(c, w);
   }
@@ -3487,7 +3837,8 @@ public slots:
   /**
    @return Ancho de la columna
    */
-  int columnWidth(int c) {
+  int columnWidth(int c)
+  {
     NEW_TABLE
     return obj_->columnWidth(c);
   }
@@ -3498,7 +3849,8 @@ public slots:
    @param  row Número de orden de la fila, empezando en 0
    @param  h   Alto de la fila
    */
-  void setRowHeight(int row, int h) {
+  void setRowHeight(int row, int h)
+  {
     NEW_TABLE
     obj_->setRowHeight(row, h);
   }
@@ -3506,7 +3858,8 @@ public slots:
   /**
    @return Alto de la fila
    */
-  int rowHeight(int row) {
+  int rowHeight(int row)
+  {
     NEW_TABLE
     return obj_->rowHeight(row);
   }
@@ -3516,7 +3869,8 @@ public slots:
 
    @return  número de fila actual
    */
-  int currentRow() {
+  int currentRow()
+  {
     NEW_TABLE
     return obj_->currentRow();
   }
@@ -3526,7 +3880,8 @@ public slots:
 
    @return  número de columna actual
    */
-  int currentColumn() {
+  int currentColumn()
+  {
     NEW_TABLE
     return obj_->currentColumn();
   }
@@ -3536,7 +3891,8 @@ public slots:
 
    @param row. número de fila que se desea seleccionar
    */
-  void selectRow(int row) {
+  void selectRow(int row)
+  {
     NEW_TABLE
     obj_->selectRow(row);
   }
@@ -3546,7 +3902,8 @@ public slots:
 
    @return número de filas
    */
-  int numRows() {
+  int numRows()
+  {
     NEW_TABLE
     return obj_->numRows();
   }
@@ -3556,7 +3913,8 @@ public slots:
 
    @return número de columnas
    */
-  int numCols() {
+  int numCols()
+  {
     NEW_TABLE
     return obj_->numCols();
   }
@@ -3567,7 +3925,8 @@ public slots:
    @param row2: Fila 2
    @param swapHeader: Indica si hay que cambiar también las cabeceras de las filas
    */
-  void swapRows(int row1, int row2, bool swapHeader = false) {
+  void swapRows(int row1, int row2, bool swapHeader = false)
+  {
     NEW_TABLE
     return obj_->swapRows(row1, row2, swapHeader);
   }
@@ -3578,7 +3937,8 @@ public slots:
    @param col2: Columna 2
    @param swapHeader: Indica si hay que cambiar también las cabeceras de las columnas
    */
-  void swapColumns(int col1, int col2, bool swapHeader = false) {
+  void swapColumns(int col1, int col2, bool swapHeader = false)
+  {
     NEW_TABLE
     return obj_->swapColumns(col1, col2, swapHeader);
   }
@@ -3586,7 +3946,8 @@ public slots:
   /**
    Actualiza los contenidos
    */
-  void repaintContents() {
+  void repaintContents()
+  {
     NEW_TABLE
     return obj_->repaintContents();
   }
@@ -3594,7 +3955,8 @@ public slots:
   /**
    Clear selections
    */
-  void clearSelection(bool repaint = true) {
+  void clearSelection(bool repaint = true)
+  {
     NEW_TABLE
     return obj_->clearSelection(repaint);
   }
@@ -3630,7 +3992,8 @@ public slots:
    @param col. número de columna
    @param text. texto que deseamos insertar
    */
-  void setText(int row, int col, const QString &text) {
+  void setText(int row, int col, const QString &text)
+  {
     NEW_TABLE
     int d = row - obj_->numRows() + 1;
     if (d > 0)
@@ -3647,7 +4010,8 @@ public slots:
    @param row. posición donde insertar las nuevas filas
    @param count. número de filas a insertar
    */
-  void insertRows(int row, int count = 1) {
+  void insertRows(int row, int count = 1)
+  {
     NEW_TABLE
     obj_->insertRows(row, count);
   }
@@ -3658,7 +4022,8 @@ public slots:
    @param col. posición donde insertar las nuevas columnas
    @param count. número de columnas a insertar
    */
-  void insertColumns(int col, int count = 1) {
+  void insertColumns(int col, int count = 1)
+  {
     NEW_TABLE
     obj_->insertColumns(col, count);
   }
@@ -3668,7 +4033,8 @@ public slots:
 
    @param col. posición de la columna
    */
-  void adjustColumn(int col) {
+  void adjustColumn(int col)
+  {
     NEW_TABLE
     obj_->adjustColumn(col);
   }
@@ -3678,7 +4044,8 @@ public slots:
 
    @param fil. posición de la fila
    */
-  void adjustRow(int fil) {
+  void adjustRow(int fil)
+  {
     NEW_TABLE
     obj_->adjustRow(fil);
   }
@@ -3690,7 +4057,8 @@ public slots:
    @param  col Numero de la columna
    @param  pix Imagen Pixmap
    */
-  void setPixmap(int row, int col, const QPixmap &pix) {
+  void setPixmap(int row, int col, const QPixmap &pix)
+  {
     NEW_TABLE
     obj_->setPixmap(row, col, pix);
   }
@@ -3702,28 +4070,34 @@ public slots:
    @param  col Numero de la columna
    @return Imagen Pixmap
    */
-  QPixmap pixmap(int row, int col) {
+  QPixmap pixmap(int row, int col)
+  {
     NEW_TABLE
     return obj_->pixmap(row, col);
   }
 
-  void emitCurrentChanged(int row, int col) {
+  void emitCurrentChanged(int row, int col)
+  {
     emit currentChanged(row, col);
   }
 
-  void emitClicked(int row, int col, int, const QPoint &) {
+  void emitClicked(int row, int col, int, const QPoint &)
+  {
     emit clicked(row, col);
   }
 
-  void emitDoubleClicked(int row, int col, int, const QPoint &) {
+  void emitDoubleClicked(int row, int col, int, const QPoint &)
+  {
     emit doubleClicked(row, col);
   }
 
-  void emitValueChanged(int row, int col) {
+  void emitValueChanged(int row, int col)
+  {
     emit valueChanged(row, col);
   }
 
-  void emitSelectionChanged() {
+  void emitSelectionChanged()
+  {
     emit selectionChanged();
   }
 
@@ -3767,33 +4141,34 @@ signals:
   void selectionChanged();
 
 protected:
-
   void connects() const;
 
   QTable *obj_;
 };
 
-class  FLTablePlusInterface : public FLTableInterface
+class FLTablePlusInterface : public FLTableInterface
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLTablePlusInterface(QWidget *p, const QString &n) : FLTableInterface(p, n) {
+  FLTablePlusInterface(QWidget *p, const QString &n) : FLTableInterface(p, n)
+  {
   }
 
   /**
    Constructor
    */
-  FLTablePlusInterface(FLTable *t) : FLTableInterface(::qt_cast<QTable *>(t)) {
+  FLTablePlusInterface(FLTable *t) : FLTableInterface(::qt_cast<QTable *>(t))
+  {
   }
 
 public slots:
 
-  void setCellBackgroundColor(int row, int col, const QColor &color) {
+  void setCellBackgroundColor(int row, int col, const QColor &color)
+  {
     NEW_TABLE
     int d = row - obj_->numRows() + 1;
     if (d > 0)
@@ -3807,7 +4182,8 @@ public slots:
       t->setCellBackgroundColor(row, col, color);
   }
 
-  void setCellAlignment(int row, int col, const int a) {
+  void setCellAlignment(int row, int col, const int a)
+  {
     NEW_TABLE
     int d = row - obj_->numRows() + 1;
     if (d > 0)
@@ -3829,39 +4205,44 @@ public slots:
 
  @author InfoSiAL S.L.
  */
-#define NEW_VIEW if (!obj_) { obj_ = new QListView(qApp->mainWidget()); connects(); }
+#define NEW_VIEW                              \
+  if (!obj_)                                  \
+  {                                           \
+    obj_ = new QListView(qApp->mainWidget()); \
+    connects();                               \
+  }
 
 class FLListViewItemInterface;
 
 class FLListViewItem : public QListViewItem
 {
 public:
-
-  FLListViewItem(QListView *parent): QListViewItem(parent) {}
-  FLListViewItem(QListViewItem *parent): QListViewItem(parent) {}
-  FLListViewItem(FLListViewItem *parent): QListViewItem(parent) {}
-  void setKey(const QString &k) {
+  FLListViewItem(QListView *parent) : QListViewItem(parent) {}
+  FLListViewItem(QListViewItem *parent) : QListViewItem(parent) {}
+  FLListViewItem(FLListViewItem *parent) : QListViewItem(parent) {}
+  void setKey(const QString &k)
+  {
     key_ = k;
   }
-  QString key() const {
+  QString key() const
+  {
     return key_;
   }
 
 private:
-
   QString key_;
 };
 
-class  FLListViewInterface : public QObject
+class FLListViewInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLListViewInterface(QWidget *p, const QString &n) : QObject(p) {
+  FLListViewInterface(QWidget *p, const QString &n) : QObject(p)
+  {
     obj_ = new QListView(p, n);
     if (obj_)
       connects();
@@ -3875,7 +4256,8 @@ public:
   /**
    Constructor
    */
-  FLListViewInterface(QListView *t) : QObject(t), obj_(t) {
+  FLListViewInterface(QListView *t) : QObject(t), obj_(t)
+  {
     connects();
   }
 
@@ -3887,7 +4269,8 @@ public slots:
    @param label. Título de la nueva columna
    @param width. Anchura de la nueva columna
    */
-  int addColumn(const QString &label, int width = -1) {
+  int addColumn(const QString &label, int width = -1)
+  {
     NEW_VIEW
     obj_->addColumn(label, width);
   }
@@ -3898,7 +4281,8 @@ public slots:
    @param column. Índice de la columna
    @param label. Título de la columna
    */
-  void setColumnText(int column, const QString &label) {
+  void setColumnText(int column, const QString &label)
+  {
     NEW_VIEW
     obj_->setColumnText(column, label);
   }
@@ -3909,17 +4293,20 @@ public slots:
    @param column. Índice de la columna
    @param aling. Tipo de alineación
    */
-  void setColumnAlignment(int column, int align) {
+  void setColumnAlignment(int column, int align)
+  {
     NEW_VIEW
     obj_->setColumnAlignment(column, align);
   }
 
-  QListView *obj() {
+  QListView *obj()
+  {
     NEW_VIEW
     return obj_;
   }
 
-  void clear() {
+  void clear()
+  {
     NEW_VIEW
     obj_->clear();
   }
@@ -3945,7 +4332,6 @@ signals:
   void selectionChanged(FLListViewItemInterface *);
 
 private:
-
   void connects() const;
 
   QListView *obj_;
@@ -3958,16 +4344,16 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLListViewItemInterface : public QObject
+class FLListViewItemInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLListViewItemInterface(FLListViewInterface *parent) : QObject(0), obj_(0) {
+  FLListViewItemInterface(FLListViewInterface *parent) : QObject(0), obj_(0)
+  {
     if (parent)
       obj_ = new FLListViewItem(parent->obj());
   }
@@ -3975,7 +4361,8 @@ public:
   /**
    Constructor
    */
-  FLListViewItemInterface(FLListViewItemInterface *parent) : QObject(0), obj_(0) {
+  FLListViewItemInterface(FLListViewItemInterface *parent) : QObject(0), obj_(0)
+  {
     if (parent)
       obj_ = new FLListViewItem(parent->obj());
   }
@@ -3988,7 +4375,8 @@ public:
   /**
    Constructor
    */
-  FLListViewItemInterface(FLListViewItem *lvI) : QObject(0), obj_(0) {
+  FLListViewItemInterface(FLListViewItem *lvI) : QObject(0), obj_(0)
+  {
     if (lvI)
       setObj(lvI);
   }
@@ -4005,7 +4393,8 @@ public slots:
 
    @param k. Clave
    */
-  void setKey(const QString &k) {
+  void setKey(const QString &k)
+  {
     obj_->setKey(k);
   }
 
@@ -4014,7 +4403,8 @@ public slots:
 
    @return Clave
    */
-  QString key() const {
+  QString key() const
+  {
     return obj_->key();
   }
 
@@ -4024,7 +4414,8 @@ public slots:
    @param column. Columna donde está el texto
    @param text. Texto
    */
-  void setText(int column, const QString &text) {
+  void setText(int column, const QString &text)
+  {
     obj_->setText(column, text);
   }
 
@@ -4034,19 +4425,23 @@ public slots:
    @param column. Columna donde está el texto
    @param text. Texto
    */
-  QString text(int column) const {
+  QString text(int column) const
+  {
     return obj_->text(column);
   }
 
-  FLListViewItem *obj() {
+  FLListViewItem *obj()
+  {
     return obj_;
   }
 
-  void setObj(FLListViewItem *lvI) {
+  void setObj(FLListViewItem *lvI)
+  {
     obj_ = lvI;
   }
 
-  void setOpen(bool o) {
+  void setOpen(bool o)
+  {
     obj_->setOpen(o);
   }
 
@@ -4056,22 +4451,24 @@ public slots:
 
   FLListViewItemInterface *parent() const;
 
-  void del() {
+  void del()
+  {
     delete obj_;
   }
 
-  void setExpandable(bool enable) {
+  void setExpandable(bool enable)
+  {
     obj_->setExpandable(enable);
   }
 
-  bool isExpandable() const {
+  bool isExpandable() const
+  {
     return obj_->isExpandable();
   }
 
   void setPixmap(int column, const QVariant &pm);
 
 private:
-
   FLListViewItem *obj_;
 };
 
@@ -4081,16 +4478,16 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLTabWidgetInterface : public QObject
+class FLTabWidgetInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLTabWidgetInterface() {
+  FLTabWidgetInterface()
+  {
     obj_ = new QTabWidget(qApp->mainWidget());
     connects();
   }
@@ -4098,7 +4495,8 @@ public:
   /**
    Constructor
    */
-  FLTabWidgetInterface(QTabWidget *t) : QObject(t), obj_(t) {
+  FLTabWidgetInterface(QTabWidget *t) : QObject(t), obj_(t)
+  {
     if (obj_)
       connects();
   }
@@ -4111,7 +4509,8 @@ public slots:
    @param index Número del indice del tab
    @param enable Si es TRUE el tab se mostrará habilitado, si es FALSE se pondrá inhabilitado
    */
-  void setTabEnabled(int index, bool enable) {
+  void setTabEnabled(int index, bool enable)
+  {
     obj_->setTabEnabled(obj_->page(index), enable);
   }
 
@@ -4128,7 +4527,8 @@ public slots:
 
    @param index Número del indice del tab
    */
-  void removePage(int index) {
+  void removePage(int index)
+  {
     obj_->removePage(obj_->page(index));
   }
 
@@ -4144,7 +4544,8 @@ public slots:
 
    @param index Número del indice del tab
    */
-  void showPage(int index) {
+  void showPage(int index)
+  {
     obj_->showPage(obj_->page(index));
   }
 
@@ -4158,7 +4559,8 @@ public slots:
   /**
   Uso interno
   */
-  void emitCurrentChanged(QWidget *w) {
+  void emitCurrentChanged(QWidget *w)
+  {
     if (w)
       emit currentChanged(QString::fromLatin1(w->name()));
   }
@@ -4172,7 +4574,6 @@ signals:
   void currentChanged(const QString &);
 
 private:
-
   void connects() const;
 
   QTabWidget *obj_;
@@ -4185,17 +4586,17 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLFormDBInterface : public QObject
+class FLFormDBInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
   FLFormDBInterface(const QString &a, QWidget *p, WFlags f = 0)
-    : QObject(p), obj_(0), script_(0) {
+      : QObject(p), obj_(0), script_(0)
+  {
     setObj(new FLFormDB(a, p ? p : aqApp->mainWidget(), f));
   }
 
@@ -4203,14 +4604,16 @@ public:
    Constructor
    */
   FLFormDBInterface(FLSqlCursorInterface *c, const QString &a, QWidget *p, WFlags f = 0)
-    : QObject(p), obj_(0), script_(0) {
+      : QObject(p), obj_(0), script_(0)
+  {
     setObj(new FLFormDB(c->obj(), a, p ? p : aqApp->mainWidget(), f));
   }
 
   /**
    Constructor
    */
-  FLFormDBInterface(FLFormDB *obj) : QObject(obj), obj_(0), script_(0) {
+  FLFormDBInterface(FLFormDB *obj) : QObject(obj), obj_(0), script_(0)
+  {
     setObj(obj);
   }
 
@@ -4224,9 +4627,11 @@ public:
 
    @param obj. objeto del formulario
    */
-  void setObj(FLFormDB *obj) {
+  void setObj(FLFormDB *obj)
+  {
     obj_ = obj;
-    if (obj_) {
+    if (obj_)
+    {
       setName(obj_->name());
       connects();
     }
@@ -4237,11 +4642,13 @@ public:
 
    @param s. Nombre del script
    */
-  void setScript(QSScript *s) {
+  void setScript(QSScript *s)
+  {
     script_ = s;
   }
 
-  QSScript *script() {
+  QSScript *script()
+  {
     return script_;
   }
 
@@ -4252,7 +4659,8 @@ public slots:
 
    @param c. cursor del formulario
    */
-  void setCursor(FLSqlCursorInterface *c) {
+  void setCursor(FLSqlCursorInterface *c)
+  {
     if (c && obj_)
       obj_->setCursor(c->obj());
   }
@@ -4262,7 +4670,8 @@ public slots:
 
    @return Cursor del formulario
    */
-  FLSqlCursorInterface *cursor() {
+  FLSqlCursorInterface *cursor()
+  {
     if (!obj_)
       return new FLSqlCursorInterface();
     return FLSqlCursorInterface::sqlCursorInterface(obj_->cursor());
@@ -4273,7 +4682,8 @@ public slots:
 
    return Objeto QWidget que corresponde con el widget principal del formulario
    */
-  QWidget *mainWidget() const {
+  QWidget *mainWidget() const
+  {
     return (obj_ ? obj_->mainWidget() : 0);
   }
 
@@ -4289,7 +4699,8 @@ public slots:
 
    @param w Widget principal para el formulario
    */
-  void setMainWidget(QWidget *w) {
+  void setMainWidget(QWidget *w)
+  {
     if (obj_)
       obj_->setMainWidget(w);
   }
@@ -4299,7 +4710,8 @@ public slots:
 
    Aqui toma el nombre de un formulario de la acción asociada y construye el Widget principal, a partir de él.
    */
-  void setMainWidget() {
+  void setMainWidget()
+  {
     if (obj_)
       obj_->setMainWidget();
   }
@@ -4311,7 +4723,8 @@ public slots:
 
    @param uiFileName Nombre del fichero de descripción de interfaz, incluyendo la extension .ui, p.e. clientes.ui
    */
-  void setMainWidget(const QString &uiFileName) {
+  void setMainWidget(const QString &uiFileName)
+  {
     if (obj_)
       obj_->setMainWidget(uiFileName);
   }
@@ -4321,7 +4734,8 @@ public slots:
 
    @return Objeto padre
    */
-  QWidget *parentWidget() {
+  QWidget *parentWidget()
+  {
     return (obj_ ? obj_->parentWidget() : 0);
   }
 
@@ -4330,7 +4744,8 @@ public slots:
 
    @return devuelve TRUE si el formulario ha sido aceptado y FALSE si no se ha aceptado
    */
-  bool accepted() {
+  bool accepted()
+  {
     return (obj_ ? obj_->accepted() : false);
   }
 
@@ -4340,27 +4755,35 @@ public slots:
    @param objName. Nombre del objeto hijo
    @return Objeto hijo
    */
-  QObject *child(const QString &objName) {
+  QObject *child(const QString &objName)
+  {
     if (!obj_)
       return 0;
     QObject *o = obj_->child(objName, "QWidget");
-    if (o) {
-      if (::qt_cast<FLFieldDB *>(o)) {
+    if (o)
+    {
+      if (::qt_cast<FLFieldDB *>(o))
+      {
         return new FLFieldDBInterface(static_cast<FLFieldDB *>(o));
       }
-      if (::qt_cast<FLTableDB *>(o)) {
+      if (::qt_cast<FLTableDB *>(o))
+      {
         return new FLTableDBInterface(static_cast<FLTableDB *>(o));
       }
-      if (::qt_cast<FLTable *>(o)) {
+      if (::qt_cast<FLTable *>(o))
+      {
         return new FLTablePlusInterface(static_cast<FLTable *>(o));
       }
-      if (::qt_cast<QTable *>(o)) {
+      if (::qt_cast<QTable *>(o))
+      {
         return new FLTableInterface(static_cast<QTable *>(o));
       }
-      if (::qt_cast<QTabWidget *>(o)) {
+      if (::qt_cast<QTabWidget *>(o))
+      {
         return new FLTabWidgetInterface(static_cast<QTabWidget *>(o));
       }
-      if (::qt_cast<QListView *>(o)) {
+      if (::qt_cast<QListView *>(o))
+      {
         return new FLListViewInterface(static_cast<QListView *>(o));
       }
     }
@@ -4372,19 +4795,23 @@ public slots:
 
    @return TRUE si el formulario se cierra correctamente, FALSE si no es así
    */
-  bool close() {
-    if (obj_) {
+  bool close()
+  {
+    if (obj_)
+    {
       bool ret = obj_->close();
       obj_ = 0;
       return ret;
-    } else
+    }
+    else
       return false;
   }
 
   /**
    Realiza las operaciones equivalentes a pulsar el boton aceptar
    */
-  void accept() {
+  void accept()
+  {
     if (obj_)
       obj_->accept();
   }
@@ -4392,12 +4819,14 @@ public slots:
   /**
    Realiza las operaciones equivalentes a pulsar el botón cancelar
    */
-  void reject() {
+  void reject()
+  {
     if (obj_)
       obj_->reject();
   }
 
-  FLFormDB *obj() {
+  FLFormDB *obj()
+  {
     return obj_;
   }
 
@@ -4406,7 +4835,8 @@ public slots:
 
    @param b. TRUE si hay que inhabilitar el formulario, FALSE si hay que habilitarla
    */
-  void setDisabled(const bool b) {
+  void setDisabled(const bool b)
+  {
     if (obj_)
       obj_->setDisabled(b);
   }
@@ -4414,7 +4844,8 @@ public slots:
   /**
    Obtiene la imagen o captura de pantalla del formulario.
    */
-  QImage snapShot() {
+  QImage snapShot()
+  {
     return (obj_ ? obj_->snapShot() : QImage());
   }
 
@@ -4423,7 +4854,8 @@ public slots:
 
    @param pathFile Ruta y nombre del fichero donde guardar la imagen
    */
-  void saveSnapShot(const QString &pathFile) {
+  void saveSnapShot(const QString &pathFile)
+  {
     if (obj_)
       obj_->saveSnapShot(pathFile);
   }
@@ -4431,14 +4863,16 @@ public slots:
   /**
   Sólo para compatibilizar con FLFormSearchDB. Por defecto sólo llama QWidget::show
   */
-  QVariant exec(const QString & = QString::null) {
+  QVariant exec(const QString & = QString::null)
+  {
     return (obj_ ? obj_->exec() : QVariant());
   }
 
   /**
    Redefinida por conveniencia
    */
-  void show() {
+  void show()
+  {
     if (obj_)
       obj_->show();
   }
@@ -4447,7 +4881,8 @@ public slots:
    Muestra el formulario sin llamar al script "init".
    Utilizado en documentación para evitar conflictos al capturar los formularios
    */
-  void showForDocument() {
+  void showForDocument()
+  {
     if (obj_)
       obj_->showForDocument();
   }
@@ -4455,7 +4890,8 @@ public slots:
   /**
    Maximiza el formulario
    */
-  void setMaximized() {
+  void setMaximized()
+  {
     if (obj_)
       obj_->setMaximized();
   }
@@ -4466,14 +4902,16 @@ public slots:
   @param text Texto a establecer como título de la ventana
   @author Silix
   */
-  void setCaptionWidget(const QString &text) {
+  void setCaptionWidget(const QString &text)
+  {
     obj_->setCaptionWidget(text);
   }
 
   /**
   Devuelve el nombre de la clase del formulario en tiempo de ejecución
   */
-  QString formClassName() const {
+  QString formClassName() const
+  {
     if (obj_)
       return obj_->formClassName();
   }
@@ -4491,7 +4929,6 @@ signals:
   void formReady();
 
 private:
-
   void connects() const;
 
   FLFormDB *obj_;
@@ -4505,17 +4942,17 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLFormRecordDBInterface : public QObject
+class FLFormRecordDBInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
   FLFormRecordDBInterface(FLSqlCursorInterface *c, const QString &a, QWidget *p, bool sA)
-    : QObject(p), obj_(0), script_(0) {
+      : QObject(p), obj_(0), script_(0)
+  {
     setObj(new FLFormRecordDB(c->obj(), a, aqApp->mainWidget(), sA));
   }
 
@@ -4523,7 +4960,8 @@ public:
    Constructor
    */
   FLFormRecordDBInterface(FLFormRecordDB *obj)
-    : QObject(obj), obj_(0), script_(0) {
+      : QObject(obj), obj_(0), script_(0)
+  {
     setObj(obj);
   }
 
@@ -4537,9 +4975,11 @@ public:
 
    @param obj. Objeto FLFormRecordDB
    */
-  void setObj(FLFormRecordDB *obj) {
+  void setObj(FLFormRecordDB *obj)
+  {
     obj_ = obj;
-    if (obj_) {
+    if (obj_)
+    {
       setName(obj_->name());
       connects();
     }
@@ -4550,7 +4990,8 @@ public:
 
    @param s. Script del formulario
    */
-  void setScript(QSScript *s) {
+  void setScript(QSScript *s)
+  {
     script_ = s;
   }
 
@@ -4559,7 +5000,8 @@ public:
 
    @return  el script asociado al formulario, en el caso de que lo tenga
    */
-  QSScript *script() {
+  QSScript *script()
+  {
     return script_;
   }
 
@@ -4570,7 +5012,8 @@ public slots:
 
    @param c. Objeto cursor
    */
-  void setCursor(FLSqlCursorInterface *c) {
+  void setCursor(FLSqlCursorInterface *c)
+  {
     if (c && obj_)
       obj_->setCursor(c->obj());
   }
@@ -4580,7 +5023,8 @@ public slots:
 
    @return Objeto cursor
    */
-  FLSqlCursorInterface *cursor() {
+  FLSqlCursorInterface *cursor()
+  {
     if (!obj_)
       return new FLSqlCursorInterface();
     return FLSqlCursorInterface::sqlCursorInterface(obj_->cursor());
@@ -4591,7 +5035,8 @@ public slots:
 
    return Objeto QWidget que corresponde con el widget principal del formulario
    */
-  QWidget *mainWidget() const {
+  QWidget *mainWidget() const
+  {
     return (obj_ ? obj_->mainWidget() : 0);
   }
 
@@ -4607,7 +5052,8 @@ public slots:
 
    @param w Widget principal para el formulario
    */
-  void setMainWidget(QWidget *w) {
+  void setMainWidget(QWidget *w)
+  {
     if (obj_)
       obj_->setMainWidget(w);
   }
@@ -4617,7 +5063,8 @@ public slots:
 
    Aqui toma el nombre de un formulario de la acción asociada y construye el Widget principal, a partir de él.
    */
-  void setMainWidget() {
+  void setMainWidget()
+  {
     if (obj_)
       obj_->setMainWidget();
   }
@@ -4629,7 +5076,8 @@ public slots:
 
    @param uiFileName Nombre del fichero de descripción de interfaz, incluyendo la extension .ui, p.e. clientes.ui
    */
-  void setMainWidget(const QString &uiFileName) {
+  void setMainWidget(const QString &uiFileName)
+  {
     if (obj_)
       ::qt_cast<FLFormDB *>(obj_)->setMainWidget(uiFileName);
   }
@@ -4639,7 +5087,8 @@ public slots:
 
    @return devuelve TRUE si el formulario ha sido aceptado y FALSE si no se ha aceptado
    */
-  bool accepted() {
+  bool accepted()
+  {
     return (obj_ ? obj_->accepted() : false);
   }
 
@@ -4649,27 +5098,35 @@ public slots:
    @param objName. Nombre del objeto hijo
    @return Objeto hijo
    */
-  QObject *child(const QString &objName) {
+  QObject *child(const QString &objName)
+  {
     if (!obj_)
       return 0;
     QObject *o = obj_->child(objName, "QWidget");
-    if (o) {
-      if (::qt_cast<FLFieldDB *>(o)) {
+    if (o)
+    {
+      if (::qt_cast<FLFieldDB *>(o))
+      {
         return new FLFieldDBInterface(static_cast<FLFieldDB *>(o));
       }
-      if (::qt_cast<FLTableDB *>(o)) {
+      if (::qt_cast<FLTableDB *>(o))
+      {
         return new FLTableDBInterface(static_cast<FLTableDB *>(o));
       }
-      if (::qt_cast<FLTable *>(o)) {
+      if (::qt_cast<FLTable *>(o))
+      {
         return new FLTablePlusInterface(static_cast<FLTable *>(o));
       }
-      if (::qt_cast<QTable *>(o)) {
+      if (::qt_cast<QTable *>(o))
+      {
         return new FLTableInterface(static_cast<QTable *>(o));
       }
-      if (::qt_cast<QTabWidget *>(o)) {
+      if (::qt_cast<QTabWidget *>(o))
+      {
         return new FLTabWidgetInterface(static_cast<QTabWidget *>(o));
       }
-      if (::qt_cast<QListView *>(o)) {
+      if (::qt_cast<QListView *>(o))
+      {
         return new FLListViewInterface(static_cast<QListView *>(o));
       }
     }
@@ -4681,19 +5138,23 @@ public slots:
 
    @return TRUE si el formulario se cierra correctamente, FALSE si no es así
    */
-  bool close() {
-    if (obj_) {
+  bool close()
+  {
+    if (obj_)
+    {
       bool ret = obj_->close();
       obj_ = 0;
       return ret;
-    } else
+    }
+    else
       return false;
   }
 
   /**
    Realiza las operaciones equivalentes a pulsar el boton aceptar
    */
-  void accept() {
+  void accept()
+  {
     if (obj_)
       obj_->accept();
   }
@@ -4701,7 +5162,8 @@ public slots:
   /**
    Realiza las operaciones equivalentes a pulsar el botón cancelar
    */
-  void reject() {
+  void reject()
+  {
     if (obj_)
       obj_->reject();
   }
@@ -4709,12 +5171,14 @@ public slots:
   /**
    Se activa al pulsar el boton aceptar y contninuar
    */
-  void acceptContinue() {
+  void acceptContinue()
+  {
     if (obj_)
       obj_->acceptContinue();
   }
 
-  FLFormRecordDB *obj() {
+  FLFormRecordDB *obj()
+  {
     return obj_;
   }
 
@@ -4723,7 +5187,8 @@ public slots:
 
    @param b. TRUE si hay que inhabilitar formulario, FALSE si hay que habilitarla
    */
-  void setDisabled(const bool b) {
+  void setDisabled(const bool b)
+  {
     if (obj_)
       obj_->setDisabled(b);
   }
@@ -4731,7 +5196,8 @@ public slots:
   /**
    Obtiene la imagen o captura de pantalla del formulario.
    */
-  QImage snapShot() {
+  QImage snapShot()
+  {
     return (obj_ ? obj_->snapShot() : QImage());
   }
 
@@ -4740,7 +5206,8 @@ public slots:
 
    @param pathFile Ruta y nombre del fichero donde guardar la imagen
    */
-  void saveSnapShot(const QString &pathFile) {
+  void saveSnapShot(const QString &pathFile)
+  {
     if (obj_)
       obj_->saveSnapShot(pathFile);
   }
@@ -4748,14 +5215,16 @@ public slots:
   /**
   Sólo para compatibilizar con FLFormSearchDB. Por defecto sólo llama QWidget::show
   */
-  QVariant exec(const QString & = QString::null) {
+  QVariant exec(const QString & = QString::null)
+  {
     return (obj_ ? obj_->exec() : QVariant());
   }
 
   /**
    Redefinida por conveniencia
    */
-  void show() {
+  void show()
+  {
     if (obj_)
       obj_->show();
   }
@@ -4764,7 +5233,8 @@ public slots:
    Muestra el formulario sin llamar al script "init".
    Utilizado en documentación para evitar conflictos al capturar los formularios
    */
-  void showForDocument() {
+  void showForDocument()
+  {
     if (obj_)
       obj_->showForDocument();
   }
@@ -4772,7 +5242,8 @@ public slots:
   /**
    Maximiza el formulario
    */
-  void setMaximized() {
+  void setMaximized()
+  {
     if (obj_)
       obj_->setMaximized();
   }
@@ -4783,14 +5254,16 @@ public slots:
   @param text Texto a establecer como título de la ventana
   @author Silix
   */
-  void setCaptionWidget(const QString &text) {
+  void setCaptionWidget(const QString &text)
+  {
     obj_->setCaptionWidget(text);
   }
 
   /**
   Devuelve el nombre de la clase del formulario en tiempo de ejecución
   */
-  QString formClassName() const {
+  QString formClassName() const
+  {
     if (obj_)
       return obj_->formClassName();
   }
@@ -4808,7 +5281,6 @@ signals:
   void formReady();
 
 private:
-
   void connects() const;
 
   FLFormRecordDB *obj_;
@@ -4822,17 +5294,17 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLFormSearchDBInterface : public QObject
+class FLFormSearchDBInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
   FLFormSearchDBInterface(const QString &a)
-    : QObject(0), obj_(0), script_(0) {
+      : QObject(0), obj_(0), script_(0)
+  {
     setObj(new FLFormSearchDB(a));
   }
 
@@ -4840,7 +5312,8 @@ public:
    Constructor
    */
   FLFormSearchDBInterface(FLSqlCursorInterface *c, const QString &a)
-    : QObject(0), obj_(0), script_(0) {
+      : QObject(0), obj_(0), script_(0)
+  {
     setObj(new FLFormSearchDB(c->obj(), a));
   }
 
@@ -4848,7 +5321,8 @@ public:
    Constructor
    */
   FLFormSearchDBInterface(FLFormSearchDB *obj)
-    : QObject(obj), obj_(0), script_(0) {
+      : QObject(obj), obj_(0), script_(0)
+  {
     setObj(obj);
   }
 
@@ -4860,7 +5334,8 @@ public:
   /**
    Destructor
    */
-  ~FLFormSearchDBInterface() {
+  ~FLFormSearchDBInterface()
+  {
     if (obj_ && !obj_->aqWasDeleted())
       close();
   }
@@ -4870,9 +5345,11 @@ public:
 
    @param obj. objeto a establecer
    */
-  void setObj(FLFormSearchDB *obj) {
+  void setObj(FLFormSearchDB *obj)
+  {
     obj_ = obj;
-    if (obj_) {
+    if (obj_)
+    {
       setName(obj_->name());
       connects();
     }
@@ -4883,7 +5360,8 @@ public:
 
    @param s. Objeto script
    */
-  void setScript(QSScript *s) {
+  void setScript(QSScript *s)
+  {
     script_ = s;
   }
 
@@ -4892,7 +5370,8 @@ public:
 
    @return  es script del formulario, en caso de que tenga alguno asociado
    */
-  QSScript *script() {
+  QSScript *script()
+  {
     return script_;
   }
 
@@ -4901,7 +5380,8 @@ public slots:
   /**
    Establece un cursor para el objeto
    */
-  void setCursor(FLSqlCursorInterface *c) {
+  void setCursor(FLSqlCursorInterface *c)
+  {
     if (c && obj_)
       obj_->setCursor(c->obj());
   }
@@ -4911,7 +5391,8 @@ public slots:
 
    @return Objeto cursor
    */
-  FLSqlCursorInterface *cursor() {
+  FLSqlCursorInterface *cursor()
+  {
     if (!obj_)
       return new FLSqlCursorInterface();
     return FLSqlCursorInterface::sqlCursorInterface(obj_->cursor());
@@ -4922,7 +5403,8 @@ public slots:
 
    return Objeto QWidget que corresponde con el widget principal del formulario
    */
-  QWidget *mainWidget() const {
+  QWidget *mainWidget() const
+  {
     return (obj_ ? obj_->mainWidget() : 0);
   }
 
@@ -4938,7 +5420,8 @@ public slots:
 
    @param w Widget principal para el formulario
    */
-  void setMainWidget(QWidget *w) {
+  void setMainWidget(QWidget *w)
+  {
     if (obj_)
       obj_->setMainWidget(w);
   }
@@ -4948,7 +5431,8 @@ public slots:
 
    Aqui toma el nombre de un formulario de la acción asociada y construye el Widget principal, a partir de él.
    */
-  void setMainWidget() {
+  void setMainWidget()
+  {
     if (obj_)
       obj_->setMainWidget();
   }
@@ -4960,7 +5444,8 @@ public slots:
 
    @param uiFileName Nombre del fichero de descripción de interfaz, incluyendo la extension .ui, p.e. clientes.ui
    */
-  void setMainWidget(const QString &uiFileName) {
+  void setMainWidget(const QString &uiFileName)
+  {
     if (obj_)
       ::qt_cast<FLFormDB *>(obj_)->setMainWidget(uiFileName);
   }
@@ -4976,14 +5461,16 @@ public slots:
    @param n Nombre del un campo del cursor del formulario
    @return El valor del campo si se acepta, o QVariant::Invalid si se cancela
    */
-  QVariant exec(const QString &n = QString::null) {
+  QVariant exec(const QString &n = QString::null)
+  {
     return (obj_ ? obj_->exec(n) : QVariant());
   }
 
   /**
    Redefinida por conveniencia
    */
-  void show() {
+  void show()
+  {
     if (obj_)
       obj_->show();
   }
@@ -4993,7 +5480,8 @@ public slots:
 
    @return devuelve TRUE si el formulario ha sido aceptado y FALSE si no se ha aceptado
    */
-  bool accepted() {
+  bool accepted()
+  {
     return (obj_ ? obj_->accepted() : false);
   }
 
@@ -5003,27 +5491,35 @@ public slots:
    @param objName. Nombre del objeto hijo
    @return Objeto hijo
    */
-  QObject *child(const QString &objName) {
+  QObject *child(const QString &objName)
+  {
     if (!obj_)
       return 0;
     QObject *o = obj_->child(objName, "QWidget");
-    if (o) {
-      if (::qt_cast<FLFieldDB *>(o)) {
+    if (o)
+    {
+      if (::qt_cast<FLFieldDB *>(o))
+      {
         return new FLFieldDBInterface(static_cast<FLFieldDB *>(o));
       }
-      if (::qt_cast<FLTableDB *>(o)) {
+      if (::qt_cast<FLTableDB *>(o))
+      {
         return new FLTableDBInterface(static_cast<FLTableDB *>(o));
       }
-      if (::qt_cast<FLTable *>(o)) {
+      if (::qt_cast<FLTable *>(o))
+      {
         return new FLTablePlusInterface(static_cast<FLTable *>(o));
       }
-      if (::qt_cast<QTable *>(o)) {
+      if (::qt_cast<QTable *>(o))
+      {
         return new FLTableInterface(static_cast<QTable *>(o));
       }
-      if (::qt_cast<QTabWidget *>(o)) {
+      if (::qt_cast<QTabWidget *>(o))
+      {
         return new FLTabWidgetInterface(static_cast<QTabWidget *>(o));
       }
-      if (::qt_cast<QListView *>(o)) {
+      if (::qt_cast<QListView *>(o))
+      {
         return new FLListViewInterface(static_cast<QListView *>(o));
       }
     }
@@ -5035,19 +5531,23 @@ public slots:
 
    @return TRUE si el formulario se cierra correctamente, FALSE si no es así
    */
-  bool close() {
-    if (obj_) {
+  bool close()
+  {
+    if (obj_)
+    {
       bool ret = obj_->close();
       obj_ = 0;
       return ret;
-    } else
+    }
+    else
       return false;
   }
 
   /**
    Realiza las operaciones equivalentes a pulsar el boton aceptar
    */
-  void accept() {
+  void accept()
+  {
     if (obj_)
       obj_->accept();
   }
@@ -5055,12 +5555,14 @@ public slots:
   /**
    Realiza las operaciones equivalentes a pulsar el botón cancelar
    */
-  void reject() {
+  void reject()
+  {
     if (obj_)
       obj_->reject();
   }
 
-  FLFormSearchDB *obj() {
+  FLFormSearchDB *obj()
+  {
     return obj_;
   }
 
@@ -5069,7 +5571,8 @@ public slots:
 
    @param b. TRUE si hay que inhabilitar el formulario, FALSE si hay que habilitarla
    */
-  void setDisabled(const bool b) {
+  void setDisabled(const bool b)
+  {
     if (obj_)
       obj_->setDisabled(b);
   }
@@ -5077,7 +5580,8 @@ public slots:
   /**
    Obtiene la imagen o captura de pantalla del formulario.
    */
-  QImage snapShot() {
+  QImage snapShot()
+  {
     return (obj_ ? obj_->snapShot() : QImage());
   }
 
@@ -5086,14 +5590,16 @@ public slots:
 
    @param pathFile Ruta y nombre del fichero donde guardar la imagen
    */
-  void saveSnapShot(const QString &pathFile) {
+  void saveSnapShot(const QString &pathFile)
+  {
     saveSnapShot(pathFile);
   }
 
   /**
    Maximiza el formulario
    */
-  void setMaximized() {
+  void setMaximized()
+  {
     if (obj_)
       obj_->setMaximized();
   }
@@ -5104,14 +5610,16 @@ public slots:
   @param text Texto a establecer como título de la ventana
   @author Silix
   */
-  void setCaptionWidget(const QString &text) {
+  void setCaptionWidget(const QString &text)
+  {
     obj_->setCaptionWidget(text);
   }
 
   /**
   Devuelve el nombre de la clase del formulario en tiempo de ejecución
   */
-  QString formClassName() const {
+  QString formClassName() const
+  {
     if (obj_)
       return obj_->formClassName();
   }
@@ -5129,7 +5637,6 @@ signals:
   void formReady();
 
 private:
-
   void connects() const;
 
   FLFormSearchDB *obj_;
@@ -5142,13 +5649,12 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLVarInterface : public QObject
+class FLVarInterface : public QObject
 {
 
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
@@ -5168,7 +5674,8 @@ public slots:
    @param v Valor asociado
    @return Verdadero en caso de establecer el valor con éxito, falso en cualquier otro caso
    */
-  bool set(const QString &n, const QVariant &v) {
+  bool set(const QString &n, const QVariant &v)
+  {
     return FLVar::set(n, v);
   }
 
@@ -5178,7 +5685,8 @@ public slots:
    @param n Nombre de la variable a leer
    @return Valor asociado, en caso de leer el valor con éxito, falso en cualquier otro caso
    */
-  QVariant get(const QString &n) {
+  QVariant get(const QString &n)
+  {
     return FLVar::get(n);
   }
 };
@@ -5190,21 +5698,22 @@ public slots:
 
  @author InfoSiAL S.L.
  */
-class  FLUtilInterface : public QObject
+class FLUtilInterface : public QObject
 {
   Q_OBJECT
   Q_ENUMS(specialType)
   Q_ENUMS(Type)
 
 public:
-
-  enum specialType {
+  enum specialType
+  {
     Serial = 100,
     Unlock = 200,
     Check = 300
   };
 
-  enum Type {
+  enum Type
+  {
     Invalid,
     Map,
     List,
@@ -5245,7 +5754,8 @@ public:
   /**
    Constructor
    */
-  FLUtilInterface(QObject *parent = 0) : QObject(parent) {
+  FLUtilInterface(QObject *parent = 0) : QObject(parent)
+  {
     QObject::setName("FLUtil" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz"));
   }
 
@@ -5259,8 +5769,9 @@ public slots:
    @param n Número del que obtener la parte entera. Debe ser positivo
    @return La parte entera del número, que puede ser cero
    */
-  QVariant partInteger(double n) {
-    return QVariant((Q_ULLONG) FLUtil::partInteger(n));
+  QVariant partInteger(double n)
+  {
+    return QVariant((Q_ULLONG)FLUtil::partInteger(n));
   }
 
   /**
@@ -5272,8 +5783,9 @@ public slots:
    @param n Número del que obtener la parte decimal. Debe ser positivo
    @return La parte decimal del número, que puede ser cero
    */
-  QVariant partDecimal(double n) {
-    return QVariant((Q_ULLONG) FLUtil::partDecimal(n));
+  QVariant partDecimal(double n)
+  {
+    return QVariant((Q_ULLONG)FLUtil::partDecimal(n));
   }
 
   /**
@@ -5285,13 +5797,16 @@ public slots:
 
    @return Cadena que contiene el número formateado
    */
-  QString buildNumber(const QVariant &v, char tipo, int partDecimal) {
+  QString buildNumber(const QVariant &v, char tipo, int partDecimal)
+  {
     return FLUtil::buildNumber(v, tipo, partDecimal);
   }
-  QString buildNumber(double v, char tipo, int partDecimal) {
+  QString buildNumber(double v, char tipo, int partDecimal)
+  {
     return buildNumber(QVariant(v), tipo, partDecimal);
   }
-  QString buildNumber(int v, char tipo, int partDecimal) {
+  QString buildNumber(int v, char tipo, int partDecimal)
+  {
     return buildNumber(QVariant(v), tipo, partDecimal);
   }
 
@@ -5304,7 +5819,8 @@ public slots:
 
    @return Valor del setting
    */
-  QVariant readSettingEntry(const QString &key, const QString &def = QString::null, bool *ok = 0) {
+  QVariant readSettingEntry(const QString &key, const QString &def = QString::null, bool *ok = 0)
+  {
     return FLUtil::readSettingEntry(key, def, ok);
   }
 
@@ -5316,7 +5832,8 @@ public slots:
 
    @return Indicador de si la escritura del settings se realiza correctamente
    */
-  bool writeSettingEntry(const QString &key, const QString &value) {
+  bool writeSettingEntry(const QString &key, const QString &value)
+  {
     return FLUtil::writeSettingEntry(key, value);
   }
 
@@ -5327,7 +5844,8 @@ public slots:
 
    @return Valor del setting
    */
-  QVariant readDBSettingEntry(const QString &key) {
+  QVariant readDBSettingEntry(const QString &key)
+  {
     return FLUtil::readDBSettingEntry(key);
   }
 
@@ -5339,7 +5857,8 @@ public slots:
 
    @return Indicador de si la escritura del settings se realiza correctamente
    */
-  bool writeDBSettingEntry(const QString &key, const QString &value) {
+  bool writeDBSettingEntry(const QString &key, const QString &value)
+  {
     return FLUtil::writeDBSettingEntry(key, value);
   }
 
@@ -5352,13 +5871,16 @@ public slots:
 
    @return Número redondeado
    */
-  QString roundFieldValue(const QVariant &n, const QString &table, const QString &field) {
+  QString roundFieldValue(const QVariant &n, const QString &table, const QString &field)
+  {
     return FLUtil::roundFieldValue(n, table, field);
   }
-  QString roundFieldValue(double n, const QString &table, const QString &field) {
+  QString roundFieldValue(double n, const QString &table, const QString &field)
+  {
     return roundFieldValue(QVariant(n), table, field);
   }
-  QString roundFieldValue(int n, const QString &table, const QString &field) {
+  QString roundFieldValue(int n, const QString &table, const QString &field)
+  {
     return roundFieldValue(QVariant(n), table, field);
   }
 
@@ -5367,7 +5889,8 @@ public slots:
 
    @param n Número a tratar. Debe ser positivo
    */
-  QString unidades(long n) {
+  QString unidades(long n)
+  {
     return FLUtil::unidades(n);
   }
 
@@ -5376,7 +5899,8 @@ public slots:
 
    @param n Número a tratar. Debe ser positivo
    */
-  QString centenamillar(long n) {
+  QString centenamillar(long n)
+  {
     return FLUtil::centenamillar(n);
   }
 
@@ -5385,7 +5909,8 @@ public slots:
 
    @param n Número a tratar. Debe ser positivo
    */
-  QString decenas(long n) {
+  QString decenas(long n)
+  {
     return FLUtil::decenas(n);
   }
 
@@ -5394,7 +5919,8 @@ public slots:
 
    @param n Número a tratar. Debe ser positivo
    */
-  QString centenas(long n) {
+  QString centenas(long n)
+  {
     return FLUtil::centenas(n);
   }
 
@@ -5403,7 +5929,8 @@ public slots:
 
    @param n Número a tratar. Debe ser positivo
    */
-  QString unidadesmillar(long n) {
+  QString unidadesmillar(long n)
+  {
     return FLUtil::unidadesmillar(n);
   }
 
@@ -5413,7 +5940,8 @@ public slots:
    @param s: Cadena
    @return Cadena en formato UTF-8
    */
-  QCString utf8(const QString &s) {
+  QCString utf8(const QString &s)
+  {
     return FLUtil::utf8(s);
   }
 
@@ -5422,7 +5950,8 @@ public slots:
 
    @param n Número a tratar. Debe ser positivo
    */
-  QString decenasmillar(long n) {
+  QString decenasmillar(long n)
+  {
     return FLUtil::decenasmillar(n);
   }
 
@@ -5436,7 +5965,8 @@ public slots:
    @param n Número a transladar a su forma hablada. Debe ser positivo
    @return Cadena de texto con su expresión hablada
    */
-  QString enLetra(long n) {
+  QString enLetra(long n)
+  {
     return FLUtil::enLetra(n);
   }
 
@@ -5452,7 +5982,8 @@ public slots:
    @param m Nombre de la moneda
    @return Cadena de texto con su expresión hablada
    */
-  QString enLetraMoneda(double n, const QString &m) {
+  QString enLetraMoneda(double n, const QString &m)
+  {
     return FLUtil::enLetraMoneda(n, m);
   }
 
@@ -5467,7 +5998,8 @@ public slots:
    @param n Número a transladar a su forma hablada. Debe ser positivo
    @return Cadena de texto con su expresión hablada
    */
-  QString enLetraMonedaEuro(double n) {
+  QString enLetraMonedaEuro(double n)
+  {
     return FLUtil::enLetraMonedaEuro(n);
   }
 
@@ -5477,7 +6009,8 @@ public slots:
    @param n Número de DNI
    @return Letra asociada
    **/
-  QString letraDni(long n) {
+  QString letraDni(long n)
+  {
     return FLUtil::letraDni(n);
   }
 
@@ -5487,7 +6020,8 @@ public slots:
    @param n Número de cuenta
    @return Dígito de control
    */
-  QString calcularDC(const QString &n) {
+  QString calcularDC(const QString &n)
+  {
     return FLUtil::calcularDC(n);
   }
 
@@ -5498,7 +6032,8 @@ public slots:
    @param  f Cadena de texto con la fecha a transformar
    @return Cadena de texto con la fecha transformada
    */
-  QString dateDMAtoAMD(const QString &f) {
+  QString dateDMAtoAMD(const QString &f)
+  {
     return FLUtil::dateDMAtoAMD(f);
   }
 
@@ -5509,7 +6044,8 @@ public slots:
    @param  f Cadena de texto con la fecha a transformar
    @return Cadena de texto con la fecha transformada
    */
-  QString dateAMDtoDMA(const QString &f) {
+  QString dateAMDtoDMA(const QString &f)
+  {
     return FLUtil::dateAMDtoDMA(f);
   }
 
@@ -5522,7 +6058,8 @@ public slots:
    @param s Cadena de texto a la que se le quieren poder separadores de miles
    @return Devuelve la cadena formateada con los separadores de miles
    */
-  QString formatoMiles(const QString &s) {
+  QString formatoMiles(const QString &s)
+  {
     return FLUtil::formatoMiles(s);
   }
 
@@ -5536,7 +6073,8 @@ public slots:
    @param s Cadena de texto a traducir
    @return Devuelve la cadena traducida al idioma local
    */
-  QString translate(const QString &contexto, const QString &s) {
+  QString translate(const QString &contexto, const QString &s)
+  {
     return FLUtil::translate(contexto, s);
   }
 
@@ -5548,7 +6086,8 @@ public slots:
    @param num Cadena de texto con el numero de tarjeta
    @return Devuelve verdadero si el numero de tarjeta es valido
    */
-  bool numCreditCard(const QString &num) {
+  bool numCreditCard(const QString &num)
+  {
     return FLUtil::numCreditCard(num);
   }
 
@@ -5568,17 +6107,18 @@ public slots:
    @return Qvariant con el numero siguiente.
    @author Andrés Otón Urbano.
    */
-  QVariant nextCounter(const QString &name, FLSqlCursorInterface *cursor_) {
+  QVariant nextCounter(const QString &name, FLSqlCursorInterface *cursor_)
+  {
     return FLUtil::nextCounter(name, cursor_->obj());
   }
-	
+
   /**
   dpinelo: Este mÃ©todo es una extensiÃ³n de nextCounter pero permitiendo la introducciÃ³n de una primera
   secuencia de caracteres. Es Ãºtil cuando queremos mantener diversos contadores dentro de una misma tabla.
   Ejemplo, Tabla Grupo de clientes: Agregamos un campo prefijo, que serÃ¡ una letra: A, B, C, D.
   Queremos que la numeraciÃ³n de los clientes sea del tipo A00001, o B000023. Con esta funciÃ³n, podremos
   seguir usando los mÃ©todos counter cuando agregamos esa letra.
-  
+
   Este metodo devuelve el siguiente valor de un campo tipo contador de una tabla para una serie determinada.
 
   Este metodo es muy util cuando se insertan registros en los que
@@ -5595,8 +6135,9 @@ public slots:
   @return Qvariant con el numero siguiente.
   @author AndrÃ©s OtÃ³n Urbano.
    */
-  QVariant nextCounterSerial( const QString &serie, const QString & name, FLSqlCursorInterface * cursor_ ) {
-	  return FLUtil::nextCounter( serie, name, cursor_->obj() );
+  QVariant nextCounterSerial(const QString &serie, const QString &name, FLSqlCursorInterface *cursor_)
+  {
+    return FLUtil::nextCounter(serie, name, cursor_->obj());
   }
 
   /**
@@ -5614,7 +6155,8 @@ public slots:
    @return La secuencia en el formato facilitado.
    @author Andrés Otón Urbano
    */
-  QString nextSequence(int nivel, const QString &secuencia, const QString &ultimo) {
+  QString nextSequence(int nivel, const QString &secuencia, const QString &ultimo)
+  {
     return FLUtil::nextSequence(nivel, secuencia, ultimo);
   }
 
@@ -5624,7 +6166,8 @@ public slots:
    @param letter Cadena con la serie.
    @return Una cadena pero que contiene numeros.
    */
-  QString serialLettertoNumber(const QString &letter) {
+  QString serialLettertoNumber(const QString &letter)
+  {
     return FLUtil::serialLettertoNumber(letter);
   }
 
@@ -5633,7 +6176,8 @@ public slots:
 
    @param number Número a convertir
    */
-  QString serialNumbertoLetter(int number) {
+  QString serialNumbertoLetter(int number)
+  {
     return FLUtil::serialNumbertoLetter(number);
   }
 
@@ -5648,7 +6192,8 @@ public slots:
    con las tres o cuatro primeras linea del fichero no vacías
    @return TRUE si es un fichero soportado, FALSE en caso contrario
    */
-  bool isFLDefFile(const QString &head) {
+  bool isFLDefFile(const QString &head)
+  {
     return FLUtil::isFLDefFile(head);
   }
 
@@ -5658,7 +6203,8 @@ public slots:
    @param srt. Cadena
    @return Longitud
    */
-  uint length(const QString &str) {
+  uint length(const QString &str)
+  {
     return str.length();
   }
 
@@ -5668,7 +6214,8 @@ public slots:
    @param tabla. Nombre de la tabla
    @return  Lista de todos los nombres de los campos de esa tabla
    */
-  QStringList nombreCampos(const QString &tabla) {
+  QStringList nombreCampos(const QString &tabla)
+  {
     return FLUtil::nombreCampos(tabla);
   }
 
@@ -5776,10 +6323,12 @@ public slots:
    @param nd Numero de dias que sumar. Si es negativo resta dias
    @return Fecha con el desplazamiento de dias
    */
-  QDate addDays(const QDate &d, int nd) {
+  QDate addDays(const QDate &d, int nd)
+  {
     return FLUtil::addDays(d, nd);
   }
-  QDate addDays(const QString &d, int nd) {
+  QDate addDays(const QString &d, int nd)
+  {
     return FLUtil::addDays(QDate::fromString(d, Qt::ISODate), nd);
   }
 
@@ -5790,10 +6339,12 @@ public slots:
    @param nm Numero de meses que sumar. Si es negativo resta meses
    @return Fecha con el desplazamiento de meses
    */
-  QDate addMonths(const QDate &d, int nm) {
+  QDate addMonths(const QDate &d, int nm)
+  {
     return FLUtil::addMonths(d, nm);
   }
-  QDate addMonths(const QString &d, int nm) {
+  QDate addMonths(const QString &d, int nm)
+  {
     return FLUtil::addMonths(QDate::fromString(d, Qt::ISODate), nm);
   }
 
@@ -5804,10 +6355,12 @@ public slots:
    @param nm Numero de años que sumar. Si es negativo resta años
    @return Fecha con el desplazamiento de años
    */
-  QDate addYears(const QDate &d, int ny) {
+  QDate addYears(const QDate &d, int ny)
+  {
     return FLUtil::addYears(d, ny);
   }
-  QDate addYears(const QString &d, int ny) {
+  QDate addYears(const QString &d, int ny)
+  {
     return FLUtil::addYears(QDate::fromString(d, Qt::ISODate), ny);
   }
 
@@ -5818,10 +6371,12 @@ public slots:
    @param d2 Fecha de destino
    @return Número de días entre d1 y d2. Será negativo si d2 es anterior a d1.
    */
-  int daysTo(const QDate &d1, const QDate &d2) {
+  int daysTo(const QDate &d1, const QDate &d2)
+  {
     return FLUtil::daysTo(d1, d2);
   }
-  int daysTo(const QString &d1, const QString &d2) {
+  int daysTo(const QString &d1, const QString &d2)
+  {
     return FLUtil::daysTo(QDate::fromString(d1, Qt::ISODate),
                           QDate::fromString(d2, Qt::ISODate));
   }
@@ -5838,7 +6393,8 @@ public slots:
    */
   QVariant sqlSelect(const QString &f, const QString &s, const QString &w,
                      const QString &tL = QString::null,
-                     const QString &connName = "default") {
+                     const QString &connName = "default")
+  {
     return FLUtil::sqlSelect(f, s, w, tL, 0, connName);
   }
 
@@ -5847,7 +6403,8 @@ public slots:
    Usar con precaución.
    */
   QVariant quickSqlSelect(const QString &f, const QString &s, const QString &w,
-                          const QString &connName = "default") {
+                          const QString &connName = "default")
+  {
     return FLUtil::quickSqlSelect(f, s, w, connName);
   }
 
@@ -5860,7 +6417,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Verdadero en caso de realizar la inserción con éxito, falso en cualquier otro caso
    */
-  bool sqlInsert(const QString &t, const QString &fL, const QString &vL, const QString &connName = "default") {
+  bool sqlInsert(const QString &t, const QString &fL, const QString &vL, const QString &connName = "default")
+  {
     return FLUtil::sqlInsert(t, fL, vL, connName);
   }
 
@@ -5874,7 +6432,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Verdadero en caso de realizar la inserción con éxito, falso en cualquier otro caso
    */
-  bool sqlUpdate(const QString &t, const QString &fL, const QString &vL, const QString &w, const QString &connName = "default") {
+  bool sqlUpdate(const QString &t, const QString &fL, const QString &vL, const QString &w, const QString &connName = "default")
+  {
     return FLUtil::sqlUpdate(t, fL, vL, w, connName);
   }
 
@@ -5886,7 +6445,8 @@ public slots:
    @param connName Nombre de la conexion
    @return Verdadero en caso de realizar la inserción con éxito, falso en cualquier otro caso
    */
-  bool sqlDelete(const QString &t, const QString &w, const QString &connName = "default") {
+  bool sqlDelete(const QString &t, const QString &w, const QString &connName = "default")
+  {
     return FLUtil::sqlDelete(t, w, connName);
   }
 
@@ -5894,7 +6454,8 @@ public slots:
    Versión rápida de sqlDelete. Ejecuta directamente la consulta sin realizar comprobaciones y sin disparar señales de commits.
    Usar con precaución.
    */
-  bool quickSqlDelete(const QString &t, const QString &w, const QString &connName = "default") {
+  bool quickSqlDelete(const QString &t, const QString &w, const QString &connName = "default")
+  {
     return FLUtil::quickSqlDelete(t, w, connName);
   }
 
@@ -5904,17 +6465,20 @@ public slots:
    @param l Label del diálogo
    @param tS Número total de pasos a realizar
    */
-  void createProgressDialog(const QString &l, int tS) {
+  void createProgressDialog(const QString &l, int tS)
+  {
     FLUtil::createProgressDialog(l, tS, QObject::name());
   }
-  void createProgressDialog() {
+  void createProgressDialog()
+  {
     FLUtil::createProgressDialog(QString::null, 0, QObject::name());
   }
 
   /**
    Destruye el diálogo de progreso
    */
-  void destroyProgressDialog() {
+  void destroyProgressDialog()
+  {
     FLUtil::destroyProgressDialog(QObject::name());
   }
 
@@ -5923,7 +6487,8 @@ public slots:
 
    @param p Grado de progreso
    */
-  void setProgress(int p) {
+  void setProgress(int p)
+  {
     FLUtil::setProgress(p, QObject::name());
   }
 
@@ -5932,7 +6497,8 @@ public slots:
 
    @param ts Número total de pasos
    */
-  void setTotalSteps(int tS) {
+  void setTotalSteps(int tS)
+  {
     FLUtil::setTotalSteps(tS, QObject::name());
   }
 
@@ -5941,7 +6507,8 @@ public slots:
 
    @param l Etiqueta
    */
-  void setLabelText(const QString &l) {
+  void setLabelText(const QString &l)
+  {
     FLUtil::setLabelText(l, QObject::name());
   }
 
@@ -5951,7 +6518,8 @@ public slots:
    @param str Cadena de la que obtener la clave SHA1
    @return Clave correspondiente en digitos hexadecimales
    */
-  QString sha1(const QString &str) {
+  QString sha1(const QString &str)
+  {
     return FLUtil::sha1(str);
   }
 
@@ -5960,7 +6528,8 @@ public slots:
 
    @param n Nombre del fichero que contiene la descricpción del formulario.
    */
-  QImage snapShotUI(const QString &n) {
+  QImage snapShotUI(const QString &n)
+  {
     return FLUtil::snapShotUI(n);
   }
 
@@ -5970,7 +6539,8 @@ public slots:
    @param n Nombre del fichero que contiene la descricpción del formulario.
    @param pathFile Ruta y nombre del fichero donde guardar la imagen
    */
-  void saveSnapShotUI(const QString &n, const QString &pathFile) {
+  void saveSnapShotUI(const QString &n, const QString &pathFile)
+  {
     FLUtil::saveSnapShotUI(n, pathFile);
   }
 
@@ -5980,7 +6550,8 @@ public slots:
    @param data Contenido de la imagen en una cadena de caracteres
    @param pathFile Ruta completa al fichero donde se guadará la imagen
    */
-  void saveIconFile(const QString &data, const QString &pathFile) {
+  void saveIconFile(const QString &data, const QString &pathFile)
+  {
     FLUtil::saveIconFile(data, pathFile);
   }
 
@@ -5989,7 +6560,8 @@ public slots:
 
    @return código de idioma del sistema
    */
-  QString getIdioma() {
+  QString getIdioma()
+  {
     return FLUtil::getIdioma();
   }
 
@@ -5998,7 +6570,8 @@ public slots:
 
    @return Código del sistema operativo (WIN32, LINUX, MACX)
    */
-  QString getOS() {
+  QString getOS()
+  {
     return FLUtil::getOS();
   }
 
@@ -6028,11 +6601,13 @@ public slots:
   @return Lista de los nombres de los ficheros encontrados
   */
   QStringList findFiles(const QStringList &paths, const QString &filter = "*",
-                        bool breakOnFirstMatch = false) {
+                        bool breakOnFirstMatch = false)
+  {
     return FLUtil::findFiles(paths, filter, breakOnFirstMatch);
   }
 
-  bool execSql(const QString &sql, const QString &connName = "default") {
+  bool execSql(const QString &sql, const QString &connName = "default")
+  {
     return FLUtil::execSql(sql, connName);
   }
 
@@ -6044,17 +6619,20 @@ public slots:
   @param fmt Indica el formato con el que guardar la imagen
   @author Silix
   */
-  void savePixmap(const QString &data, const QString &filename, const char *format) {
+  void savePixmap(const QString &data, const QString &filename, const char *format)
+  {
     FLUtil::savePixmap(data, filename, format);
   }
 
   /**
   Generación "casi-aleatoria" de números aleatorios por el método rápido xorshf96
   */
-  void setFastRandSeed(uint seed) {
+  void setFastRandSeed(uint seed)
+  {
     aq_seed_rand = seed;
   }
-  uint fastRand() const {
+  uint fastRand() const
+  {
     uint t;
     aq_seed_rand_x ^= aq_seed_rand_x << 16;
     aq_seed_rand_x ^= aq_seed_rand_x >> 5;
@@ -6083,18 +6661,18 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLCodBarInterface : public QObject
+class FLCodBarInterface : public QObject
 {
 
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
   FLCodBarInterface(const QString &value, int type, int margin, double scale, double cut, int rotation,
-                    bool text_flag = false, QColor fg = Qt::black, QColor bg = Qt::white, int res = 72) : obj_(0), owner(false) {
+                    bool text_flag = false, QColor fg = Qt::black, QColor bg = Qt::white, int res = 72) : obj_(0), owner(false)
+  {
     obj_ = new FLCodBar(value, type, margin, scale, cut, rotation, text_flag, fg, bg, res);
     owner = true;
   }
@@ -6102,7 +6680,8 @@ public:
   /**
    constructor
    */
-  FLCodBarInterface(FLCodBar *obj) : QObject(obj), obj_(0), owner(false) {
+  FLCodBarInterface(FLCodBar *obj) : QObject(obj), obj_(0), owner(false)
+  {
     obj_ = obj;
     owner = false;
   }
@@ -6110,7 +6689,8 @@ public:
   /**
    destructor
    */
-  ~FLCodBarInterface() {
+  ~FLCodBarInterface()
+  {
     if (owner && obj_)
       obj_->deleteLater();
   }
@@ -6122,14 +6702,16 @@ public slots:
 
    @return
    */
-  QPixmap pixmap() {
+  QPixmap pixmap()
+  {
     return obj_->pixmap();
   }
 
   /**
    Devueve el objeto imagen de error
    */
-  QPixmap pixmapError() {
+  QPixmap pixmapError()
+  {
     return obj_->pixmapError();
   }
 
@@ -6139,7 +6721,8 @@ public slots:
    @param t. Número identificador del tipo de codificación
    @return Cadena con la descripción del tipo de codificación
    */
-  QString typeToName(const int t) {
+  QString typeToName(const int t)
+  {
     return FLCodBar::typeToName(t);
   }
 
@@ -6148,7 +6731,8 @@ public slots:
 
    @return Valor del código de barras
    */
-  QString value() {
+  QString value()
+  {
     return obj_->value();
   }
 
@@ -6157,7 +6741,8 @@ public slots:
 
    @return Tipo de codificación
    */
-  int type() {
+  int type()
+  {
     return obj_->type();
   }
 
@@ -6166,7 +6751,8 @@ public slots:
 
    @return Margen del objeto
    */
-  int margin() {
+  int margin()
+  {
     return obj_->margin();
   }
 
@@ -6175,25 +6761,29 @@ public slots:
 
    @return Escala del objeto
    */
-  double scale() {
+  double scale()
+  {
     return obj_->scale();
   }
 
   /**
    */
-  double cut() {
+  double cut()
+  {
     return obj_->cut();
   }
 
   /**
    */
-  bool text() {
+  bool text()
+  {
     return obj_->text();
   }
 
   /**
    */
-  int rotation() {
+  int rotation()
+  {
     return obj_->rotation();
   }
 
@@ -6202,7 +6792,8 @@ public slots:
 
    @return Color de la imagen
    */
-  QColor fg() {
+  QColor fg()
+  {
     return obj_->fg();
   }
 
@@ -6211,7 +6802,8 @@ public slots:
 
    @return Color de fondo de la imagen
    */
-  QColor bg() {
+  QColor bg()
+  {
     return obj_->bg();
   }
 
@@ -6220,7 +6812,8 @@ public slots:
 
    @return Resolución en ppp
    */
-  int res() {
+  int res()
+  {
     return obj_->res();
   }
 
@@ -6229,19 +6822,22 @@ public slots:
 
    @return TRUE si el código es válido, FALSE si no lo es
    */
-  bool validBarcode() {
+  bool validBarcode()
+  {
     return obj_->validBarcode();
   }
 
   /**
    */
-  void setCaption(const QString &caption) {
+  void setCaption(const QString &caption)
+  {
     obj_->setCaption(caption);
   }
 
   /**
    */
-  QString caption() {
+  QString caption()
+  {
     return obj_->caption();
   }
 
@@ -6250,7 +6846,8 @@ public slots:
 
    @param value. Valor del código de barras
    */
-  void setValue(const QString &value) {
+  void setValue(const QString &value)
+  {
     obj_->setValue(value);
   }
 
@@ -6259,7 +6856,8 @@ public slots:
 
    @param type. Tipo de codificación
    */
-  void setType(const int type) {
+  void setType(const int type)
+  {
     obj_->setType(type);
   }
 
@@ -6268,7 +6866,8 @@ public slots:
 
    @param margin. Margen que se quiere establecer
    */
-  void setMargin(const int margin) {
+  void setMargin(const int margin)
+  {
     obj_->setMargin(margin);
   }
 
@@ -6277,25 +6876,29 @@ public slots:
 
    @param scale. Escala a establecer
    */
-  void setScale(const double scale) {
+  void setScale(const double scale)
+  {
     obj_->setScale(scale);
   }
 
   /**
    */
-  void setCut(const double cut) {
+  void setCut(const double cut)
+  {
     obj_->setCut(cut);
   }
 
   /**
    */
-  void setText(const bool text) {
+  void setText(const bool text)
+  {
     obj_->setText(text);
   }
 
   /**
    */
-  void setRotation(const int rotation) {
+  void setRotation(const int rotation)
+  {
     obj_->setRotation(rotation);
   }
 
@@ -6304,7 +6907,8 @@ public slots:
 
    @param fg. Color de la imagen
    */
-  void setFg(const QColor &fg) {
+  void setFg(const QColor &fg)
+  {
     obj_->setFg(fg);
   }
 
@@ -6313,7 +6917,8 @@ public slots:
 
    @param fg. Color de fondo de la imagen
    */
-  void setBg(const QColor &bg) {
+  void setBg(const QColor &bg)
+  {
     obj_->setBg(bg);
   }
 
@@ -6324,7 +6929,8 @@ public slots:
    código de barras, la resolución se establecerá equitativamente
    tanto en el alto, como en el ancho de la imagen, es decir res x res.
    */
-  void setRes(const int res) {
+  void setRes(const int res)
+  {
     obj_->setRes(res);
   }
 
@@ -6334,23 +6940,25 @@ public slots:
    @param n. Cadena con la descripción del tipo de codificación
    @return Número identificador del tipo de codificación
    */
-  int nameToType(const QString &n) {
+  int nameToType(const QString &n)
+  {
     return FLCodBar::nameToType(n);
   }
 
   /**
    Borra la imagen del código de barras
    */
-  void cleanUp() {
+  void cleanUp()
+  {
     obj_->cleanUp();
   }
 
-  FLCodBar *obj() {
+  FLCodBar *obj()
+  {
     return obj_;
   }
 
 private:
-
   FLCodBar *obj_;
   bool owner;
 };
@@ -6362,19 +6970,19 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLScriptEditorInterface : public QObject
+class FLScriptEditorInterface : public QObject
 {
 
   Q_OBJECT
 
 public:
-
   /**
    constructor
 
    @param nFS Nombre del fichero del script (*.qs)
    */
-  FLScriptEditorInterface(const QString &nFS) : obj_(0) {
+  FLScriptEditorInterface(const QString &nFS) : obj_(0)
+  {
     obj_ = new FLScriptEditor(nFS, qApp->mainWidget());
   }
 
@@ -6388,14 +6996,16 @@ public slots:
   /**
    Establece el código a editar
    */
-  void setCode(const QString &c) {
+  void setCode(const QString &c)
+  {
     obj_->setCode(c);
   }
 
   /**
    Obtiene el código en edición
    */
-  QString code() const {
+  QString code() const
+  {
     return obj_->code();
   }
 
@@ -6404,16 +7014,17 @@ public slots:
 
    @return Indicador de si el diálogo ha sido aceptado o cancelado
    */
-  int exec() {
+  int exec()
+  {
     return obj_->exec();
   }
 
-  FLScriptEditor *obj() {
+  FLScriptEditor *obj()
+  {
     return obj_;
   }
 
 private:
-
   FLScriptEditor *obj_;
 };
 
@@ -6423,26 +7034,27 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLDomNodeListInterface : public QObject
+class FLDomNodeListInterface : public QObject
 {
 
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
   FLDomNodeListInterface(QObject *parent = 0)
-    : QObject(parent) {
+      : QObject(parent)
+  {
   }
 
   /**
    Constructor
    */
   FLDomNodeListInterface(const QDomNodeList &nl, QObject *parent = 0)
-    : QObject(parent),
-      nl_(nl) {
+      : QObject(parent),
+        nl_(nl)
+  {
   }
 
   /**
@@ -6465,19 +7077,21 @@ public slots:
 
    @return Devuelve el número de nodos de la lista
    */
-  uint length() const {
+  uint length() const
+  {
     return nl_.length();
   }
-  uint count() const {
+  uint count() const
+  {
     return nl_.count();
   }
 
-  QDomNodeList obj() {
+  QDomNodeList obj()
+  {
     return nl_;
   }
 
 private:
-
   QDomNodeList nl_;
 };
 
@@ -6488,49 +7102,54 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLDomNodeInterface : public QObject
+class FLDomNodeInterface : public QObject
 {
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
   FLDomNodeInterface(QObject *parent = 0)
-    : QObject(parent),
-      dn_(0),
-      type_(QDomNode::BaseNode) {
+      : QObject(parent),
+        dn_(0),
+        type_(QDomNode::BaseNode)
+  {
     setIdNode();
   }
   FLDomNodeInterface(QDomNode::NodeType type, QObject *parent = 0)
-    : QObject(parent),
-      dn_(0),
-      type_(type) {
+      : QObject(parent),
+        dn_(0),
+        type_(type)
+  {
     setIdNode();
   }
   FLDomNodeInterface(const QDomNode &n, QObject *parent = 0)
-    : QObject(parent),
-      dn_(n.isNull() ? 0 : new QDomNode(n)),
-      type_(QDomNode::BaseNode) {
+      : QObject(parent),
+        dn_(n.isNull() ? 0 : new QDomNode(n)),
+        type_(QDomNode::BaseNode)
+  {
     setIdNode();
   }
   FLDomNodeInterface(const QDomElement &n, QObject *parent = 0)
-    : QObject(parent),
-      dn_(n.isNull() ? 0 : new QDomElement(n)),
-      type_(QDomNode::ElementNode) {
+      : QObject(parent),
+        dn_(n.isNull() ? 0 : new QDomElement(n)),
+        type_(QDomNode::ElementNode)
+  {
     setIdNode();
   }
   FLDomNodeInterface(const QDomText &n, QObject *parent = 0)
-    : QObject(parent),
-      dn_(n.isNull() ? 0 : new QDomText(n)),
-      type_(QDomNode::TextNode) {
+      : QObject(parent),
+        dn_(n.isNull() ? 0 : new QDomText(n)),
+        type_(QDomNode::TextNode)
+  {
     setIdNode();
   }
   FLDomNodeInterface(const QDomDocument &n, QObject *parent = 0)
-    : QObject(parent),
-      dn_(n.isNull() ? 0 : new QDomDocument(n)),
-      type_(QDomNode::DocumentNode) {
+      : QObject(parent),
+        dn_(n.isNull() ? 0 : new QDomDocument(n)),
+        type_(QDomNode::DocumentNode)
+  {
     setIdNode();
   }
 
@@ -6544,71 +7163,90 @@ public:
   static FLDomNodeInterface *nodeInterface(const QDomText &n);
   static FLDomNodeInterface *nodeInterface(const QDomDocument &n);
 
-  QDomNode *newNode() {
+  QDomNode *newNode()
+  {
     delete dn_;
     dn_ = 0;
-    switch (type_) {
-      case QDomNode::ElementNode:
-        dn_ = new QDomElement();
-        break;
-      case QDomNode::TextNode:
-        dn_ = new QDomText();
-        break;
-      case QDomNode::DocumentNode:
-        dn_ = new QDomDocument();
-        break;
-      default:
-        dn_ = new QDomNode();
+    switch (type_)
+    {
+    case QDomNode::ElementNode:
+      dn_ = new QDomElement();
+      break;
+    case QDomNode::TextNode:
+      dn_ = new QDomText();
+      break;
+    case QDomNode::DocumentNode:
+      dn_ = new QDomDocument();
+      break;
+    default:
+      dn_ = new QDomNode();
     }
     return dn_;
   }
 
-  void updateNode(const QDomNode &n) {
+  void updateNode(const QDomNode &n)
+  {
     if (dn_)
       *dn_ = n;
     else
       dn_ = new QDomNode(n);
   }
 
-  void updateNode(const QDomElement &n) {
-    if (dn_) {
-      if (type_ != QDomNode::ElementNode) {
+  void updateNode(const QDomElement &n)
+  {
+    if (dn_)
+    {
+      if (type_ != QDomNode::ElementNode)
+      {
         delete dn_;
         dn_ = new QDomElement(n);
-      } else
+      }
+      else
         *dn_ = n;
-    } else
+    }
+    else
       dn_ = new QDomElement(n);
     type_ = QDomNode::ElementNode;
   }
 
-  void updateNode(const QDomText &n) {
-    if (dn_) {
-      if (type_ != QDomNode::TextNode) {
+  void updateNode(const QDomText &n)
+  {
+    if (dn_)
+    {
+      if (type_ != QDomNode::TextNode)
+      {
         delete dn_;
         dn_ = new QDomText(n);
-      } else
+      }
+      else
         *dn_ = n;
-    } else
+    }
+    else
       dn_ = new QDomText(n);
     type_ = QDomNode::TextNode;
   }
 
-  void updateNode(const QDomDocument &n) {
-    if (dn_) {
-      if (type_ != QDomNode::DocumentNode) {
+  void updateNode(const QDomDocument &n)
+  {
+    if (dn_)
+    {
+      if (type_ != QDomNode::DocumentNode)
+      {
         delete dn_;
         dn_ = new QDomDocument(n);
-      } else
+      }
+      else
         *dn_ = n;
-    } else
+    }
+    else
       dn_ = new QDomDocument(n);
     type_ = QDomNode::DocumentNode;
   }
 
   void setIdNode();
 
-  QDomNode::NodeType type() const {
+  QDomNode::NodeType type() const
+  {
     return type_;
   }
 
@@ -6617,7 +7255,8 @@ public slots:
   /**
    Obtiene el identificador único del nodo
    */
-  QString idNode() const {
+  QString idNode() const
+  {
     return QString::number(idNode_);
   }
 
@@ -6632,7 +7271,8 @@ public slots:
   /**
    Elimina el contenido del nodo estableciéndolo a nulo
    */
-  void clear() {
+  void clear()
+  {
     delete dn_;
     dn_ = 0;
   }
@@ -6642,7 +7282,8 @@ public slots:
 
    @return Valor del nodo
    */
-  QString nodeValue() const {
+  QString nodeValue() const
+  {
     return (dn_ ? dn_->nodeValue() : QString::null);
   }
 
@@ -6651,7 +7292,8 @@ public slots:
 
    @return Nombre del nodo
    */
-  QString nodeName() const {
+  QString nodeName() const
+  {
     return (dn_ ? dn_->nodeName() : QString::null);
   }
 
@@ -6660,7 +7302,8 @@ public slots:
 
    @return Nodo tipo FLDomElementInterface
    */
-  FLDomNodeInterface *toElement() {
+  FLDomNodeInterface *toElement()
+  {
     return (dn_ ? nodeInterface(dn_->toElement()) : 0);
   }
 
@@ -6669,7 +7312,8 @@ public slots:
 
    @return indicador de si el tipo del nodo es DomElement
    */
-  bool isElement() const {
+  bool isElement() const
+  {
     return (dn_ ? dn_->isElement() : false);
   }
 
@@ -6678,7 +7322,8 @@ public slots:
 
    @return indicador de si el tipo del nodo es DomText
    */
-  bool isText() const {
+  bool isText() const
+  {
     return (dn_ ? dn_->isText() : false);
   }
 
@@ -6687,7 +7332,8 @@ public slots:
 
    @return indicador de si el tipo del nodo es DomComment
    */
-  bool isComment() const {
+  bool isComment() const
+  {
     return (dn_ ? dn_->isComment() : false);
   }
 
@@ -6696,7 +7342,8 @@ public slots:
 
    @return Nodo hermano
    */
-  FLDomNodeInterface *nextSibling() {
+  FLDomNodeInterface *nextSibling()
+  {
     return (dn_ ? nodeInterface(dn_->nextSibling()) : 0);
   }
 
@@ -6705,7 +7352,8 @@ public slots:
 
    @return Nodo hermano
    */
-  FLDomNodeInterface *previousSibling() {
+  FLDomNodeInterface *previousSibling()
+  {
     return (dn_ ? nodeInterface(dn_->previousSibling()) : 0);
   }
 
@@ -6714,7 +7362,8 @@ public slots:
 
    @return Nodo hijo, nulo si el nombre no se encuentra
    */
-  FLDomNodeInterface *namedItem(const QString &name) {
+  FLDomNodeInterface *namedItem(const QString &name)
+  {
     return (dn_ ? nodeInterface(dn_->namedItem(name)) : 0);
   }
 
@@ -6724,7 +7373,8 @@ public slots:
    @param deep: Indica si los nodos hijos serán también clonados o no
    @return Nodo clonado
    */
-  FLDomNodeInterface *cloneNode(bool deep = true) {
+  FLDomNodeInterface *cloneNode(bool deep = true)
+  {
     return nodeInterface(DN_->cloneNode(deep));
   }
 
@@ -6734,7 +7384,8 @@ public slots:
    @param n: nodo con el que comparar
    @return true si son iguales, false en caso contrario
    */
-  bool isEqualNode(FLDomNodeInterface *n) {
+  bool isEqualNode(FLDomNodeInterface *n)
+  {
     if (!n)
       return false;
     QDomDocument d1;
@@ -6754,7 +7405,8 @@ public slots:
    @param refChild: nodo de referencia
    @return nodo insertado
    */
-  FLDomNodeInterface *insertBefore(FLDomNodeInterface *newChild, FLDomNodeInterface *refChild = 0) {
+  FLDomNodeInterface *insertBefore(FLDomNodeInterface *newChild, FLDomNodeInterface *refChild = 0)
+  {
     if (!dn_ || !newChild)
       return 0;
     if (!refChild)
@@ -6769,7 +7421,8 @@ public slots:
    @param refChild: nodo de referencia
    @return nodo insertado
    */
-  FLDomNodeInterface *insertAfter(FLDomNodeInterface *newChild, FLDomNodeInterface *refChild) {
+  FLDomNodeInterface *insertAfter(FLDomNodeInterface *newChild, FLDomNodeInterface *refChild)
+  {
     return ((dn_ && newChild && refChild) ? nodeInterface(dn_->insertAfter(newChild->obj(), refChild->obj())) : 0);
   }
 
@@ -6780,7 +7433,8 @@ public slots:
 
    @return nodo quitado
    */
-  FLDomNodeInterface *removeChild(FLDomNodeInterface *oldChild) {
+  FLDomNodeInterface *removeChild(FLDomNodeInterface *oldChild)
+  {
     return ((dn_ && oldChild) ? nodeInterface(dn_->removeChild(oldChild->obj())) : 0);
   }
 
@@ -6789,7 +7443,8 @@ public slots:
 
    @return TRUE si tiene atributos, FALSE si no tiene
    */
-  bool hasAttributes() const {
+  bool hasAttributes() const
+  {
     return (dn_ ? dn_->hasAttributes() : false);
   }
 
@@ -6798,7 +7453,8 @@ public slots:
 
    @return TRUE si tiene hijos, FALSE si no tiene
    */
-  bool hasChildNodes() const {
+  bool hasChildNodes() const
+  {
     return (dn_ ? dn_->hasChildNodes() : false);
   }
 
@@ -6808,7 +7464,8 @@ public slots:
    @param att. Nombre del atributo
    @return Valor del atributo. Si el atributo no existe devolverá una cadena vacía
    */
-  QString attributeValue(const QString &att) const {
+  QString attributeValue(const QString &att) const
+  {
     if (!hasAttributes())
       return QString::null;
     QDomNode n(dn_->attributes().namedItem(att));
@@ -6820,12 +7477,14 @@ public slots:
 
    @return Comentario
    */
-  QString comment() const {
+  QString comment() const
+  {
     if (!dn_)
       return QString::null;
     QDomNodeList nl(dn_->childNodes());
     uint ncount = nl.count();
-    for (uint i = 0; i < ncount; ++i) {
+    for (uint i = 0; i < ncount; ++i)
+    {
       if (nl.item(i).isComment())
         return nl.item(i).nodeValue();
     }
@@ -6837,7 +7496,8 @@ public slots:
 
    @param v. Valor a asignar
    */
-  void setNodeValue(const QString &v) {
+  void setNodeValue(const QString &v)
+  {
     DN_->setNodeValue(v);
   }
 
@@ -6846,7 +7506,8 @@ public slots:
 
    @return primer nodo hijo del nodo XML
    */
-  FLDomNodeInterface *firstChild() {
+  FLDomNodeInterface *firstChild()
+  {
     return (dn_ ? nodeInterface(dn_->firstChild()) : 0);
   }
 
@@ -6855,7 +7516,8 @@ public slots:
 
    @return ultimo nodo hijo del nodo XML
    */
-  FLDomNodeInterface *lastChild() {
+  FLDomNodeInterface *lastChild()
+  {
     return (dn_ ? nodeInterface(dn_->lastChild()) : 0);
   }
 
@@ -6864,7 +7526,8 @@ public slots:
 
    @return nodo padre del nodo XML
    */
-  FLDomNodeInterface *parentNode() {
+  FLDomNodeInterface *parentNode()
+  {
     return (dn_ ? nodeInterface(dn_->parentNode()) : 0);
   }
 
@@ -6874,7 +7537,8 @@ public slots:
    @param newChild: Nodo a añadir
    @return Nodo añadido
    */
-  FLDomNodeInterface *appendChild(FLDomNodeInterface *newChild) {
+  FLDomNodeInterface *appendChild(FLDomNodeInterface *newChild)
+  {
     return (newChild ? nodeInterface(DN_->appendChild(newChild->obj())) : 0);
   }
 
@@ -6885,8 +7549,9 @@ public slots:
    @param oldChild: Nodo a quitar
    @return Referencia al nodo hijo quitado
    */
-  FLDomNodeInterface *replaceChild(FLDomNodeInterface *newChild, FLDomNodeInterface *oldChild) {
-    return ((newChild && oldChild) ? nodeInterface(DN_->replaceChild(newChild->obj() , oldChild->obj())) : 0);
+  FLDomNodeInterface *replaceChild(FLDomNodeInterface *newChild, FLDomNodeInterface *oldChild)
+  {
+    return ((newChild && oldChild) ? nodeInterface(DN_->replaceChild(newChild->obj(), oldChild->obj())) : 0);
   }
 
   /**
@@ -6894,7 +7559,8 @@ public slots:
 
    @return lista de nodos hijos
    */
-  FLDomNodeListInterface *childNodes() const {
+  FLDomNodeListInterface *childNodes() const
+  {
     return (hasChildNodes() ? new FLDomNodeListInterface(dn_->childNodes()) : 0);
   }
 
@@ -6903,7 +7569,8 @@ public slots:
 
    @return documento
    */
-  FLDomNodeInterface *ownerDocument() const {
+  FLDomNodeInterface *ownerDocument() const
+  {
     return (dn_ ? nodeInterface(dn_->ownerDocument()) : 0);
   }
 
@@ -6912,24 +7579,28 @@ public slots:
 
    @return nodo null
    */
-  bool isNull() const {
+  bool isNull() const
+  {
     return (dn_ ? dn_->isNull() : true);
   }
 
   /**
    @return El tipo de nodo
    */
-  QDomNode::NodeType nodeType() const {
+  QDomNode::NodeType nodeType() const
+  {
     return (dn_ ? dn_->nodeType() : QDomNode::BaseNode);
   }
 
   /**
    @return Objeto interno
    */
-  QDomNode obj() {
+  QDomNode obj()
+  {
     return *DN_;
   }
-  QDomNode *ptroObj() {
+  QDomNode *ptroObj()
+  {
     return dn_;
   }
 
@@ -6946,10 +7617,9 @@ public slots:
 
    @return Texto del nodo
    */
-  QString text() const {
-    return ((dn_ && type_ == QDomNode::ElementNode) ?
-            static_cast<QDomElement *>(dn_)->text() :
-            QString::null);
+  QString text() const
+  {
+    return ((dn_ && type_ == QDomNode::ElementNode) ? static_cast<QDomElement *>(dn_)->text() : QString::null);
   }
 
   /**
@@ -6959,10 +7629,9 @@ public slots:
    @param defValue: Valor que se devolverá si el atributo no existe
    @return valor del atributo
    */
-  QString attribute(const QString &name, const QString &defValue = QString::null) const {
-    return ((dn_ && type_ == QDomNode::ElementNode) ?
-            static_cast<QDomElement *>(dn_)->attribute(name, defValue) :
-            QString::null);
+  QString attribute(const QString &name, const QString &defValue = QString::null) const
+  {
+    return ((dn_ && type_ == QDomNode::ElementNode) ? static_cast<QDomElement *>(dn_)->attribute(name, defValue) : QString::null);
   }
 
   /**
@@ -6971,7 +7640,8 @@ public slots:
    @param name: Nombre del atributo
    @param value: Valor del atributo
    */
-  void setAttribute(const QString &name, const QString &value) {
+  void setAttribute(const QString &name, const QString &value)
+  {
     if (type_ == QDomNode::ElementNode)
       static_cast<QDomElement *>(DN_)->setAttribute(name, value);
   }
@@ -6981,7 +7651,8 @@ public slots:
 
    @param name: Nombre del atributo
    */
-  void removeAttribute(const QString &name) {
+  void removeAttribute(const QString &name)
+  {
     if (dn_ && type_ == QDomNode::ElementNode)
       static_cast<QDomElement *>(dn_)->removeAttribute(name);
   }
@@ -7007,7 +7678,8 @@ public slots:
    @param tagName. Nombre de la etiqueta del nodo
    @return nodo domElement creado
    */
-  FLDomNodeInterface *createElement(const QString &tagName) {
+  FLDomNodeInterface *createElement(const QString &tagName)
+  {
     if (type_ != QDomNode::DocumentNode)
       return 0;
     return nodeInterface(static_cast<QDomDocument *>(DN_)->createElement(tagName));
@@ -7019,7 +7691,8 @@ public slots:
    @param value. Valor del nodo
    @return nodo domText creado
    */
-  FLDomNodeInterface *createTextNode(const QString &value) {
+  FLDomNodeInterface *createTextNode(const QString &value)
+  {
     if (type_ != QDomNode::DocumentNode)
       return 0;
     return nodeInterface(static_cast<QDomDocument *>(DN_)->createTextNode(value));
@@ -7030,10 +7703,9 @@ public slots:
 
    @return texto que define el documento XML
    */
-  QString toString(const int indent = 0) {
-    return ((dn_ && type_ == QDomNode::DocumentNode) ?
-            static_cast<QDomDocument *>(dn_)->toString(indent) :
-            QString::null);
+  QString toString(const int indent = 0)
+  {
+    return ((dn_ && type_ == QDomNode::DocumentNode) ? static_cast<QDomDocument *>(dn_)->toString(indent) : QString::null);
   }
 
   /**
@@ -7042,7 +7714,8 @@ public slots:
    @param tagName. Nombre de la etiqueta
    @return Lista de nodos encontrados
    */
-  FLDomNodeListInterface *elementsByTagName(const QString &tagName) const {
+  FLDomNodeListInterface *elementsByTagName(const QString &tagName) const
+  {
     if (!dn_)
       return 0;
     QDomNodeList nl;
@@ -7061,11 +7734,9 @@ public slots:
   void cleanup();
 
 public:
-
   static void cleanupDomNodesCache();
 
 private:
-
   QDomNode *dn_;
   QDomNode::NodeType type_;
   uint idNode_;
@@ -7095,28 +7766,31 @@ El visor tiene tiene dos modos de funcionamiento;
 
 @author InfoSiAL S.L.
 */
-class  FLReportViewerInterface : public QObject
+class FLReportViewerInterface : public QObject
 {
 
   Q_OBJECT
   Q_ENUMS(RenderReportFlags PrinterColorMode)
 
 public:
-
-  enum RenderReportFlags {
-    Append    = 0x00000001,
-    Display   = 0x00000002,
+  enum RenderReportFlags
+  {
+    Append = 0x00000001,
+    Display = 0x00000002,
     PageBreak = 0x00000004
   };
 
-  enum PrinterColorMode {
-    PrintGrayScale, PrintColor
+  enum PrinterColorMode
+  {
+    PrintGrayScale,
+    PrintColor
   };
 
   /**
   constructor
   */
-  FLReportViewerInterface() : QObject(0), obj_(0) {
+  FLReportViewerInterface() : QObject(0), obj_(0)
+  {
     obj_ = new FLReportViewer();
     connects();
   }
@@ -7124,7 +7798,8 @@ public:
   /**
   constructor
   */
-  FLReportViewerInterface(FLReportViewer *obj) : QObject(obj), obj_(0) {
+  FLReportViewerInterface(FLReportViewer *obj) : QObject(obj), obj_(0)
+  {
     obj_ = obj;
     connects();
   }
@@ -7132,7 +7807,8 @@ public:
   /**
   constructor
   */
-  FLReportViewerInterface(QWidget *w, bool) : QObject(w) {
+  FLReportViewerInterface(QWidget *w, bool) : QObject(w)
+  {
     obj_ = new FLReportViewer(w, 0, true);
     connects();
   }
@@ -7140,7 +7816,8 @@ public:
   /**
   constructor
   */
-  FLReportViewerInterface(FLReportEngine *r) : QObject(0) {
+  FLReportViewerInterface(FLReportEngine *r) : QObject(0)
+  {
     obj_ = new FLReportViewer(0, 0, false, r);
     connects();
   }
@@ -7161,10 +7838,12 @@ public slots:
 
   @return TRUE si todo ha ido bien
   */
-  bool renderReport(const int initRow = 0, const int initCol = 0, const bool append = false, const bool displayReport = true) {
+  bool renderReport(const int initRow = 0, const int initCol = 0, const bool append = false, const bool displayReport = true)
+  {
     return obj_->renderReport(initRow, initCol, append, displayReport);
   }
-  bool renderReport2(const int initRow = 0, const int initCol = 0, const uint flags = FLReportViewerInterface::Display) {
+  bool renderReport2(const int initRow = 0, const int initCol = 0, const uint flags = FLReportViewerInterface::Display)
+  {
     return obj_->renderReport(initRow, initCol, flags);
   }
 
@@ -7174,7 +7853,8 @@ public slots:
    @param q Objeto FLSqlQuery con la consulta de la que se toman los datos
    @return TRUE si todo ha ido bien
    */
-  bool setReportData(FLSqlQueryInterface *q) {
+  bool setReportData(FLSqlQueryInterface *q)
+  {
     return obj_->setReportData(q->obj());
   }
 
@@ -7184,7 +7864,8 @@ public slots:
    @param xmlDoc Objeto FLDomDocument con los datos
    @return TRUE si todo ha ido bien
    */
-  bool setReportData(FLDomNodeInterface *xmlDoc) {
+  bool setReportData(FLDomNodeInterface *xmlDoc)
+  {
     if (xmlDoc)
       return obj_->setReportData(xmlDoc->obj());
     return false;
@@ -7199,7 +7880,8 @@ public slots:
    @param  style Nombre de la hoja de estilo a aplicar
    @return TRUE si todo ha ido bien
    */
-  bool setReportTemplate(const QString &t, const QString &style = QString::null) {
+  bool setReportTemplate(const QString &t, const QString &style = QString::null)
+  {
     return obj_->setReportTemplate(t, style);
   }
 
@@ -7212,8 +7894,10 @@ public slots:
    @param  style Nombre de la hoja de estilo a aplicar
    @return TRUE si todo ha ido bien
    */
-  bool setReportTemplate(FLDomNodeInterface *xmlDoc, const QString &style = QString::null) {
-    if (!xmlDoc) {
+  bool setReportTemplate(FLDomNodeInterface *xmlDoc, const QString &style = QString::null)
+  {
+    if (!xmlDoc)
+    {
       return false;
     }
     return obj_->setReportTemplate(xmlDoc->obj(), style);
@@ -7227,7 +7911,8 @@ public slots:
                       si se modifica ese nodo se está modificando el XML interno del informe.
                       Se debe llamar a cloneNode si se desea trabajar sobre una copiar.
   */
-  FLDomNodeInterface *reportData() const {
+  FLDomNodeInterface *reportData() const
+  {
     return obj_->rptEngine()->reportData();
   }
 
@@ -7239,17 +7924,20 @@ public slots:
                       si se modifica ese nodo se está modificando el XML interno del informe.
                       Se debe llamar a cloneNode si se desea trabajar sobre una copiar.
   */
-  FLDomNodeInterface *reportTemplate() const {
+  FLDomNodeInterface *reportTemplate() const
+  {
     return obj_->rptEngine()->reportTemplate();
   }
 
   /**
    Muestra el formulario y entra en un nuevo bucle de eventos.
    */
-  void exec() {
+  void exec()
+  {
     obj_->exec();
   }
-  void show() {
+  void show()
+  {
     obj_->exec();
   }
 
@@ -7258,42 +7946,48 @@ public slots:
 
   Solo tiene efecto si el visor tiene un motor de informes activo
   */
-  QString csvData() {
+  QString csvData()
+  {
     return obj_->csvData();
   }
 
   /**
    Imprime directamente el informe sin mostrarlo
    */
-  void printReport() {
+  void printReport()
+  {
     obj_->slotPrintReport();
   }
 
   /**
    Imprime directamente el informe en un fichero PS sin mostrarlo
    */
-  void printReportToPS(const QString &outPsFile) {
+  void printReportToPS(const QString &outPsFile)
+  {
     obj_->slotPrintReportToPS(outPsFile);
   }
 
   /**
    Imprime directamente el informe en un fichero PDF sin mostrarlo
    */
-  void printReportToPDF(const QString &outPdfFile) {
+  void printReportToPDF(const QString &outPdfFile)
+  {
     obj_->slotPrintReportToPDF(outPdfFile);
   }
 
   /**
    Establece el número de copias por defecto a imprimir
    */
-  void setNumCopies(const int numCopies) {
+  void setNumCopies(const int numCopies)
+  {
     obj_->setNumCopies(numCopies);
   }
 
   /**
    Establece si el informe se debe imprimir en una impresora ESC/POS
    */
-  void setPrintToPos(bool ptp) {
+  void setPrintToPos(bool ptp)
+  {
     obj_->setPrintToPos(ptp);
   }
 
@@ -7304,14 +7998,16 @@ public slots:
    usará esa impresora para imprimir directamente. Para que el cuadro de diálogo de impresión se muestre bastará
    con establecer un nombre vacío; setPrinterName( QString::null ).
    */
-  void setPrinterName(const QString &pName) {
+  void setPrinterName(const QString &pName)
+  {
     obj_->setPrinterName(pName);
   }
 
   /**
    Devuelve si el último informe ha sido imprimido en impresora o archivo.
    */
-  bool reportPrinted() {
+  bool reportPrinted()
+  {
     obj_->reportPrinted();
   }
 
@@ -7320,91 +8016,104 @@ public slots:
 
    @param parentFrame: Nuevo padre. Debe ser QFrame con al menos una capa VBox
    */
-  void reparent(QWidget *parentFrame) {
+  void reparent(QWidget *parentFrame)
+  {
     obj_->rptViewerReparent(parentFrame);
   }
 
   /**
    Muestra la primera página del informe
    */
-  void slotFirstPage() {
+  void slotFirstPage()
+  {
     obj_->slotFirstPage();
   }
 
   /**
    Muestra la útlima página del informe
    */
-  void slotLastPage() {
+  void slotLastPage()
+  {
     obj_->slotLastPage();
   }
 
   /**
    Muestra la siguiente página del informe
    */
-  void slotNextPage() {
+  void slotNextPage()
+  {
     obj_->slotNextPage();
   }
 
   /**
    Muestra la anterior página del informe
    */
-  void slotPrevPage() {
+  void slotPrevPage()
+  {
     obj_->slotPrevPage();
   }
 
   /**
    Aumenta zoom de la página actual
    */
-  void slotZoomUp() {
+  void slotZoomUp()
+  {
     obj_->slotZoomUp();
   }
 
   /**
    Disminuye zoom de la página actual
    */
-  void slotZoomDown() {
+  void slotZoomDown()
+  {
     obj_->slotZoomDown();
   }
 
   /**
    Exporta a un fichero de disco la version CSV del informe
    */
-  void exportFileCSVData() {
+  void exportFileCSVData()
+  {
     obj_->exportFileCSVData();
   }
 
   /**
    Exporta el informe a un fichero en formato PDF
    */
-  void exportToPDF() {
+  void exportToPDF()
+  {
     obj_->exportToPDF();
   }
 
   /**
   Exporta el informe a un fichero en formato PDF y lo envia por correo eléctronico
   */
-  void sendEMailPDF() {
+  void sendEMailPDF()
+  {
     obj_->sendEMailPDF();
   }
 
   /**
   Guarda como plantilla de estilo SVG
   */
-  void saveSVGStyle() {
+  void saveSVGStyle()
+  {
     obj_->saveSVGStyle();
   }
 
   /**
   Guarda la página actual como plantilla de estilo SVG simplificada ( sólo los campos de datos )
   */
-  void saveSimpleSVGStyle() {
+  void saveSimpleSVGStyle()
+  {
     obj_->saveSimpleSVGStyle();
   }
 
   /**
   Carga y aplica una plantilla de estilo SVG
   */
-  void loadSVGStyle() {
+  void loadSVGStyle()
+  {
     obj_->exportFileCSVData();
   }
 
@@ -7413,7 +8122,8 @@ public slots:
 
   @param b TRUE para cierre automático, FALSE para desactivar cierre automático
   */
-  void setAutoClose(const bool b) {
+  void setAutoClose(const bool b)
+  {
     obj_->setAutoClose(b);
   }
 
@@ -7422,13 +8132,16 @@ public slots:
 
   @param dpi Resolucion en puntos por pulgada
   */
-  void setResolution(int dpi) {
+  void setResolution(int dpi)
+  {
     obj_->setResolution(dpi);
   }
-  void setPixel(int relDpi) {
+  void setPixel(int relDpi)
+  {
     obj_->setPixel(relDpi);
   }
-  void setDefaults() {
+  void setDefaults()
+  {
     obj_->setDefaults();
   }
 
@@ -7438,42 +8151,48 @@ public slots:
   Emite la señal requestUpdateReport y llama a updateDisplay.
   Si el visor tiene un motor de informes ejecuta de nuevo la consulta y el renderizado.
   */
-  void updateReport() {
+  void updateReport()
+  {
     obj_->updateReport();
   }
 
   /**
   Actualiza el visor, redibujando la coleccion de paginas en pantalla
   */
-  void  updateDisplay() {
+  void updateDisplay()
+  {
     obj_->updateDisplay();
   }
 
   /**
   Establece el nombre del estilo
   */
-  void setStyleName(const QString &style) {
+  void setStyleName(const QString &style)
+  {
     obj_->setStyleName(style);
   }
 
   /**
   Visor básico de Kugar
   */
-  MReportViewer *rptViewer() {
+  MReportViewer *rptViewer()
+  {
     return obj_->rptViewer();
   }
 
   /**
   Establece el motor de informes a usar por visor
   */
-  void setReportEngine(FLReportEngine *r) {
+  void setReportEngine(FLReportEngine *r)
+  {
     obj_->setReportEngine(r);
   }
 
   /**
   Incrusta el visor básico de Kugar en la capa principal de un objeto widget padre ( generalmente un QFrame )
   */
-  void rptViewerEmbedInParent(QWidget *parentFrame) {
+  void rptViewerEmbedInParent(QWidget *parentFrame)
+  {
     obj_->rptViewerEmbedInParent(parentFrame);
   }
 
@@ -7486,21 +8205,24 @@ public slots:
   asignado y los métodos específicos que llaman al motor de informes no
   tendran efecto (renderReport, csvData, etc..)
   */
-  void setReportPages(FLReportPages *pgs) {
+  void setReportPages(FLReportPages *pgs)
+  {
     obj_->setReportPages(pgs);
   }
 
   /**
   Establece el modo de color de la impresión (PrintColor, PrintGrayScale)
   */
-  void setColorMode(uint c) {
+  void setColorMode(uint c)
+  {
     obj_->setColorMode(c);
   }
 
   /**
   Obtiene el modo de color de la impresión establecido
   */
-  uint colorMode() const {
+  uint colorMode() const
+  {
     return obj_->colorMode();
   }
 
@@ -7509,55 +8231,72 @@ public slots:
   mismos métodos que proporciona FLReportPages, para manejar
   la coleccion de paginas del visor
   */
-  FLPicture *getCurrentPage() {
+  FLPicture *getCurrentPage()
+  {
     return obj_->getCurrentPage();
   }
-  FLPicture *getFirstPage() {
+  FLPicture *getFirstPage()
+  {
     return obj_->getFirstPage();
   }
-  FLPicture *getPreviousPage() {
+  FLPicture *getPreviousPage()
+  {
     return obj_->getPreviousPage();
   }
-  FLPicture *getNextPage() {
+  FLPicture *getNextPage()
+  {
     return obj_->getNextPage();
   }
-  FLPicture *getLastPage() {
+  FLPicture *getLastPage()
+  {
     return obj_->getLastPage();
   }
-  FLPicture *getPageAt(uint i) {
+  FLPicture *getPageAt(uint i)
+  {
     return obj_->getPageAt(i);
   }
-  void clearPages() {
+  void clearPages()
+  {
     obj_->clearPages();
   }
-  void appendPage() {
+  void appendPage()
+  {
     obj_->appendPage();
   }
-  int getCurrentIndex() {
+  int getCurrentIndex()
+  {
     return obj_->getCurrentIndex();
   }
-  void setCurrentPage(int idx) {
+  void setCurrentPage(int idx)
+  {
     obj_->setCurrentPage(idx);
   }
-  void setPageSize(int s) {
+  void setPageSize(int s)
+  {
     obj_->setPageSize(s);
   }
-  void setPageOrientation(int o) {
+  void setPageOrientation(int o)
+  {
     obj_->setPageOrientation(o);
   }
-  void setPageDimensions(QSize dim) {
+  void setPageDimensions(QSize dim)
+  {
     obj_->setPageDimensions(dim);
   }
-  int pageSize() {
+  int pageSize()
+  {
     return obj_->pageSize();
   }
-  int pageOrientation() {
+  int pageOrientation()
+  {
     return obj_->pageOrientation();
   }
-  QSize pageDimensions() {
+  QSize pageDimensions()
+  {
     return obj_->pageDimensions();
   }
-  int pageCount() {
+  int pageCount()
+  {
     return obj_->pageCount();
   }
 
@@ -7567,7 +8306,8 @@ public slots:
   @param objName. Nombre del objeto hijo
   @return Objeto hijo
   */
-  QObject *child(const QString &objName) {
+  QObject *child(const QString &objName)
+  {
     if (!obj_)
       return 0;
     return obj_->child(objName);
@@ -7581,15 +8321,18 @@ public slots:
   y susituirlo por funcionalidad especifica. Por ejemplo para mostrar un
   dialogo de impresion personalizado.
   */
-  void disableSlotsPrintExports(bool disablePrints = true, bool disableExports = true) {
+  void disableSlotsPrintExports(bool disablePrints = true, bool disableExports = true)
+  {
     obj_->disableSlotsPrintExports(disablePrints, disableExports);
   }
 
-  void setName(const QString &n) {
+  void setName(const QString &n)
+  {
     obj_->setName(n);
   }
 
-  FLReportViewer *obj() {
+  FLReportViewer *obj()
+  {
     return obj_;
   }
 
@@ -7601,8 +8344,8 @@ signals:
   void requestUpdateReport();
 
 private:
-
-  void connects() const {
+  void connects() const
+  {
     connect(obj_, SIGNAL(requestUpdateReport()), this, SIGNAL(requestUpdateReport()));
     connect(obj_, SIGNAL(destroyed()), this, SIGNAL(destroyed()));
   }
@@ -7616,17 +8359,17 @@ private:
 
  @author InfoSiAL S.L.
  */
-class  FLProcessInterface : public QProcess
+class FLProcessInterface : public QProcess
 {
 
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLProcessInterface() : obj_(0) {
+  FLProcessInterface() : obj_(0)
+  {
     obj_ = new QProcess();
     connects();
   };
@@ -7634,7 +8377,8 @@ public:
   /**
    Constructor
    */
-  FLProcessInterface(const QString &arg0) : obj_(0) {
+  FLProcessInterface(const QString &arg0) : obj_(0)
+  {
     obj_ = new QProcess(arg0);
     connects();
   };
@@ -7642,7 +8386,8 @@ public:
   /**
    Destructor
    */
-  ~FLProcessInterface() {
+  ~FLProcessInterface()
+  {
     if (obj_)
       obj_->deleteLater();
   }
@@ -7654,14 +8399,16 @@ public slots:
 
    @return true si el comando se ejecutó, false en caso contrario
    */
-  bool start() {
+  bool start()
+  {
     return obj_->start();
   }
 
   /**
    Establece el directorio donde se ejecuta el proceso
    */
-  void setWorkingDirectory(const QString &path) {
+  void setWorkingDirectory(const QString &path)
+  {
     QDir dir(path);
     obj_->setWorkingDirectory(dir);
   }
@@ -7671,7 +8418,8 @@ public slots:
 
    @param args Argumentos del proceso: comando + argumentos
    */
-  void setArguments(const QStringList &args) {
+  void setArguments(const QStringList &args)
+  {
     obj_->setArguments(args);
   }
 
@@ -7680,7 +8428,8 @@ public slots:
 
    @param arg Argumento a añadir el proceso
    */
-  void addArgument(const QString &arg) {
+  void addArgument(const QString &arg)
+  {
     obj_->addArgument(arg);
   }
 
@@ -7689,7 +8438,8 @@ public slots:
 
    @return true si está en ejecución, false en caso contrario
    */
-  bool isRunning() {
+  bool isRunning()
+  {
     return obj_->isRunning();
   }
 
@@ -7698,11 +8448,13 @@ public slots:
 
    @return Array binario con el contenido de la salida estándar del proceso
    */
-  QByteArray readStdout() {
+  QByteArray readStdout()
+  {
     return obj_->readStdout();
   }
 
-  void emitExited() {
+  void emitExited()
+  {
     emit exited();
   }
 
@@ -7714,8 +8466,8 @@ signals:
   void exited();
 
 private:
-
-  void connects() {
+  void connects()
+  {
     disconnect(obj_, SIGNAL(processExited()), this, SLOT(emitExited()));
     connect(obj_, SIGNAL(processExited()), this, SLOT(emitExited()));
   }
@@ -7723,63 +8475,76 @@ private:
   QProcess *obj_;
 };
 
-class  FLPosPrinterInterface : public QObject
+class FLPosPrinterInterface : public QObject
 {
 
   Q_OBJECT
   Q_ENUMS(PaperWidth)
 
 public:
-
-  enum PaperWidth {P57_5MM, P69_5MM, P76MM, NPaperWidth = P76MM};
+  enum PaperWidth
+  {
+    P57_5MM,
+    P69_5MM,
+    P76MM,
+    NPaperWidth = P76MM
+  };
 
   /**
    constructor
    */
-  FLPosPrinterInterface() : obj_(0) {
+  FLPosPrinterInterface() : obj_(0)
+  {
     obj_ = new FLPosPrinter();
   }
 
   /**
    destructor
    */
-  ~FLPosPrinterInterface() {
+  ~FLPosPrinterInterface()
+  {
     if (obj_)
       delete obj_;
   }
 
 public slots:
 
-  int paperWidth() {
+  int paperWidth()
+  {
     return obj_->paperWidth();
   }
 
-  void setPaperWidth(int pw) {
+  void setPaperWidth(int pw)
+  {
     obj_->setPaperWidth((FLPosPrinter::PaperWidth)pw);
   }
 
-  QString printerName() {
+  QString printerName()
+  {
     return obj_->printerName();
   }
 
-  void setPrinterName(const QString &pName) {
+  void setPrinterName(const QString &pName)
+  {
     obj_->setPrinterName(pName);
   }
 
-  void cleanup() {
+  void cleanup()
+  {
     obj_->cleanup();
   }
 
-  void flush() {
+  void flush()
+  {
     obj_->flush();
   }
 
-  void send(const QString &str, const int col = -1, const int row = -1) {
+  void send(const QString &str, const int col = -1, const int row = -1)
+  {
     obj_->send(str, col, row);
   }
 
 private:
-
   FLPosPrinter *obj_;
 };
 
@@ -7792,14 +8557,14 @@ private:
 
  @author InfoSiAL, S.L.
  */
-class  FLSmtpClientInterface : public QObject
+class FLSmtpClientInterface : public QObject
 {
   Q_OBJECT
   Q_ENUMS(State)
 
 public:
-
-  enum State {
+  enum State
+  {
     Init,
     Mail,
     Rcpt,
@@ -7816,8 +8581,8 @@ public:
     Composing,
     Attach,
     AttachError,
-    ServerError,    // 4xx smtp error
-    ClientError,    // 5xx smtp error
+    ServerError, // 4xx smtp error
+    ClientError, // 5xx smtp error
     StartTTLS,
     WaitingForSTARTTLS,
     SendAuthPlain,
@@ -7831,7 +8596,8 @@ public:
   /**
    Constructor
    */
-  FLSmtpClientInterface() : QObject(0) {
+  FLSmtpClientInterface() : QObject(0)
+  {
     obj_ = new FLSmtpClient(this);
     connects();
   }
@@ -7839,7 +8605,8 @@ public:
   /**
    Constructor
    */
-  FLSmtpClientInterface(FLSmtpClient *obj) : QObject(obj), obj_(0) {
+  FLSmtpClientInterface(FLSmtpClient *obj) : QObject(obj), obj_(0)
+  {
     obj_ = obj;
   }
 
@@ -7855,7 +8622,8 @@ public slots:
 
    @param from Dirección de correo del remitente
    */
-  void setFrom(const QString &from) {
+  void setFrom(const QString &from)
+  {
     obj_->setFrom(from);
   }
 
@@ -7864,7 +8632,8 @@ public slots:
 
    @param to Dirección de correo del destinatario
    */
-  void setTo(const QString &to) {
+  void setTo(const QString &to)
+  {
     obj_->setTo(to);
   }
 
@@ -7873,7 +8642,8 @@ public slots:
 
    @param subject Texto del asunto
    */
-  void setSubject(const QString &subject) {
+  void setSubject(const QString &subject)
+  {
     obj_->setSubject(subject);
   }
 
@@ -7882,7 +8652,8 @@ public slots:
 
    @param body Texto del cuerpo
    */
-  void setBody(const QString &body) {
+  void setBody(const QString &body)
+  {
     obj_->setBody(body);
   }
 
@@ -7892,7 +8663,8 @@ public slots:
    @param attach Ruta y nombre del fichero a adjuntar
    @param cid    Id para incrustar fichero en HTML
    */
-  void addAttachment(const QString &attach, const QString &cid = QString::null) {
+  void addAttachment(const QString &attach, const QString &cid = QString::null)
+  {
     obj_->addAttachment(attach, cid);
   }
 
@@ -7902,7 +8674,8 @@ public slots:
    @param text     Texto a añadir
    @param mimeType Formato MIME del texto. Por defecto text/plain
    */
-  void addTextPart(const QString &text, const QString &mimeType = "text/plain") {
+  void addTextPart(const QString &text, const QString &mimeType = "text/plain")
+  {
     obj_->addTextPart(text, mimeType);
   }
 
@@ -7914,32 +8687,35 @@ public slots:
 
    @param mS Nombre o direccion IP del servidor de correo saliente
    */
-  void setMailServer(const QString &mS) {
+  void setMailServer(const QString &mS)
+  {
     obj_->setMailServer(mS);
   }
-  
-   /**
-   Usuario de correo saliente
 
-   Indica el usuario del correo saliente para la autenticación
+  /**
+  Usuario de correo saliente
 
-   @param User Usuario
-   */
-  void setUser(const QString &User) {
+  Indica el usuario del correo saliente para la autenticación
+
+  @param User Usuario
+  */
+  void setUser(const QString &User)
+  {
     obj_->setUser(User);
   }
 
-   /**
-   Password de correo saliente
+  /**
+  Password de correo saliente
 
-   Indica el password del correo saliente para la autenticación
+  Indica el password del correo saliente para la autenticación
 
-   @param Passwd Password del usuario
-   */
-  void setPassword(const QString &Passwd) {
+  @param Passwd Password del usuario
+  */
+  void setPassword(const QString &Passwd)
+  {
     obj_->setPassword(Passwd);
   }
-  
+
   /**
    Tipo MIME
 
@@ -7947,84 +8723,97 @@ public slots:
 
    @param mT Tipo MIME
    */
-  void setMimeType(const QString &mT) {
+  void setMimeType(const QString &mT)
+  {
     obj_->setMimeType(mT);
   }
-  
-    /**
-   Tipo de autenticación
 
-   Indica el tipo de autenticación
+  /**
+ Tipo de autenticación
 
-   @param conn (0=Sin cifrar ,1=SSL,2=TLS)
-   */
-  void setConnectionType(int conn) {
+ Indica el tipo de autenticación
+
+ @param conn (0=Sin cifrar ,1=SSL,2=TLS)
+ */
+  void setConnectionType(int conn)
+  {
     obj_->setConnectionType(conn);
   }
-  
-      /**
-   Puerto
 
-   Indica el puerto usado
+  /**
+Puerto
 
-   @param port puerto a usar
-   */
-  void setPort(int port) {
+Indica el puerto usado
+
+@param port puerto a usar
+*/
+  void setPort(int port)
+  {
     obj_->setPort(port);
   }
-      /**
-   Tipo de conexión
+  /**
+Tipo de conexión
 
-   Indica el tipo de conexión al servidor
+Indica el tipo de conexión al servidor
 
-   @param method (0=Sin autenticación ,1=Texto Plano,2=Login)
-   */
-  void setAuthMethod(int method) {
+@param method (0=Sin autenticación ,1=Texto Plano,2=Login)
+*/
+  void setAuthMethod(int method)
+  {
     obj_->setAuthMethod(method);
   }
 
   /**
    Inicia el envío del mensaje
    */
-  void startSend() {
+  void startSend()
+  {
     obj_->startSend();
   }
 
   /**
   Devuelve el último mensaje de estado
   */
-  QString lastStatusMsg() const {
+  QString lastStatusMsg() const
+  {
     return obj_->lastStatusMsg();
   }
 
   /**
   Devuelve el último código de estado
   */
-  int lastStateCode() const {
+  int lastStateCode() const
+  {
     return obj_->lastStateCode();
   }
 
-  void emitStatus(const QString &st) {
+  void emitStatus(const QString &st)
+  {
     emit status(st);
   }
 
-  void emitSendStarted() {
+  void emitSendStarted()
+  {
     emit sendStarted();
   }
 
-  void emitSendEnded() {
+  void emitSendEnded()
+  {
     emit sendEnded();
   }
 
-  void emitSendTotalSteps(int ts) {
+  void emitSendTotalSteps(int ts)
+  {
     emit sendTotalSteps(ts);
   }
 
-  void emitSendStepNumber(int sn) {
+  void emitSendStepNumber(int sn)
+  {
     emit sendStepNumber(sn);
   }
 
-  FLSmtpClient *obj() {
+  FLSmtpClient *obj()
+  {
     return obj_;
   }
 
@@ -8061,30 +8850,30 @@ signals:
   void statusChanged(const QString &, int);
 
 private:
-
   void connects() const;
 
   FLSmtpClient *obj_;
 };
 
-class  FLImageViewerInterface : public QObject
+class FLImageViewerInterface : public QObject
 {
 
   Q_OBJECT
 
 public:
-
   /**
    Constructor
    */
-  FLImageViewerInterface() : QObject(0) {
+  FLImageViewerInterface() : QObject(0)
+  {
     obj_ = new FLImageViewer();
   }
 
   /**
    Constructor
    */
-  FLImageViewerInterface(FLImageViewer *obj) : QObject(obj), obj_(0) {
+  FLImageViewerInterface(FLImageViewer *obj) : QObject(obj), obj_(0)
+  {
     obj_ = obj;
   }
 
@@ -8095,218 +8884,261 @@ public:
 
 public slots:
 
-  bool loadImage(const QString &pathFile) {
+  bool loadImage(const QString &pathFile)
+  {
     obj_->loadImage(pathFile);
   }
 
-  void openFile() {
+  void openFile()
+  {
     obj_->openFile();
   }
 
-  void show() {
+  void show()
+  {
     obj_->show();
   }
 
-  void close() {
+  void close()
+  {
     obj_->close();
   }
 
-  QString fileName() {
+  QString fileName()
+  {
     return obj_->filename;
   }
 
-  void saveImage(int f) {
+  void saveImage(int f)
+  {
     obj_->saveImage(f);
   }
 
-  void savePixmap(int f) {
+  void savePixmap(int f)
+  {
     obj_->savePixmap(f);
   }
 
-  void setImage(const QVariant &v) {
+  void setImage(const QVariant &v)
+  {
     obj_->setImage(QImage(v.toCString()));
   }
 
-  void setImage(const QPixmap &p) {
+  void setImage(const QPixmap &p)
+  {
     obj_->setImage(p.convertToImage());
   }
 
 private:
-
   FLImageViewer *obj_;
 };
 
-class  FLSerialPortInterface : public QObject
+class FLSerialPortInterface : public QObject
 {
   Q_OBJECT
   Q_ENUMS(BaudRateType DataBitsType ParityType StopBitsType FlowType)
 
 public:
-
-  enum BaudRateType {
-    BAUD50, //POSIX ONLY
-    BAUD75, //POSIX ONLY
+  enum BaudRateType
+  {
+    BAUD50, // POSIX ONLY
+    BAUD75, // POSIX ONLY
     BAUD110,
-    BAUD134, //POSIX ONLY
-    BAUD150, //POSIX ONLY
-    BAUD200, //POSIX ONLY
+    BAUD134, // POSIX ONLY
+    BAUD150, // POSIX ONLY
+    BAUD200, // POSIX ONLY
     BAUD300,
     BAUD600,
     BAUD1200,
-    BAUD1800, //POSIX ONLY
+    BAUD1800, // POSIX ONLY
     BAUD2400,
     BAUD4800,
     BAUD9600,
-    BAUD14400, //WINDOWS ONLY
+    BAUD14400, // WINDOWS ONLY
     BAUD19200,
     BAUD38400,
-    BAUD56000, //WINDOWS ONLY
+    BAUD56000, // WINDOWS ONLY
     BAUD57600,
-    BAUD76800, //POSIX ONLY
+    BAUD76800, // POSIX ONLY
     BAUD115200,
-    BAUD128000, //WINDOWS ONLY
-    BAUD256000 //WINDOWS ONLY
+    BAUD128000, // WINDOWS ONLY
+    BAUD256000  // WINDOWS ONLY
   };
 
-  enum DataBitsType {
-    DATA_5, //only for compatibility
+  enum DataBitsType
+  {
+    DATA_5, // only for compatibility
     DATA_6,
     DATA_7,
     DATA_8
   };
 
-  enum ParityType {
+  enum ParityType
+  {
     PAR_NONE,
     PAR_ODD,
     PAR_EVEN,
-    PAR_MARK, //WINDOWS ONLY
-    PAR_SPACE //WINDOWS directly, POSIX simulated
+    PAR_MARK, // WINDOWS ONLY
+    PAR_SPACE // WINDOWS directly, POSIX simulated
   };
 
-  enum StopBitsType {
+  enum StopBitsType
+  {
     STOP_1,
-    STOP_1_5, //WINDOWS ONLY
+    STOP_1_5, // WINDOWS ONLY
     STOP_2
   };
 
-  enum FlowType {
+  enum FlowType
+  {
     FLOW_OFF,
     FLOW_HARDWARE,
     FLOW_XONXOFF
   };
 
-  FLSerialPortInterface(const QString &name = QString::null) : QObject(0) {
+  FLSerialPortInterface(const QString &name = QString::null) : QObject(0)
+  {
     obj_ = new QextSerialPort(name);
   }
 
-  ~FLSerialPortInterface() {
+  ~FLSerialPortInterface()
+  {
     delete obj_;
   }
 
 public slots:
 
-  bool open(int mode = 0) {
+  bool open(int mode = 0)
+  {
     return obj_->open(mode);
   }
-  void close() {
+  void close()
+  {
     obj_->close();
   }
-  void flush() {
+  void flush()
+  {
     obj_->flush();
   }
 
-  QIODevice::Offset size() const {
+  QIODevice::Offset size() const
+  {
     return obj_->size();
   }
 
-  Q_LONG readBlock(char *data, Q_ULONG maxSize) {
+  Q_LONG readBlock(char *data, Q_ULONG maxSize)
+  {
     return obj_->readBlock(data, maxSize);
   }
-  Q_LONG writeBlock(const QString &data, Q_ULONG size) {
+  Q_LONG writeBlock(const QString &data, Q_ULONG size)
+  {
     return obj_->writeBlock(data, size);
   }
-  void writeText(const QString &text) {
+  void writeText(const QString &text)
+  {
     writeBlock(text.latin1(), text.length());
   }
 
-  int getch() {
+  int getch()
+  {
     return obj_->getch();
   }
-  int putch(int ch) {
+  int putch(int ch)
+  {
     return obj_->putch(ch);
   }
-  int ungetch(int ch) {
+  int ungetch(int ch)
+  {
     return obj_->ungetch(ch);
   }
 
-  Q_ULONG bytesAvailable() const {
+  Q_ULONG bytesAvailable() const
+  {
     return obj_->bytesAvailable();
   }
 
-  void setName(const QString &name) {
+  void setName(const QString &name)
+  {
     obj_->setName(name);
   }
-  QString name() {
+  QString name()
+  {
     return obj_->name();
   }
 
-  void setBaudRate(BaudRateType b) {
-    obj_->setBaudRate((QextSerialPort::BaudRateType) b);
+  void setBaudRate(BaudRateType b)
+  {
+    obj_->setBaudRate((QextSerialPort::BaudRateType)b);
   }
-  void setDataBits(DataBitsType d) {
-    obj_->setDataBits((QextSerialPort::DataBitsType) d);
+  void setDataBits(DataBitsType d)
+  {
+    obj_->setDataBits((QextSerialPort::DataBitsType)d);
   }
-  void setParity(ParityType p) {
-    obj_->setParity((QextSerialPort::ParityType) p);
+  void setParity(ParityType p)
+  {
+    obj_->setParity((QextSerialPort::ParityType)p);
   }
-  void setStopBits(StopBitsType s) {
-    obj_->setStopBits((QextSerialPort::StopBitsType) s);
+  void setStopBits(StopBitsType s)
+  {
+    obj_->setStopBits((QextSerialPort::StopBitsType)s);
   }
-  void setFlowControl(FlowType f) {
-    obj_->setFlowControl((QextSerialPort::FlowType) f);
+  void setFlowControl(FlowType f)
+  {
+    obj_->setFlowControl((QextSerialPort::FlowType)f);
   }
-  void setTimeout(int sec, int msec) {
+  void setTimeout(int sec, int msec)
+  {
     obj_->setTimeout(sec, msec);
   }
 
-  BaudRateType baudRate() const {
-    return (FLSerialPortInterface::BaudRateType) obj_->baudRate();
+  BaudRateType baudRate() const
+  {
+    return (FLSerialPortInterface::BaudRateType)obj_->baudRate();
   }
-  DataBitsType setDataBits() const {
-    return (FLSerialPortInterface::DataBitsType) obj_->setDataBits();
+  DataBitsType setDataBits() const
+  {
+    return (FLSerialPortInterface::DataBitsType)obj_->setDataBits();
   }
-  ParityType setParity() const {
-    return (FLSerialPortInterface::ParityType) obj_->setParity();
+  ParityType setParity() const
+  {
+    return (FLSerialPortInterface::ParityType)obj_->setParity();
   }
-  StopBitsType setStopBits() const {
-    return (FLSerialPortInterface::StopBitsType) obj_->setStopBits();
+  StopBitsType setStopBits() const
+  {
+    return (FLSerialPortInterface::StopBitsType)obj_->setStopBits();
   }
-  FlowType setFlowControl() const {
-    return (FLSerialPortInterface::FlowType) obj_->setFlowControl();
+  FlowType setFlowControl() const
+  {
+    return (FLSerialPortInterface::FlowType)obj_->setFlowControl();
   }
 
-  void setRts(bool set = TRUE) {
+  void setRts(bool set = TRUE)
+  {
     obj_->setRts(set);
   }
-  void setDtr(bool set = TRUE) {
+  void setDtr(bool set = TRUE)
+  {
     obj_->setDtr(set);
   }
 
-  bool cts() const {
+  bool cts() const
+  {
     return obj_->cts();
   }
-  bool dsr() const {
+  bool dsr() const
+  {
     return obj_->dsr();
   }
-  bool dcd() const {
+  bool dcd() const
+  {
     return obj_->dcd();
   }
-  bool ri() const {
+  bool ri() const
+  {
     return obj_->ri();
   }
 
 private:
-
   QextSerialPort *obj_;
 };
 
@@ -8366,22 +9198,24 @@ class AQSignalMapper : public QSignalMapper
   Q_OBJECT
 
 public:
-
-  AQSignalMapper(QObject *parent) :
-    QSignalMapper(parent) {
+  AQSignalMapper(QObject *parent) : QSignalMapper(parent)
+  {
     QObject::setName("AQSignalMapper" +
                      QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz"));
   }
 
 public slots:
 
-  void setMapping(QObject *sender, int identifier) {
+  void setMapping(QObject *sender, int identifier)
+  {
     QSignalMapper::setMapping(sender, identifier);
   }
-  void setMapping(QObject *sender, const QString &identifier) {
+  void setMapping(QObject *sender, const QString &identifier)
+  {
     QSignalMapper::setMapping(sender, identifier);
   }
-  void removeMappings(QObject *sender) {
+  void removeMappings(QObject *sender)
+  {
     QSignalMapper::removeMappings(sender);
   }
 };
@@ -8442,24 +9276,27 @@ class AQObjectQueryList : public QObject
   Q_OBJECT
 
 public:
-
   AQObjectQueryList(QObject *obj,
                     const QString &inheritsClass,
                     const QString &objName,
                     bool regexpMatch,
-                    bool recursiveSearch) :
-    QObject(0), l_(0) {
-    if (obj) {
+                    bool recursiveSearch) : QObject(0), l_(0)
+  {
+    if (obj)
+    {
       l_ = obj->queryList(inheritsClass.isEmpty() ? 0 : inheritsClass.latin1(),
                           objName.isEmpty() ? 0 : objName.latin1(),
                           regexpMatch, recursiveSearch);
       l_->first();
-    } else { // Si obj == 0 devuelve QApplication::topLevelWidgets()
+    }
+    else
+    { // Si obj == 0 devuelve QApplication::topLevelWidgets()
       l_ = new QObjectList;
-      QWidgetList  *list = QApplication::topLevelWidgets();
+      QWidgetList *list = QApplication::topLevelWidgets();
       QWidgetListIt it(*list);
       QWidget *w;
-      while ((w = it.current()) != 0) {
+      while ((w = it.current()) != 0)
+      {
         ++it;
         if (!inheritsClass.isEmpty() && !w->inherits(inheritsClass))
           continue;
@@ -8472,17 +9309,21 @@ public:
     }
   }
 
-  AQObjectQueryList(QObject *obj) :
-    QObject(0), l_(0) {
-    if (obj) {
+  AQObjectQueryList(QObject *obj) : QObject(0), l_(0)
+  {
+    if (obj)
+    {
       l_ = obj->queryList();
       l_->first();
-    } else { // Si obj == 0 devuelve QApplication::topLevelWidgets()
+    }
+    else
+    { // Si obj == 0 devuelve QApplication::topLevelWidgets()
       l_ = new QObjectList;
-      QWidgetList  *list = QApplication::topLevelWidgets();
+      QWidgetList *list = QApplication::topLevelWidgets();
       QWidgetListIt it(*list);
       QWidget *w;
-      while ((w = it.current()) != 0) {
+      while ((w = it.current()) != 0)
+      {
         ++it;
         l_->append(w);
       }
@@ -8491,44 +9332,56 @@ public:
     }
   }
 
-  ~AQObjectQueryList() {
+  ~AQObjectQueryList()
+  {
     delete l_;
   }
 
 public slots:
 
-  QObject *first() const {
-    if (!l_) return 0;
+  QObject *first() const
+  {
+    if (!l_)
+      return 0;
     return l_->first();
   }
 
-  QObject *last() const {
-    if (!l_) return 0;
+  QObject *last() const
+  {
+    if (!l_)
+      return 0;
     return l_->last();
   }
 
-  QObject *next() const {
-    if (!l_) return 0;
+  QObject *next() const
+  {
+    if (!l_)
+      return 0;
     return l_->next();
   }
 
-  QObject *prev() const {
-    if (!l_) return 0;
+  QObject *prev() const
+  {
+    if (!l_)
+      return 0;
     return l_->prev();
   }
 
-  QObject *current() const {
-    if (!l_) return 0;
+  QObject *current() const
+  {
+    if (!l_)
+      return 0;
     return l_->current();
   }
 
-  bool isValid() const {
-    if (!l_) return false;
+  bool isValid() const
+  {
+    if (!l_)
+      return false;
     return (l_->current() != 0);
   }
 
 private:
-
   QObjectList *l_;
 };
 
@@ -8541,7 +9394,6 @@ private:
 class FLObjectFactory : public QSObjectFactory
 {
 public:
-
   /**
   constructor.
   */
@@ -8561,7 +9413,6 @@ public:
   QObject *create(const QString &className, const QSArgumentList &arguments, QObject *);
 
 private:
-
   FLUtilInterface *util_;
   QObject *voidObject_;
 };
