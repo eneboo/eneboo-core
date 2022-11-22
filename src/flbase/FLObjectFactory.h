@@ -491,7 +491,7 @@ public slots:
   /**
     Retorna una lista de las conexiones existentes
   */
-  QDict<FLSqlDatabase> dictDatabases()
+  QDict<FLSqlDatabase> *dictDatabases()
   {
     return FLSqlConnections::dictDatabases();
   }
