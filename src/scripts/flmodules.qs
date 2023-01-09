@@ -117,14 +117,29 @@ function cargarAr(nombre, contenido, log, directorio)
 }
 
 function cargarFicheros(directorio, extension) {
-  var dir = new Dir(directorio);
-  var ficheros = dir.entryList(extension, Dir.Files);
-  var log = this.child("log");
-  for (var i = 0; i < ficheros.length; ++i) {
-    cargarFicheroEnBD(ficheros[i], File.read(Dir.cleanDirPath(directorio + "/" + ficheros[i])), log, directorio);
-    sys.processEvents();
+
+  	const dir = new Dir(directorio);
+  	const ficheros = dir.entryList(extension, Dir.Files);
+    	var log = this.child("log");
+
+    	for (var i = 0; i < ficheros.length; ++i) {
+    		debug("Procesando " + directorio + ficheros[i]);
+    		cargarFicheroEnBD(ficheros[i], File.read(Dir.cleanDirPath(directorio + "/" + ficheros[i])), log, directorio);
+    		sys.processEvents();
+    	}
+
+    	const carpetas = dir.entryList("*", Dir.Dirs);
+	for(var i = 0; i < carpetas.length; i++) {	
+		if( ( carpetas[i] != "." ) && ( carpetas[i]!= ".." ) ){
+			if (carpetas[i].startsWith("test")) {
+				debug("Omitiendo " + directorio + carpetas[i]);
+			} else {
+				cargarFicheros(directorio + carpetas[i] + (carpetas[i].endsWith("/") ? "" : "/"), extension);
+			}
+	    	}
+	}
+    
   }
-}
 
 function botonCargar_clicked() {
   var directorio = FileDialog.getExistingDirectory("", util.translate("scripts", "Elegir Directorio"));
@@ -173,20 +188,22 @@ function cargarDeDisco(directorio, comprobarLicencia) {
       log.text = "";
       sys.processEvents();
       this.setDisabled(true);
-      cargarFicheros(directorio + "/", "*.xml");
-      cargarFicheros(directorio + "/", "*.mod");
-      cargarFicheros(directorio + "/", "*.xpm");
-      cargarFicheros(directorio + "/", "*.signatures");
-      cargarFicheros(directorio + "/", "*.certificates");
-      cargarFicheros(directorio + "/", "*.checksum");
-      cargarFicheros(directorio + "/forms/", "*.ui");
-      cargarFicheros(directorio + "/tables/", "*.mtd");
-      cargarFicheros(directorio + "/scripts/", "*.qs");
-      cargarFicheros(directorio + "/scripts/", "*.py");
-      cargarFicheros(directorio + "/queries/", "*.qry");
-      cargarFicheros(directorio + "/reports/", "*.kut");
-      cargarFicheros(directorio + "/reports/", "*.ar");
-      cargarFicheros(directorio + "/translations/", "*.ts");
+      directorio += directorio.endsWith("/") ? "" : "/";
+      
+      cargarFicheros(directorio, "*.xml");
+      cargarFicheros(directorio, "*.mod");
+      cargarFicheros(directorio, "*.xpm");
+      cargarFicheros(directorio, "*.signatures");
+      cargarFicheros(directorio, "*.certificates");
+      cargarFicheros(directorio, "*.checksum");
+      cargarFicheros(directorio, "*.ui");
+      cargarFicheros(directorio, "*.mtd");
+      cargarFicheros(directorio, "*.qs");
+      cargarFicheros(directorio, "*.py");
+      cargarFicheros(directorio, "*.qry");
+      cargarFicheros(directorio, "*.kut");
+      cargarFicheros(directorio, "*.ar");
+      cargarFicheros(directorio, "*.ts");
       this.setDisabled(false);
       log.append(util.translate("scripts", "* Carga finalizada."));
       this.child("lineas").refresh();
