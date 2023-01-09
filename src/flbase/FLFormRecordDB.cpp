@@ -54,6 +54,7 @@ FLFormRecordDB::~FLFormRecordDB()
 
 void FLFormRecordDB::initForm()
 {
+
   if (cursor_ && cursor_->metadata())
   {
     QString caption;
@@ -75,14 +76,20 @@ void FLFormRecordDB::initForm()
     switch (cursor_->modeAccess())
     {
     case FLSqlCursor::INSERT:
-      cursor_->transaction();
-      initTransLevel = cursor_->transactionLevel();
+      if (!cursor_->useDelegateCommit())
+      {
+        cursor_->transaction();
+        initTransLevel = cursor_->transactionLevel();
+      }
       setCaption(tr("Insertar ") + caption);
       break;
 
     case FLSqlCursor::EDIT:
-      cursor_->transaction();
-      initTransLevel = cursor_->transactionLevel();
+      if (!cursor_->useDelegateCommit())
+      {
+        cursor_->transaction();
+        initTransLevel = cursor_->transactionLevel();
+      }
       setCaption(tr("Editar ") + caption);
       break;
 
@@ -90,8 +97,11 @@ void FLFormRecordDB::initForm()
       break;
 
     case FLSqlCursor::BROWSE:
-      cursor_->transaction();
-      initTransLevel = cursor_->transactionLevel();
+      if (!cursor_->useDelegateCommit())
+      {
+        cursor_->transaction();
+        initTransLevel = cursor_->transactionLevel();
+      }
       setCaption(tr("Visualizar ") + caption);
       break;
     }
@@ -541,7 +551,8 @@ void FLFormRecordDB::accept()
   {
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    if (!cursor_->commitBuffer())
+
+    if (!cursor_->doCommitBuffer())
     {
       accepting = false;
       return;
@@ -583,12 +594,15 @@ void FLFormRecordDB::acceptContinue()
 
   if (cursor_->checkIntegrity())
   {
+
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-    if (cursor_->commitBuffer())
+
+    if (cursor_->doCommitBuffer())
     {
       cursor_->setActivatedCheckIntegrity(true);
-      cursor_->commit();
+      cursor_->doCommit();
+
       cursor_->setModeAccess(FLSqlCursor::INSERT);
       accepted_ = false;
       QString caption;
@@ -596,7 +610,10 @@ void FLFormRecordDB::acceptContinue()
         caption = action_->caption();
       if (caption.isEmpty())
         caption = cursor_->metadata()->alias();
-      cursor_->transaction();
+      if (!cursor_->useDelegateCommit())
+      {
+        cursor_->transaction();
+      }
       setCaption(tr("Insertar ") + caption);
       if (initFocusWidget_)
         initFocusWidget_->setFocus();
@@ -616,6 +633,7 @@ void FLFormRecordDB::reject()
 
 void FLFormRecordDB::closeEvent(QCloseEvent *e)
 {
+
   frameGeometry();
   if (focusWidget())
   {
@@ -640,19 +658,25 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
                      "se han guardado.\n") +
                       QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
     }
+
     if (accepted_)
     {
-      if (!cursor_->commit())
+      if (!cursor_->doCommit())
         return;
-      afterCommitTransaction();
+      if (!cursor_->useDelegateCommit())
+        afterCommitTransaction();
     }
     else
     {
-      if (!cursor_->rollback())
-        return;
-      else
-        cursor_->QSqlCursor::select();
+      if (!cursor_->useDelegateCommit())
+      {
+        if (!cursor_->rollback())
+          return;
+      }
+
+      cursor_->QSqlCursor::select();
     }
+
     emit closed();
     setCursor(0);
   }
@@ -670,15 +694,20 @@ void FLFormRecordDB::firstRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!cursor_->useDelegateCommit())
+        {
+          cursor_->transaction();
+        }
         cursor_->first();
         initScript();
       }
@@ -699,15 +728,20 @@ void FLFormRecordDB::nextRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!cursor_->useDelegateCommit())
+        {
+          cursor_->transaction();
+        }
         cursor_->next();
         initScript();
       }
@@ -728,15 +762,20 @@ void FLFormRecordDB::previousRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!cursor_->useDelegateCommit())
+        {
+          cursor_->transaction();
+        }
         cursor_->prev();
         initScript();
       }
@@ -752,15 +791,20 @@ void FLFormRecordDB::lastRecord()
       return;
     if (cursor_->checkIntegrity())
     {
+
       acceptedForm();
       cursor_->setActivatedCheckIntegrity(false);
-      if (cursor_->commitBuffer())
+
+      if (cursor_->doCommitBuffer())
       {
         cursor_->setActivatedCheckIntegrity(true);
-        cursor_->commit();
+        cursor_->doCommit();
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
-        cursor_->transaction();
+        if (!cursor_->useDelegateCommit())
+        {
+          cursor_->transaction();
+        }
         cursor_->last();
         initScript();
       }

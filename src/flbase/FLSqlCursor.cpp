@@ -36,7 +36,6 @@ email                : mail@infosial.com
 #include "FLAccessControlFactory.h"
 #include "FLSettings.h"
 
-
 #ifdef FL_DEBUG
 AQ_EXPORT long FLSqlCursor::countRefCursor = 0;
 AQ_EXPORT long AQBoolFlagState::count_ = 0;
@@ -44,16 +43,15 @@ AQ_EXPORT long AQBoolFlagState::count_ = 0;
 
 extern QSInterpreter *globalAQSInterpreter;
 
-FLSqlCursorPrivate::FLSqlCursorPrivate() :
-  buffer_(0), bufferCopy_(0), metadata_(0), cursorRelation_(0), relation_(0),
-  edition_(true), browse_(true), mainFilter_(QString::null), action_(0),
-  askForCancelChanges_(true), activatedCheckIntegrity_(true), ctxt_(0),
-  timer_(0), activatedCommitActions_(true), populated_(false), query_(QString::null),
-  inLoopRisksLocks_(false), inRisksLocks_(false), modalRisksLocks_(0), timerRisksLocks_(0),
-  acTable_(0), lastAt_(-1), aclDone_(false),
-  idAc_(0), idAcos_(0), idCond_(0), id_("000"),
-  isQuery_(false), isSysTable_(false), rawValues_(false),
-  editionStates_(0), browseStates_(0) {}
+FLSqlCursorPrivate::FLSqlCursorPrivate() : buffer_(0), bufferCopy_(0), metadata_(0), cursorRelation_(0), relation_(0),
+                                           edition_(true), browse_(true), mainFilter_(QString::null), action_(0),
+                                           askForCancelChanges_(true), activatedCheckIntegrity_(true), ctxt_(0),
+                                           timer_(0), activatedCommitActions_(true), populated_(false), query_(QString::null),
+                                           inLoopRisksLocks_(false), inRisksLocks_(false), modalRisksLocks_(0), timerRisksLocks_(0),
+                                           acTable_(0), lastAt_(-1), aclDone_(false),
+                                           idAc_(0), idAcos_(0), idCond_(0), id_("000"),
+                                           isQuery_(false), isSysTable_(false), rawValues_(false),
+                                           editionStates_(0), browseStates_(0) {}
 
 FLSqlCursorPrivate::~FLSqlCursorPrivate()
 {
@@ -69,7 +67,8 @@ FLSqlCursorPrivate::~FLSqlCursorPrivate()
   if (acTable_)
     delete acTable_;
 
-  if (editionStates_) {
+  if (editionStates_)
+  {
 #ifdef FL_DEBUG
     editionStates_->dumpDebug();
 #endif
@@ -78,7 +77,8 @@ FLSqlCursorPrivate::~FLSqlCursorPrivate()
     qWarning("AQBoolFlagState count %d", AQBoolFlagState::count_);
 #endif
   }
-  if (browseStates_) {
+  if (browseStates_)
+  {
 #ifdef FL_DEBUG
     browseStates_->dumpDebug();
 #endif
@@ -91,7 +91,8 @@ FLSqlCursorPrivate::~FLSqlCursorPrivate()
 
 void FLSqlCursorPrivate::doAcl()
 {
-  if (!acTable_) {
+  if (!acTable_)
+  {
     acTable_ = FLAccessControlFactory::create("table");
     acTable_->setFromObject(metadata_);
     acosBackupTable_ = acTable_->getAcos();
@@ -105,27 +106,32 @@ void FLSqlCursorPrivate::doAcl()
 
   lastAt_ = cursor_->at();
 
-  if (!acosCondName_.isEmpty()) {
+  if (!acosCondName_.isEmpty())
+  {
 
     bool condTrue_ = false;
 
-    switch (acosCond_) {
-      case FLSqlCursor::VALUE:
-        condTrue_ = (cursor_->QSqlCursor::value(acosCondName_) == acosCondVal_);
-        break;
-      case FLSqlCursor::REGEXP:
-        condTrue_ = (QRegExp(acosCondVal_.toString()).exactMatch(cursor_->QSqlCursor::value(acosCondName_).toString()));
-        break;
-      case FLSqlCursor::FUNCTION: {
-        buffer_ = cursor_->QSqlCursor::editBuffer(true);
-        FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
-        condTrue_ = (aqApp->call(acosCondName_, QSArgumentList(cI), 0).variant() == acosCondVal_);
-      }
+    switch (acosCond_)
+    {
+    case FLSqlCursor::VALUE:
+      condTrue_ = (cursor_->QSqlCursor::value(acosCondName_) == acosCondVal_);
       break;
+    case FLSqlCursor::REGEXP:
+      condTrue_ = (QRegExp(acosCondVal_.toString()).exactMatch(cursor_->QSqlCursor::value(acosCondName_).toString()));
+      break;
+    case FLSqlCursor::FUNCTION:
+    {
+      buffer_ = cursor_->QSqlCursor::editBuffer(true);
+      FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
+      condTrue_ = (aqApp->call(acosCondName_, QSArgumentList(cI), 0).variant() == acosCondVal_);
+    }
+    break;
     }
 
-    if (condTrue_) {
-      if (acTable_->name() != id_) {
+    if (condTrue_)
+    {
+      if (acTable_->name() != id_)
+      {
         acTable_->clear();
         acTable_->setName(id_);
         acTable_->setPerm(acPermTable_);
@@ -135,8 +141,11 @@ void FLSqlCursorPrivate::doAcl()
       }
       return;
     }
-  } else if (cursor_->isLocked() || (cursorRelation_ && cursorRelation_->isLocked())) {
-    if (acTable_->name() != id_) {
+  }
+  else if (cursor_->isLocked() || (cursorRelation_ && cursorRelation_->isLocked()))
+  {
+    if (acTable_->name() != id_)
+    {
       acTable_->clear();
       acTable_->setName(id_);
       acTable_->setPerm("r-");
@@ -151,7 +160,8 @@ void FLSqlCursorPrivate::doAcl()
 
 void FLSqlCursorPrivate::undoAcl()
 {
-  if (acTable_ && aclDone_) {
+  if (acTable_ && aclDone_)
+  {
     aclDone_ = false;
     acTable_->clear();
     acTable_->setPerm(acPermBackupTable_);
@@ -163,13 +173,15 @@ void FLSqlCursorPrivate::undoAcl()
 void FLSqlCursorPrivate::msgBoxWarning(const QString &text,
                                        bool throwException, bool gui)
 {
-  if (gui && db_->interactiveGUI()) {
+  if (gui && db_->interactiveGUI())
+  {
     qWarning(text);
     QMessageBox::warning(qApp->focusWidget(), qApp->tr("Aviso"),
                          text, QMessageBox::Ok, 0, 0);
     return;
   }
-  if (!throwException || !db_->qsaExceptions() || !globalAQSInterpreter) {
+  if (!throwException || !db_->qsaExceptions() || !globalAQSInterpreter)
+  {
     qWarning(text);
     return;
   }
@@ -187,7 +199,8 @@ bool FLSqlCursorPrivate::needUpdate()
   QString md5Str(db_->md5TuplesStateTable(curName_));
   if (md5Str.isEmpty())
     return false;
-  if (md5Tuples_.isEmpty()) {
+  if (md5Tuples_.isEmpty())
+  {
     md5Tuples_ = md5Str;
     return true;
   }
@@ -197,12 +210,10 @@ bool FLSqlCursorPrivate::needUpdate()
 }
 #endif
 
-
 FLSqlCursor::FLSqlCursor(const QString &name, bool autopopulate,
                          const QString &connectionName, FLSqlCursor *cR,
-                         FLRelationMetaData *r, QObject *parent) :
-  QObject(parent, name + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + "-K"),
-  QSqlCursor(QString::null, autopopulate, FLSqlConnections::database(connectionName)->db())
+                         FLRelationMetaData *r, QObject *parent) : QObject(parent, name + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + "-K"),
+                                                                   QSqlCursor(QString::null, autopopulate, FLSqlConnections::database(connectionName)->db())
 {
   d = new FLSqlCursorPrivate();
   d->cursor_ = this;
@@ -213,9 +224,8 @@ FLSqlCursor::FLSqlCursor(const QString &name, bool autopopulate,
 
 FLSqlCursor::FLSqlCursor(const QString &name, bool autopopulate,
                          QSqlDatabase *db, FLSqlCursor *cR,
-                         FLRelationMetaData *r, QObject *parent) :
-  QObject(parent, name + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + "-K"),
-  QSqlCursor(QString::null, autopopulate, db)
+                         FLRelationMetaData *r, QObject *parent) : QObject(parent, name + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz") + "-K"),
+                                                                   QSqlCursor(QString::null, autopopulate, db)
 {
   d = new FLSqlCursorPrivate();
   d->cursor_ = this;
@@ -228,14 +238,19 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
                        FLSqlCursor *cR, FLRelationMetaData *r)
 {
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
-  if (delMtd) {
-    delete(FLTableMetaData *) d->metadata_;
+  isDelegateCommit = false;
+  lastDelegateCommitResult = false;
+
+  if (delMtd)
+  {
+    delete (FLTableMetaData *)d->metadata_;
     d->metadata_ = 0;
   }
 
   d->curName_ = name;
 
-  if (!name.isEmpty()) {
+  if (!name.isEmpty())
+  {
     if (!d->db_->manager()->existsTable(name))
       d->metadata_ = d->db_->manager()->createTable(name);
     else
@@ -243,15 +258,17 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   }
 
   d->cursorRelation_ = cR;
-  if (r) {
+  if (r)
+  {
     if (d->relation_ && d->relation_->deref())
       delete d->relation_;
-    //d->relation_ = new FLRelationMetaData(r->foreignTable(), r->foreignField(), r->cardinality(),
-    //                                      r->deleteCascade(), r->updateCascade(), r->checkIn());
-    //d->relation_->setField(r->field());
+    // d->relation_ = new FLRelationMetaData(r->foreignTable(), r->foreignField(), r->cardinality(),
+    //                                       r->deleteCascade(), r->updateCascade(), r->checkIn());
+    // d->relation_->setField(r->field());
     r->ref();
     d->relation_ = r;
-  } else
+  }
+  else
     d->relation_ = 0;
 
   if (!d->metadata_)
@@ -261,23 +278,27 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   d->isQuery_ = d->metadata_->isQuery();
   d->isSysTable_ = name.left(3) == "sys" || d->db_->manager()->isSystemTable(name);
 
-  if (d->isQuery_) {
+  if (d->isQuery_)
+  {
     FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
     d->query_ = qry->sql();
     if (qry && !d->query_.isEmpty())
       exec(d->query_);
     if (qry)
       qry->deleteLater();
-  } else
+  }
+  else
     QSqlCursor::setName(d->metadata_->name(), autopopulate);
 
   d->modeAccess_ = BROWSE;
-  if (cR && r) {
+  if (cR && r)
+  {
     disconnect(cR, SIGNAL(bufferChanged(const QString &)), this, SLOT(refresh(const QString &)));
     connect(cR, SIGNAL(bufferChanged(const QString &)), this, SLOT(refresh(const QString &)));
     disconnect(cR, SIGNAL(newBuffer()), this, SLOT(clearPersistentFilter()));
     connect(cR, SIGNAL(newBuffer()), this, SLOT(clearPersistentFilter()));
-  } else
+  }
+  else
     seek(0);
 
   if (d->timer_)
@@ -297,19 +318,19 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 FLSqlCursor::~FLSqlCursor()
 {
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
-  //bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() &&
-  //              (!d->isSysTable_ && (d->isQuery_ || !d->fieldsNamesUnlock_.isEmpty()));
+  // bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() &&
+  //               (!d->isSysTable_ && (d->isQuery_ || !d->fieldsNamesUnlock_.isEmpty()));
   FLTableMetaData *mtd = d->metadata_;
-  if (!d->transactionsOpened_.isEmpty()) {
+  if (!d->transactionsOpened_.isEmpty())
+  {
     QString t(d->metadata_ ? d->metadata_->name() : QString(QObject::name()));
     rollbackOpened(
-      -1, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
-             "Se van a cancelar las transacciones pendientes.\n"
-             "Los últimos datos introducidos no han sido guardados, por favor\n"
-             "revise sus últimas acciones y repita las operaciones que no\n"
-             "se han guardado.\n") +
-      QString("SqlCursor::~SqlCursor: %1\n").arg(t)
-    );
+        -1, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+               "Se van a cancelar las transacciones pendientes.\n"
+               "Los últimos datos introducidos no han sido guardados, por favor\n"
+               "revise sus últimas acciones y repita las operaciones que no\n"
+               "se han guardado.\n") +
+                QString("SqlCursor::~SqlCursor: %1\n").arg(t));
   }
   delete d;
   if (delMtd)
@@ -324,12 +345,16 @@ void FLSqlCursor::refreshDelayed(int msec)
   if (!d->timer_)
     return;
   const QObject *obj = sender();
-  if (obj) {
-    if (!obj->inherits("QTimer")) {
+  if (obj)
+  {
+    if (!obj->inherits("QTimer"))
+    {
       d->timer_->start(msec, true);
       return;
     }
-  } else {
+  }
+  else
+  {
     d->timer_->start(msec, true);
     return;
   }
@@ -341,11 +366,15 @@ void FLSqlCursor::refreshDelayed(int msec)
   int pos = atFrom();
   if (pos >= size())
     pos = size() - 1;
-  if (!seek(pos, false, true)) {
+  if (!seek(pos, false, true))
+  {
     d->buffer_ = 0;
     emit newBuffer();
-  } else {
-    if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata()) {
+  }
+  else
+  {
+    if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata())
+    {
       QVariant v(valueBuffer(d->relation_->field()));
       if (d->cursorRelation_->valueBuffer(d->relation_->foreignField()) != v)
         d->cursorRelation_->setValueBuffer(d->relation_->foreignField(), v);
@@ -358,22 +387,27 @@ void FLSqlCursor::refresh(const QString &fN)
   if (!d->metadata_)
     return;
 
-  if (d->cursorRelation_ && d->relation_) {
+  if (d->cursorRelation_ && d->relation_)
+  {
     d->persistentFilter_ = QString::null;
     if (!d->cursorRelation_->metadata())
       return;
     if (d->cursorRelation_->metadata()->primaryKey() == fN && d->cursorRelation_->modeAccess() == INSERT)
       return;
-    if (fN.isEmpty() || d->relation_->foreignField() == fN) {
+    if (fN.isEmpty() || d->relation_->foreignField() == fN)
+    {
       d->buffer_ = 0;
       refreshDelayed(500);
     }
-  } else {
+  }
+  else
+  {
     QSqlCursor::select();
     int pos = atFrom();
     if (pos >= size())
       pos = size() - 1;
-    if (!seek(pos, false, true)) {
+    if (!seek(pos, false, true))
+    {
       d->buffer_ = 0;
       emit newBuffer();
     }
@@ -382,14 +416,17 @@ void FLSqlCursor::refresh(const QString &fN)
 
 bool FLSqlCursor::setEditMode()
 {
-  if (d->modeAccess_ == INSERT) {
-    if (!commitBuffer()) {
+  if (d->modeAccess_ == INSERT)
+  {
+    if (!commitBuffer())
+    {
       return false;
     }
     refresh();
     setModeAccess(EDIT);
     return refreshBuffer();
-  } else if (d->modeAccess_ == EDIT)
+  }
+  else if (d->modeAccess_ == EDIT)
     return true;
 
   return false;
@@ -399,64 +436,75 @@ bool FLSqlCursor::commitBufferCursorRelation()
 {
   bool ok = true;
 
-  switch (d->modeAccess_) {
-    case INSERT:
-      if (d->cursorRelation_ && d->relation_) {
-        if (d->cursorRelation_->metadata() && d->cursorRelation_->modeAccess() == INSERT) {
-          QWidget *activeWid = aqApp->activeModalWidget();
-          if (!activeWid)
-            activeWid = aqApp->activePopupWidget();
-          if (!activeWid)
-            activeWid = aqApp->activeWindow();
-          bool activeWidEnabled = activeWid ? activeWid->isEnabled() : false;
+  switch (d->modeAccess_)
+  {
+  case INSERT:
+    if (d->cursorRelation_ && d->relation_)
+    {
+      if (d->cursorRelation_->metadata() && d->cursorRelation_->modeAccess() == INSERT)
+      {
+        QWidget *activeWid = aqApp->activeModalWidget();
+        if (!activeWid)
+          activeWid = aqApp->activePopupWidget();
+        if (!activeWid)
+          activeWid = aqApp->activeWindow();
+        bool activeWidEnabled = activeWid ? activeWid->isEnabled() : false;
 
-          if (activeWid && activeWidEnabled)
-            activeWid->setEnabled(false);
+        if (activeWid && activeWidEnabled)
+          activeWid->setEnabled(false);
 
-          if (!d->cursorRelation_->commitBuffer()) {
-            d->modeAccess_ = BROWSE;
-            ok = false;
-          } else {
-            setFilter("");
-            d->cursorRelation_->refresh();
-            d->cursorRelation_->setModeAccess(EDIT);
-            d->cursorRelation_->refreshBuffer();
-          }
-
-          if (activeWid && activeWidEnabled)
-            activeWid->setEnabled(true);
+        if (!d->cursorRelation_->doCommitBuffer())
+        {
+          d->modeAccess_ = BROWSE;
+          ok = false;
         }
-      }
-      break;
-
-    case BROWSE:
-    case EDIT:
-      if (d->cursorRelation_ && d->relation_) {
-        if (d->cursorRelation_->metadata() && d->cursorRelation_->modeAccess() == INSERT) {
-          QWidget *activeWid = aqApp->activeModalWidget();
-          if (!activeWid)
-            activeWid = aqApp->activePopupWidget();
-          if (!activeWid)
-            activeWid = aqApp->activeWindow();
-          bool activeWidEnabled = activeWid ? activeWid->isEnabled() : false;
-
-          if (activeWid && activeWidEnabled)
-            activeWid->setEnabled(false);
-
-          if (!d->cursorRelation_->commitBuffer()) {
-            d->modeAccess_ = BROWSE;
-            ok = false;
-          } else {
-            d->cursorRelation_->refresh();
-            d->cursorRelation_->setModeAccess(EDIT);
-            d->cursorRelation_->refreshBuffer();
-          }
-
-          if (activeWid && activeWidEnabled)
-            activeWid->setEnabled(true);
+        else
+        {
+          setFilter("");
+          d->cursorRelation_->refresh();
+          d->cursorRelation_->setModeAccess(EDIT);
+          d->cursorRelation_->refreshBuffer();
         }
+
+        if (activeWid && activeWidEnabled)
+          activeWid->setEnabled(true);
       }
-      break;
+    }
+    break;
+
+  case BROWSE:
+  case EDIT:
+    if (d->cursorRelation_ && d->relation_)
+    {
+      if (d->cursorRelation_->metadata() && d->cursorRelation_->modeAccess() == INSERT)
+      {
+        QWidget *activeWid = aqApp->activeModalWidget();
+        if (!activeWid)
+          activeWid = aqApp->activePopupWidget();
+        if (!activeWid)
+          activeWid = aqApp->activeWindow();
+        bool activeWidEnabled = activeWid ? activeWid->isEnabled() : false;
+
+        if (activeWid && activeWidEnabled)
+          activeWid->setEnabled(false);
+
+        if (!d->cursorRelation_->doCommitBuffer())
+        {
+          d->modeAccess_ = BROWSE;
+          ok = false;
+        }
+        else
+        {
+          d->cursorRelation_->refresh();
+          d->cursorRelation_->setModeAccess(EDIT);
+          d->cursorRelation_->refreshBuffer();
+        }
+
+        if (activeWid && activeWidEnabled)
+          activeWid->setEnabled(true);
+      }
+    }
+    break;
   }
 
   return ok;
@@ -470,107 +518,119 @@ bool FLSqlCursor::refreshBuffer()
   if (!isValid() && d->modeAccess_ != INSERT)
     return false;
 
-  switch (d->modeAccess_) {
-    case INSERT: {
-      if (!commitBufferCursorRelation())
-        return false;
+  switch (d->modeAccess_)
+  {
+  case INSERT:
+  {
+    if (!commitBufferCursorRelation())
+      return false;
 
-      d->buffer_ = primeInsert();
-      setNotGenerateds();
+    d->buffer_ = primeInsert();
+    setNotGenerateds();
 
-      const FLTableMetaData::FLFieldMetaDataList *fieldList = d->metadata_->fieldList();
+    const FLTableMetaData::FLFieldMetaDataList *fieldList = d->metadata_->fieldList();
 
-      if (fieldList) {
-        FLFieldMetaData *field;
-        QDictIterator<FLFieldMetaData> it(*fieldList);
-        QString fiName;
-        int type;
-        QVariant::Type fltype;
-        QVariant defVal;
+    if (fieldList)
+    {
+      FLFieldMetaData *field;
+      QDictIterator<FLFieldMetaData> it(*fieldList);
+      QString fiName;
+      int type;
+      QVariant::Type fltype;
+      QVariant defVal;
 
-        while ((field = it.current()) != 0) {
-          ++it;
+      while ((field = it.current()) != 0)
+      {
+        ++it;
 
-          fiName = field->name();
-          d->buffer_->setNull(fiName);
-          if (!d->buffer_->isGenerated(fiName))
-            continue;
+        fiName = field->name();
+        d->buffer_->setNull(fiName);
+        if (!d->buffer_->isGenerated(fiName))
+          continue;
 
-          type = field->type();
-          fltype = FLFieldMetaData::flDecodeType(type);
-          defVal = field->defaultValue();
-          if (defVal.isValid()) {
-            defVal.cast(fltype);
-            d->buffer_->setValue(fiName, defVal);
-          }
+        type = field->type();
+        fltype = FLFieldMetaData::flDecodeType(type);
+        defVal = field->defaultValue();
+        if (defVal.isValid())
+        {
+          defVal.cast(fltype);
+          d->buffer_->setValue(fiName, defVal);
+        }
 
-          if (type == FLFieldMetaData::Serial)
-            d->buffer_->setValue(fiName, d->db_->nextSerialVal(d->metadata_->name(), fiName).toUInt());
-           
-          if (type == QVariant::DateTime && !field->allowNull() && d->buffer_->isNull(fiName)) {
-          	qWarning(tr("FLSqlCursor::refreshBuffer() Creando timestamp para ") + fiName);
-          	d->buffer_->setValue(fiName, QDateTime::currentDateTime());
-          }
- 
+        if (type == FLFieldMetaData::Serial)
+          d->buffer_->setValue(fiName, d->db_->nextSerialVal(d->metadata_->name(), fiName).toUInt());
 
-          if (field->isCounter()) {
-            if (d->ctxt_) {
-              QVariant siguiente = aqApp->call("calculateCounter", QSArgumentList(fiName), d->ctxt_).variant();
-              if (siguiente.isValid()) {
+        if (type == QVariant::DateTime && !field->allowNull() && d->buffer_->isNull(fiName))
+        {
+          qWarning(tr("FLSqlCursor::refreshBuffer() Creando timestamp para ") + fiName);
+          d->buffer_->setValue(fiName, QDateTime::currentDateTime());
+        }
+
+        if (field->isCounter())
+        {
+          if (d->ctxt_)
+          {
+            QVariant siguiente = aqApp->call("calculateCounter", QSArgumentList(fiName), d->ctxt_).variant();
+            if (siguiente.isValid())
+            {
+              d->buffer_->setValue(fiName, siguiente);
+            }
+            else
+            {
+              siguiente = FLUtil::nextCounter(fiName, this);
+              if (siguiente.isValid())
                 d->buffer_->setValue(fiName, siguiente);
-              } else {
-                siguiente = FLUtil::nextCounter(fiName, this);
-                if (siguiente.isValid())
-                  d->buffer_->setValue(fiName, siguiente);
-              }
             }
           }
         }
       }
-
-      if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata())
-        setValueBuffer(d->relation_->field(), d->cursorRelation_->valueBuffer(d->relation_->foreignField()));
-
-      d->undoAcl();
-
-      updateBufferCopy();
-      emit newBuffer();
     }
+
+    if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata())
+      setValueBuffer(d->relation_->field(), d->cursorRelation_->valueBuffer(d->relation_->foreignField()));
+
+    d->undoAcl();
+
+    updateBufferCopy();
+    emit newBuffer();
+  }
+  break;
+
+  case EDIT:
+  {
+    if (!commitBufferCursorRelation())
+      return false;
+
+    if (isLocked() && d->acosCondName_.isEmpty())
+      d->modeAccess_ = BROWSE;
+
+    d->buffer_ = primeUpdate();
+    setNotGenerateds();
+
+    updateBufferCopy();
+    emit newBuffer();
+  }
+  break;
+
+  case DEL:
+    if (isLocked())
+    {
+      d->msgBoxWarning(tr("Registro bloqueado, no se puede eliminar"));
+      d->modeAccess_ = BROWSE;
+      return false;
+    }
+
+    d->buffer_ = primeDelete();
+    setNotGenerateds();
+
+    updateBufferCopy();
     break;
 
-    case EDIT: {
-      if (!commitBufferCursorRelation())
-        return false;
-
-      if (isLocked() && d->acosCondName_.isEmpty())
-        d->modeAccess_ = BROWSE;
-
-      d->buffer_ = primeUpdate();
-      setNotGenerateds();
-
-      updateBufferCopy();
-      emit newBuffer();
-    }
+  case BROWSE:
+    d->buffer_ = editBuffer(true);
+    setNotGenerateds();
+    emit newBuffer();
     break;
-
-    case DEL:
-      if (isLocked()) {
-        d->msgBoxWarning(tr("Registro bloqueado, no se puede eliminar"));
-        d->modeAccess_ = BROWSE;
-        return false;
-      }
-
-      d->buffer_ = primeDelete();
-      setNotGenerateds();
-
-      updateBufferCopy();
-      break;
-
-    case BROWSE:
-      d->buffer_ = editBuffer(true);
-      setNotGenerateds();
-      emit newBuffer();
-      break;
   }
 
   return true;
@@ -580,12 +640,14 @@ QString FLSqlCursor::msgCheckIntegrity()
 {
   QString msg;
 
-  if (!d->buffer_ || !d->metadata_) {
+  if (!d->buffer_ || !d->metadata_)
+  {
     msg += QString::fromLatin1("\n") + tr("Buffer vacío o no hay metadatos");
     return msg;
   }
 
-  if (d->modeAccess_ == INSERT || d->modeAccess_ == EDIT) {
+  if (d->modeAccess_ == INSERT || d->modeAccess_ == EDIT)
+  {
     if (!isModifiedBuffer() && d->modeAccess_ == EDIT)
       return msg;
     const FLTableMetaData::FLFieldMetaDataList *fieldList = d->metadata_->fieldList();
@@ -599,7 +661,8 @@ QString FLSqlCursor::msgCheckIntegrity()
     QVariant s, ss;
     QDictIterator<FLFieldMetaData> it(*fieldList);
 
-    while ((field = it.current()) != 0) {
+    while ((field = it.current()) != 0)
+    {
       ++it;
 
       fiName = field->name();
@@ -607,19 +670,22 @@ QString FLSqlCursor::msgCheckIntegrity()
         continue;
 
       s.clear();
-      if (!d->buffer_->isNull(fiName)) {
+      if (!d->buffer_->isNull(fiName))
+      {
         s = d->buffer_->value(fiName);
         if (s.toString().isEmpty())
           s.clear();
       }
 
       FLFieldMetaData *fMD = field->associatedField();
-      if (fMD && s.isValid() && !s.isNull()) {
-        if (!field->relationM1()) {
+      if (fMD && s.isValid() && !s.isNull())
+      {
+        if (!field->relationM1())
+        {
           msg += QString::fromLatin1("\n") +
                  tr(
-                   "FLSqlCursor : Error en metadatos, el campo %1 tiene un campo asociado pero no existe relación muchos a uno"
-                 ).arg(d->metadata_->name() + QString::fromLatin1(":") + fiName);
+                     "FLSqlCursor : Error en metadatos, el campo %1 tiene un campo asociado pero no existe relación muchos a uno")
+                     .arg(d->metadata_->name() + QString::fromLatin1(":") + fiName);
           continue;
         }
         const FLRelationMetaData *r = field->relationM1();
@@ -630,16 +696,17 @@ QString FLSqlCursor::msgCheckIntegrity()
           continue;
         fmdName = fMD->name();
         ss.clear();
-        if (!d->buffer_->isNull(fmdName)) {
+        if (!d->buffer_->isNull(fmdName))
+        {
           ss = d->buffer_->value(fmdName);
           if (ss.toString().isEmpty())
             ss.clear();
         }
-        if (ss.isValid() && !ss.isNull()) {
+        if (ss.isValid() && !ss.isNull())
+        {
           QString filter(d->db_->manager()->formatAssignValue(field->associatedFieldFilterTo(), fMD, ss, true) +
                          QString::fromLatin1(" AND ") +
-                         d->db_->manager()->formatAssignValue(field->relationM1()->foreignField(), field, s, true)
-                        );
+                         d->db_->manager()->formatAssignValue(field->relationM1()->foreignField(), field, s, true));
           FLSqlQuery q(0, d->db_->connectionName());
 
           q.setTablesList(tMD->name());
@@ -653,7 +720,8 @@ QString FLSqlCursor::msgCheckIntegrity()
                    field->alias() + tr(" : %1 no pertenece a %2").arg(s.toString(), ss.toString());
           else
             d->buffer_->setValue(fmdName, q.value(0));
-        } else
+        }
+        else
           msg += QString::fromLatin1("\n") + d->metadata_->name() + QString::fromLatin1(":") +
                  field->alias() + tr(" : %1 no se puede asociar a un valor NULO").arg(s.toString());
         if (!tMD->inCache())
@@ -664,35 +732,38 @@ QString FLSqlCursor::msgCheckIntegrity()
         continue;
 
       if (d->buffer_->isNull(fiName) && !field->allowNull() &&
-          field->type() != FLFieldMetaData::Serial) {
+          field->type() != FLFieldMetaData::Serial)
+      {
         msg += QString::fromLatin1("\n") + d->metadata_->name() + QString::fromLatin1(":") +
                field->alias() + tr(" : No puede ser nulo");
       }
 
-      if (field->isUnique()) {
+      if (field->isUnique())
+      {
         QString pK = d->metadata_->primaryKey();
-        if (!d->buffer_->isNull(pK) && s.isValid() && !s.isNull()) {
+        if (!d->buffer_->isNull(pK) && s.isValid() && !s.isNull())
+        {
           QVariant pKV(d->buffer_->value(pK));
           FLSqlQuery q(0, d->db_->connectionName());
           q.setTablesList(d->metadata_->name());
           q.setSelect(fiName);
           q.setFrom(d->metadata_->name());
           q.setWhere(
-            d->db_->manager()->formatAssignValue(field, s, true) +
-            QString::fromLatin1(" AND ") + d->metadata_->primaryKey(d->isQuery_) +
-            QString::fromLatin1("<>") + d->db_->manager()->formatValue(d->metadata_->fieldType(pK), pKV)
-          );
+              d->db_->manager()->formatAssignValue(field, s, true) +
+              QString::fromLatin1(" AND ") + d->metadata_->primaryKey(d->isQuery_) +
+              QString::fromLatin1("<>") + d->db_->manager()->formatValue(d->metadata_->fieldType(pK), pKV));
           q.setForwardOnly(true);
           q.exec();
           if (q.next())
             msg += QString::fromLatin1("\n") + d->metadata_->name() + QString::fromLatin1(":") + field->alias() +
                    tr(
-                     " : Requiere valores únicos, y ya hay otro registro con el valor %1 en este campo"
-                   ).arg(s.toString());
+                       " : Requiere valores únicos, y ya hay otro registro con el valor %1 en este campo")
+                       .arg(s.toString());
         }
       }
 
-      if (field->isPrimaryKey() && d->modeAccess_ == INSERT && s.isValid() && !s.isNull()) {
+      if (field->isPrimaryKey() && d->modeAccess_ == INSERT && s.isValid() && !s.isNull())
+      {
         FLSqlQuery q(0, d->db_->connectionName());
         q.setTablesList(d->metadata_->name());
         q.setSelect(fiName);
@@ -703,12 +774,14 @@ QString FLSqlCursor::msgCheckIntegrity()
         if (q.next())
           msg += QString::fromLatin1("\n") + d->metadata_->name() + QString::fromLatin1(":") + field->alias() +
                  tr(
-                   " : Es clave primaria y requiere valores únicos, y ya hay otro registro con el valor %1 en este campo"
-                 ).arg(s.toString());
+                     " : Es clave primaria y requiere valores únicos, y ya hay otro registro con el valor %1 en este campo")
+                     .arg(s.toString());
       }
 
-      if (field->relationM1() && s.isValid() && !s.isNull()) {
-        if (field->relationM1()->checkIn() && field->relationM1()->foreignTable() != d->metadata_->name()) {
+      if (field->relationM1() && s.isValid() && !s.isNull())
+      {
+        if (field->relationM1()->checkIn() && field->relationM1()->foreignTable() != d->metadata_->name())
+        {
           const FLRelationMetaData *r = field->relationM1();
           FLTableMetaData *tMD = d->db_->manager()->metadata(r->foreignTable());
           if (!tMD)
@@ -731,14 +804,17 @@ QString FLSqlCursor::msgCheckIntegrity()
       }
 
       const FLTableMetaData::FLFieldMetaDataList *fieldListCK = d->metadata_->fieldListOfCompoundKey(fiName);
-      if (fieldListCK && !checkedCK && d->modeAccess_ == INSERT) {
-        if (!fieldListCK->isEmpty()) {
+      if (fieldListCK && !checkedCK && d->modeAccess_ == INSERT)
+      {
+        if (!fieldListCK->isEmpty())
+        {
           FLFieldMetaData *fieldCK;
           QString filter;
           QString fields;
           QString valuesFields;
           QDictIterator<FLFieldMetaData> it(*fieldListCK);
-          while ((fieldCK = it.current()) != 0) {
+          while ((fieldCK = it.current()) != 0)
+          {
             ++it;
             QVariant sCK = d->buffer_->value(fieldCK->name());
             if (filter.isEmpty())
@@ -768,14 +844,17 @@ QString FLSqlCursor::msgCheckIntegrity()
         }
       }
     }
-  } else if (d->modeAccess_ == DEL) {
+  }
+  else if (d->modeAccess_ == DEL)
+  {
     const FLTableMetaData::FLFieldMetaDataList *fieldList = d->metadata_->fieldList();
     FLFieldMetaData *field;
     QString fiName;
     QVariant s;
     QDictIterator<FLFieldMetaData> it(*fieldList);
 
-    while ((field = it.current()) != 0) {
+    while ((field = it.current()) != 0)
+    {
       ++it;
 
       fiName = field->name();
@@ -783,7 +862,8 @@ QString FLSqlCursor::msgCheckIntegrity()
         continue;
 
       s.clear();
-      if (!d->buffer_->isNull(fiName)) {
+      if (!d->buffer_->isNull(fiName))
+      {
         s = d->buffer_->value(fiName);
         if (s.toString().isEmpty())
           s.clear();
@@ -796,11 +876,13 @@ QString FLSqlCursor::msgCheckIntegrity()
 
       if (!relationList)
         continue;
-      if (!relationList->isEmpty()) {
+      if (!relationList->isEmpty())
+      {
         FLRelationMetaData *r;
         QPtrListIterator<FLRelationMetaData> itR(*relationList);
 
-        while ((r = itR.current()) != 0) {
+        while ((r = itR.current()) != 0)
+        {
           ++itR;
           if (!r->checkIn())
             continue;
@@ -808,31 +890,39 @@ QString FLSqlCursor::msgCheckIntegrity()
           if (!mtd)
             continue;
           FLFieldMetaData *f = mtd->field(r->foreignField());
-          if (f) {
-            if (f->relationM1()) {
-              if (f->relationM1()->deleteCascade()) {
+          if (f)
+          {
+            if (f->relationM1())
+            {
+              if (f->relationM1()->deleteCascade())
+              {
                 if (!mtd->inCache())
                   delete mtd;
                 continue;
               }
-              if (!f->relationM1()->checkIn()) {
+              if (!f->relationM1()->checkIn())
+              {
                 if (!mtd->inCache())
                   delete mtd;
                 continue;
               }
-            } else {
+            }
+            else
+            {
               if (!mtd->inCache())
                 delete mtd;
               continue;
             }
-          } else {
+          }
+          else
+          {
             msg += QString::fromLatin1("\n") +
                    tr("FLSqlCursor : Error en metadatos, %1.%2 no es válido.\n"
                       "Campo relacionado con %3.%4.")
-                   .arg(mtd->name())
-                   .arg(r->foreignField())
-                   .arg(d->metadata_->name())
-                   .arg(field->name());
+                       .arg(mtd->name())
+                       .arg(r->foreignField())
+                       .arg(d->metadata_->name())
+                       .arg(field->name());
             if (!mtd->inCache())
               delete mtd;
             continue;
@@ -866,11 +956,16 @@ bool FLSqlCursor::checkIntegrity(bool showError)
     return true;
 
   QString msg(msgCheckIntegrity());
-  if (!msg.isEmpty()) {
-    if (showError) {
-      if (d->modeAccess_ == INSERT || d->modeAccess_ == EDIT) {
+  if (!msg.isEmpty())
+  {
+    if (showError)
+    {
+      if (d->modeAccess_ == INSERT || d->modeAccess_ == EDIT)
+      {
         d->msgBoxWarning(tr("No se puede validar el registro actual:\n") + msg);
-      } else if (d->modeAccess_ == DEL) {
+      }
+      else if (d->modeAccess_ == DEL)
+      {
         d->msgBoxWarning(tr("No se puede borrar registro:\n") + msg);
       }
     }
@@ -885,17 +980,23 @@ void FLSqlCursor::checkRisksLocks(bool terminate)
 {
   if (d->timerRisksLocks_)
     d->timerRisksLocks_->stop();
-  if (d->inLoopRisksLocks_ && terminate) {
+  if (d->inLoopRisksLocks_ && terminate)
+  {
     d->inLoopRisksLocks_ = false;
     d->inRisksLocks_ = !(d->db_->detectRisksLocks(d->metadata_->name(),
-                                                  valueBuffer(d->metadata_->primaryKey()).toString()).isEmpty());
+                                                  valueBuffer(d->metadata_->primaryKey()).toString())
+                             .isEmpty());
     QApplication::eventLoop()->exitLoop();
-  } else if (!terminate) {
+  }
+  else if (!terminate)
+  {
     QStringList locks(d->db_->detectRisksLocks(d->metadata_->name(),
                                                valueBuffer(d->metadata_->primaryKey()).toString()));
 
-    if (!locks.isEmpty()) {
-      if (!d->inLoopRisksLocks_) {
+    if (!locks.isEmpty())
+    {
+      if (!d->inLoopRisksLocks_)
+      {
         d->inRisksLocks_ = true;
         d->inLoopRisksLocks_ = true;
         if (!d->timerRisksLocks_)
@@ -904,8 +1005,8 @@ void FLSqlCursor::checkRisksLocks(bool terminate)
           d->modalRisksLocks_ = new QLabel(tr("SISTEMA  ANTIBLOQUEOS  ACTIVADO"),
                                            0, 0,
                                            Qt::WStyle_Customize |
-                                           Qt::WStyle_Splash |
-                                           Qt::WShowModal);
+                                               Qt::WStyle_Splash |
+                                               Qt::WShowModal);
         QFont lblFont(qApp->font());
         lblFont.setPointSize(20);
         lblFont.setBold(true);
@@ -922,13 +1023,16 @@ void FLSqlCursor::checkRisksLocks(bool terminate)
         d->modalRisksLocks_->deleteLater();
         d->modalRisksLocks_ = 0;
 
-        if (!d->inRisksLocks_) {
+        if (!d->inRisksLocks_)
+        {
           QString msgLock(tr("<p><img source=\"locked.png\" align=\"right\"><b><u>Sin Riesgo de Bloqueo</u></b><br><br>"
                              "Ya no existe riesgo de bloqueo puede continuar con la transacción actual."));
           QMap<QString, QSArgumentList> scrCall;
           aqApp->popupWarn(msgLock, scrCall);
         }
-      } else {
+      }
+      else
+      {
         disconnect(QApplication::eventLoop(), SIGNAL(aboutToBlock()), this, SLOT(checkRisksLocks()));
 
         QString msgLock(tr("<p><img source=\"locked.png\" align=\"right\"><b><u>Riesgo de Bloqueo Detectado</u></b><br><br>"
@@ -948,7 +1052,8 @@ void FLSqlCursor::checkRisksLocks(bool terminate)
         if (d->timerRisksLocks_)
           d->timerRisksLocks_->start(10000, true);
       }
-    } else if (d->inLoopRisksLocks_)
+    }
+    else if (d->inLoopRisksLocks_)
       checkRisksLocks(true);
   }
 }
@@ -959,20 +1064,20 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
     return false;
 
   if (d->db_->interactiveGUI() && d->db_->canDetectLocks() &&
-      (checkLocks || d->metadata_->detectLocks())) {
+      (checkLocks || d->metadata_->detectLocks()))
+  {
     checkRisksLocks();
     if (d->inRisksLocks_ &&
         QMessageBox::No ==
-        QMessageBox::warning(
-          0, tr("Bloqueo inminente"),
-          tr("Los registros que va a modificar están bloqueados actualmente,\n"
-             "si continua hay riesgo de que su conexión quede congelada hasta "
-             "finalizar el bloqueo.\n\n"
-             "¿ Desa continuar aunque exista riesgo de bloqueo ?"),
-          QMessageBox::Yes,
-          QMessageBox::No | QMessageBox::Default | QMessageBox::Escape
-        )
-       ) {
+            QMessageBox::warning(
+                0, tr("Bloqueo inminente"),
+                tr("Los registros que va a modificar están bloqueados actualmente,\n"
+                   "si continua hay riesgo de que su conexión quede congelada hasta "
+                   "finalizar el bloqueo.\n\n"
+                   "¿ Desa continuar aunque exista riesgo de bloqueo ?"),
+                QMessageBox::Yes,
+                QMessageBox::No | QMessageBox::Default | QMessageBox::Escape))
+    {
       return false;
     }
   }
@@ -983,15 +1088,18 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
   FLApplication *flapp = aqApp;
   QString fieldNameCheck;
 
-  if (d->modeAccess_ == EDIT || d->modeAccess_ == INSERT) {
+  if (d->modeAccess_ == EDIT || d->modeAccess_ == INSERT)
+  {
     const FLTableMetaData::FLFieldMetaDataList *fieldList = d->metadata_->fieldList();
     FLFieldMetaData *field;
 
     QDictIterator<FLFieldMetaData> it(*fieldList);
-    while ((field = it.current()) != 0) {
+    while ((field = it.current()) != 0)
+    {
       ++it;
 
-      if (field->isCheck()) {
+      if (field->isCheck())
+      {
         fieldNameCheck = field->name();
         d->buffer_->setGenerated(fieldNameCheck, false);
         if (d->bufferCopy_)
@@ -1001,7 +1109,8 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
       if (!d->buffer_->isGenerated(field->name()))
         continue;
 
-      if (d->ctxt_ && field->calculated()) {
+      if (d->ctxt_ && field->calculated())
+      {
         QVariant v = flapp->call("calculateField", QSArgumentList(field->name()), d->ctxt_).variant();
         if (v.isValid())
           setValueBuffer(field->name(), v);
@@ -1011,17 +1120,22 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
 
   QString functionBefore;
   QString functionAfter;
-  if (d->modeAccess_ != BROWSE && d->activatedCommitActions_) {
+  if (d->modeAccess_ != BROWSE && d->activatedCommitActions_)
+  {
     QString idMod(d->db_->managerModules()->idModuleOfFile(d->metadata_->name() +
                                                            QString::fromLatin1(".mtd")));
-    if (!idMod.isEmpty()) {
+    if (!idMod.isEmpty())
+    {
       functionBefore = idMod + QString::fromLatin1(".beforeCommit_") + d->metadata_->name();
       functionAfter = idMod + QString::fromLatin1(".afterCommit_") + d->metadata_->name();
-    } else {
+    }
+    else
+    {
       functionBefore = QString::fromLatin1("sys.beforeCommit_") + d->metadata_->name();
       functionAfter = QString::fromLatin1("sys.afterCommit_") + d->metadata_->name();
     }
-    if (!functionBefore.isEmpty()) {
+    if (!functionBefore.isEmpty())
+    {
       FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
       QVariant v = flapp->call(functionBefore, QSArgumentList(cI), 0).variant();
       if (v.isValid() && !v.toBool())
@@ -1036,89 +1150,106 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
   bool updated = false;
   FLSqlSavePoint *savePoint = 0;
 
-  switch (d->modeAccess_) {
-    case INSERT: {
-      if (d->cursorRelation_ && d->relation_) {
-        if (d->cursorRelation_->metadata()) {
-          setValueBuffer(d->relation_->field(), d->cursorRelation_->valueBuffer(d->relation_->foreignField()));
+  switch (d->modeAccess_)
+  {
+  case INSERT:
+  {
+    if (d->cursorRelation_ && d->relation_)
+    {
+      if (d->cursorRelation_->metadata())
+      {
+        setValueBuffer(d->relation_->field(), d->cursorRelation_->valueBuffer(d->relation_->foreignField()));
+        d->cursorRelation_->setAskForCancelChanges(true);
+      }
+    }
+    QString pKWhere(d->db_->manager()->formatAssignValue(d->metadata_->field(pKN), valueBuffer(pKN)));
+    insert(false);
+    if (!d->db_->canSavePoint())
+    {
+      if (d->db_->currentSavePoint_)
+        d->db_->currentSavePoint_->saveInsert(pKN, d->buffer_, this);
+    }
+    if (!functionAfter.isEmpty() && d->activatedCommitActions_)
+    {
+      if (!savePoint)
+        savePoint = new FLSqlSavePoint(0);
+      savePoint->saveInsert(pKN, d->buffer_, this);
+    }
+    if (!d->persistentFilter_.contains(pKWhere))
+      d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
+    updated = true;
+  }
+  break;
+
+  case EDIT:
+  {
+    if (!d->db_->canSavePoint())
+    {
+      if (d->db_->currentSavePoint_)
+        d->db_->currentSavePoint_->saveEdit(pKN, d->bufferCopy_, this);
+    }
+    if (!functionAfter.isEmpty() && d->activatedCommitActions_)
+    {
+      if (!savePoint)
+        savePoint = new FLSqlSavePoint(0);
+      savePoint->saveEdit(pKN, d->bufferCopy_, this);
+    }
+
+    if (d->cursorRelation_ && d->relation_)
+    {
+      if (d->cursorRelation_->metadata())
+      {
+        if (isModifiedBuffer())
           d->cursorRelation_->setAskForCancelChanges(true);
+      }
+    }
+    if (isModifiedBuffer())
+    {
+      for (uint i = 0; i < d->buffer_->count(); ++i)
+      {
+        if ((d->buffer_->value(i) == d->bufferCopy_->value(i)) &&
+            (d->buffer_->isNull(i) == d->bufferCopy_->isNull(i)))
+        {
+          d->buffer_->setGenerated(i, false);
         }
       }
-      QString pKWhere(d->db_->manager()->formatAssignValue(d->metadata_->field(pKN), valueBuffer(pKN)));
-      insert(false);
-      if (!d->db_->canSavePoint()) {
-        if (d->db_->currentSavePoint_)
-          d->db_->currentSavePoint_->saveInsert(pKN, d->buffer_, this);
-      }
-      if (!functionAfter.isEmpty() && d->activatedCommitActions_) {
-        if (!savePoint)
-          savePoint = new FLSqlSavePoint(0);
-        savePoint->saveInsert(pKN, d->buffer_, this);
-      }
-      if (!d->persistentFilter_.contains(pKWhere))
-        d->persistentFilter_ = (d->persistentFilter_.isEmpty() ?
-                                pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
+      update(false);
+      for (uint i = 0; i < d->buffer_->count(); ++i)
+        d->buffer_->setGenerated(i, true);
       updated = true;
+      setNotGenerateds();
     }
-    break;
+  }
+  break;
 
-    case EDIT: {
-      if (!d->db_->canSavePoint()) {
-        if (d->db_->currentSavePoint_)
-          d->db_->currentSavePoint_->saveEdit(pKN, d->bufferCopy_, this);
-      }
-      if (!functionAfter.isEmpty() && d->activatedCommitActions_) {
-        if (!savePoint)
-          savePoint = new FLSqlSavePoint(0);
-        savePoint->saveEdit(pKN, d->bufferCopy_, this);
-      }
-
-      if (d->cursorRelation_ && d->relation_) {
-        if (d->cursorRelation_->metadata()) {
-          if (isModifiedBuffer())
-            d->cursorRelation_->setAskForCancelChanges(true);
-        }
-      }
-      if (isModifiedBuffer()) {
-        for (uint i = 0; i < d->buffer_->count(); ++i) {
-          if ((d->buffer_->value(i) == d->bufferCopy_->value(i)) &&
-              (d->buffer_->isNull(i) == d->bufferCopy_->isNull(i))) {
-            d->buffer_->setGenerated(i, false);
-          }
-        }
-        update(false);
-        for (uint i = 0; i < d->buffer_->count(); ++i)
-          d->buffer_->setGenerated(i, true);
-        updated = true;
-        setNotGenerateds();
-      }
+  case DEL:
+  {
+    if (!d->db_->canSavePoint())
+    {
+      if (d->db_->currentSavePoint_)
+        d->db_->currentSavePoint_->saveDel(pKN, d->bufferCopy_, this);
     }
-    break;
-
-    case DEL: {
-      if (!d->db_->canSavePoint()) {
-        if (d->db_->currentSavePoint_)
-          d->db_->currentSavePoint_->saveDel(pKN, d->bufferCopy_, this);
-      }
-      if (!functionAfter.isEmpty() && d->activatedCommitActions_) {
-        if (!savePoint)
-          savePoint = new FLSqlSavePoint(0);
-        savePoint->saveDel(pKN, d->bufferCopy_, this);
-      }
-
-      if (d->cursorRelation_ && d->relation_)
-        if (d->cursorRelation_->metadata())
-          d->cursorRelation_->setAskForCancelChanges(true);
-      del(false);
-      updated = true;
+    if (!functionAfter.isEmpty() && d->activatedCommitActions_)
+    {
+      if (!savePoint)
+        savePoint = new FLSqlSavePoint(0);
+      savePoint->saveDel(pKN, d->bufferCopy_, this);
     }
-    break;
 
-    case BROWSE:
-      break;
+    if (d->cursorRelation_ && d->relation_)
+      if (d->cursorRelation_->metadata())
+        d->cursorRelation_->setAskForCancelChanges(true);
+    del(false);
+    updated = true;
+  }
+  break;
+
+  case BROWSE:
+    break;
   }
 
-  if (updated && lastError().type() != QSqlError::None) {
+  if (updated && lastError().type() != QSqlError::None)
+  {
     //    QString msg("<p><img source=\"remove.png\" align=\"right\">" +
     //                "<b><u>SQL ERROR</u></b><br><br>" +
     //                QString(lastError().driverText()) + "<br>" +
@@ -1132,11 +1263,14 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
     return false;
   }
 
-  if (d->modeAccess_ != BROWSE && !functionAfter.isEmpty() && d->activatedCommitActions_) {
+  if (d->modeAccess_ != BROWSE && !functionAfter.isEmpty() && d->activatedCommitActions_)
+  {
     FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
     QVariant v = flapp->call(functionAfter, QSArgumentList(cI), 0).variant();
-    if (v.isValid() && !v.toBool()) {
-      if (savePoint) {
+    if (v.isValid() && !v.toBool())
+    {
+      if (savePoint)
+      {
         savePoint->undo();
         delete savePoint;
       }
@@ -1149,8 +1283,10 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
 
   d->modeAccess_ = BROWSE;
 
-  if (updated) {
-    if (!fieldNameCheck.isEmpty()) {
+  if (updated)
+  {
+    if (!fieldNameCheck.isEmpty())
+    {
       d->buffer_->setGenerated(fieldNameCheck, true);
       if (d->bufferCopy_)
         d->bufferCopy_->setGenerated(fieldNameCheck, true);
@@ -1258,7 +1394,8 @@ int FLSqlCursor::del(bool invalidate)
   if (!d->metadata_)
     return -1;
 
-  if (d->ctxt_) {
+  if (d->ctxt_)
+  {
     QString f = "recordDelBefore" + d->metadata_->name();
     aqApp->call(f, QSArgumentList(), d->ctxt_);
   }
@@ -1269,7 +1406,8 @@ int FLSqlCursor::del(bool invalidate)
   QVariant s;
 
   QDictIterator<FLFieldMetaData> it(*fieldList);
-  while ((field = it.current()) != 0) {
+  while ((field = it.current()) != 0)
+  {
     ++it;
 
     fiName = field->name();
@@ -1277,7 +1415,8 @@ int FLSqlCursor::del(bool invalidate)
       continue;
 
     s.clear();
-    if (!d->buffer_->isNull(fiName)) {
+    if (!d->buffer_->isNull(fiName))
+    {
       s = d->buffer_->value(fiName);
       if (s.toString().isEmpty())
         s.clear();
@@ -1291,21 +1430,25 @@ int FLSqlCursor::del(bool invalidate)
     if (!relationList)
       continue;
 
-    if (!relationList->isEmpty()) {
+    if (!relationList->isEmpty())
+    {
       FLRelationMetaData *r;
       QPtrListIterator<FLRelationMetaData> itR(*relationList);
 
-      while ((r = itR.current()) != 0) {
+      while ((r = itR.current()) != 0)
+      {
         ++itR;
 
         FLSqlCursor c(r->foreignTable());
         if (!c.metadata())
           continue;
         FLFieldMetaData *f = c.metadata()->field(r->foreignField());
-        if (f && f->relationM1() && f->relationM1()->deleteCascade()) {
+        if (f && f->relationM1() && f->relationM1()->deleteCascade())
+        {
           c.setForwardOnly(true);
           c.select(d->db_->manager()->formatAssignValue(r->foreignField(), f, s, true));
-          while (c.next()) {
+          while (c.next())
+          {
             c.setModeAccess(DEL);
             c.refreshBuffer();
             if (!c.commitBuffer(false))
@@ -1321,7 +1464,8 @@ int FLSqlCursor::del(bool invalidate)
   if (lastError().type() != QSqlError::None)
     return -1;
 
-  if (d->ctxt_) {
+  if (d->ctxt_)
+  {
     QString f = "recordDelAfter" + d->metadata_->name();
     aqApp->call(f, QSArgumentList(), d->ctxt_);
   }
@@ -1335,7 +1479,8 @@ void FLSqlCursor::setAtomicValueBuffer(const QString &fN, const QString &functio
     return;
 
   FLFieldMetaData *field = d->metadata_->field(fN);
-  if (!field) {
+  if (!field)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::setAtomicValueBuffer() : No existe el campo ") + d->metadata_->name() + ":" + fN);
 #endif
@@ -1353,7 +1498,8 @@ void FLSqlCursor::setAtomicValueBuffer(const QString &fN, const QString &functio
   if (d->cursorRelation_ && d->modeAccess_ != BROWSE)
     d->cursorRelation_->commit(false);
 
-  if (!pK.isEmpty() && d->db_->db() != d->db_->dbAux()) {
+  if (!pK.isEmpty() && d->db_->db() != d->db_->dbAux())
+  {
     QVariant pKV = d->buffer_->value(pK);
     d->db_->dbAux()->transaction();
 
@@ -1367,7 +1513,9 @@ void FLSqlCursor::setAtomicValueBuffer(const QString &fN, const QString &functio
       d->db_->dbAux()->commit();
     else
       d->db_->dbAux()->rollback();
-  } else {
+  }
+  else
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor : No se puede actualizar el campo de forma atómica, porque no existe clave primaria"));
 #endif
@@ -1386,7 +1534,8 @@ void FLSqlCursor::setValueBuffer(const QString &fN, const QVariant &v)
     return;
 
   FLFieldMetaData *field = d->metadata_->field(fN);
-  if (!field) {
+  if (!field)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::setValueBuffer() : No existe el campo ") + d->metadata_->name() + ":" + fN);
 #endif
@@ -1399,9 +1548,11 @@ void FLSqlCursor::setValueBuffer(const QString &fN, const QVariant &v)
 
   if (vv.type() == QVariant::Bool && fltype != QVariant::Bool)
     vv.clear();
-  if (vv.isValid()) {
+  if (vv.isValid())
+  {
     vv.cast(fltype);
-    if (!vv.isNull() && type == QVariant::Pixmap) {
+    if (!vv.isNull() && type == QVariant::Pixmap)
+    {
       QString largeValue(vv.toString());
       largeValue = d->db_->manager()->storeLargeValue(d->metadata_, largeValue);
       if (!largeValue.isEmpty())
@@ -1409,24 +1560,29 @@ void FLSqlCursor::setValueBuffer(const QString &fN, const QVariant &v)
     }
   }
 
-  if (field->outTransaction() && d->db_->dbAux() && d->db_->db() != d->db_->dbAux() && d->modeAccess_ != INSERT) {
+  if (field->outTransaction() && d->db_->dbAux() && d->db_->db() != d->db_->dbAux() && d->modeAccess_ != INSERT)
+  {
     QString pK(d->metadata_->primaryKey());
 
     if (d->cursorRelation_ && d->modeAccess_ != BROWSE)
       d->cursorRelation_->commit(false);
 
-    if (!pK.isEmpty()) {
+    if (!pK.isEmpty())
+    {
       QVariant pKV(d->buffer_->value(pK));
       QSqlQuery q(QString::null, d->db_->dbAux());
       q.exec("UPDATE " + d->metadata_->name() + " SET " + fN + "=" +
              d->db_->manager()->formatValue(type, vv) + " WHERE " +
              d->db_->manager()->formatAssignValue(d->metadata_->field(pK), pKV));
-    } else {
+    }
+    else
+    {
 #ifdef FL_DEBUG
       qWarning(tr("FLSqlCursor : No se puede actualizar el campo fuera de transaccion, porque no existe clave primaria"));
 #endif
     }
-  } else
+  }
+  else
     d->buffer_->setValue(fN, vv);
 
   emit bufferChanged(fN);
@@ -1441,7 +1597,8 @@ QVariant FLSqlCursor::valueBuffer(const QString &fN)
     return QVariant();
 
   FLFieldMetaData *field = d->metadata_->field(fN);
-  if (!field) {
+  if (!field)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::valueBuffer() : No existe el campo ") + d->metadata_->name() + ":" + fN);
 #endif
@@ -1450,33 +1607,41 @@ QVariant FLSqlCursor::valueBuffer(const QString &fN)
 
   int type = field->type();
   QVariant::Type fltype = FLFieldMetaData::flDecodeType(type);
-  if (d->buffer_->isNull(fN)) {
+  if (d->buffer_->isNull(fN))
+  {
     if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt)
       return 0;
   }
 
   QVariant v;
-  if (field->outTransaction() && d->db_->dbAux() && d->db_->db() != d->db_->dbAux() && d->modeAccess_ != INSERT) {
+  if (field->outTransaction() && d->db_->dbAux() && d->db_->db() != d->db_->dbAux() && d->modeAccess_ != INSERT)
+  {
     QString pK(d->metadata_->primaryKey());
-    if (!pK.isEmpty()) {
+    if (!pK.isEmpty())
+    {
       QVariant pKV(d->buffer_->value(pK));
       QSqlQuery q(QString::null, d->db_->dbAux());
       if (q.exec("SELECT " + fN + " FROM " + d->metadata_->name() + " WHERE " +
-                 d->db_->manager()->formatAssignValue(d->metadata_->field(pK), pKV))) {
+                 d->db_->manager()->formatAssignValue(d->metadata_->field(pK), pKV)))
+      {
         if (q.isActive() && q.next())
           v = q.value(0);
       }
-    } else {
+    }
+    else
+    {
 #ifdef FL_DEBUG
       qWarning(tr("FLSqlCursor : No se puede obtener el campo fuera de transaccion, porque no existe clave primaria"));
 #endif
     }
-  } else
+  }
+  else
     v = d->buffer_->value(fN);
 
   if (v.isValid())
     v.cast(fltype);
-  if (!v.isNull() && type == QVariant::Pixmap) {
+  if (!v.isNull() && type == QVariant::Pixmap)
+  {
     QVariant vLarge(d->db_->manager()->fetchLargeValue(v.toString()));
     if (vLarge.isValid())
       return vLarge;
@@ -1484,14 +1649,14 @@ QVariant FLSqlCursor::valueBuffer(const QString &fN)
   return v;
 }
 
-
 QVariant FLSqlCursor::valueBufferRaw(const QString &fN)
 {
   if (fN.isEmpty() || !d->metadata_)
     return QVariant();
 
   FLFieldMetaData *field = d->metadata_->field(fN);
-  if (!field) {
+  if (!field)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::valueBuffer() : No existe el campo ") + d->metadata_->name() + ":" + fN);
 #endif
@@ -1500,7 +1665,8 @@ QVariant FLSqlCursor::valueBufferRaw(const QString &fN)
 
   int type = field->type();
   QVariant::Type fltype = FLFieldMetaData::flDecodeType(type);
-  if (QSqlRecord::isNull(fN)) {
+  if (QSqlRecord::isNull(fN))
+  {
     if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt)
       return 0;
   }
@@ -1509,7 +1675,8 @@ QVariant FLSqlCursor::valueBufferRaw(const QString &fN)
 
   if (v.isValid())
     v.cast(fltype);
-  if (!v.isNull() && type == QVariant::Pixmap) {
+  if (!v.isNull() && type == QVariant::Pixmap)
+  {
     QVariant vLarge(d->db_->manager()->fetchLargeValue(v.toString()));
     if (vLarge.isValid())
       return vLarge;
@@ -1523,7 +1690,8 @@ QVariant FLSqlCursor::valueBufferCopy(const QString &fN) const
     return QVariant();
 
   FLFieldMetaData *field = d->metadata_->field(fN);
-  if (!field) {
+  if (!field)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::valueBufferCopy() : No existe el campo ") + d->metadata_->name() + ":" + fN);
 #endif
@@ -1532,7 +1700,8 @@ QVariant FLSqlCursor::valueBufferCopy(const QString &fN) const
 
   int type = field->type();
   QVariant::Type fltype = FLFieldMetaData::flDecodeType(type);
-  if (d->bufferCopy_->isNull(fN)) {
+  if (d->bufferCopy_->isNull(fN))
+  {
     if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt)
       return 0;
   }
@@ -1540,7 +1709,8 @@ QVariant FLSqlCursor::valueBufferCopy(const QString &fN) const
   QVariant v(d->bufferCopy_->value(fN));
   if (v.isValid())
     v.cast(fltype);
-  if (!v.isNull() && type == QVariant::Pixmap) {
+  if (!v.isNull() && type == QVariant::Pixmap)
+  {
     QVariant vLarge(d->db_->manager()->fetchLargeValue(v.toString()));
     if (vLarge.isValid())
       return vLarge;
@@ -1557,7 +1727,8 @@ void FLSqlCursor::browseRecord()
 {
 #ifdef AQ_MD5_CHECK
   // ### Ver refresco buffer dos usuarios ¿es necesario forzar refresco?
-  if (d->needUpdate()) {
+  if (d->needUpdate())
+  {
     QString pKN(d->metadata_->primaryKey());
     QVariant pKValue(valueBuffer(pKN));
     refresh();
@@ -1572,7 +1743,8 @@ void FLSqlCursor::browseRecord()
 void FLSqlCursor::editRecord()
 {
 #ifdef AQ_MD5_CHECK
-  if (d->needUpdate()) {
+  if (d->needUpdate())
+  {
     QString pKN(d->metadata_->primaryKey());
     QVariant pKValue(valueBuffer(pKN));
     refresh();
@@ -1594,7 +1766,8 @@ void FLSqlCursor::copyRecord()
   if (!d->metadata_ || !d->buffer_)
     return;
 
-  if (!isValid() || size() <= 0) {
+  if (!isValid() || size() <= 0)
+  {
     QMessageBox::warning(qApp->focusWidget(),
                          tr("Aviso"),
                          tr("No hay ningún registro seleccionado"),
@@ -1607,7 +1780,8 @@ void FLSqlCursor::copyRecord()
     return;
 
 #ifdef AQ_MD5_CHECK
-  if (d->needUpdate()) {
+  if (d->needUpdate())
+  {
     QString pKN(d->metadata_->primaryKey());
     QVariant pKValue(valueBuffer(pKN));
     refresh();
@@ -1622,7 +1796,8 @@ void FLSqlCursor::copyRecord()
   insertRecord();
 
   QDictIterator<FLFieldMetaData> it(*fieldList);
-  for (; it.current(); ++it) {
+  for (; it.current(); ++it)
+  {
     if (!(*it))
       continue;
     if (d->buffer_->isNull((*it)->name()) && !(*it)->isPrimaryKey() &&
@@ -1639,33 +1814,61 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!d->metadata_)
     return;
 
-  if ((!isValid() || size() <= 0) && m != INSERT) {
+  if ((!isValid() || size() <= 0) && m != INSERT)
+  {
     QMessageBox::warning(qApp->focusWidget(), tr("Aviso"),
                          tr("No hay ningún registro seleccionado"),
                          QMessageBox::Ok, 0, 0);
     return;
   }
 
-  if (m == DEL) {
+  if (m == DEL)
+  {
     int res = QMessageBox::information(
-                qApp->focusWidget(), tr("Borrar registro"),
-                tr("El registro activo será borrado. ¿ Está seguro ?"),
-                QMessageBox::Yes,
-                QMessageBox::No | QMessageBox::Default | QMessageBox::Escape
-              );
+        qApp->focusWidget(), tr("Borrar registro"),
+        tr("El registro activo será borrado. ¿ Está seguro ?"),
+        QMessageBox::Yes,
+        QMessageBox::No | QMessageBox::Default | QMessageBox::Escape);
     if (res == QMessageBox::No)
       return;
-
-    transaction();
-    d->modeAccess_ = DEL;
-    if (!refreshBuffer()) {
-      commit();
-    } else {
-      if (!commitBuffer())
-        rollback();
-      else
-        commit();
+    if (!useDelegateCommit())
+    {
+      transaction();
     }
+    d->modeAccess_ = DEL;
+    if (!refreshBuffer())
+    {
+      if (!useDelegateCommit())
+      {
+        doCommit();
+      }
+    }
+    else
+    {
+      if (!doCommitBuffer())
+      {
+        if (!useDelegateCommit())
+        {
+          rollback();
+        }
+      }
+      else
+      {
+        doCommit();
+      }
+    }
+
+    // if (!refreshBuffer())
+    //{
+    //   commit();
+    // }
+    // else
+    //{
+    //   if (!commitBuffer())
+    //     rollback();
+    //   else
+    //     commit();
+    // }
     return;
   }
 
@@ -1676,34 +1879,37 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!d->action_)
     d->action_ = d->db_->manager()->action(d->metadata_->name());
 
-  if (!d->action_) {
+  if (!d->action_)
+  {
 #ifdef FL_DEBUG
     qWarning("FLSqlCursor : Para poder abrir un registro de edición se necesita una acción asociada al cursor, o una acción definida con el mismo nombre que la tabla de la que procede el cursor.");
 #endif
     return;
   }
 
-  if (d->action_->formRecord().isEmpty()) {
+  if (d->action_->formRecord().isEmpty())
+  {
     QMessageBox::warning(
-      qApp->focusWidget(), tr("Aviso"),
-      tr("No hay definido ningún formulario para manejar "
-         "registros de esta tabla : %1").arg(d->action_->name()),
-      QMessageBox::Ok, 0, 0
-    );
+        qApp->focusWidget(), tr("Aviso"),
+        tr("No hay definido ningún formulario para manejar "
+           "registros de esta tabla : %1")
+            .arg(d->action_->name()),
+        QMessageBox::Ok, 0, 0);
     return;
-  } else {
+  }
+  else
+  {
     QSProject *p = aqApp->project();
     FLFormRecordDBInterface *iface = static_cast<FLFormRecordDBInterface *>(
-                                       p->object("formRecord" + d->action_->name())
-                                     );
-    if (iface && iface->obj()) {
+        p->object("formRecord" + d->action_->name()));
+    if (iface && iface->obj())
+    {
       QMessageBox::warning(
-        qApp->focusWidget(), tr("Aviso"),
-        tr("Ya hay abierto un formulario de edición de registros para esta "
-           "tabla.\nNo se abrirán más para evitar ciclos repetitivos de "
-           "edición de registros."),
-        QMessageBox::Ok, 0, 0
-      );
+          qApp->focusWidget(), tr("Aviso"),
+          tr("Ya hay abierto un formulario de edición de registros para esta "
+             "tabla.\nNo se abrirán más para evitar ciclos repetitivos de "
+             "edición de registros."),
+          QMessageBox::Ok, 0, 0);
       return;
     }
   }
@@ -1713,63 +1919,69 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
 
   QWidget *activeWid = aqApp->mainWidget();
   if (!activeWid)
-      aqApp->activeModalWidget();
+    aqApp->activeModalWidget();
   if (!activeWid)
-      activeWid = aqApp->activePopupWidget();
+    activeWid = aqApp->activePopupWidget();
   if (!activeWid)
-      activeWid = aqApp->activeWindow(); 
-  
-    if (activeWid)
-	qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(activeWid->name(), d->action_->name()));
+    activeWid = aqApp->activeWindow();
+
+  if (activeWid)
+    qWarning(tr("FLSqlCursor::openFormInMode :: ActiveW = %1 Action = %2").arg(activeWid->name(), d->action_->name()));
 
   FLFormRecordDB *f = new FLFormRecordDB(this, d->action_->name(),
-                                         activeWid , cont);
-  if (refreshBuffer()) {
+                                         activeWid, cont);
+  if (refreshBuffer())
+  {
     f->setMainWidget();
     f->setFocus();
     f->show();
     updateBufferCopy();
-  } else
+  }
+  else
     f->close();
 }
 
 void FLSqlCursor::chooseRecord()
 {
-// --> Aulla Desactiva edición con doble click
-if (!FLSettings::readBoolEntry("ebcomportamiento/FLTableDoubleClick", false))
-	{
-	  if (d->edition_)
-    		editRecord();
+  // --> Aulla Desactiva edición con doble click
+  if (!FLSettings::readBoolEntry("ebcomportamiento/FLTableDoubleClick", false))
+  {
+    if (d->edition_)
+      editRecord();
+    else if (d->browse_)
+      browseRecord();
+  }
   else
-       if (d->browse_)
-    		browseRecord();
-	}
-	else
-	{
- if (d->browse_)
-    browseRecord();
-	}
-	
-// <-- Aulla Desactiva edición con doble click
+  {
+    if (d->browse_)
+      browseRecord();
+  }
+
+  // <-- Aulla Desactiva edición con doble click
   emit recordChoosed();
 }
 
 bool FLSqlCursor::fieldDisabled(const QString &fN)
 {
-  if (d->modeAccess_ == INSERT || d->modeAccess_ == EDIT) {
-    if (d->cursorRelation_ && d->relation_) {
+  if (d->modeAccess_ == INSERT || d->modeAccess_ == EDIT)
+  {
+    if (d->cursorRelation_ && d->relation_)
+    {
       if (!d->cursorRelation_->metadata())
         return false;
       return (d->relation_->field().lower() == fN.lower());
-    } else
+    }
+    else
       return false;
-  } else
+  }
+  else
     return false;
 }
 
 bool FLSqlCursor::transaction(bool /*lock*/)
 {
-  if (!d->db_ && !d->db_->db()) {
+  if (!d->db_ && !d->db_->db())
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::transaction() : No hay conexión con la base de datos"));
 #endif
@@ -1781,7 +1993,8 @@ bool FLSqlCursor::transaction(bool /*lock*/)
 
 bool FLSqlCursor::rollback()
 {
-  if (!d->db_ && !d->db_->db()) {
+  if (!d->db_ && !d->db_->db())
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::rollback() : No hay conexión con la base de datos"));
 #endif
@@ -1793,14 +2006,16 @@ bool FLSqlCursor::rollback()
 
 bool FLSqlCursor::commit(bool notify)
 {
-  if (!d->db_ && !d->db_->db()) {
+  if (!d->db_ && !d->db_->db())
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::commit() : No hay conexión con la base de datos"));
 #endif
     return false;
   }
   bool r = d->db_->doCommit(this, notify);
-  if (r) {
+  if (r)
+  {
     emit commited();
   }
   return r;
@@ -1819,10 +2034,12 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
 
   if (bFilter.isEmpty())
     finalFilter = f;
-  else {
+  else
+  {
     if (filter.isEmpty() || bFilter.contains(f))
       finalFilter = bFilter;
-    else {
+    else
+    {
       if (f.contains(bFilter))
         finalFilter = f;
       else
@@ -1838,7 +2055,7 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
 
   finalFilter = finalFilter.simplifyWhiteSpace();
   // ###
-  //finalFilter.replace("=;", "= NULL;");
+  // finalFilter.replace("=;", "= NULL;");
 
   while (finalFilter.endsWith(";"))
     finalFilter.truncate(finalFilter.length() - 1);
@@ -1846,23 +2063,28 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
   int posOrderBy = finalFilter.findRev("ORDER BY", -1, false);
   QString fieldsOrderBy;
 
-  if (posOrderBy != -1) {
+  if (posOrderBy != -1)
+  {
     fieldsOrderBy = finalFilter.mid(posOrderBy + 8, finalFilter.length() - 8);
     finalFilter.remove(posOrderBy, finalFilter.length() - 8);
     if (!fieldsOrderBy.isEmpty())
       fields += QStringList::split(',', fieldsOrderBy);
   }
 
-  if (d->isQuery_) {
+  if (d->isQuery_)
+  {
     FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
     FLTableMetaData *mtdAux = d->db_->manager()->metadata(d->metadata_->name(), true);
     QStringList fL(QStringList::split(',', mtdAux->fieldList(false)));
     if (mtdAux && !mtdAux->inCache())
       delete mtdAux;
 
-    if (!finalFilter.isEmpty()) {
-      for (QStringList::Iterator it = fL.begin(); it != fL.end(); ++it) {
-        if (finalFilter.contains(*it) && !(*it).contains('.')) {
+    if (!finalFilter.isEmpty())
+    {
+      for (QStringList::Iterator it = fL.begin(); it != fL.end(); ++it)
+      {
+        if (finalFilter.contains(*it) && !(*it).contains('.'))
+        {
           finalFilter.replace(d->metadata_->name() + '.' + *it, *it);
           finalFilter.replace(QRegExp("([^\\w\\.])" + *it + "([^\\w\\.])"),
                               "\\1" + d->metadata_->name() + '.' + *it + "\\2");
@@ -1872,11 +2094,13 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       }
     }
 
-    if (qry) {
+    if (qry)
+    {
       QString where = qry->where();
       if (where.isEmpty())
         qry->setWhere(finalFilter);
-      else {
+      else
+      {
         if (finalFilter.isEmpty() || where.contains(finalFilter))
           qry->setWhere(where);
         else if (finalFilter.contains(where))
@@ -1891,9 +2115,12 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       if (!sort.field(d->metadata_->primaryKey()) && !fieldsOrderBy.upper().contains(d->metadata_->primaryKey().upper()))
         fields << d->metadata_->primaryKey();
 
-      for (QStringList::Iterator it = fields.begin(); it != fields.end(); ++it) {
-        for (QStringList::Iterator it2 = fL.begin(); it2 != fL.end(); ++it2) {
-          if ((*it2).section('.', 1, 1) == (*it).section(' ', 0, 0)) {
+      for (QStringList::Iterator it = fields.begin(); it != fields.end(); ++it)
+      {
+        for (QStringList::Iterator it2 = fL.begin(); it2 != fL.end(); ++it2)
+        {
+          if ((*it2).section('.', 1, 1) == (*it).section(' ', 0, 0))
+          {
             if (!fieldsOrderBy.isEmpty())
               fieldsOrderBy += "," + (*it2) + " " + (*it).section(' ', 1, 1);
             else
@@ -1903,7 +2130,8 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
         }
       }
 
-      if (!fieldsOrderBy.isEmpty()) {
+      if (!fieldsOrderBy.isEmpty())
+      {
         qry->setOrderBy(fieldsOrderBy);
         setSort(QSqlIndex::fromStringList(QStringList::split(',', fieldsOrderBy), this));
       }
@@ -1925,16 +2153,19 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
 
 void FLSqlCursor::setSort(const QSqlIndex &sort)
 {
-  if (d->metadata_ && !sort.field(d->metadata_->primaryKey())) {
+  if (d->metadata_ && !sort.field(d->metadata_->primaryKey()))
+  {
     QSqlIndex srt(sort);
     FLFieldMetaData *field = d->metadata_->field(d->metadata_->primaryKey());
-  if (field)
-  	{
-    srt.append(QSqlField(field->name(), FLFieldMetaData::flDecodeType(field->type())));
-    QSqlCursor::setSort(srt);
-    	} else
-	qWarning(tr("FLSqlCursor : No hay una clave primaria establecida"));    	
-  } else
+    if (field)
+    {
+      srt.append(QSqlField(field->name(), FLFieldMetaData::flDecodeType(field->type())));
+      QSqlCursor::setSort(srt);
+    }
+    else
+      qWarning(tr("FLSqlCursor : No hay una clave primaria establecida"));
+  }
+  else
     QSqlCursor::setSort(sort);
 }
 
@@ -1942,16 +2173,19 @@ QString FLSqlCursor::baseFilter()
 {
   QString relationFilter, finalFilter;
 
-  if (d->cursorRelation_ && d->relation_ && d->metadata_ && d->cursorRelation_->metadata()) {
+  if (d->cursorRelation_ && d->relation_ && d->metadata_ && d->cursorRelation_->metadata())
+  {
     QVariant fgValue(d->cursorRelation_->valueBuffer(d->relation_->foreignField()));
     FLFieldMetaData *field = d->metadata_->field(d->relation_->field());
 
-    if (field) {
+    if (field)
+    {
       relationFilter = d->db_->manager()->formatAssignValue(field, fgValue, true);
       QString filterAc(d->cursorRelation_->filterAssoc(d->relation_->foreignField(),
                                                        d->metadata_));
 
-      if (!filterAc.isEmpty()) {
+      if (!filterAc.isEmpty())
+      {
         if (relationFilter.isEmpty())
           relationFilter = filterAc;
         else
@@ -1963,7 +2197,8 @@ QString FLSqlCursor::baseFilter()
   if (!d->mainFilter_.isEmpty())
     finalFilter = d->mainFilter_;
 
-  if (!relationFilter.isEmpty() && !finalFilter.contains(relationFilter)) {
+  if (!relationFilter.isEmpty() && !finalFilter.contains(relationFilter))
+  {
     if (finalFilter.isEmpty())
       finalFilter = relationFilter;
     else
@@ -1981,10 +2216,12 @@ QString FLSqlCursor::curFilter()
     f.truncate(f.length() - 1);
   if (bFilter.isEmpty())
     return f;
-  else {
+  else
+  {
     if (f.isEmpty() || bFilter.contains(f))
       return bFilter;
-    else {
+    else
+    {
       if (f.contains(bFilter))
         return f;
       else
@@ -1997,17 +2234,18 @@ void FLSqlCursor::setMainFilter(const QString &f, bool doRefresh)
 {
   d->mainFilter_ = f;
   if (doRefresh)
-  	{
-         refresh();
-//         emit cursorUpdated(); //Fuerza a que actualice el contenido del FLTable
-        }
+  {
+    refresh();
+    //         emit cursorUpdated(); //Fuerza a que actualice el contenido del FLTable
+  }
 }
 
 void FLSqlCursor::setFilter(const QString &filter)
 {
   QString finalFilter = filter, bFilter = baseFilter();
 
-  if (!bFilter.isEmpty()) {
+  if (!bFilter.isEmpty())
+  {
     if (finalFilter.isEmpty() || bFilter.contains(finalFilter))
       finalFilter = bFilter;
     else if (!finalFilter.contains(bFilter))
@@ -2032,7 +2270,8 @@ void FLSqlCursor::updateBufferCopy()
 
 void FLSqlCursor::setEdition(bool b, void *m)
 {
-  if (!m) {
+  if (!m)
+  {
     d->edition_ = b;
     return;
   }
@@ -2046,16 +2285,21 @@ void FLSqlCursor::setEdition(bool b, void *m)
     return;
 
   AQBoolFlagState *i = d->editionStates_->find(m);
-  if (!i && stateChanges) {
+  if (!i && stateChanges)
+  {
     i = new AQBoolFlagState;
     i->modifier_ = m;
     i->prevValue_ = d->edition_;
     d->editionStates_->append(i);
-  } else if (i) {
-    if (stateChanges) {
+  }
+  else if (i)
+  {
+    if (stateChanges)
+    {
       d->editionStates_->pushOnTop(i);
       i->prevValue_ = d->edition_;
-    } else
+    }
+    else
       d->editionStates_->erase(i);
   }
 
@@ -2076,7 +2320,8 @@ void FLSqlCursor::restoreEditionFlag(void *m)
 
 void FLSqlCursor::setBrowse(bool b, void *m)
 {
-  if (!m) {
+  if (!m)
+  {
     d->browse_ = b;
     return;
   }
@@ -2090,16 +2335,21 @@ void FLSqlCursor::setBrowse(bool b, void *m)
     return;
 
   AQBoolFlagState *i = d->browseStates_->find(m);
-  if (!i && stateChanges) {
+  if (!i && stateChanges)
+  {
     i = new AQBoolFlagState;
     i->modifier_ = m;
     i->prevValue_ = d->browse_;
     d->browseStates_->append(i);
-  } else if (i) {
-    if (stateChanges) {
+  }
+  else if (i)
+  {
+    if (stateChanges)
+    {
       d->browseStates_->pushOnTop(i);
       i->prevValue_ = d->browse_;
-    } else
+    }
+    else
       d->browseStates_->erase(i);
   }
 
@@ -2123,7 +2373,8 @@ bool FLSqlCursor::isModifiedBuffer()
   if (!d->buffer_ || !d->bufferCopy_)
     return false;
 
-  for (uint i = 0; i < d->buffer_->count(); ++i) {
+  for (uint i = 0; i < d->buffer_->count(); ++i)
+  {
     if ((d->buffer_->value(i) != d->bufferCopy_->value(i)) ||
         (d->buffer_->isNull(i) != d->bufferCopy_->isNull(i)))
       return true;
@@ -2137,7 +2388,8 @@ void FLSqlCursor::setUnLock(const QString &fN, bool v)
   if (!d->metadata_ || d->modeAccess_ != BROWSE)
     return;
 
-  if (d->metadata_->fieldType(fN) != FLFieldMetaData::Unlock) {
+  if (d->metadata_->fieldType(fN) != FLFieldMetaData::Unlock)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor::setUnLock sólo permite modificar campos del tipo Unlock"));
 #endif
@@ -2152,9 +2404,11 @@ void FLSqlCursor::setUnLock(const QString &fN, bool v)
 
 bool FLSqlCursor::isLocked()
 {
-  if (d->modeAccess_ != INSERT && !d->fieldsNamesUnlock_.isEmpty()) {
+  if (d->modeAccess_ != INSERT && !d->fieldsNamesUnlock_.isEmpty())
+  {
     for (QStringList::const_iterator it = d->fieldsNamesUnlock_.begin();
-         it != d->fieldsNamesUnlock_.end(); ++it) {
+         it != d->fieldsNamesUnlock_.end(); ++it)
+    {
       if (QSqlCursor::contains(*it) && !QSqlCursor::value(*it).toBool())
         return true;
     }
@@ -2249,7 +2503,8 @@ int FLSqlCursor::atFrom()
   int pos = -99;
 #endif
 
-  if (pos == -99) {
+  if (pos == -99)
+  {
     QSqlQuery q(QString::null, d->db_->db());
     QString sql, sqlIn, cFilter = curFilter();
     FLFieldMetaData *field = d->metadata_->field(pKN);
@@ -2260,18 +2515,24 @@ int FLSqlCursor::atFrom()
     QString sqlPriKeyValue;
     QString sqlOrderBy;
 
-    if (!d->isQuery_ || pKN.contains(".")) {
+    if (!d->isQuery_ || pKN.contains("."))
+    {
       sqlPriKey = pKN;
       sqlFrom = d->metadata_->name();
       sql = "SELECT " + sqlPriKey + " FROM " + sqlFrom;
-    } else {
+    }
+    else
+    {
       FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
-      if (qry) {
+      if (qry)
+      {
         sqlPriKey = d->metadata_->name() + "." + pKN;
         sqlFrom = qry->from();
         sql = "SELECT " + sqlPriKey + " FROM " + sqlFrom;
         qry->deleteLater();
-      } else {
+      }
+      else
+      {
 #ifdef FL_DEBUG
         qWarning(tr("FLSqlCursor::atFrom Error al crear la consulta"));
 #endif
@@ -2280,36 +2541,44 @@ int FLSqlCursor::atFrom()
         return pos;
       }
     }
-    if (!cFilter.isEmpty()) {
+    if (!cFilter.isEmpty())
+    {
       sqlWhere = cFilter;
       sql += " WHERE " + sqlWhere;
-    } else
+    }
+    else
       sqlWhere = "1=1";
 
-    if (field) {
+    if (field)
+    {
       sqlPriKeyValue = d->db_->manager()->formatAssignValue(field, pKValue);
       if (!cFilter.isEmpty())
         sqlIn = sql + " AND " + sqlPriKeyValue;
       else
         sqlIn = sql + " WHERE " + sqlPriKeyValue;
       q.exec(sqlIn);
-      if (!q.next()) {
+      if (!q.next())
+      {
         QSqlCursor::seek(at());
         pos = isValid() ? at() : 0;
         return pos;
       }
     }
 
-    if (d->isQuery_ && !d->queryOrderBy_.isEmpty()) {
+    if (d->isQuery_ && !d->queryOrderBy_.isEmpty())
+    {
       sqlOrderBy = d->queryOrderBy_;
       sql += " ORDER BY " + sqlOrderBy;
-    } else if (sort().count() > 0) {
+    }
+    else if (sort().count() > 0)
+    {
       sqlOrderBy = sort().toString();
       sql += " ORDER BY " + sqlOrderBy;
     }
 
     // ###
-    if (!sqlPriKeyValue.isEmpty() && d->db_->canOverPartition()) {
+    if (!sqlPriKeyValue.isEmpty() && d->db_->canOverPartition())
+    {
       int posEqual = sqlPriKeyValue.find("=");
       QString leftSqlPriKey(sqlPriKeyValue.left(posEqual));
       QString sqlRowNum;
@@ -2326,7 +2595,8 @@ int FLSqlCursor::atFrom()
       sqlRowNum += sqlOrderBy;
       sqlRowNum += ") as subnumrow where ";
       sqlRowNum += sqlPriKeyValue.replace(leftSqlPriKey, "prikey");
-      if (q.exec(sqlRowNum) && q.next()) {
+      if (q.exec(sqlRowNum) && q.next())
+      {
         pos = q.value(0).toInt() - 1;
         if (pos >= 0)
           return pos;
@@ -2337,27 +2607,36 @@ int FLSqlCursor::atFrom()
     q.exec(sql);
 
     pos = 0;
-    if (q.first()) {
-      if (q.value(0) != pKValue) {
+    if (q.first())
+    {
+      if (q.value(0) != pKValue)
+      {
         pos = q.size();
-        if (q.last() && pos > 1) {
+        if (q.last() && pos > 1)
+        {
           --pos;
-          if (q.value(0) != pKValue) {
-            while (q.prev() && pos > 1) {
+          if (q.value(0) != pKValue)
+          {
+            while (q.prev() && pos > 1)
+            {
               --pos;
-              if (q.value(0) == pKValue) {
+              if (q.value(0) == pKValue)
+              {
                 found = true;
                 break;
               }
             }
-          } else
+          }
+          else
             found = true;
         }
-      } else
+      }
+      else
         found = true;
     }
 
-    if (!found) {
+    if (!found)
+    {
       QSqlCursor::seek(at());
       pos = isValid() ? at() : 0;
     }
@@ -2376,16 +2655,18 @@ int FLSqlCursor::atFromBinarySearch(const QString &fN, const QString &v, bool or
   int ini = 0, fin = QSqlCursor::size() - 1, mid, cmp;
 
   QSqlCursor::setForwardOnly(false);
-  while (ini <= fin) {
+  while (ini <= fin)
+  {
     mid = (ini + fin) / 2;
     QSqlCursor::seek(mid);
-    cmp = (orderAsc ?
-           QString::localeAwareCompare(v, QSqlCursor::value(fN).toString()) :
-           QString::localeAwareCompare(QSqlCursor::value(fN).toString(), v));
-    if (!cmp) {
+    cmp = (orderAsc ? QString::localeAwareCompare(v, QSqlCursor::value(fN).toString()) : QString::localeAwareCompare(QSqlCursor::value(fN).toString(), v));
+    if (!cmp)
+    {
       ret = mid;
       break;
-    } else {
+    }
+    else
+    {
       if (cmp > 0)
         ini = mid + 1;
       else
@@ -2402,17 +2683,21 @@ int FLSqlCursor::atFromBinarySearch(const QString &fN, const QString &v, bool or
 bool FLSqlCursor::exec(const QString &query)
 {
   bool ret = QSqlCursor::exec(query);
-  if (ret && d->isQuery_ && (d->query_ != query || !d->populated_)) {
+  if (ret && d->isQuery_ && (d->query_ != query || !d->populated_))
+  {
     d->query_ = query;
     QSqlCursor::clear();
     d->populated_ = false;
     populateCursor();
     setExtraFieldAttributes();
-  } else if (ret && !d->isQuery_ && d->query_ != query) {
+  }
+  else if (ret && !d->isQuery_ && d->query_ != query)
+  {
     d->query_ = query;
     setExtraFieldAttributes();
   }
-  if (lastError().type() != QSqlError::None) {
+  if (lastError().type() != QSqlError::None)
+  {
     //    QString msg("<p><img source=\"remove.png\" align=\"right\">" +
     //                "<b><u>SQL ERROR</u></b><br><br>" +
     //                QString(lastError().driverText()) + "<br>" +
@@ -2426,7 +2711,8 @@ bool FLSqlCursor::exec(const QString &query)
 
 void FLSqlCursor::populateCursor()
 {
-  if (d->metadata_ && d->isQuery_ && driver()) {
+  if (d->metadata_ && d->isQuery_ && driver())
+  {
     QSqlCursor::setName(d->metadata_->name(), false);
     QSqlRecordInfo inf = driver()->recordInfo(*(QSqlQuery *)this);
     for (QSqlRecordInfo::const_iterator it = inf.begin(); it != inf.end(); ++it)
@@ -2441,13 +2727,16 @@ void FLSqlCursor::setNotGenerateds()
   if (!d->metadata_ || !d->isQuery_ || !d->buffer_)
     return;
   QSqlRecordInfo inf = driver()->recordInfo(*(QSqlQuery *)this);
-  for (QSqlRecordInfo::const_iterator it = inf.begin(); it != inf.end(); ++it) {
+  for (QSqlRecordInfo::const_iterator it = inf.begin(); it != inf.end(); ++it)
+  {
     FLFieldMetaData *field = d->metadata_->field((*it).name());
-    if (!field) {
+    if (!field)
+    {
       d->buffer_->setGenerated((*it).name(), false);
       continue;
     }
-    if (!field->generated()) {
+    if (!field->generated())
+    {
       d->buffer_->setGenerated((*it).name(), false);
       continue;
     }
@@ -2470,7 +2759,8 @@ void FLSqlCursor::setExtraFieldAttributes()
 
   FLFieldMetaData *field;
   QDictIterator<FLFieldMetaData> it(*fieldList);
-  while ((field = it.current()) != 0) {
+  while ((field = it.current()) != 0)
+  {
     ++it;
     if (field->fullyCalculated())
       QSqlCursor::setCalculated(field->name(), true);
@@ -2521,7 +2811,8 @@ QVariant FLSqlCursor::calculateField(const QString &name)
     functionFullyCalc = QString::fromLatin1("flfactppal.fullyCalculateField");
   ret = aqApp->call(functionFullyCalc, arglist, 0);
 
-  if (ret.type() == QSArgument::Variant) {
+  if (ret.type() == QSArgument::Variant)
+  {
     QVariant vRet(ret.variant());
     d->mapCalcFields_.insert(fKey, vRet);
     return vRet;
@@ -2546,20 +2837,24 @@ QStringList FLSqlCursor::transactionsOpened()
 void FLSqlCursor::rollbackOpened(int count, const QString &msg)
 {
   int ct = (count < 0 ? d->transactionsOpened_.count() : count);
-  if (ct > 0 && !msg.isEmpty()) {
+  if (ct > 0 && !msg.isEmpty())
+  {
     QString t(d->metadata_ ? d->metadata_->name() : QString(QObject::name()));
     QString m(msg + QString("SqlCursor::rollbackOpened: %1 %1").arg(count).arg(t));
     d->msgBoxWarning(m, false);
 #ifndef QSDEBUGGER
     printf("%s\n", m.latin1());
 #endif
-  } else if (ct > 0) {
+  }
+  else if (ct > 0)
+  {
     qWarning("SqlCursor::rollbackOpened: %d %s", count, QObject::name());
 #ifndef QSDEBUGGER
     printf("SqlCursor::rollbackOpened: %d %s\n", count, QObject::name());
 #endif
   }
-  for (int i = 0; i < ct; ++i) {
+  for (int i = 0; i < ct; ++i)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor : Deshaciendo transacción abierta %1").arg(transactionLevel()));
 #endif
@@ -2570,20 +2865,24 @@ void FLSqlCursor::rollbackOpened(int count, const QString &msg)
 void FLSqlCursor::commitOpened(int count, const QString &msg)
 {
   int ct = (count < 0 ? d->transactionsOpened_.count() : count);
-  if (ct > 0 && !msg.isEmpty()) {
+  if (ct > 0 && !msg.isEmpty())
+  {
     QString t(d->metadata_ ? d->metadata_->name() : QString(QObject::name()));
     QString m(msg + QString("SqlCursor::commitOpened: %1 %1").arg(count).arg(t));
     d->msgBoxWarning(m, false);
 #ifndef QSDEBUGGER
     printf("%s\n", m.latin1());
 #endif
-  } else if (ct > 0) {
+  }
+  else if (ct > 0)
+  {
     qWarning("SqlCursor::commitOpened: %d %s", count, QObject::name());
 #ifndef QSDEBUGGER
     printf("SqlCursor::commitOpened: %d %s\n", count, QObject::name());
 #endif
   }
-  for (int i = 0; i < ct; ++i) {
+  for (int i = 0; i < ct; ++i)
+  {
 #ifdef FL_DEBUG
     qWarning(tr("FLSqlCursor : Terminando transacción abierta %1").arg(transactionLevel()));
 #endif
@@ -2630,7 +2929,8 @@ QStringList FLSqlCursor::concurrencyFields()
     return QStringList();
 
   QStringList modFields;
-  for (uint i = 0; i < d->buffer_->count(); ++i) {
+  for (uint i = 0; i < d->buffer_->count(); ++i)
+  {
     if ((d->buffer_->value(i) != d->bufferCopy_->value(i)) ||
         (d->buffer_->isNull(i) != d->bufferCopy_->isNull(i)))
       modFields << d->buffer_->fieldName(i);
@@ -2640,10 +2940,8 @@ QStringList FLSqlCursor::concurrencyFields()
 
   QString pKN(d->metadata_->primaryKey());
   QString pKWhere(
-    d->db_->manager()->formatAssignValue(
-      d->metadata_->field(pKN), valueBuffer(pKN)
-    )
-  );
+      d->db_->manager()->formatAssignValue(
+          d->metadata_->field(pKN), valueBuffer(pKN)));
 
   FLSqlQuery q(0, d->db_->connectionName());
   q.setTablesList(d->metadata_->name());
@@ -2655,7 +2953,8 @@ QStringList FLSqlCursor::concurrencyFields()
     return QStringList();
 
   QStringList colFields;
-  for (QStringList::const_iterator it = modFields.begin(); it != modFields.end(); ++it) {
+  for (QStringList::const_iterator it = modFields.begin(); it != modFields.end(); ++it)
+  {
     QVariant val(q.value(*it));
     if (val != d->bufferCopy_->value(*it) && val != d->buffer_->value(*it))
       colFields << *it;
@@ -2673,23 +2972,24 @@ void FLSqlCursor::changeConnection(const QString &connName)
   if (curConnName == newDb->connectionName())
     return;
 
-  if (!d->transactionsOpened_.isEmpty()) {
+  if (!d->transactionsOpened_.isEmpty())
+  {
     FLTableMetaData *mtd = d->metadata_;
     QString t(mtd ? mtd->name() : QString(QObject::name()));
     rollbackOpened(
-      -1, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
-             "Se van a cancelar las transacciones pendientes.\n"
-             "Los últimos datos introducidos no han sido guardados, por favor\n"
-             "revise sus últimas acciones y repita las operaciones que no\n"
-             "se han guardado.\n") +
-      QString("SqlCursor::changeConnection: %1\n").arg(t)
-    );
+        -1, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+               "Se van a cancelar las transacciones pendientes.\n"
+               "Los últimos datos introducidos no han sido guardados, por favor\n"
+               "revise sus últimas acciones y repita las operaciones que no\n"
+               "se han guardado.\n") +
+                QString("SqlCursor::changeConnection: %1\n").arg(t));
   }
 
   bool bufferNoEmpty = (d->buffer_ != 0);
   QSqlRecord bufferBackup;
 
-  if (bufferNoEmpty) {
+  if (bufferNoEmpty)
+  {
     bufferBackup = *d->buffer_;
     d->buffer_ = 0;
   }
@@ -2699,7 +2999,8 @@ void FLSqlCursor::changeConnection(const QString &connName)
   d->db_ = newDb;
   init(d->curName_, true, d->cursorRelation_, d->relation_);
 
-  if (bufferNoEmpty) {
+  if (bufferNoEmpty)
+  {
     d->buffer_ = QSqlCursor::editBuffer();
     *d->buffer_ = bufferBackup;
   }
@@ -2718,7 +3019,8 @@ QString FLSqlCursor::filterAssoc(const QString &fieldName, FLTableMetaData *tabl
     return QString::null;
 
   bool ownTMD = false;
-  if (!tableMD) {
+  if (!tableMD)
+  {
     ownTMD = true;
     tableMD = d->db_->manager()->metadata(field->relationM1()->foreignTable());
   }
@@ -2726,21 +3028,24 @@ QString FLSqlCursor::filterAssoc(const QString &fieldName, FLTableMetaData *tabl
     return QString::null;
 
   FLFieldMetaData *fieldAc = field->associatedField();
-  if (!fieldAc) {
+  if (!fieldAc)
+  {
     if (ownTMD && !tableMD->inCache())
       delete tableMD;
     return QString::null;
   }
 
   QString fieldBy(field->associatedFieldFilterTo());
-  if (!tableMD->field(fieldBy) || d->buffer_->isNull(fieldAc->name())) {
+  if (!tableMD->field(fieldBy) || d->buffer_->isNull(fieldAc->name()))
+  {
     if (ownTMD && !tableMD->inCache())
       delete tableMD;
     return QString::null;
   }
 
   QVariant vv(d->buffer_->value(fieldAc->name()));
-  if (vv.isValid() && !vv.isNull()) {
+  if (vv.isValid() && !vv.isNull())
+  {
     if (ownTMD && !tableMD->inCache())
       delete tableMD;
     return d->db_->manager()->formatAssignValue(fieldBy, fieldAc, vv, true);
@@ -2748,4 +3053,65 @@ QString FLSqlCursor::filterAssoc(const QString &fieldName, FLTableMetaData *tabl
   if (ownTMD && !tableMD->inCache())
     delete tableMD;
   return QString::null;
+}
+
+bool FLSqlCursor::doCommitBuffer()
+{
+  bool result_ = true;
+
+  if (useDelegateCommit())
+  {
+
+    bool is_insert_or_delete = modeAccess() == INSERT || modeAccess() == DEL;
+    QString label_ = "FLSqlCursor::doCommitBuffer (" + metadata()->name() + "): ";
+
+    QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata()->name() + QString::fromLatin1(".mtd"));
+    QString fun_module_ = "sys";
+
+    if (!id_mod_.isEmpty())
+    {
+      fun_module_ = id_mod_;
+    }
+    QString fun_name_ = fun_module_ + ".delegateCommit";
+
+    FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
+    QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
+    if (v.isValid())
+    {
+      result_ = v.toBool();
+      qWarning(label_ + fun_name_ + "(cursor) retorna " + (result_ ? "true" : "false"));
+    }
+    else
+    {
+      qWarning(label_ + "No hay respuesta de " + fun_name_ + "(cursor). Asumiento true");
+    }
+    lastDelegateCommitResult = result_;
+
+    if (result_) // Si sys.delegateCommit devuelve ok.
+    {
+      emit cursorUpdated();
+      emit bufferCommited();
+    }
+  }
+  else
+  {
+    result_ = commitBuffer();
+  }
+
+  return result_;
+}
+
+bool FLSqlCursor::useDelegateCommit()
+{
+  return isDelegateCommit && !db()->manager()->isSystemTable(metadata()->name());
+}
+
+bool FLSqlCursor::doCommit()
+{
+  if (useDelegateCommit())
+  {
+    setModeAccess(BROWSE);
+    return lastDelegateCommitResult;
+  }
+  return commit();
 }

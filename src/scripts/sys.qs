@@ -2462,3 +2462,7 @@ function serverTime()
   }
   return ahora;
 }
+
+function delegateCommit(cursor) {
+	return formHTTP.iface.saveCursor(cursor);
+}
