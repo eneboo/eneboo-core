@@ -500,82 +500,21 @@ void FLManagerModules::staticLoaderSetup()
 QString FLManagerModules::contentStatic(const QString &n)
 {
   QString str_ret(FLModulesStaticLoader::content(n, staticBdInfo_));
-  qWarning("FLManagerModules : " +
-           QApplication::tr("Paso 0 %1")
-               .arg(n));
+
   if (!str_ret.isEmpty())
   {
     QString sha(FLUtil::sha1(str_ret));
     QString *s = 0;
     if (dictKeyFiles && (s = dictKeyFiles->find(n)) && *s == sha)
     {
-      qWarning("FLManagerModules : " +
-               QApplication::tr("Paso 0.2 %1 %2 == %3")
-                   .arg(n)
-                   .arg(*s)
-                   .arg(sha));
       return QString::null;
     }
     else if (dictKeyFiles && n.endsWith(".qs"))
     {
       dictKeyFiles->replace(n, new QString(sha));
     }
-
-    if (n.endsWith(".mtd1"))
-    {
-      FLTableMetaData *mtd;
-      QDomDocument doc(n);
-      QDomElement docElem;
-
-      qWarning("FLManagerModules : " +
-               QApplication::tr("Paso 1 %1")
-                   .arg(n));
-
-      if (FLUtil::domDocumentSetContent(doc, str_ret))
-      {
-        FLManager *mgr = db_->manager();
-        docElem = doc.documentElement();
-
-        qWarning("FLManagerModules : " +
-                 QApplication::tr("Paso 2 %1")
-                     .arg(n));
-
-        mtd = mgr->metadata(&docElem, true);
-
-        if (!mtd || mtd->isQuery())
-        {
-          qWarning("FLManagerModules : " +
-                   QApplication::tr("Paso 2.1 %1")
-                       .arg(n));
-          return str_ret;
-        }
-
-        if (!mgr->existsTable(mtd->name()))
-        {
-          qWarning("FLManagerModules : " +
-                   QApplication::tr("Paso 3 %1")
-                       .arg(n));
-          mgr->createTable(mtd);
-        }
-        else if (db_->canRegenTables())
-        {
-          qWarning("FLManagerModules : " +
-                   QApplication::tr("Paso 4 %1")
-                       .arg(n));
-          db_->regenTable(mtd->name(), mtd);
-        }
-      }
-    }
   }
-  else
-  {
-    qWarning("FLManagerModules : " +
-             QApplication::tr("Paso 0.1 %1")
-                 .arg(n));
-  }
-  qWarning("FLManagerModules : " +
-           QApplication::tr("Paso FINAL %1")
-               .arg(n));
+
   return str_ret;
 }
 
@@ -799,9 +738,6 @@ QString FLManagerModules::contentCode(const QString &n)
 
 QString FLManagerModules::contentFS(const QString &pN)
 {
-  qWarning("FLManagerModules : " +
-           QApplication::tr("ContentFS Recoge %1")
-               .arg(pN));
   QFile fi(pN);
   if (!fi.open(IO_ReadOnly))
     return QString::null;
