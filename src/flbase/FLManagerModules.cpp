@@ -521,7 +521,7 @@ QString FLManagerModules::contentStatic(const QString &n)
       dictKeyFiles->replace(n, new QString(sha));
     }
 
-    if (n.endsWith(".mtd"))
+    if (n.endsWith(".mtd1"))
     {
       FLTableMetaData *mtd;
       QDomDocument doc(n);
@@ -573,7 +573,9 @@ QString FLManagerModules::contentStatic(const QString &n)
              QApplication::tr("Paso 0.1 %1")
                  .arg(n));
   }
-
+  qWarning("FLManagerModules : " +
+           QApplication::tr("Paso FINAL %1")
+               .arg(n));
   return str_ret;
 }
 
