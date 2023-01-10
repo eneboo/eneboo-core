@@ -845,6 +845,13 @@ protected:
   Redefinicion del método afterSeek() de QSqlCursor.
   */
   void afterSeek();
+  
+  /**
+  Gestiona delegateCommit
+  */
+
+  bool lastDelegateCommitResult;
+  bool isDelegateCommit;
 
 public slots:
 
@@ -1141,8 +1148,6 @@ public slots:
   void changeConnection(const QString &connName);
 
 
-  bool isDelegateCommit;
-
   /**
   Lanza llamada sengun proceda el deletateCommit o commitBuffer del cursorRelation.
   */
@@ -1160,11 +1165,7 @@ public slots:
 
   bool useDelegateCommit();
 
-  /**
-  Gestiona delegateCommit
-  */
 
-  bool lastDelegateCommitResult;
 
 private:
   friend class FLDataTable;
