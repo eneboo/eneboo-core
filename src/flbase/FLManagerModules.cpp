@@ -509,6 +509,11 @@ QString FLManagerModules::contentStatic(const QString &n)
     QString *s = 0;
     if (dictKeyFiles && (s = dictKeyFiles->find(n)) && *s == sha)
     {
+      qWarning("FLManagerModules : " +
+               QApplication::tr("Paso 0.2 %1 %2 == %3")
+                   .arg(n)
+                   .arg(*s)
+                   .arg(sha));
       return QString::null;
     }
     else if (dictKeyFiles && n.endsWith(".qs"))
@@ -792,6 +797,9 @@ QString FLManagerModules::contentCode(const QString &n)
 
 QString FLManagerModules::contentFS(const QString &pN)
 {
+  qWarning("FLManagerModules : " +
+           QApplication::tr("ContentFS Recoge %1")
+               .arg(pN));
   QFile fi(pN);
   if (!fi.open(IO_ReadOnly))
     return QString::null;
