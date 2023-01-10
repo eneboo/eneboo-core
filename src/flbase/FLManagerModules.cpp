@@ -500,7 +500,9 @@ void FLManagerModules::staticLoaderSetup()
 QString FLManagerModules::contentStatic(const QString &n)
 {
   QString str_ret(FLModulesStaticLoader::content(n, staticBdInfo_));
-
+  qWarning("FLManagerModules : " +
+           QApplication::tr("Paso 0 %1")
+               .arg(n));
   if (!str_ret.isEmpty())
   {
     QString sha(FLUtil::sha1(str_ret));
@@ -559,6 +561,12 @@ QString FLManagerModules::contentStatic(const QString &n)
         }
       }
     }
+  }
+  else
+  {
+    qWarning("FLManagerModules : " +
+             QApplication::tr("Paso 0.1 %1")
+                 .arg(n));
   }
 
   return str_ret;
