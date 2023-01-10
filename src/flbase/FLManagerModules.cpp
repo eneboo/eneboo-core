@@ -469,26 +469,6 @@ QString FLManagerModules::contentStatic(const QString &n)
     } else if (dictKeyFiles && n.endsWith(".qs")) {
       dictKeyFiles->replace(n, new QString(sha));
     }
-
-    if (n.endsWith(".mtd")) {
-      FLTableMetaData *mtd;
-      QDomDocument doc(n);
-      QDomElement docElem;
-
-      if (FLUtil::domDocumentSetContent(doc, str_ret)) {
-        FLManager *mgr = db_->manager();
-        docElem = doc.documentElement();
-        mtd = mgr->metadata(&docElem, true);
-
-        if (!mtd || mtd->isQuery())
-          return str_ret;
-
-        if (!mgr->existsTable(mtd->name()))
-          mgr->createTable(mtd);
-        else if (db_->canRegenTables())
-          db_->regenTable(mtd->name(), mtd);
-      }
-    }
   }
 
   return str_ret;
