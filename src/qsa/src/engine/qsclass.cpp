@@ -79,7 +79,7 @@ void QSClass::clear()
 		  }
         }
     }
-    delete mmap;
+    //delete mmap;
     mmap = 0;
   }
   staticMembers.clear();
