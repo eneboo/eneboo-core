@@ -3063,9 +3063,10 @@ bool FLSqlCursor::doCommitBuffer()
   {
 
     bool is_insert_or_delete = modeAccess() == INSERT || modeAccess() == DEL;
-    QString label_ = "FLSqlCursor::doCommitBuffer (" + metadata()->name() + "): ";
+    FLTableMetaData *mtd = metadata();
+    QString label_ = "FLSqlCursor::doCommitBuffer (" + mtd->name() + "): ";
 
-    QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata()->name() + QString::fromLatin1(".mtd"));
+    QString id_mod_ = db()->managerModules()->idModuleOfFile(mtd->name() + QString::fromLatin1(".mtd"));
     QString fun_module_ = "sys";
 
     if (!id_mod_.isEmpty())
@@ -3089,6 +3090,12 @@ bool FLSqlCursor::doCommitBuffer()
 
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
+      QString pKN = mtd->primaryKey();
+      QString pKWhere = d->db_->manager()->formatAssignValue(mtd->field(pKN), valueBuffer(pKN));
+      if (!d->persistentFilter_.contains(pKWhere))
+      {
+        d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
+      }
       emit cursorUpdated();
       emit bufferCommited();
     }
