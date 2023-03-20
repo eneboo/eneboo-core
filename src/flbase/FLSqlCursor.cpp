@@ -3101,9 +3101,12 @@ bool FLSqlCursor::doCommitBuffer()
 
       if (d->modeAccess_ == EDIT)
       {
-        if (isModifiedBuffer())
+        if (!isModifiedBuffer())
         {
-          emit_cursor_updated = true;
+          emit_cursor_updated = false;
+        }
+        else
+        {
           setNotGenerateds();
         }
       }
