@@ -3103,6 +3103,7 @@ bool FLSqlCursor::doCommitBuffer()
       {
         if (!isModifiedBuffer())
         {
+          qWarning("emit cursor updated a false");
           emit_cursor_updated = false;
         }
         else
