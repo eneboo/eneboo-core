@@ -3096,7 +3096,22 @@ bool FLSqlCursor::doCommitBuffer()
       {
         d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
       }
-      emit cursorUpdated();
+
+      bool emit_cursor_updated = true;
+
+      if (d->modeAccess_ == EDIT)
+      {
+        if (isModifiedBuffer())
+        {
+          emit_cursor_updated = true;
+          setNotGenerateds();
+        }
+      }
+
+      if (emit_cursor_updated)
+      {
+        emit cursorUpdated();
+      }
       emit bufferCommited();
     }
   }
