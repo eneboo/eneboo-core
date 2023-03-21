@@ -3174,6 +3174,7 @@ void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
   if (!d->persistentFilter_.contains(filter))
   {
     d->persistentFilter_ = d->persistentFilter_.isEmpty() ? filter : d->persistentFilter_ + QString::fromLatin1(" OR ") + filter;
-    qWarning("FLSqlCursor::setPersistentFilterDelegate = " + d->persistentFilter_);
+    qWarning("Nuevo persistent filter = " + d->persistentFilter_);
+    setFilter("");
   }
 }
