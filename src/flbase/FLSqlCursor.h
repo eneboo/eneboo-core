@@ -1206,6 +1206,11 @@ public slots:
 
   bool useDelegateCommit();
 
+  /**
+   Restaura el filtro persistente al usado inicalmente.
+  */
+  void restorePersistentFilterBeforeDelegate();
+
 private:
   friend class FLDataTable;
   friend class FLSqlDatabase;
@@ -1293,10 +1298,6 @@ private slots:
 
   /** Uso interno */
   void clearPersistentFilter();
-
-  //** Uso interno */
-
-  void restorePersistentFilterBeforeDelegate();
 
   //** Uso interno */
 
