@@ -3097,6 +3097,18 @@ bool FLSqlCursor::doCommitBuffer()
         d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
       }
 
+      FLSqlCursor cursor_relacionado = d->cursorRelation_;
+
+      if (cursor_relacionado)
+      {
+        QString pKNRelation = cursor_relacionado->metadata()->primaryKey();
+        QString pKWhereRelation = cursor_relacionado->db()->manager()->formatAssignValue(cursor_relacionado->metadata()->field(pKNRelation), cursor_relacionado->valueBuffer(pKNRelation));
+        if (!cursor_relacionado->d->persistentFilter_.contains(pKWhereRelation))
+        {
+          cursor_relacionado->d->persistentFilter_ = (cursor_relacionado->d->persistentFilter_.isEmpty() ? pKWhereRelation : cursor_relacionado->d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhereRelation);
+        }
+      }
+
       bool emit_cursor_updated = true;
 
       if (d->modeAccess_ == EDIT)
