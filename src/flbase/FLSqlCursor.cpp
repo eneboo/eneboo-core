@@ -3159,13 +3159,13 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
     d->persistentFilter_ = persistentFilterBeforeDelegate_;
     qWarning("Restaurado persistentFilter de " + metadata()->name() + ", original : " + d->persistentFilter_);
     persistentFilterBeforeDelegate_ = "";
-    setFilter("");
+    // setFilter("");
   }
 
-  // if (d->cursorRelation_)
-  //{
-  //   d->cursorRelation_->restorePersistentFilterBeforeDelegate();
-  // }
+  if (d->cursorRelation_)
+  {
+    d->cursorRelation_->restorePersistentFilterBeforeDelegate();
+  }
 }
 
 void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
