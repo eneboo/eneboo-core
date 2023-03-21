@@ -1296,11 +1296,11 @@ private slots:
 
   //** Uso interno */
 
-  void FLSqlCursor::restorePersistentFilterBeforeDelegate();
+  void restorePersistentFilterBeforeDelegate();
 
   //** Uso interno */
 
-  void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
+  void setPersistentFilterDelegate(const QString &filter)
 };
 
 #endif
