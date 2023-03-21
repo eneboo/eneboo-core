@@ -659,6 +659,11 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
                       QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
     }
 
+    if (cursor_->useDelegateCommit() && cursor_->cursorRelation())
+    {
+      cursor_->cursorRelation()->restorePersistentFilterBeforeDelegate();
+    }
+
     if (accepted_)
     {
       if (!cursor_->doCommit())

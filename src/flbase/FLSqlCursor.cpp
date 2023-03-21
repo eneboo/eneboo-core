@@ -318,8 +318,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 FLSqlCursor::~FLSqlCursor()
 {
 
-  restorePersistentFilterBeforeDelegate();
-
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   // bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() &&
   //               (!d->isSysTable_ && (d->isQuery_ || !d->fieldsNamesUnlock_.isEmpty()));
@@ -3097,7 +3095,7 @@ bool FLSqlCursor::doCommitBuffer()
       QString pKWhere = d->db_->manager()->formatAssignValue(mtd->field(pKN), valueBuffer(pKN));
       if (!d->persistentFilter_.contains(pKWhere))
       {
-        d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
+        setPersistentFilterDelegate(pKWhere);
       }
 
       if (d->cursorRelation_)
