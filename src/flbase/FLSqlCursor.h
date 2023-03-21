@@ -1300,7 +1300,7 @@ private slots:
 
   //** Uso interno */
 
-  void setPersistentFilterDelegate(const QString &filter)
+  void setPersistentFilterDelegate(const QString &filter);
 };
 
 #endif
