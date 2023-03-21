@@ -3162,10 +3162,10 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
     // setFilter("");
   }
 
-  if (d->cursorRelation_)
-  {
-    d->cursorRelation_->restorePersistentFilterBeforeDelegate();
-  }
+  // if (d->cursorRelation_)
+  //{
+  //   d->cursorRelation_->restorePersistentFilterBeforeDelegate();
+  // }
 }
 
 void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
