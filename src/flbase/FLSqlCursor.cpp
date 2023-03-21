@@ -240,6 +240,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   isDelegateCommit = false;
   lastDelegateCommitResult = false;
+  persistentFilterBeforeDelegate_ = "";
 
   if (delMtd)
   {
@@ -317,12 +318,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
 FLSqlCursor::~FLSqlCursor()
 {
-  qWarning("MATANDO " + d->metadata_->name());
-  if (useDelegateCommit())
-  {
-    restorePersistentFilterBeforeDelegate();
-  }
-
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   // bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() &&
   //               (!d->isSysTable_ && (d->isQuery_ || !d->fieldsNamesUnlock_.isEmpty()));
@@ -416,6 +411,11 @@ void FLSqlCursor::refresh(const QString &fN)
     {
       d->buffer_ = 0;
       emit newBuffer();
+    }
+
+    if (useDelegateCommit())
+    {
+      restorePersistentFilterBeforeDelegate();
     }
   }
 }
@@ -3160,8 +3160,10 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
 {
   if (!d->persistentFilterBeforeDelegate_.isEmpty())
   {
-    qWarning("Restaurando persisntenFilter para " + metadata()->name());
+    qWarning("Restaurando persistenFilter para " + metadata()->name() + ", current : " + d->persistentFilter_);
     d->persistentFilter_ = d->persistentFilterBeforeDelegate_;
+    qWarning("Restaurado persistentFilter de " + metadata()->name() + ", original : " + d->persistentFilter_);
+    d->persistentFilterBeforeDelegate_ = "";
     setFilter("");
   }
 }
