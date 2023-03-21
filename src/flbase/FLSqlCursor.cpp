@@ -412,11 +412,6 @@ void FLSqlCursor::refresh(const QString &fN)
       d->buffer_ = 0;
       emit newBuffer();
     }
-
-    if (useDelegateCommit())
-    {
-      restorePersistentFilterBeforeDelegate();
-    }
   }
 }
 
@@ -3165,6 +3160,11 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
     qWarning("Restaurado persistentFilter de " + metadata()->name() + ", original : " + d->persistentFilter_);
     persistentFilterBeforeDelegate_ = "";
     setFilter("");
+  }
+
+  if (d->cursorRelation_)
+  {
+    d->cursorRelation_->restorePersistentFilterBeforeDelegate();
   }
 }
 
