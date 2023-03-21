@@ -3158,12 +3158,12 @@ bool FLSqlCursor::doCommit()
 
 void FLSqlCursor::restorePersistentFilterBeforeDelegate()
 {
-  if (!d->persistentFilterBeforeDelegate_.isEmpty())
+  if (persistentFilterBeforeDelegate_.isEmpty())
   {
     qWarning("Restaurando persistenFilter para " + metadata()->name() + ", current : " + d->persistentFilter_);
-    d->persistentFilter_ = d->persistentFilterBeforeDelegate_;
+    d->persistentFilter_ = persistentFilterBeforeDelegate_;
     qWarning("Restaurado persistentFilter de " + metadata()->name() + ", original : " + d->persistentFilter_);
-    d->persistentFilterBeforeDelegate_ = "";
+    persistentFilterBeforeDelegate_ = "";
     setFilter("");
   }
 }
@@ -3171,10 +3171,10 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
 void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
 {
 
-  if (d->persistentFilterBeforeDelegate_.isEmpty())
+  if (persistentFilterBeforeDelegate_.isEmpty())
   {
     qWarning("FLSqlCursor::setPersistentFilterDelegate = " + filter);
-    d->persistentFilterBeforeDelegate_ = d->persistentFilter_;
+    persistentFilterBeforeDelegate_ = d->persistentFilter_;
   }
 
   if (!d->persistentFilter_.contains(filter))
