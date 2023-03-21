@@ -3102,6 +3102,7 @@ bool FLSqlCursor::doCommitBuffer()
 
       if (d->cursorRelation_)
       {
+        qWarning("Controlando cursor relacionado %s", d->cursorRelation_->metadata()->name());
         QString pKNRelation = d->cursorRelation_->metadata()->primaryKey();
         QString pKWhereRelation = d->cursorRelation_->db()->manager()->formatAssignValue(d->cursorRelation_->metadata()->field(pKNRelation), d->cursorRelation_->valueBuffer(pKNRelation));
         d->cursorRelation_->setPersistentFilterDelegate(pKWhereRelation);
@@ -3154,8 +3155,9 @@ bool FLSqlCursor::doCommit()
 
 void FLSqlCursor::restorePersistentFilterBeforeDelegate()
 {
-  if (d->persistentFilterBeforeDelegate_.isEmpty())
+  if (!d->persistentFilterBeforeDelegate_.isEmpty())
   {
+    qWarning("Restaurando persisntenFilter para " + metadata()->name());
     d->persistentFilter_ = d->persistentFilterBeforeDelegate_;
   }
 }
@@ -3165,11 +3167,13 @@ void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
 
   if (d->persistentFilterBeforeDelegate_.isEmpty())
   {
+    qWarning("FLSqlCursor::setPersistentFilterDelegate = %s", filter);
     d->persistentFilterBeforeDelegate_ = d->persistentFilter_;
   }
 
   if (!d->persistentFilter_.contains(filter))
   {
     d->persistentFilter_ = d->persistentFilter_.isEmpty() ? filter : d->persistentFilter_ + QString::fromLatin1(" OR ") + filter;
+    qWarning("FLSqlCursor::setPersistentFilterDelegate = %s", d->persistentFilter_);
   }
 }
