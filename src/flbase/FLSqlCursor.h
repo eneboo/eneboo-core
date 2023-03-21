@@ -302,12 +302,6 @@ public:
   QString persistentFilter_;
 
   /**
-   Guarda una copia de persistentFilter_ para cuando termina el cursor restaurarlo.
-  */
-
-  QString persistentFilterBeforeDelegate_;
-
-  /**
   Cursor propietario
   */
   FLSqlCursor *cursor_;
@@ -894,6 +888,11 @@ protected:
 
   bool lastDelegateCommitResult;
   bool isDelegateCommit;
+  /**
+   Guarda una copia de persistentFilter_ para cuando termina el cursor restaurarlo.
+  */
+
+  QString persistentFilterBeforeDelegate_;
 
 public slots:
 
