@@ -3157,6 +3157,7 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
   {
     qWarning("Restaurando persisntenFilter para " + metadata()->name());
     d->persistentFilter_ = d->persistentFilterBeforeDelegate_;
+    setFilter("");
   }
 }
 
