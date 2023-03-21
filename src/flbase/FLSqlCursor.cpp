@@ -318,9 +318,9 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 FLSqlCursor::~FLSqlCursor()
 {
   qWarning("MATANDO " + d->metadata_->name());
-  if (useDelegateCommit() && d->cursorRelation_)
+  if (useDelegateCommit())
   {
-    d->cursorRelation_->restorePersistentFilterBeforeDelegate();
+    restorePersistentFilterBeforeDelegate();
   }
 
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
