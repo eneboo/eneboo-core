@@ -318,6 +318,11 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 FLSqlCursor::~FLSqlCursor()
 {
 
+  if (useDelegateCommit() && d->cursorRelation_)
+  {
+    d->cursorRelation_->restorePersistentFilterBeforeDelegate();
+  }
+
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   // bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() &&
   //               (!d->isSysTable_ && (d->isQuery_ || !d->fieldsNamesUnlock_.isEmpty()));
@@ -3157,7 +3162,6 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
   {
     qWarning("Restaurando persisntenFilter para " + metadata()->name());
     d->persistentFilter_ = d->persistentFilterBeforeDelegate_;
-    setFilter("");
   }
 }
 

@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+ versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLFormRecordDB.h"
@@ -300,8 +300,8 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     QPixmap rld4(QPixmap::fromMimeSource("last.png"));
     pushButtonLast->setIconSet(rld4);
     pushButtonLast->setAccel(QKeySequence(Qt::Key_F8));
-    QToolTip::add(pushButtonLast, tr("Aceptar los cambios e ir al último registro (F8)"));
-    QWhatsThis::add(pushButtonLast, tr("Aceptar los cambios e ir al último registro (F8)"));
+    QToolTip::add(pushButtonLast, tr("Aceptar los cambios e ir al ?ltimo registro (F8)"));
+    QWhatsThis::add(pushButtonLast, tr("Aceptar los cambios e ir al ?ltimo registro (F8)"));
     pushButtonLast->setFocusPolicy(QWidget::NoFocus);
     layoutButtons->addWidget(pushButtonLast);
     pushButtonLast->show();
@@ -330,10 +330,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
       pushButtonAcceptContinue->setFocusPolicy(QWidget::NoFocus);
       pushButtonAcceptContinue->setAccel(QKeySequence(Qt::Key_F9));
       QToolTip::add(pushButtonAcceptContinue,
-                    tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
+                    tr("Aceptar los cambios y continuar con la edici?n de un nuevo registro (F9)"));
       QWhatsThis::add(
           pushButtonAcceptContinue,
-          tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
+          tr("Aceptar los cambios y continuar con la edici?n de un nuevo registro (F9)"));
       layoutButtons->addWidget(pushButtonAcceptContinue);
       pushButtonAcceptContinue->show();
     }
@@ -502,10 +502,10 @@ bool FLFormRecordDB::validateForm()
                   qApp->focusWidget(),
                   tr("Aviso de concurrencia"),
                   msg + "\n\n" +
-                      tr("¿ Desea realmente modificar este campo ?") + "\n\n" +
-                      tr("Sí : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
+                      tr("? Desea realmente modificar este campo ?") + "\n\n" +
+                      tr("S? : Ignora el cambio del otro usuario y utiliza el valor que acaba de introducir\n") +
                       tr("No : Respeta el cambio del otro usuario e ignora el valor que ha introducido\n") +
-                      tr("Cancelar : Cancela el guardado del registro y vuelve a la edición del registro\n\n"),
+                      tr("Cancelar : Cancela el guardado del registro y vuelve a la edici?n del registro\n\n"),
                   QMessageBox::Yes | QMessageBox::Default, QMessageBox::No, QMessageBox::Cancel | QMessageBox::Escape);
           if (res == QMessageBox::Cancel)
             return false;
@@ -651,17 +651,12 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     if (levels > 0)
     {
       cursor_->rollbackOpened(
-          levels, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+          levels, tr("Se han detectado transacciones no finalizadas en la ?ltima operaci?n.\n"
                      "Se van a cancelar las transacciones pendientes.\n"
-                     "Los últimos datos introducidos no han sido guardados, por favor\n"
-                     "revise sus últimas acciones y repita las operaciones que no\n"
+                     "Los ?ltimos datos introducidos no han sido guardados, por favor\n"
+                     "revise sus ?ltimas acciones y repita las operaciones que no\n"
                      "se han guardado.\n") +
                       QString("FormRecordDB::closeEvent: %1 %2\n").arg(levels).arg(QObject::name()));
-    }
-
-    if (cursor_->useDelegateCommit() && cursor_->cursorRelation())
-    {
-      cursor_->cursorRelation()->restorePersistentFilterBeforeDelegate();
     }
 
     if (accepted_)
