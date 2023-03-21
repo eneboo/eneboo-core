@@ -317,6 +317,9 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
 FLSqlCursor::~FLSqlCursor()
 {
+
+  restorePersistentFilterBeforeDelegate();
+
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   // bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() &&
   //               (!d->isSysTable_ && (d->isQuery_ || !d->fieldsNamesUnlock_.isEmpty()));
@@ -3097,16 +3100,11 @@ bool FLSqlCursor::doCommitBuffer()
         d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
       }
 
-      FLSqlCursor cursor_relacionado = d->cursorRelation_;
-
-      if (cursor_relacionado)
+      if (d->cursorRelation_)
       {
-        QString pKNRelation = cursor_relacionado->metadata()->primaryKey();
-        QString pKWhereRelation = cursor_relacionado->db()->manager()->formatAssignValue(cursor_relacionado->metadata()->field(pKNRelation), cursor_relacionado->valueBuffer(pKNRelation));
-        if (!cursor_relacionado->d->persistentFilter_.contains(pKWhereRelation))
-        {
-          cursor_relacionado->d->persistentFilter_ = (cursor_relacionado->d->persistentFilter_.isEmpty() ? pKWhereRelation : cursor_relacionado->d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhereRelation);
-        }
+        QString pKNRelation = d->cursorRelation_->metadata()->primaryKey();
+        QString pKWhereRelation = d->cursorRelation_->db()->manager()->formatAssignValue(d->cursorRelation_->metadata()->field(pKNRelation), d->cursorRelation_->valueBuffer(pKNRelation));
+        d->cursorRelation_->setPersistentFilterDelegate(pKWhereRelation);
       }
 
       bool emit_cursor_updated = true;
@@ -3152,4 +3150,26 @@ bool FLSqlCursor::doCommit()
     return lastDelegateCommitResult;
   }
   return commit();
+}
+
+void FLSqlCursor::restorePersistentFilterBeforeDelegate()
+{
+  if (d->persistentFilterBeforeDelegate_.isEmpty())
+  {
+    d->persistentFilter_ = d->persistentFilterBeforeDelegate_;
+  }
+}
+
+void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
+{
+
+  if (d->persistentFilterBeforeDelegate_.isEmpty())
+  {
+    d->persistentFilterBeforeDelegate_ = d->persistentFilter_;
+  }
+
+  if (!d->persistentFilter_.contains(filter))
+  {
+    d->persistentFilter_ = d->persistentFilter_.isEmpty() ? filter : d->persistentFilter_ + QString::fromLatin1(" OR ") + filter;
+  }
 }
