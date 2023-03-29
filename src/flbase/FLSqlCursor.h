@@ -36,7 +36,7 @@ email                : mail@infosial.com
 
 #include "AQGlobal.h"
 
-//#define AQ_MD5_CHECK
+// #define AQ_MD5_CHECK
 
 class FLTableMetaData;
 class FLRelationMetaData;
@@ -46,20 +46,23 @@ class FLSqlDatabase;
 class FLSqlCursor;
 class FLAccessControl;
 
-struct AQBoolFlagState {
-  AQBoolFlagState() :
-    modifier_(0), prevValue_(false), prev_(0), next_(0) {
+struct AQBoolFlagState
+{
+  AQBoolFlagState() : modifier_(0), prevValue_(false), prev_(0), next_(0)
+  {
 #ifdef FL_DEBUG
     ++count_;
 #endif
   }
 #ifdef FL_DEBUG
-  ~AQBoolFlagState() {
+  ~AQBoolFlagState()
+  {
 #ifdef FL_DEBUG
     --count_;
 #endif
   }
-  void dumpDebug() const {
+  void dumpDebug() const
+  {
     qWarning("%p <- (%p : [%p, %d]) -> %p", prev_, this, modifier_, prevValue_, next_);
   }
   static long count_;
@@ -70,41 +73,50 @@ struct AQBoolFlagState {
   AQBoolFlagState *next_;
 };
 
-struct AQBoolFlagStateList {
-  AQBoolFlagStateList() :
-    cur_(0) {}
-  ~AQBoolFlagStateList() {
+struct AQBoolFlagStateList
+{
+  AQBoolFlagStateList() : cur_(0) {}
+  ~AQBoolFlagStateList()
+  {
     clear();
   }
 #ifdef FL_DEBUG
-  void dumpDebug() const {
+  void dumpDebug() const
+  {
     AQBoolFlagState *it = cur_;
     qWarning("current %p", it);
-    while (it) {
+    while (it)
+    {
       it->dumpDebug();
       it = it->prev_;
     }
     qWarning("AQBoolFlagState count %d", AQBoolFlagState::count_);
   }
 #endif
-  void clear() {
-    while (cur_) {
+  void clear()
+  {
+    while (cur_)
+    {
       AQBoolFlagState *pv = cur_->prev_;
       delete cur_;
       cur_ = pv;
     }
   }
-  bool isEmpty() const {
+  bool isEmpty() const
+  {
     return (cur_ == 0);
   }
-  AQBoolFlagState *find(void *m) const {
+  AQBoolFlagState *find(void *m) const
+  {
     AQBoolFlagState *it = cur_;
     while (it && it->modifier_ != m)
       it = it->prev_;
     return it;
   }
-  void append(AQBoolFlagState *i) {
-    if (!cur_) {
+  void append(AQBoolFlagState *i)
+  {
+    if (!cur_)
+    {
       cur_ = i;
       cur_->next_ = 0;
       cur_->prev_ = 0;
@@ -115,28 +127,37 @@ struct AQBoolFlagStateList {
     cur_ = i;
     cur_->next_ = 0;
   }
-  void erase(AQBoolFlagState *i, bool del = true) {
+  void erase(AQBoolFlagState *i, bool del = true)
+  {
     if (!cur_)
       return;
-    if (cur_ == i) {
-      if (cur_->prev_) {
+    if (cur_ == i)
+    {
+      if (cur_->prev_)
+      {
         cur_ = cur_->prev_;
         cur_->next_ = 0;
-      } else
+      }
+      else
         cur_ = 0;
-    } else {
+    }
+    else
+    {
       if (i->next_)
         i->next_->prev_ = i->prev_;
       if (i->prev_)
         i->prev_->next_ = i->next_;
     }
-    if (!del) {
+    if (!del)
+    {
       i->next_ = 0;
       i->prev_ = 0;
-    } else
+    }
+    else
       delete i;
   }
-  void pushOnTop(AQBoolFlagState *i) {
+  void pushOnTop(AQBoolFlagState *i)
+  {
     if (cur_ == i)
       return;
     erase(i, false);
@@ -148,7 +169,6 @@ struct AQBoolFlagStateList {
 class FLSqlCursorPrivate
 {
 public:
-
   FLSqlCursorPrivate();
   ~FLSqlCursorPrivate();
 
@@ -362,13 +382,12 @@ a cabo cuando se envía el contenido del buffer de nuevo al cursor, con FLSqlCurs
 
 @author InfoSiAL S.L.
 */
-class AQ_EXPORT FLSqlCursor: public QObject, public QSqlCursor
+class AQ_EXPORT FLSqlCursor : public QObject, public QSqlCursor
 {
 
   Q_OBJECT
 
 public:
-
   /**
   constructor.
 
@@ -396,7 +415,8 @@ public:
   /**
   Constantes para indicar el tipo de acceso al cursor
   */
-  enum Mode {
+  enum Mode
+  {
     /** Insertar, en este modo el buffer se prepara para crear un nuevo registro */
     INSERT = 0,
     /** Edición, en este modo el buffer se prepara para editar el registro activo */
@@ -410,7 +430,8 @@ public:
   /**
   Constantes para indicar el tipo de condicion para evaluar si se aplica o no el control de acceso
   */
-  enum AcosConditionEval {
+  enum AcosConditionEval
+  {
     /** evalua un valor fijo */
     VALUE = 0,
     /** evalua una expresion regular */
@@ -424,7 +445,8 @@ public:
 
   @return Objeto FLTableMetaData con los metadatos de la tabla asociada al cursor
   */
-  FLTableMetaData *metadata() const {
+  FLTableMetaData *metadata() const
+  {
     return d->metadata_;
   }
 
@@ -434,7 +456,8 @@ public:
   @return Constante FLSqlCursor::Mode que define en que modo de acceso esta preparado
       el buffer del cursor
   */
-  int modeAccess() const {
+  int modeAccess() const
+  {
     return d->modeAccess_;
   }
 
@@ -443,7 +466,8 @@ public:
 
   @return Cadena de texto con el filtro principal
   */
-  QString mainFilter() const {
+  QString mainFilter() const
+  {
     return d->mainFilter_;
   }
 
@@ -452,7 +476,8 @@ public:
 
   @return  Objeto FLAction
   */
-  FLAction *action() const {
+  FLAction *action() const
+  {
     return d->action_;
   }
 
@@ -461,7 +486,8 @@ public:
 
   @param a Objeto FLAction
   */
-  void setAction(FLAction *a) {
+  void setAction(FLAction *a)
+  {
     d->action_ = a;
   }
 
@@ -479,7 +505,8 @@ public:
   @param m Constante FLSqlCursor::Mode que indica en que modo de acceso
        se quiere establecer el cursor
   */
-  void setModeAccess(const int m) {
+  void setModeAccess(const int m)
+  {
     d->modeAccess_ = m;
   }
 
@@ -558,7 +585,8 @@ public:
 
   @return Contexto de ejecución
   */
-  QObject *context() const {
+  QObject *context() const
+  {
     return d->ctxt_;
   }
 
@@ -639,7 +667,8 @@ public:
 
   @param a Valor a establecer (TRUE o FALSE)
   */
-  void setAskForCancelChanges(bool a) {
+  void setAskForCancelChanges(bool a)
+  {
     d->askForCancelChanges_ = a;
   }
 
@@ -648,10 +677,12 @@ public:
 
   @param a TRUE los activa y FALSE los desactiva
   */
-  void setActivatedCheckIntegrity(bool a) {
+  void setActivatedCheckIntegrity(bool a)
+  {
     d->activatedCheckIntegrity_ = a;
   }
-  bool activatedCheckIntegrity() const {
+  bool activatedCheckIntegrity() const
+  {
     return d->activatedCheckIntegrity_;
   }
 
@@ -660,10 +691,12 @@ public:
 
   @param a TRUE las activa y FALSE las desactiva
   */
-  void setActivatedCommitActions(bool a) {
+  void setActivatedCommitActions(bool a)
+  {
     d->activatedCommitActions_ = a;
   }
-  bool activatedCommitActions() const {
+  bool activatedCommitActions() const
+  {
     return d->activatedCommitActions_;
   }
 
@@ -692,10 +725,12 @@ public:
   /**
   Devuelve el cursor relacionado con este.
   */
-  FLSqlCursor *cursorRelation() const {
+  FLSqlCursor *cursorRelation() const
+  {
     return d->cursorRelation_;
   }
-  FLRelationMetaData *relation() const {
+  FLRelationMetaData *relation() const
+  {
     return d->relation_;
   }
 
@@ -813,14 +848,16 @@ public:
   /**
   Para obtener la base de datos sobre la que trabaja
   */
-  FLSqlDatabase *db() const {
+  FLSqlDatabase *db() const
+  {
     return d->db_;
   }
 
   /**
   Para obtener el nombre del cursor (generalmente el nombre de la tabla)
   */
-  QString curName() const {
+  QString curName() const
+  {
     return d->curName_;
   }
 
@@ -835,7 +872,6 @@ public:
   QString filterAssoc(const QString &fieldName, FLTableMetaData *tableMD = 0);
 
 protected:
-
   /**
   Redefinida
   */
@@ -845,13 +881,18 @@ protected:
   Redefinicion del método afterSeek() de QSqlCursor.
   */
   void afterSeek();
-  
+
   /**
   Gestiona delegateCommit
   */
 
   bool lastDelegateCommitResult;
   bool isDelegateCommit;
+  /**
+   Guarda una copia de persistentFilter_ para cuando termina el cursor restaurarlo.
+  */
+
+  QString persistentFilterBeforeDelegate_;
 
 public slots:
 
@@ -1147,7 +1188,6 @@ public slots:
   */
   void changeConnection(const QString &connName);
 
-
   /**
   Lanza llamada sengun proceda el deletateCommit o commitBuffer del cursorRelation.
   */
@@ -1165,7 +1205,10 @@ public slots:
 
   bool useDelegateCommit();
 
-
+  /**
+   Restaura el filtro persistente al usado inicalmente.
+  */
+  void restorePersistentFilterBeforeDelegate();
 
 private:
   friend class FLDataTable;
@@ -1250,11 +1293,14 @@ signals:
   */
   void commited();
 
-
 private slots:
 
   /** Uso interno */
   void clearPersistentFilter();
+
+  //** Uso interno */
+
+  void setPersistentFilterDelegate(const QString &filter);
 };
 
 #endif

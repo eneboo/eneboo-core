@@ -240,6 +240,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   bool delMtd = d->metadata_ && !d->metadata_->aqWasDeleted() && !d->metadata_->inCache();
   isDelegateCommit = false;
   lastDelegateCommitResult = false;
+  persistentFilterBeforeDelegate_ = "";
 
   if (delMtd)
   {
@@ -3094,9 +3095,36 @@ bool FLSqlCursor::doCommitBuffer()
       QString pKWhere = d->db_->manager()->formatAssignValue(mtd->field(pKN), valueBuffer(pKN));
       if (!d->persistentFilter_.contains(pKWhere))
       {
-        d->persistentFilter_ = (d->persistentFilter_.isEmpty() ? pKWhere : d->persistentFilter_ + QString::fromLatin1(" OR ") + pKWhere);
+        setPersistentFilterDelegate(pKWhere);
       }
-      emit cursorUpdated();
+
+      if (d->cursorRelation_)
+      {
+        qWarning("Controlando cursor relacionado " + d->cursorRelation_->metadata()->name());
+        QString pKNRelation = d->cursorRelation_->metadata()->primaryKey();
+        QString pKWhereRelation = d->cursorRelation_->db()->manager()->formatAssignValue(d->cursorRelation_->metadata()->field(pKNRelation), d->cursorRelation_->valueBuffer(pKNRelation));
+        d->cursorRelation_->setPersistentFilterDelegate(pKWhereRelation);
+      }
+
+      bool emit_cursor_updated = true;
+
+      if (d->modeAccess_ == EDIT)
+      {
+        if (!isModifiedBuffer())
+        {
+          qWarning("emit cursor updated a false");
+          emit_cursor_updated = false;
+        }
+        else
+        {
+          setNotGenerateds();
+        }
+      }
+
+      if (emit_cursor_updated)
+      {
+        emit cursorUpdated();
+      }
       emit bufferCommited();
     }
   }
@@ -3121,4 +3149,38 @@ bool FLSqlCursor::doCommit()
     return lastDelegateCommitResult;
   }
   return commit();
+}
+
+void FLSqlCursor::restorePersistentFilterBeforeDelegate()
+{
+  if (persistentFilterBeforeDelegate_.isEmpty())
+  {
+    qWarning("Restaurando persistenFilter para " + metadata()->name() + ", current : " + d->persistentFilter_);
+    d->persistentFilter_ = persistentFilterBeforeDelegate_;
+    qWarning("Restaurado persistentFilter de " + metadata()->name() + ", original : " + d->persistentFilter_);
+    persistentFilterBeforeDelegate_ = "";
+    // setFilter("");
+  }
+
+  if (d->cursorRelation_)
+  {
+    d->cursorRelation_->restorePersistentFilterBeforeDelegate();
+  }
+}
+
+void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
+{
+
+  if (persistentFilterBeforeDelegate_.isEmpty())
+  {
+    qWarning("FLSqlCursor::setPersistentFilterDelegate = " + filter);
+    persistentFilterBeforeDelegate_ = d->persistentFilter_;
+  }
+
+  if (!d->persistentFilter_.contains(filter))
+  {
+    d->persistentFilter_ = d->persistentFilter_.isEmpty() ? filter : d->persistentFilter_ + QString::fromLatin1(" OR ") + filter;
+    qWarning("Nuevo persistent filter = " + d->persistentFilter_);
+    setFilter("");
+  }
 }
