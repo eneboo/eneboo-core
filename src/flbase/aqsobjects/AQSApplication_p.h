@@ -41,7 +41,7 @@ public slots:
   bool hasPendingEvents();
   virtual bool notify(QObject *, QEvent *);
   virtual bool notify(QObject *, AQSEvent *);
-  QString translate(const char *, const char *, const char* = 0, uint = QApplication::DefaultCodec) const;
+  QString translate(const char *, const char *, const char * = 0, uint = QApplication::DefaultCodec) const;
   QString applicationDirPath();
   QString applicationFilePath();
   bool isSessionRestored() const;
@@ -57,10 +57,10 @@ public slots:
   void restoreOverrideCursor();
   bool hasGlobalMouseTracking();
   void setGlobalMouseTracking(bool);
-  QPalette palette(const QWidget* = 0);
-  void setPalette(const QPalette &, bool = FALSE, const char* = 0);
-  QFont font(const QWidget* = 0);
-  void setFont(const QFont &, bool = FALSE, const char* = 0);
+  QPalette palette(const QWidget * = 0);
+  void setPalette(const QPalette &, bool = FALSE, const char * = 0);
+  QFont font(const QWidget * = 0);
+  void setFont(const QFont &, bool = FALSE, const char * = 0);
   QFontMetrics *fontMetrics();
   QDesktopWidget *desktop();
   QWidget *activePopupWidget();
@@ -113,7 +113,7 @@ public slots:
   void aboutAbanQ();
   void chooseFont();
   void showStyles();
-  void setDatabaseLockDetection(bool = true, int = 30000, int = -1, bool = true, const QString& = QString::null, const QString& = QString::null);
+  void setDatabaseLockDetection(bool = true, int = 30000, int = -1, bool = true, const QString & = QString::null, const QString & = QString::null);
   QString commaSeparator() const;
   void setNotifyBeginTransaction(bool = true);
   void setNotifyEndTransaction(bool = true);
@@ -133,7 +133,8 @@ public slots:
   void stopTimerIdle();
 
 protected:
-  static void *construct(const QSArgumentList &args) {
+  static void *construct(const QSArgumentList &args)
+  {
     return 0;
   }
   //@AQ_END_DEF_PUB_SLOTS@
@@ -168,7 +169,7 @@ inline bool AQSApplication::hasPendingEvents()
 {
   AQ_CALL_RET_V(hasPendingEvents(), bool);
 }
-inline bool AQSApplication::notify(QObject *arg0,  QEvent *arg1)
+inline bool AQSApplication::notify(QObject *arg0, QEvent *arg1)
 {
   AQ_CALL_RET_V(notify(arg0, arg1), bool);
 }
@@ -176,7 +177,7 @@ inline bool AQSApplication::notify(QObject *arg0, AQSEvent *arg1)
 {
   AQ_CALL_RET_V(notify(arg0, *arg1), bool);
 }
-inline QString AQSApplication::translate(const char *arg0,  const char *arg1,  const char *arg2,  uint arg3) const
+inline QString AQSApplication::translate(const char *arg0, const char *arg1, const char *arg2, uint arg3) const
 {
   AQ_CALL_RET_V(translate(arg0, arg1, arg2, static_cast<QApplication::Encoding>(arg3)), QString);
 }
@@ -220,11 +221,11 @@ inline QCursor *AQSApplication::overrideCursor()
 {
   AQ_CALL_RET(overrideCursor());
 }
-inline void AQSApplication::setOverrideCursor(QCursor *arg0,  bool arg1)
+inline void AQSApplication::setOverrideCursor(QCursor *arg0, bool arg1)
 {
   AQ_CALL_VOID(setOverrideCursor(*arg0, arg1));
 }
-inline void AQSApplication::setOverrideCursor(AQSCursor *arg0,  bool arg1)
+inline void AQSApplication::setOverrideCursor(AQSCursor *arg0, bool arg1)
 {
   AQ_CALL_VOID(setOverrideCursor(*arg0, arg1));
 }
@@ -244,7 +245,7 @@ inline QPalette AQSApplication::palette(const QWidget *arg0)
 {
   AQ_CALL_RET_V(palette(arg0), QPalette);
 }
-inline void AQSApplication::setPalette(const QPalette &arg0,  bool arg1,  const char *arg2)
+inline void AQSApplication::setPalette(const QPalette &arg0, bool arg1, const char *arg2)
 {
   AQ_CALL_VOID(setPalette(arg0, arg1, arg2));
 }
@@ -252,7 +253,7 @@ inline QFont AQSApplication::font(const QWidget *arg0)
 {
   AQ_CALL_RET_V(font(arg0), QFont);
 }
-inline void AQSApplication::setFont(const QFont &arg0,  bool arg1,  const char *arg2)
+inline void AQSApplication::setFont(const QFont &arg0, bool arg1, const char *arg2)
 {
   AQ_CALL_VOID(setFont(arg0, arg1, arg2));
 }
@@ -276,11 +277,11 @@ inline QClipboard *AQSApplication::clipboard()
 {
   AQ_CALL_RET(clipboard());
 }
-inline QWidget *AQSApplication::widgetAt(int arg0,  int arg1,  bool arg2)
+inline QWidget *AQSApplication::widgetAt(int arg0, int arg1, bool arg2)
 {
   AQ_CALL_RET(widgetAt(arg0, arg1, arg2));
 }
-inline QWidget *AQSApplication::widgetAt(const QPoint &arg0,  bool arg1)
+inline QWidget *AQSApplication::widgetAt(const QPoint &arg0, bool arg1)
 {
   AQ_CALL_RET(widgetAt(arg0, arg1));
 }
@@ -288,7 +289,7 @@ inline QEventLoop *AQSApplication::eventLoop()
 {
   AQ_CALL_RET(eventLoop());
 }
-inline bool AQSApplication::sendEvent(QObject *arg0,  QEvent *arg1)
+inline bool AQSApplication::sendEvent(QObject *arg0, QEvent *arg1)
 {
   AQ_CALL_RET_V(sendEvent(arg0, arg1), bool);
 }
@@ -296,7 +297,7 @@ inline bool AQSApplication::sendEvent(QObject *arg0, AQSEvent *arg1)
 {
   AQ_CALL_RET_V(sendEvent(arg0, *arg1), bool);
 }
-inline void AQSApplication::postEvent(QObject *arg0,  QEvent *arg1)
+inline void AQSApplication::postEvent(QObject *arg0, QEvent *arg1)
 {
   AQ_CALL_VOID(postEvent(arg0, arg1));
 }
@@ -304,7 +305,7 @@ inline void AQSApplication::postEvent(QObject *arg0, AQSEvent *arg1)
 {
   AQ_CALL_VOID(postEvent(arg0, *arg1));
 }
-inline void AQSApplication::sendPostedEvents(QObject *arg0,  int arg1)
+inline void AQSApplication::sendPostedEvents(QObject *arg0, int arg1)
 {
   AQ_CALL_VOID(sendPostedEvents(arg0, arg1));
 }
@@ -442,7 +443,12 @@ inline void AQSApplication::setMainWidget(QWidget *arg0)
 {
   AQ_CALL_VOID(setMainWidget(arg0));
 }
-inline QSArgument AQSApplication::call(const QString &arg0,  const QString &arg1) const
+inline QSArgument AQSApplication::call(const QString &arg0, const QSArgument &arg1, const QString &arg2) const
+{
+  AQ_CALL_RET_V(call(arg0, arg1, arg2), QSArgument);
+}
+
+inline QSArgument AQSApplication::call(const QString &arg0, const QString &arg1) const
 {
   AQ_CALL_RET_V(call(arg0, arg1), QSArgument);
 }
@@ -467,7 +473,7 @@ inline void AQSApplication::showStyles()
 {
   AQ_CALL_VOID(showStyles());
 }
-inline void AQSApplication::setDatabaseLockDetection(bool arg0,  int arg1,  int arg2,  bool arg3,  const QString &arg4,  const QString &arg5)
+inline void AQSApplication::setDatabaseLockDetection(bool arg0, int arg1, int arg2, bool arg3, const QString &arg4, const QString &arg5)
 {
   AQ_CALL_VOID(setDatabaseLockDetection(arg0, arg1, arg2, arg3, arg4, arg5));
 }
