@@ -236,9 +236,9 @@ void AQApplication::setMainWidget(QWidget *mainWidget)
 
 QSArgument AQApplication::call(const QString &function,
                                const QSArgumentList &arguments,
-                               QObject *objectContext) const
+                               const QString &nameObjectContext) const
 {
-  return FLApplication::call(function, arguments, objectContext);
+  return FLApplication::call(function, arguments, nameObjectContext);
 }
 
 QSArgument AQApplication::call(const QString &function,
