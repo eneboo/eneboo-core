@@ -108,6 +108,7 @@ public slots:
   FLSqlDatabase *db();
   void setMainWidget(QWidget *);
   QSArgument call(const QString &, const QString &) const;
+  QSArgument call(const QString &, const QSArgument &, const QString &) const;
   void activateModule(const QString &);
   void execMainScript(const QString &);
   void aboutAbanQ();
