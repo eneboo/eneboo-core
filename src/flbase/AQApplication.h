@@ -47,6 +47,10 @@ public slots:
   QSArgument call(const QString &function,
                   const QString &nameObjectContext) const;
 
+  QSArgument call(const QString &function,
+                  const QSArgumentList &arguments,
+                  const QString &nameObjectContext) const;
+
   AQApplication *self();
 
   void setProxyDesktop(QWidget *w);
