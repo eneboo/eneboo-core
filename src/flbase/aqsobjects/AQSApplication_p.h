@@ -108,6 +108,7 @@ public slots:
   FLSqlDatabase *db();
   void setMainWidget(QWidget *);
   QSArgument call(const QString &, const QString &) const;
+  QSArgument call(const QString &, const QString &, const QString &) const;
   void activateModule(const QString &);
   void execMainScript(const QString &);
   void aboutAbanQ();
@@ -442,7 +443,12 @@ inline void AQSApplication::setMainWidget(QWidget *arg0)
 {
   AQ_CALL_VOID(setMainWidget(arg0));
 }
-inline QSArgument AQSApplication::call(const QString &arg0,  const QString &arg1) const
+inline QSArgument AQSApplication::call(const QString &arg0, const QString &arg1, const QString &arg2) const
+{
+  AQ_CALL_RET_V(call(arg0, arg1, arg2), QSArgument);
+}
+
+inline QSArgument AQSApplication::call(const QString &arg0, const QString &arg1) const
 {
   AQ_CALL_RET_V(call(arg0, arg1), QSArgument);
 }

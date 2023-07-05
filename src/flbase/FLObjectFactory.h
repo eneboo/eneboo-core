@@ -315,6 +315,20 @@ public slots:
     return obj_->call(function, QSArgumentList(), nameObjectContext);
   }
 
+  QSArgument call(const QString &function,
+                  const QString &arguments,
+                  const QString &nameObjectContext) const
+  {
+    QStringList list(QStringList::split(':', arguments, false));
+    QSArgumentList arglist;
+    for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
+    {
+      arglist.append(QSArgument(*it));
+    }
+
+    return obj_->call(function, arglist, nameObjectContext);
+  }
+
   /**
    Establece el título de la ventana principal.
 

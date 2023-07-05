@@ -230,9 +230,17 @@ void AQApplication::setMainWidget(QWidget *mainWidget)
 }
 
 QSArgument AQApplication::call(const QString &function,
+                               const QString &arguments,
                                const QString &nameObjectContext) const
 {
-  return FLApplication::call(function, QSArgumentList(), nameObjectContext);
+  QStringList list(QStringList::split(':', arguments, false));
+  QSArgumentList arglist;
+  for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
+  {
+    arglist.append(QSArgument(*it));
+  }
+
+  return FLApplication::call(function, arglist, nameObjectContext);
 }
 
 AQApplication *AQApplication::self()
