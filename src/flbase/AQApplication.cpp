@@ -36,7 +36,7 @@
 FLApplication *aqApp = 0;
 
 AQApplication::AQApplication(int &argc, char **argv)
-  : FLApplication(argc, argv)
+    : FLApplication(argc, argv)
 {
   d = new AQApplicationPrivate;
 }
@@ -51,11 +51,12 @@ void AQApplication::init(const QString &n, const QString &callFunction,
                          bool noMax)
 {
   d->oldApi_ = FLSettings::readBoolEntry("application/oldApi", true);
-  if (d->oldApi_ || !n.isEmpty() || (!callFunction.isEmpty() && quitAfterCall)) {
+  if (d->oldApi_ || !n.isEmpty() || (!callFunction.isEmpty() && quitAfterCall))
+  {
     FLApplication::init(n, callFunction, arguments, quitAfterCall, noMax);
     return;
   }
-  
+
   QPixmap::setDefaultOptimization(QPixmap::BestOptim);
   qInitNetworkProtocols();
   FLDiskCache::init(this);
@@ -64,11 +65,11 @@ void AQApplication::init(const QString &n, const QString &callFunction,
   AQ_DISKCACHE_CLR();
 #endif
 
-  //#ifdef QSDEBUGGER
-  //  project_ = new QSProject(this, db()->database());
-  //#else
+  // #ifdef QSDEBUGGER
+  //   project_ = new QSProject(this, db()->database());
+  // #else
   project_ = new QSProject(0, db()->database());
-  //#endif
+  // #endif
 
   initializing_ = true;
   AQ_SET_MNGLOADER
@@ -88,7 +89,8 @@ void AQApplication::init(const QString &n, const QString &callFunction,
   loadTranslations();
 
   QSInterpreter *i = project_->interpreter();
-  if (i) {
+  if (i)
+  {
     i->addObjectFactory(flFactory_);
     i->addObjectFactory(new AQSObjectFactory);
     i->addWrapperFactory(new AQSWrapperFactory);
@@ -96,38 +98,38 @@ void AQApplication::init(const QString &n, const QString &callFunction,
     i->addObjectFactory(new QSUtilFactory);
 #ifdef FL_DEBUGGER
     if (FLSettings::readBoolEntry("application/isDebuggerMode"))
-    i->setErrorMode( QSInterpreter::AskForDebug );
-else
-    i->setErrorMode( QSInterpreter::Notify ); 
+      i->setErrorMode(QSInterpreter::AskForDebug);
+    else
+      i->setErrorMode(QSInterpreter::Notify);
 #else
-    i->setErrorMode( QSInterpreter::Notify );
+    i->setErrorMode(QSInterpreter::Notify);
 #endif
   }
 
-//#ifdef QSDEBUGGER
-//  project_->evaluate();
-//  if (i && i->hadError()) {
-//    i->stopExecution();
-//    i->clear();
-//    project_->clearObjects();
-//    loadScriptsFromModule("sys");
-//  }
-//#endif
+  // #ifdef QSDEBUGGER
+  //   project_->evaluate();
+  //   if (i && i->hadError()) {
+  //     i->stopExecution();
+  //     i->clear();
+  //     project_->clearObjects();
+  //     loadScriptsFromModule("sys");
+  //   }
+  // #endif
 
   d->aqAppScriptObject_ = new QObject(this, "aqAppScript");
   project_->addObject(d->aqAppScriptObject_);
   d->aqAppScript_ = project_->createScript(
-                      d->aqAppScriptObject_,
-                      mngLoader_->contentCode("aqapplication.qs")
-                    );
-  
-  if (!callFunction.isEmpty()) {
-  	QStringList list(QStringList::split(':', arguments, false));
-  	QSArgumentList argList;
-  	for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
-    		argList.append(QSArgument(*it));
-  	FLApplication::call(callFunction, argList, 0);
-  				}
+      d->aqAppScriptObject_,
+      mngLoader_->contentCode("aqapplication.qs"));
+
+  if (!callFunction.isEmpty())
+  {
+    QStringList list(QStringList::split(':', arguments, false));
+    QSArgumentList argList;
+    for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
+      argList.append(QSArgument(*it));
+    FLApplication::call(callFunction, argList, 0);
+  }
   FLApplication::call("aqAppScriptMain", QSArgumentList(), d->aqAppScriptObject_);
   QTimer::singleShot(0, this, SLOT(callInitScript()));
 
@@ -146,7 +148,8 @@ else
 
 void AQApplication::reinit()
 {
-  if (d->oldApi_) {
+  if (d->oldApi_)
+  {
     FLApplication::reinit();
     return;
   }
@@ -181,7 +184,8 @@ void AQApplication::reinit()
 #ifdef QSDEBUGGER
   QSInterpreter *i = project_->interpreter();
   project_->evaluate();
-  if (i && i->hadError()) {
+  if (i && i->hadError())
+  {
     i->stopExecution();
     i->clear();
     project_->clearObjects();
@@ -190,9 +194,8 @@ void AQApplication::reinit()
     d->aqAppScriptObject_ = new QObject(this, "aqAppScript");
     project_->addObject(d->aqAppScriptObject_);
     d->aqAppScript_ = project_->createScript(
-                        d->aqAppScriptObject_,
-                        mngLoader_->contentCode("aqapplication.qs")
-                      );
+        d->aqAppScriptObject_,
+        mngLoader_->contentCode("aqapplication.qs"));
   }
 #endif
 
@@ -221,12 +224,21 @@ void AQApplication::callReinitScriptDelayed()
 
 void AQApplication::setMainWidget(QWidget *mainWidget)
 {
-  if (!d->oldApi_) {
+  if (!d->oldApi_)
+  {
     if (acl_ && mainWidget)
       acl_->process(mainWidget);
     QApplication::setMainWidget(mainWidget);
-  } else
+  }
+  else
     FLApplication::setMainWidget(mainWidget);
+}
+
+QSArgument AQApplication::call(const QString &function,
+                               const QSArgumentList &arguments,
+                               const QString &nameObjectContext) const
+{
+  return FLApplication::call(function, arguments, nameObjectContext);
 }
 
 QSArgument AQApplication::call(const QString &function,
