@@ -235,7 +235,7 @@ void AQApplication::setMainWidget(QWidget *mainWidget)
 }
 
 QSArgument AQApplication::call(const QString &function,
-                               const QSString &arguments,
+                               const QString &arguments,
                                const QString &nameObjectContext) const
 {
   QStringList list(QStringList::split(':', arguments, false));
