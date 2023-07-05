@@ -45,11 +45,14 @@ public slots:
   void setMainWidget(QWidget *mainWidget);
 
   QSArgument call(const QString &function,
+                  const QSArgumentList &arguments = QSArgumentList(),
                   const QString &nameObjectContext) const;
 
   QSArgument call(const QString &function,
-                  const QSArgumentList &arguments,
-                  const QString &nameObjectContext) const;
+                  const QString &nameObjectContext)
+  {
+    return call(function, QSArgumentList(), nameObjectContext);
+  }
 
   AQApplication *self();
 
