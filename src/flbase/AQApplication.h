@@ -51,7 +51,7 @@ public slots:
   QSArgument call(const QString &function,
                   const QString &nameObjectContext)
   {
-    return call(function, QString(""), nameObjectContext);
+    return call(function, QString::null, nameObjectContext);
   }
 
   AQApplication *self();
