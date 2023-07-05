@@ -46,7 +46,7 @@ public slots:
 
   QSArgument call(const QString &function,
                   const QSArgumentList &arguments = QSArgumentList(),
-                  const QString &nameObjectContext) const;
+                  const QString &nameObjectContext = QString::null) const;
 
   QSArgument call(const QString &function,
                   const QString &nameObjectContext)
