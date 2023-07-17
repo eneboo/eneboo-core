@@ -26,39 +26,39 @@
 static QVariant::Type qDecodeSqliteType(fType t)
 {
   QVariant::Type type = QVariant::Invalid;
-  switch (t) {
-    case ft_Boolean:
-      type = QVariant::Bool;
-      break;
-    case ft_Long:
-    case ft_ULong:
-    case ft_Short:
-    case ft_UShort:
-      type = QVariant::Int;
-      break;
-    case ft_Float:
-    case ft_Double:
-    case ft_LongDouble:
-      type = QVariant::Double;
-      break;
-    case ft_Object:
-      type = QVariant::ByteArray;
-      break;
-    case ft_String:
-    case ft_Char:
-    case ft_WChar:
-    case ft_WideString:
-      type = QVariant::String;
-      break;
-    default:
-      type = QVariant::String;
-      break;
+  switch (t)
+  {
+  case ft_Boolean:
+    type = QVariant::Bool;
+    break;
+  case ft_Long:
+  case ft_ULong:
+  case ft_Short:
+  case ft_UShort:
+    type = QVariant::Int;
+    break;
+  case ft_Float:
+  case ft_Double:
+  case ft_LongDouble:
+    type = QVariant::Double;
+    break;
+  case ft_Object:
+    type = QVariant::ByteArray;
+    break;
+  case ft_String:
+  case ft_Char:
+  case ft_WChar:
+  case ft_WideString:
+    type = QVariant::String;
+    break;
+  default:
+    type = QVariant::String;
+    break;
   }
   return type;
 }
 
-SqliteDriver::SqliteDriver(QObject *parent, const char *name) :
-  FLSqlDriver(parent, name), dataBase_(0) {}
+SqliteDriver::SqliteDriver(QObject *parent, const char *name) : FLSqlDriver(parent, name), dataBase_(0) {}
 
 SqliteDriver::~SqliteDriver() {}
 
@@ -69,7 +69,8 @@ SqliteDatabase *SqliteDriver::dataBase()
 
 bool SqliteDriver::open(const QString &db, const QString &, const QString &, const QString &, int)
 {
-  if (db.isEmpty()) {
+  if (db.isEmpty())
+  {
 #ifdef FL_DEBUG
     qWarning("SqliteDriver::open() : No Database name");
 #endif
@@ -77,23 +78,12 @@ bool SqliteDriver::open(const QString &db, const QString &, const QString &, con
     return false;
   }
 
-  if (!QFile::exists(db)) {
-    QMessageBox msgBox(tr("AVISO IMPORTANTE") ,
-                       tr("Eneboo puede comportarse de forma inestable con la base de datos SQLite.\n"
-                          "esta opción sólo se ofrece para poder probar fácilmente la aplicación\n"
-                          "sin necesidad de instalar un servidor de bases de datos.\n\n"
-                          "Para asegurar la fiabilidad en entornos en producción utilice un sistema de gestión\n"
-                          "de bases de datos como PostgreSQL o MySQL"),
-                       QMessageBox::NoIcon, QMessageBox::Ok, QMessageBox::NoButton,  QMessageBox::NoButton);
-    msgBox.setIconPixmap(QPixmap::fromMimeSource("bomba.png"));
-    msgBox.exec();
-  }
-
   close();
   dataBase_ = new SqliteDatabase();
   dataBase_->setDatabase(db);
 
-  if (dataBase_->connect() != DB_CONNECTION_OK) {
+  if (dataBase_->connect() != DB_CONNECTION_OK)
+  {
 #ifdef FL_DEBUG
     qWarning("SqliteDriver::open() : %s", dataBase_->getErrorMsg());
 #endif
@@ -102,26 +92,30 @@ bool SqliteDriver::open(const QString &db, const QString &, const QString &, con
     setOpenError(true);
     setLastError(QSqlError(dataBase_->getErrorMsg(), QString::null, QSqlError::Unknown));
     return false;
-  } else {
+  }
+  else
+  {
     setOpen(true);
     setOpenError(false);
     return true;
   }
 }
 
-bool SqliteDriver::open(const QString &db, const QString &, const QString &, const QString &host, int , const QString &)
+bool SqliteDriver::open(const QString &db, const QString &, const QString &, const QString &host, int, const QString &)
 {
   return open(db, QString::null, QString::null, QString::null, 0);
 }
 
 bool SqliteDriver::tryConnect(const QString &db, const QString &user, const QString &password, const QString &host, int port)
 {
-  if (!open(db, user, password, host, port, QString::null)) {
-    if (lastError().type() == QSqlError::Connection) {
+  if (!open(db, user, password, host, port, QString::null))
+  {
+    if (lastError().type() == QSqlError::Connection)
+    {
       msgBoxCritical(tr("Conexión fallida"),
                      tr("No se pudo conectar con la base de datos %1.").arg(db));
       msgBoxCritical(tr("Error"), QString(lastError().driverText().utf8()) + "\n" +
-                     QString(lastError().databaseText().utf8()));
+                                      QString(lastError().databaseText().utf8()));
       return false;
     }
   }
@@ -145,12 +139,14 @@ QString SqliteDriver::sqlCreateTable(const FLTableMetaData *tmd)
 
   unsigned int unlocks = 0;
   QDictIterator<FLFieldMetaData> it(*fieldList);
-  while ((field = it.current()) != 0) {
+  while ((field = it.current()) != 0)
+  {
     ++it;
     if (field->type() == FLFieldMetaData::Unlock)
       unlocks++;
   }
-  if (unlocks > 1) {
+  if (unlocks > 1)
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("No se ha podido crear la tabla ") + tmd->name());
     qWarning("FLManager : " + QApplication::tr("Hay más de un campo tipo unlock. Solo puede haber uno."));
@@ -160,67 +156,73 @@ QString SqliteDriver::sqlCreateTable(const FLTableMetaData *tmd)
   }
 
   QDictIterator<FLFieldMetaData> it2(*fieldList);
-  while ((field = it2.current()) != 0) {
+  while ((field = it2.current()) != 0)
+  {
     ++it2;
     sql += field->name();
-    switch (field->type()) {
-      case QVariant::Int:
-        sql += " INTEGER";
-        break;
+    switch (field->type())
+    {
+    case QVariant::Int:
+      sql += " INTEGER";
+      break;
 
-      case QVariant::UInt:
-        sql += " INTEGER";
-        break;
+    case QVariant::UInt:
+      sql += " INTEGER";
+      break;
 
-      case QVariant::Bool:
-      case FLFieldMetaData::Unlock:
-        sql += " BOOLEAN";
-        break;
+    case QVariant::Bool:
+    case FLFieldMetaData::Unlock:
+      sql += " BOOLEAN";
+      break;
 
-      case QVariant::Double:
-        sql += " FLOAT";
-        break;
+    case QVariant::Double:
+      sql += " FLOAT";
+      break;
 
-      case QVariant::Time:
-        sql += " VARCHAR(20)";
-        break;
+    case QVariant::Time:
+      sql += " VARCHAR(20)";
+      break;
 
-      case QVariant::Date:
-        sql += " VARCHAR(20)";
-        break;
+    case QVariant::Date:
+      sql += " VARCHAR(20)";
+      break;
 
-      case QVariant::Pixmap:
-        sql += " TEXT";
-        break;
+    case QVariant::Pixmap:
+      sql += " TEXT";
+      break;
 
-      case QVariant::String:
-        sql += " VARCHAR";
-        break;
+    case QVariant::String:
+      sql += " VARCHAR";
+      break;
 
-      case QVariant::StringList:
-        sql += " TEXT";
-        break;
+    case QVariant::StringList:
+      sql += " TEXT";
+      break;
 
-      case QVariant::ByteArray:
-        sql += " CLOB";
-        break;
+    case QVariant::ByteArray:
+      sql += " CLOB";
+      break;
 
-      case FLFieldMetaData::Serial:
-        sql += " INTEGER";
-        if (!field->isPrimaryKey())
-          sql += " PRIMARY KEY";
-        break;
+    case FLFieldMetaData::Serial:
+      sql += " INTEGER";
+      if (!field->isPrimaryKey())
+        sql += " PRIMARY KEY";
+      break;
     }
 
     int longitud = field->length();
     if (longitud > 0)
       sql += "(" + QString::number(longitud) + ")";
 
-    if (field->isPrimaryKey()) {
-      if (primaryKey.isEmpty()) {
+    if (field->isPrimaryKey())
+    {
+      if (primaryKey.isEmpty())
+      {
         sql += " PRIMARY KEY";
         primaryKey = field->name();
-      } else {
+      }
+      else
+      {
 #ifdef FL_DEBUG
         qWarning(QApplication::tr("FLManager : Tabla-> ") +
                  tmd->name() + QApplication::tr(" . Se ha intentado poner una segunda clave primaria para el campo ") +
@@ -230,7 +232,9 @@ QString SqliteDriver::sqlCreateTable(const FLTableMetaData *tmd)
 
         return QString::null;
       }
-    } else {
+    }
+    else
+    {
       if (field->isUnique())
         sql += " UNIQUE";
       if (!field->allowNull())
@@ -251,7 +255,7 @@ QString SqliteDriver::sqlCreateTable(const FLTableMetaData *tmd)
 
   return sql;
 
-#endif //FL_QUICK_CLIENT
+#endif // FL_QUICK_CLIENT
 
   return QString::null;
 }
@@ -260,29 +264,32 @@ QString SqliteDriver::formatValueLike(int t, const QVariant &v, const bool upper
 {
   QString res("IS NULL");
 
-  switch (t) {
-    case QVariant::Bool: {
-      QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
-        res = "=1";
-      else if (s == QApplication::tr("No").left(1).upper())
-        res = "=0";
-    }
+  switch (t)
+  {
+  case QVariant::Bool:
+  {
+    QString s(v.toString().left(1).upper());
+    if (s == QApplication::tr("Sí").left(1).upper())
+      res = "=1";
+    else if (s == QApplication::tr("No").left(1).upper())
+      res = "=0";
+  }
+  break;
+  case QVariant::Date:
+    res = "LIKE '%%" + FLUtil::dateDMAtoAMD(v.toString()) + "'";
     break;
-    case QVariant::Date:
-      res = "LIKE '%%" + FLUtil::dateDMAtoAMD(v.toString()) + "'";
-      break;
-    case QVariant::Time: {
-      QTime t(v.toTime());
-      if (t.isValid() && !t.isNull())
-        res = "LIKE '" + t.toString(Qt::ISODate) + "%%'";
-    }
-    break;
-    default:
-      if (upper)
-        res = "LIKE '" + v.toString().upper() + "%%'";
-      else
-        res = "LIKE '" + v.toString() + "%%'";
+  case QVariant::Time:
+  {
+    QTime t(v.toTime());
+    if (t.isValid() && !t.isNull())
+      res = "LIKE '" + t.toString(Qt::ISODate) + "%%'";
+  }
+  break;
+  default:
+    if (upper)
+      res = "LIKE '" + v.toString().upper() + "%%'";
+    else
+      res = "LIKE '" + v.toString() + "%%'";
   }
 
   return res;
@@ -292,38 +299,41 @@ QString SqliteDriver::formatValue(int t, const QVariant &v, const bool upper)
 {
   QString res;
 
-  switch (FLFieldMetaData::flDecodeType(t)) {
-    case QVariant::Bool: {
-      QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
-        res = "0";
-      else if (s == QApplication::tr("No").left(1).upper())
-        res = "1";
-      else
-        res = nullText();
-    }
+  switch (FLFieldMetaData::flDecodeType(t))
+  {
+  case QVariant::Bool:
+  {
+    QString s(v.toString().left(1).upper());
+    if (s == QApplication::tr("Sí").left(1).upper())
+      res = "0";
+    else if (s == QApplication::tr("No").left(1).upper())
+      res = "1";
+    else
+      res = nullText();
+  }
+  break;
+  case QVariant::Date:
+    res = "'" + FLUtil::dateDMAtoAMD(v.toString()) + "'";
     break;
-    case QVariant::Date:
-      res = "'" + FLUtil::dateDMAtoAMD(v.toString()) + "'";
-      break;
-    case QVariant::Time: {
-      QTime t(v.toTime());
-      if (t.isValid() && !t.isNull())
-        res = "'" + t.toString(Qt::ISODate) + "'";
-      else
-        res = nullText();
-    }
+  case QVariant::Time:
+  {
+    QTime t(v.toTime());
+    if (t.isValid() && !t.isNull())
+      res = "'" + t.toString(Qt::ISODate) + "'";
+    else
+      res = nullText();
+  }
+  break;
+  case QVariant::Int:
+  case QVariant::UInt:
+  case QVariant::Double:
+    res += v.toString();
     break;
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double:
-      res += v.toString();
-      break;
-    default:
-      if (upper)
-        res = "'" + v.toString().upper() + "'";
-      else
-        res = "'" + v.toString() + "'";
+  default:
+    if (upper)
+      res = "'" + v.toString().upper() + "'";
+    else
+      res = "'" + v.toString() + "'";
   }
 
   return res;
@@ -345,11 +355,14 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
   QDomDocument doc("doc");
   QDomElement docElem;
 
-  if (!FLUtil::domDocumentSetContent(doc, mtd1)) {
+  if (!FLUtil::domDocumentSetContent(doc, mtd1))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Error al cargar los metadatos."));
 #endif
-  } else {
+  }
+  else
+  {
     docElem = doc.documentElement();
     oldMTD = db_->manager()->metadata(&docElem, true);
   }
@@ -357,13 +370,16 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
   if (oldMTD && oldMTD->isQuery())
     return true;
 
-  if (!FLUtil::domDocumentSetContent(doc, mtd2)) {
+  if (!FLUtil::domDocumentSetContent(doc, mtd2))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Error al cargar los metadatos."));
 #endif
 
     return false;
-  } else {
+  }
+  else
+  {
     docElem = doc.documentElement();
     newMTD = db_->manager()->metadata(&docElem, true);
   }
@@ -371,7 +387,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
   if (!oldMTD)
     oldMTD = newMTD;
 
-  if (oldMTD->name() != newMTD->name()) {
+  if (oldMTD->name() != newMTD->name())
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Los nombres de las tablas nueva y vieja difieren."));
 #endif
@@ -384,7 +401,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
   }
 
   QString oldPK = oldMTD->primaryKey(), newPK = newMTD->primaryKey();
-  if (oldPK != newPK) {
+  if (oldPK != newPK)
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Los nombres de las claves primarias difieren."));
 #endif
@@ -396,7 +414,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
     return false;
   }
 
-  if (oldMTD->fieldType(oldPK) != newMTD->fieldType(newPK)) {
+  if (oldMTD->fieldType(oldPK) != newMTD->fieldType(newPK))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Los tipos de las claves primarias difieren."));
 #endif
@@ -408,7 +427,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
     return false;
   }
 
-  if (db_->manager()->checkMetaData(oldMTD, newMTD)) {
+  if (db_->manager()->checkMetaData(oldMTD, newMTD))
+  {
     if ((oldMTD != newMTD) && oldMTD)
       delete oldMTD;
     if (newMTD)
@@ -416,7 +436,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
     return true;
   }
 
-  if (!db_->manager()->existsTable(oldMTD->name())) {
+  if (!db_->manager()->existsTable(oldMTD->name()))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("La tabla %1 antigua de donde importar los registros no existe.").arg(oldMTD->name()));
 #endif
@@ -431,7 +452,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
   const FLTableMetaData::FLFieldMetaDataList *fieldList = oldMTD->fieldList();
   FLFieldMetaData *oldField = 0;
 
-  if (!fieldList) {
+  if (!fieldList)
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Los antiguos metadatos no tienen campos."));
 #endif
@@ -445,7 +467,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
 
   QString renameOld = oldMTD->name().left(6) + "alteredtable" + QDateTime::currentDateTime().toString("ddhhssz");
 
-  if (!db_->dbAux()) {
+  if (!db_->dbAux())
+  {
     if ((oldMTD != newMTD) && oldMTD)
       delete oldMTD;
     if (newMTD)
@@ -455,13 +478,15 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
 
   db_->dbAux()->transaction();
 
-  if (!key.isEmpty() && key.length() == 40) {
+  if (!key.isEmpty() && key.length() == 40)
+  {
     QSqlCursor c("flfiles", true, db_->dbAux());
     c.setForwardOnly(true);
     QSqlRecord *buffer;
     c.setFilter("nombre='" + renameOld + ".mtd'");
     c.select();
-    if (!c.next()) {
+    if (!c.next())
+    {
       buffer = c.primeInsert();
       buffer->setValue("nombre", renameOld + ".mtd");
       buffer->setValue("contenido", mtd1);
@@ -472,7 +497,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
 
   QSqlQuery q(QString::null, db_->dbAux());
 
-  if (!q.exec("CREATE TABLE " + renameOld + " AS SELECT * FROM " + oldMTD->name() + ";") || !q.exec("DROP TABLE " + oldMTD->name() + ";")) {
+  if (!q.exec("CREATE TABLE " + renameOld + " AS SELECT * FROM " + oldMTD->name() + ";") || !q.exec("DROP TABLE " + oldMTD->name() + ";"))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("No se ha podido renombrar la tabla antigua."));
 #endif
@@ -485,7 +511,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
     return false;
   }
 
-  if (!db_->manager()->createTable(newMTD)) {
+  if (!db_->manager()->createTable(newMTD))
+  {
     db_->dbAux()->rollback();
     if ((oldMTD != newMTD) && oldMTD)
       delete oldMTD;
@@ -510,7 +537,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
   fieldList = newMTD->fieldList();
   FLFieldMetaData *newField = 0;
 
-  if (!fieldList) {
+  if (!fieldList)
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Los nuevos metadatos no tienen campos."));
 #endif
@@ -523,7 +551,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
     return false;
   }
 
-  if (fieldList->isEmpty()) {
+  if (fieldList->isEmpty())
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager::alterTable : " + QApplication::tr("Los nuevos metadatos no tienen campos."));
 #endif
@@ -538,61 +567,71 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
 
   QVariant v;
   bool ok = true;
-  while (oldCursor.next()) {
+  while (oldCursor.next())
+  {
     newBuffer = newCursor.primeInsert();
 
     QDictIterator<FLFieldMetaData> it(*fieldList);
-    while ((newField = it.current()) != 0) {
+    while ((newField = it.current()) != 0)
+    {
       ++it;
       oldField = oldMTD->field(newField->name());
-      if (!oldField || !oldCursor.field(oldField->name())) {
+      if (!oldField || !oldCursor.field(oldField->name()))
+      {
         if (!oldField)
           oldField = newField;
         v = newField->defaultValue();
         v.cast(FLFieldMetaData::flDecodeType(newField->type()));
-      } else {
+      }
+      else
+      {
         v = oldCursor.value(newField->name());
         if ((!oldField->allowNull() || !newField->allowNull()) &&
-            (v.isNull() || !v.isValid())) {
+            (v.isNull() || !v.isValid()))
+        {
           QVariant defVal(newField->defaultValue());
           if (!defVal.isNull() && defVal.isValid())
             v = defVal;
         }
-        if (!v.cast(newBuffer->value(newField->name()).type())) {
+        if (!v.cast(newBuffer->value(newField->name()).type()))
+        {
 #ifdef FL_DEBUG
           qWarning("FLManager::alterTable : " +
                    QApplication::tr("Los tipos del campo %1 no son compatibles. Se introducirá un valor nulo.")
-                   .arg(newField->name()));
+                       .arg(newField->name()));
 #endif
         }
       }
-      if ((!oldField->allowNull() || !newField->allowNull()) && (v.isNull() || !v.isValid())) {
-        switch (oldField->type()) {
-          case QVariant::Int:
-          case FLFieldMetaData::Serial:
-          case QVariant::UInt:
-          case QVariant::Bool:
-          case FLFieldMetaData::Unlock:
-            v =  int(0);
-            break;
-          case QVariant::Double:
-            v = double(0.0);
-            break;
-          case QVariant::Time:
-            v = QTime::currentTime();
-            break;
-          case QVariant::Date:
-            v = QDate::currentDate();
-            break;
-          default:
-            v = QString("NULL").left(newField->length());
-            break;
+      if ((!oldField->allowNull() || !newField->allowNull()) && (v.isNull() || !v.isValid()))
+      {
+        switch (oldField->type())
+        {
+        case QVariant::Int:
+        case FLFieldMetaData::Serial:
+        case QVariant::UInt:
+        case QVariant::Bool:
+        case FLFieldMetaData::Unlock:
+          v = int(0);
+          break;
+        case QVariant::Double:
+          v = double(0.0);
+          break;
+        case QVariant::Time:
+          v = QTime::currentTime();
+          break;
+        case QVariant::Date:
+          v = QDate::currentDate();
+          break;
+        default:
+          v = QString("NULL").left(newField->length());
+          break;
         }
       }
       newBuffer->setValue(newField->name(), v);
     }
 
-    if (!newCursor.insert()) {
+    if (!newCursor.insert())
+    {
       ok = false;
       break;
     }
@@ -609,7 +648,8 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
 
   if (ok)
     db_->dbAux()->commit();
-  else {
+  else
+  {
     db_->dbAux()->rollback();
     return false;
   }
@@ -618,12 +658,13 @@ bool SqliteDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
 #else
 
   return true;
-#endif //FL_QUICK_CLIENT
+#endif // FL_QUICK_CLIENT
 }
 
 void SqliteDriver::close()
 {
-  if (isOpen() && dataBase_) {
+  if (isOpen() && dataBase_)
+  {
     dataBase_->disconnect();
     delete dataBase_;
     dataBase_ = 0;
@@ -634,16 +675,17 @@ void SqliteDriver::close()
 
 bool SqliteDriver::hasFeature(QSqlDriver::DriverFeature feature) const
 {
-  switch (feature) {
-    case QSqlDriver::Transactions:
-    case QSqlDriver::QuerySize:
-    case QSqlDriver::Unicode:
-    case QSqlDriver::BLOB:
-      return true;
-    case QSqlDriver::PreparedQueries:
-    case QSqlDriver::NamedPlaceholders:
-    case QSqlDriver::PositionalPlaceholders:
-      return false;
+  switch (feature)
+  {
+  case QSqlDriver::Transactions:
+  case QSqlDriver::QuerySize:
+  case QSqlDriver::Unicode:
+  case QSqlDriver::BLOB:
+    return true;
+  case QSqlDriver::PreparedQueries:
+  case QSqlDriver::NamedPlaceholders:
+  case QSqlDriver::PositionalPlaceholders:
+    return false;
   }
 }
 
@@ -676,7 +718,7 @@ bool SqliteDriver::rollbackTransaction()
 
 QSqlIndex SqliteDriver::primaryIndex2(const QString &tblname) const
 {
-  QSqlRecordInfo rec(recordInfo(tblname));     // expensive :(
+  QSqlRecordInfo rec(recordInfo(tblname)); // expensive :(
 
   if (!isOpen() || !dataBase_)
     return QSqlIndex();
@@ -686,8 +728,10 @@ QSqlIndex SqliteDriver::primaryIndex2(const QString &tblname) const
   // finrst find a UNIQUE INDEX
   q.exec("PRAGMA index_list('" + tblname + "');");
   QString indexname;
-  while (q.next()) {
-    if (q.value(2).toInt() == 1) {
+  while (q.next())
+  {
+    if (q.value(2).toInt() == 1)
+    {
       indexname = q.value(1).toString();
       break;
     }
@@ -698,7 +742,8 @@ QSqlIndex SqliteDriver::primaryIndex2(const QString &tblname) const
   q.exec("PRAGMA index_info('" + indexname + "');");
 
   QSqlIndex index(tblname, indexname);
-  while (q.next()) {
+  while (q.next())
+  {
     QString name = q.value(2).toString();
     QSqlVariant::Type type = QSqlVariant::Invalid;
     if (rec.contains(name))
@@ -716,7 +761,8 @@ QSqlIndex SqliteDriver::primaryIndex(const QString &tablename) const
   QDomDocument doc(tablename);
   QDomElement docElem;
   QString stream = db_->managerModules()->contentCached(tablename + ".mtd");
-  if (!FLUtil::domDocumentSetContent(doc, stream)) {
+  if (!FLUtil::domDocumentSetContent(doc, stream))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(tablename));
 #endif
@@ -770,7 +816,8 @@ QSqlRecord SqliteDriver::record(const QString &tablename) const
   QDomDocument doc(tablename);
   QDomElement docElem;
   QString stream = db_->managerModules()->contentCached(tablename + ".mtd");
-  if (!FLUtil::domDocumentSetContent(doc, stream)) {
+  if (!FLUtil::domDocumentSetContent(doc, stream))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(tablename));
 #endif
@@ -782,12 +829,14 @@ QSqlRecord SqliteDriver::record(const QString &tablename) const
     return record2(tablename);
 
   const FLTableMetaData::FLFieldMetaDataList *fl = mtd->fieldList();
-  if (!fl) {
+  if (!fl)
+  {
     delete mtd;
     return record2(tablename);
   }
 
-  if (fl->isEmpty()) {
+  if (fl->isEmpty())
+  {
     delete mtd;
     return record2(tablename);
   }
@@ -802,11 +851,13 @@ QSqlRecord SqliteDriver::record(const QString &tablename) const
 
 QSqlRecord SqliteDriver::record(const QSqlQuery &query) const
 {
-  if (query.isActive() && query.driver() == this) {
+  if (query.isActive() && query.driver() == this)
+  {
     QSqlRecord fil;
     const SqliteResult *result = static_cast<const SqliteResult *>(query.result());
     Dataset *ds = result->dataSet;
-    for (int i = 0; i < ds->fieldCount(); ++i) {
+    for (int i = 0; i < ds->fieldCount(); ++i)
+    {
       QString fName(ds->fieldName(i));
       fType type = ds->fv(fName).get_fType();
       fil.append(QSqlField(fName, qDecodeSqliteType(type)));
@@ -835,7 +886,8 @@ QSqlRecordInfo SqliteDriver::recordInfo(const QString &tablename) const
   QDomDocument doc(tablename);
   QDomElement docElem;
   QString stream = db_->managerModules()->contentCached(tablename + ".mtd");
-  if (!FLUtil::domDocumentSetContent(doc, stream)) {
+  if (!FLUtil::domDocumentSetContent(doc, stream))
+  {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(tablename));
 #endif
@@ -847,17 +899,20 @@ QSqlRecordInfo SqliteDriver::recordInfo(const QString &tablename) const
   if (!mtd)
     return recordInfo2(tablename);
   const FLTableMetaData::FLFieldMetaDataList *fl = mtd->fieldList();
-  if (!fl) {
+  if (!fl)
+  {
     delete mtd;
     return recordInfo2(tablename);
   }
-  if (fl->isEmpty()) {
+  if (fl->isEmpty())
+  {
     delete mtd;
     return recordInfo2(tablename);
   }
 
   QStringList fieldsNames = QStringList::split(",", mtd->fieldsNames());
-  for (QStringList::Iterator it = fieldsNames.begin(); it != fieldsNames.end(); ++it) {
+  for (QStringList::Iterator it = fieldsNames.begin(); it != fieldsNames.end(); ++it)
+  {
     FLFieldMetaData *field = mtd->field((*it));
     info.append(QSqlFieldInfo(field->name(),
                               FLFieldMetaData::flDecodeType(field->type()),
@@ -871,11 +926,13 @@ QSqlRecordInfo SqliteDriver::recordInfo(const QString &tablename) const
 
 QSqlRecordInfo SqliteDriver::recordInfo(const QSqlQuery &query) const
 {
-  if (query.isActive() && query.driver() == this) {
+  if (query.isActive() && query.driver() == this)
+  {
     QSqlRecordInfo info;
     const SqliteResult *result = static_cast<const SqliteResult *>(query.result());
     Dataset *ds = result->dataSet;
-    for (int i = 0; i < ds->fieldCount(); ++i) {
+    for (int i = 0; i < ds->fieldCount(); ++i)
+    {
       QString fName(ds->fieldName(i));
       fType type = ds->fv(fName).get_fType();
       info.append(QSqlFieldInfo(fName, qDecodeSqliteType(type)));
@@ -894,7 +951,7 @@ QStringList SqliteDriver::tables(const QString &typeName) const
 
   QSqlQuery q = createQuery();
   q.setForwardOnly(TRUE);
-#if (QT_VERSION-0 >= 0x030000)
+#if (QT_VERSION - 0 >= 0x030000)
   if ((type & (int)QSql::Tables) && (type & (int)QSql::Views))
     q.exec("SELECT name FROM sqlite_master WHERE type='table' OR type='view'");
   else if (typeName.isEmpty() || (type & (int)QSql::Tables))
@@ -905,14 +962,15 @@ QStringList SqliteDriver::tables(const QString &typeName) const
   q.exec("SELECT name FROM sqlite_master WHERE type='table' OR type='view'");
 #endif
 
-
-  if (q.isActive()) {
+  if (q.isActive())
+  {
     while (q.next())
       res.append(q.value(0).toString());
   }
 
-#if (QT_VERSION-0 >= 0x030000)
-  if (type & (int)QSql::SystemTables) {
+#if (QT_VERSION - 0 >= 0x030000)
+  if (type & (int)QSql::SystemTables)
+  {
     // there are no internal tables beside this one:
     res.append("sqlite_master");
   }
@@ -924,15 +982,14 @@ QStringList SqliteDriver::tables(const QString &typeName) const
 QString SqliteDriver::formatDatabaseName(const QString &name)
 {
   if (name.find("\\", 0, false) == 0 || name.find("/", 0, false) == 0)
-  	return name;
+    return name;
   else
-  	return AQ_DISKCACHE_DIRPATH + "/" + name;  
-
+    return AQ_DISKCACHE_DIRPATH + "/" + name;
 }
 
 SqliteResult::SqliteResult(const QSqlDriver *d) : QSqlResult(d), driver(0), dataSet(0)
 {
-  driver = static_cast <const SqliteDriver *>(d);
+  driver = static_cast<const SqliteDriver *>(d);
 }
 
 SqliteResult::~SqliteResult()
@@ -959,29 +1016,34 @@ bool SqliteResult::reset(const QString &q)
   query.replace("'true'", "'1'");
   query.replace("'false'", "'0'");
   // ###
-  //q.replace("=;", "= NULL;");
+  // q.replace("=;", "= NULL;");
   while (query.endsWith(";"))
     query.truncate(query.length() - 1);
   if (query.upper().endsWith("NOWAIT"))
     query.truncate(query.length() - 6);
   if (query.upper().endsWith("FOR UPDATE"))
     query.truncate(query.length() - 10);
-  if (!isSelect()) {
-    if (query.find("CREATE TABLE", 0, false) == 0) {
-      Dataset *ds = ((SqliteDriver *) driver)->dataBase()->CreateDataset();
+  if (!isSelect())
+  {
+    if (query.find("CREATE TABLE", 0, false) == 0)
+    {
+      Dataset *ds = ((SqliteDriver *)driver)->dataBase()->CreateDataset();
 
       if (!ds)
         return false;
 
-      if (!ds->exec(query.latin1())) {
+      if (!ds->exec(query.latin1()))
+      {
         delete ds;
         return false;
       }
       delete ds;
-    } else {
+    }
+    else
+    {
       if (dataSet)
         delete dataSet;
-      dataSet = ((SqliteDriver *) driver)->dataBase()->CreateDataset();
+      dataSet = ((SqliteDriver *)driver)->dataBase()->CreateDataset();
       if (!dataSet->exec(query.latin1()))
         return false;
     }
@@ -991,11 +1053,13 @@ bool SqliteResult::reset(const QString &q)
 
   if (dataSet)
     delete dataSet;
-  dataSet = ((SqliteDriver *) driver)->dataBase()->CreateDataset();
-  if (dataSet->query(query.latin1())) {
+  dataSet = ((SqliteDriver *)driver)->dataBase()->CreateDataset();
+  if (dataSet->query(query.latin1()))
+  {
     setActive(true);
     return true;
-  } else
+  }
+  else
     return false;
 }
 
@@ -1004,27 +1068,31 @@ QVariant SqliteResult::data(int i)
   if (!dataSet)
     return QVariant();
 
-  if (i >= dataSet->fieldCount()) {
+  if (i >= dataSet->fieldCount())
+  {
 #ifdef FL_DEBUG
     qWarning("SqliteResult::data: column %d out of range", i);
 #endif
     return QVariant();
   }
 
-  if (qstrcmp(dataSet->fieldName(i), "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
+  if (qstrcmp(dataSet->fieldName(i), "binario") == 0)
+  { // <- esto es un hack para guardar hexadecimal y interpretar binario.
     QString str(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str());
     QByteArray ba;
     QDataStream dts(ba, IO_WriteOnly);
     uint pos = 0;
-    while (pos < str.length()) {
-      dts << (Q_UINT8) str.mid(pos, 2).toUShort(0, 16);
+    while (pos < str.length())
+    {
+      dts << (Q_UINT8)str.mid(pos, 2).toUShort(0, 16);
       pos += 2;
     }
     return ba;
   }
 
   QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
-  if (v.toString().isEmpty()) {
+  if (v.toString().isEmpty())
+  {
     QVariant vv;
     fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
     if (!type)
@@ -1032,7 +1100,8 @@ QVariant SqliteResult::data(int i)
     else
       vv.cast(QVariant::Double);
     return vv;
-  } else
+  }
+  else
     return v;
 }
 
@@ -1117,16 +1186,20 @@ void SqliteDriver::Mr_Proper()
 
   qry.exec("select nombre from flfiles");
   FLUtil::createProgressDialog(tr("Borrando backups"), listOldBks.size() + qry.size() + 5);
-  while (qry.next()) {
+  while (qry.next())
+  {
     item = qry.value(0).toString();
-    if (item.contains(rx) || item.contains(rx2)) {
+    if (item.contains(rx) || item.contains(rx2))
+    {
       FLUtil::setLabelText(tr("Borrando regisro %1").arg(item));
       qry2.exec("delete from flfiles where nombre = '" + item + "'");
 #ifdef FL_DEBUG
       qWarning("delete from flfiles where nombre = '" + item + "'");
 #endif
-      if (item.contains("alteredtable")) {
-        if (tables("").contains(item.replace(".mtd", ""))) {
+      if (item.contains("alteredtable"))
+      {
+        if (tables("").contains(item.replace(".mtd", "")))
+        {
           FLUtil::setLabelText(tr("Borrando tabla %1").arg(item));
           qry2.exec("drop table " + item.replace(".mtd", ""));
 #ifdef FL_DEBUG
@@ -1138,9 +1211,11 @@ void SqliteDriver::Mr_Proper()
     FLUtil::setProgress(++steps);
   }
 
-  for (QStringList::Iterator it = listOldBks.begin(); it != listOldBks.end(); ++it) {
+  for (QStringList::Iterator it = listOldBks.begin(); it != listOldBks.end(); ++it)
+  {
     item = *it;
-    if (tables("").contains(item)) {
+    if (tables("").contains(item))
+    {
       FLUtil::setLabelText(tr("Borrando tabla %1").arg(item));
       qry2.exec("drop table " + item);
 #ifdef FL_DEBUG
