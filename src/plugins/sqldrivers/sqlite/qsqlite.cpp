@@ -31,10 +31,12 @@ static QVariant::Type qDecodeSqliteType(fType t)
   case ft_Boolean:
     type = QVariant::Bool;
     break;
-  case ft_Long:
-  case ft_ULong:
-  case ft_Short:
   case ft_UShort:
+  case ft_ULong:
+    type = QVariant::UInt;
+    break;
+  case ft_Long:
+  case ft_Short:
     type = QVariant::Int;
     break;
   case ft_Float:
