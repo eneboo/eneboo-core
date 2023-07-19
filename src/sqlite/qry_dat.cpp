@@ -142,7 +142,7 @@ field_value::field_value (const field_value & fv) {
       break;
     }
   }
-  is_null = false;
+  is_null = fv.get_isNull();
 };
 
 
@@ -532,7 +532,7 @@ field_value& field_value::operator= (const field_value & fv) {
       break;
     }
     }
-    
+
     if (fv.get_isNull()) {
       set_isNull();
     }
