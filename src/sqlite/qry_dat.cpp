@@ -142,7 +142,10 @@ field_value::field_value (const field_value & fv) {
       break;
     }
   }
-  is_null = fv.get_isNull();
+  if (fv.get_isNull()) {
+    set_asString("");
+    set_isNull();
+  }
 };
 
 
