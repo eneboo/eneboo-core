@@ -497,50 +497,46 @@ field_value& field_value::operator= (const field_value & fv) {
   switch (fv.get_fType()) {
     case ft_String: {
       set_asString(fv.get_asString());
-      return *this;
       break;
     }
     case ft_Boolean:{
       set_asBool(fv.get_asBool());
-      return *this;
       break;     
     }
     case ft_Char: {
       set_asChar(fv.get_asChar());
-      return *this;
       break;
     }
     case ft_Short: {
       set_asShort(fv.get_asShort());
-      return *this;
       break;
     }
     case ft_UShort: {
       set_asUShort(fv.get_asUShort());
-      return *this;
       break;
     }
     case ft_Long: {
       set_asLong(fv.get_asLong());
-      return *this;
       break;
     }
     case ft_ULong: {
       set_asULong(fv.get_asULong());
-      return *this;
       break;
     }
     case ft_Float: {
       set_asFloat(fv.get_asFloat());
-      return *this;
       break;
     }
     case ft_Double: {
       set_asDouble(fv.get_asDouble());
-      return *this;
       break;
     }
     }
+    
+    if (fv.get_isNull()) {
+      set_isNull();
+    }
+    return *this;
 };
 
 
