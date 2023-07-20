@@ -780,7 +780,9 @@ function loadAbanQPackage(input, warnBackup)
                   ));
     } else {
       registerUpdate(input);
-      infoMsgBox(sys.translate("La carga de módulos se ha realizado con éxito."));
+      if (warnBackup) {
+        infoMsgBox(sys.translate("La carga de módulos se ha realizado con éxito."));
+      }
       sys.AQTimer.singleShot(0, sys.reinit);
       var tmpVar = new FLVar;
       tmpVar.set("mrproper", "dirty");
