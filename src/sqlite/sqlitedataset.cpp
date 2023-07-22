@@ -60,7 +60,7 @@ namespace dbiplus
       for (int i = 0; i < ncol; i++) {
         field_value v;
         //Siempre nuevo obj.
-        printf("\nA) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
+        //printf("\nA) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
 
         if (reslt[i] == NULL) {
           //Automáticamente marcaremos campo como null
@@ -70,9 +70,9 @@ namespace dbiplus
           v.set_asString(reslt[i]);
         }
 
-        printf("\nB) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
+        //printf("\nB) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
         rec[i] = v;
-        printf("\nC) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], rec[i].get_asString().c_str(), rec[i].get_isNull() ? "SI": "NO");
+        //printf("\nC) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], rec[i].get_asString().c_str(), rec[i].get_isNull() ? "SI": "NO");
       }
       r->records[sz] = rec;
     }
