@@ -105,7 +105,7 @@ field_value::field_value(const double d) {
   
 field_value::field_value (const field_value & fv) {
   printf("\nfield_value::field_value(const field_value & fv). Este obj se copia desde NULL a %s" , fv.get_isNull() ? "true" : "false");
-  printf("\nfield_value::field_value(const field_value & fv). Valor origen: %s y actual: %s" , fv.get_asString().c_str(), get_asString().c_str());
+  //printf("\nfield_value::field_value(const field_value & fv). Valor origen: %s y actual: %s" , fv.get_asString().c_str(), get_asString().c_str());
   if (!fv.get_isNull()) {
     switch (fv.get_fType()) {
       case ft_String: {
@@ -146,7 +146,9 @@ field_value::field_value (const field_value & fv) {
       }
     }
   } else {
-    printf("\nfield_value::field_value(const field_value & fv). Este obj ya tiene in_null a %s" , is_null ? "true" : "false");
+    set_asString("");
+    set_isNull();
+    printf("\nfield_value::field_value(const field_value & fv). Este obj marca is_null a %s" , is_null ? "true" : "false");
   }
 };
 
