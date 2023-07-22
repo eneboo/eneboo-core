@@ -106,9 +106,13 @@ field_value::field_value(const double d) {
 field_value::field_value (const field_value & fv) {
 
   printf("\n*\nNEW is_null:%s", is_null?"true":"false");
-  printf("\nFV value:%s, is_null:%s",fv.get_asString().c_str(),fv.is_null?"true":"false");
-  printf("\n**");
-  if (!fv.get_isNull()) {
+
+  if (fv.get_isNull()) {
+    set_asString("");
+    set_isNull();
+  } else {
+
+
     switch (fv.get_fType()) {
       case ft_String: {
         set_asString(fv.get_asString());
@@ -146,9 +150,11 @@ field_value::field_value (const field_value & fv) {
         set_asDouble(fv.get_asDouble());
         break;
       }
+
     }
   }
-  printf("\n***");
+
+  printf("\n** is_null: %s, value: %s", is_null?"true":"false", get_asString().c_str());
 
 };
 
