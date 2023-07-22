@@ -105,7 +105,7 @@ field_value::field_value(const double d) {
   
 field_value::field_value (const field_value & fv) {
 
-  printf("\n*\nNEW is_null:%s, value: %s", fv.get_isNull() ? "true":"false", fv.get_asString().c_str());
+  //printf("\n*\nNEW is_null:%s, value: %s", fv.get_isNull() ? "true":"false", fv.get_asString().c_str());
 
   if (fv.get_isNull()) {
     set_asString("");
