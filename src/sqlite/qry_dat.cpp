@@ -104,6 +104,7 @@ field_value::field_value(const double d) {
 }
   
 field_value::field_value (const field_value & fv) {
+  printf("\nNEW is_null:%s\nFV value:%s, is_null:%s\n",is_null?"true":"false",fv.get_asString().c_str(),fv.is_null?"true":"false"); 
   if (!fv.get_isNull()) {
     switch (fv.get_fType()) {
       case ft_String: {
@@ -523,6 +524,8 @@ field_value& field_value::operator= (const field_value & fv) {
         }
       }
   }
+
+    printf("\nOPERATOR:\nFV: value:%s, is_null:%s\nNEW: value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
 
     return *this;
 };
