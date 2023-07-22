@@ -64,6 +64,7 @@ namespace dbiplus
         if (reslt[i] != NULL) {
           //Automáticamente marcaremos campo como no null
           v.set_asString(reslt[i]);
+        }
         rec[i] = v;
       }
       r->records[sz] = rec;
