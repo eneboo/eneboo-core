@@ -54,16 +54,16 @@ namespace dbiplus
 
 
     sql_record rec;
-    field_value v;
+    
 
     if (reslt != NULL) {
       for (int i = 0; i < ncol; i++) {
-        if (reslt[i] == NULL) {
-          v.set_asString("");
-          v.set_isNull();
-        } else {
+        field_value v;
+        //Siempre nuevo obj.
+        printf("\nreslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
+        if (reslt[i] != NULL) {
+          //Automáticamente marcaremos campo como no null
           v.set_asString(reslt[i]);
-        }
         rec[i] = v;
       }
       r->records[sz] = rec;
