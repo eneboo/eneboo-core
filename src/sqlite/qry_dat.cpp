@@ -523,6 +523,10 @@ field_value& field_value::operator= (const field_value & fv) {
           break;
         }
       }
+  } else {
+    printf("\n*")
+    set_asString("");
+    set_isNull();
   }
 
     printf("\nOPERATOR:\nFV: value:%s, is_null:%s\nNEW: value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
