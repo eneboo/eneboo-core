@@ -524,7 +524,7 @@ field_value& field_value::operator= (const field_value & fv) {
         }
       }
   } else {
-    printf("\n*")
+    printf("\n*");
     set_asString("");
     set_isNull();
   }
