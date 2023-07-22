@@ -152,9 +152,10 @@ field_value::field_value (const field_value & fv) {
     }
   }
 
-  printf("\nCONSTRUCTOR: value:%s, is_null:%s ----> value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
-
-
+  //printf("\nCONSTRUCTOR: value:%s, is_null:%s ----> value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
+  if (fv.get_isNull() != get_isNull()) {
+    printf("\nERROR: field_value::field_value(const field_value & fv) - fv.get_isNull() != get_isNull()\n");
+  }
 };
 
 
@@ -538,8 +539,10 @@ field_value& field_value::operator= (const field_value & fv) {
       }
   } 
 
-    printf("\nOPERATOR: value:%s, is_null:%s ----> value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
-
+    //printf("\nOPERATOR: value:%s, is_null:%s ----> value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
+  if (fv.get_isNull() != get_isNull()) {
+    printf("\nERROR: field_value::operator= : fv.get_isNull() != get_isNull()\n");
+  }
     return *this;
 };
 
