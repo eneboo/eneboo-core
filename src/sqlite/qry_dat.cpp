@@ -495,7 +495,10 @@ double field_value::get_asDouble() const {
 field_value& field_value::operator= (const field_value & fv) {
   if ( this == &fv ) return *this;
 
-  if (!fv.get_isNull()) {
+  if (fv.get_isNull()) {
+    set_asString("");
+    set_isNull();
+  } else {
       switch (fv.get_fType()) {
         case ft_String: {
           set_asString(fv.get_asString());
@@ -534,13 +537,9 @@ field_value& field_value::operator= (const field_value & fv) {
           break;
         }
       }
-  } /* else {
-    printf("\n*");
-    set_asString("");
-    set_isNull();
-  } */
+  } 
 
-    printf("\nOPERATOR:\nFV: value:%s, is_null:%s\nNEW: value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
+    printf("\nOPERATOR:\nFV: value:%s, is_null:%s ----> NEW: value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
 
     return *this;
 };
