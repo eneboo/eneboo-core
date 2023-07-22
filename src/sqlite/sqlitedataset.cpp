@@ -67,6 +67,8 @@ namespace dbiplus
           v.set_asString("");
           v.set_isNull(); 
         } else {
+          prinf("\n++++ name:%s, type:%d", r->record_header[i].name, r->record_header[i].type);
+
           v.set_asString(reslt[i]);
         }
 
