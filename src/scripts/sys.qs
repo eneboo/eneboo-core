@@ -695,6 +695,7 @@ function textPacking(ext)
          ext.endsWith(".qry") || 
          ext.endsWith(".kut") || 
          ext.endsWith(".jrxml") || 
+         ext.endsWith(".jasper") ||
          ext.endsWith(".ar") || 
          ext.endsWith(".mtd") || 
          ext.endsWith(".ts") || 
@@ -865,18 +866,23 @@ var Dump;
   cur.refreshBuffer();
   cur.setValueBuffer("nombre", fil.id);
   cur.setValueBuffer("idmodulo", fil.module);
-  cur.setValueBuffer("sha", fil.shatext);
+  var contenido_text = un.getText();
+  var contenido_binary = un.getBinary();
+
+  
   if (fil.text.length > 0) {
+    cur.setValueBuffer("sha", fil.shatext);
     if (fil.id.endsWith(".qs"))
-      cur.setValueBuffer("contenido", sys.toUnicode(un.getText(), "ISO8859-15"));
+      cur.setValueBuffer("contenido", sys.toUnicode(contenido_text, "ISO8859-15"));
     else
-      cur.setValueBuffer("contenido", un.getText());
+      cur.setValueBuffer("contenido", contenido_text);
+
+      un.getBinary(); // pasa el campo binario vacio.
+  } else {
+    cur.setValueBuffer("sha", fil.shabinary);
+    cur.setValueBuffer("binario", contenido_binary);
   }
-  if (fil.binary.length > 0) {
-    un.getBinary(); // Hay que solicitarlo para que cuente el espacio.
-    //if (fil.id.endsWith(".qs"))
-    //  AQUtil.writeDBSettingEntry(fil.id.left(30), fil.shatext);
-  }
+
   return cur.commitBuffer();
 }
 

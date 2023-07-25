@@ -31,7 +31,19 @@ function init() {
 }
 
 function cargarFicheroEnBD(nombre, contenido, log, directorio) {
-  if (!util.isFLDefFile(contenido) && !nombre.endsWith(".mod") && !nombre.endsWith(".xpm") && !nombre.endsWith(".signatures") && !nombre.endsWith(".checksum") && !nombre.endsWith(".certificates") && !nombre.endsWith(".qs") && !nombre.endsWith(".py") && !nombre.endsWith(".ar")) return;
+  if (
+    !util.isFLDefFile(contenido) 
+    && !nombre.endsWith(".mod") 
+    && !nombre.endsWith(".xpm") 
+    && !nombre.endsWith(".signatures") 
+    && !nombre.endsWith(".checksum") 
+    && !nombre.endsWith(".certificates") 
+    && !nombre.endsWith(".qs") 
+    && !nombre.endsWith(".py") 
+    && !nombre.endsWith(".ar") 
+    && !nombre.endsWith(".jasper") 
+    && !nombre.endsWith(".jrxml")) 
+    return;
 
   
   var cursorFicheros = new FLSqlCursor("flfiles");
@@ -49,8 +61,18 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
     cursorFicheros.refreshBuffer();
     cursorFicheros.setValueBuffer("nombre", nombre);
     cursorFicheros.setValueBuffer("idmodulo", cursor.valueBuffer("idmodulo"));
-    cursorFicheros.setValueBuffer("sha", util.sha1(contenido));
-    cursorFicheros.setValueBuffer("contenido", contenido);
+    
+    if (nombre.endsWith(".jasper")) {
+      var ba = new QByteArray(contenido);
+      cursorFicheros.setValueBuffer("sha", util.sha1(ba.toString));
+      cursorFicheros.setValueBuffer("binario", ba);
+    } else {
+      cursorFicheros.setValueBuffer("sha", util.sha1(contenido));
+      cursorFicheros.setValueBuffer("contenido", contenido);
+    }
+    
+
+    
     cursorFicheros.commitBuffer();
   } else {
     cursorFicheros.setModeAccess(cursorFicheros.Edit);
@@ -101,8 +123,12 @@ function cargarAr(nombre, contenido, log, directorio)
 		  localEnc = util.readSettingEntry("scripts/sys/conversionArENC");
 		  if (!localEnc)
 			  localEnc = "ISO-8859-15";
+
+        if (nombre.endsWith(".jasper")) {
+          contenido = sys.fromUnicode(contenido, localEnc);
+        }
 		  
-	   	  contenido = sys.fromUnicode(contenido, localEnc);
+	   	  
 		  cargarFicheroEnBD(nombre, contenido, log, directorio);
 		  // Volcar a disco el kut
 		  log.append(util.translate("scripts", "Volcando a disco ") + nombre);
@@ -204,6 +230,8 @@ function cargarDeDisco(directorio, comprobarLicencia) {
       cargarFicheros(directorio, "*.kut");
       cargarFicheros(directorio, "*.ar");
       cargarFicheros(directorio, "*.ts");
+      cargarFicheros(directorio, "*.jrxml");
+      cargarFicheros(directorio, "*.jasper");
       this.setDisabled(false);
       log.append(util.translate("scripts", "* Carga finalizada."));
       this.child("lineas").refresh();
