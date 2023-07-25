@@ -132,9 +132,8 @@ function cargarAr(nombre, contenido, log, directorio)
 		  if (!localEnc)
 			  localEnc = "ISO-8859-15";
 
-        if (nombre.endsWith(".jasper")) {
-          contenido = sys.fromUnicode(contenido, localEnc);
-        }
+
+        contenido = sys.fromUnicode(contenido, localEnc);
 		  
 	   	  
 		  cargarFicheroEnBD(nombre, contenido, log, directorio);
@@ -158,7 +157,18 @@ function cargarFicheros(directorio, extension) {
 
     	for (var i = 0; i < ficheros.length; ++i) {
     		debug("Procesando " + directorio + ficheros[i]);
-    		cargarFicheroEnBD(ficheros[i], File.read(Dir.cleanDirPath(directorio + "/" + ficheros[i])), log, directorio);
+        var contenido = "";
+
+        if (ficheros[i].endsWith(".jasper")) {
+          var file_ = new QFile(Dir.cleanDirPath(directorio + "/" + ficheros[i]));
+          file_.open(File.ReadOnly);
+          contenido = file_.readAll();
+          file_.close();
+        } else {
+          contenido = File.read(Dir.cleanDirPath(directorio + "/" + ficheros[i]));
+        }
+    		cargarFicheroEnBD(ficheros[i], contenido, log, directorio);
+        
     		sys.processEvents();
     	}
 

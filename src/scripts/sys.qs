@@ -742,11 +742,11 @@ function loadAbanQPackage(input, warnBackup)
   if (input) {
     var ok = true;
 
-    var changes = localChanges();
-    if (changes.size != 0) {
-      if (!warnLocalChanges(changes))
-        return;
-    }
+    //var changes = localChanges();
+    //if (changes.size != 0) {
+    //  if (!warnLocalChanges(changes))
+    //    return;
+    //}
 
     if (ok) {
       var unpacker = new AQUnpacker(input);
@@ -866,19 +866,15 @@ var Dump;
   cur.refreshBuffer();
   cur.setValueBuffer("nombre", fil.id);
   cur.setValueBuffer("idmodulo", fil.module);
-  var contenido_text = un.getText();
-  var contenido_binary = un.getBinary();
-
   
-  if (fil.text.length > 0) {
+  
+  
+  if (fil.shatext.length > 0) {
+    var contenido_text = un.getText();
     cur.setValueBuffer("sha", fil.shatext);
-    if (fil.id.endsWith(".qs"))
-      cur.setValueBuffer("contenido", sys.toUnicode(contenido_text, "ISO8859-15"));
-    else
-      cur.setValueBuffer("contenido", contenido_text);
-
-      un.getBinary(); // pasa el campo binario vacio.
+    cur.setValueBuffer("contenido", fil.id.endsWith(".qs") ? sys.toUnicode(contenido_text, "ISO8859-15"): contenido_text);
   } else {
+    var contenido_binary = un.getBinary();
     cur.setValueBuffer("sha", fil.shabinary);
     cur.setValueBuffer("binario", contenido_binary);
   }
