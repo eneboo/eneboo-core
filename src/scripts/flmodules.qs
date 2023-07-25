@@ -78,6 +78,7 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
     cursorFicheros.setModeAccess(cursorFicheros.Edit);
     cursorFicheros.refreshBuffer();
     var contenidoCopia = cursorFicheros.valueBuffer("contenido");
+    var binarioCopia = cursorFicheros.valueBuffer("binario");
     if (contenidoCopia != contenido) {
       log.append(util.translate("scripts", "- Actualizando :: ") + nombre);
       cursorFicheros.setModeAccess(cursorFicheros.Insert);
@@ -86,6 +87,7 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
       cursorFicheros.setValueBuffer("nombre", nombre + d.toString());
       cursorFicheros.setValueBuffer("idmodulo", cursor.valueBuffer("idmodulo"));
       cursorFicheros.setValueBuffer("contenido", contenidoCopia);
+      cursorFicheros.setValueBuffer("binario", binarioCopia);
       cursorFicheros.commitBuffer();
       log.append(util.translate("scripts", "- Backup :: ") + nombre + d.toString());
       cursorFicheros.select("nombre = '" + nombre + "'");
@@ -93,8 +95,14 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
       cursorFicheros.setModeAccess(cursorFicheros.Edit);
       cursorFicheros.refreshBuffer();
       cursorFicheros.setValueBuffer("idmodulo", cursor.valueBuffer("idmodulo"));
-      cursorFicheros.setValueBuffer("sha", util.sha1(contenido));
-      cursorFicheros.setValueBuffer("contenido", contenido);
+      if (nombre.endsWith(".jasper")) {
+        var ba = new QByteArray(contenido);
+        cursorFicheros.setValueBuffer("sha", util.sha1(ba.toString));
+        cursorFicheros.setValueBuffer("binario", ba);
+      } else {
+        cursorFicheros.setValueBuffer("sha", util.sha1(contenido));
+        cursorFicheros.setValueBuffer("contenido", contenido);
+      }
       cursorFicheros.commitBuffer();
 	  
 		if (nombre.endsWith(".ar"))
