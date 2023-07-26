@@ -45,15 +45,16 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
     && !nombre.endsWith(".jrxml")) 
     return;
 
-  
+  var ba = new QByteArray(contenido);
   var cursorFicheros = new FLSqlCursor("flfiles");
   var cursor = this.cursor();
+  const binary_mode = nombre.endsWith(".jasper");
 
   cursorFicheros.select("nombre = '" + nombre + "'");
   if (!cursorFicheros.first()) {
   
 	if (nombre.endsWith(".ar"))
-		if (!cargarAr(nombre, contenido, log, directorio))
+		if (!cargarAr(nombre, ba.toString, log, directorio))
 			return;
   
     log.append(util.translate("scripts", "- Cargando :: ") + nombre);
@@ -61,14 +62,12 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
     cursorFicheros.refreshBuffer();
     cursorFicheros.setValueBuffer("nombre", nombre);
     cursorFicheros.setValueBuffer("idmodulo", cursor.valueBuffer("idmodulo"));
+    cursorFicheros.setValueBuffer("sha", util.sha1(ba.toString));
     
-    if (nombre.endsWith(".jasper")) {
-      var ba = new QByteArray(contenido);
-      cursorFicheros.setValueBuffer("sha", util.sha1(ba.toString));
+    if (binary_mode) {
       cursorFicheros.setValueBuffer("binario", ba);
     } else {
-      cursorFicheros.setValueBuffer("sha", util.sha1(contenido));
-      cursorFicheros.setValueBuffer("contenido", contenido);
+      cursorFicheros.setValueBuffer("contenido", ba.toString);
     }
     
 
@@ -157,16 +156,11 @@ function cargarFicheros(directorio, extension) {
 
     	for (var i = 0; i < ficheros.length; ++i) {
     		debug("Procesando " + directorio + ficheros[i]);
-        var contenido = "";
+        var file_ = new QFile(Dir.cleanDirPath(directorio + "/" + ficheros[i]));
+        file_.open(File.ReadOnly);
+        var contenido = file_.readAll();
+        file_.close();
 
-        if (ficheros[i].endsWith(".jasper")) {
-          var file_ = new QFile(Dir.cleanDirPath(directorio + "/" + ficheros[i]));
-          file_.open(File.ReadOnly);
-          contenido = file_.readAll();
-          file_.close();
-        } else {
-          contenido = File.read(Dir.cleanDirPath(directorio + "/" + ficheros[i]));
-        }
     		cargarFicheroEnBD(ficheros[i], contenido, log, directorio);
         
     		sys.processEvents();
