@@ -283,7 +283,8 @@ function exportarADisco(directorio) {
       do {
         file = curFiles.valueBuffer("nombre");
         tipo = tipoDeFichero(file);
-        contenido = curFiles.valueBuffer("contenido");
+        const binario = tipo == ".jasper";
+        contenido = binario ? curFiles.valueBuffer("binario") :curFiles.valueBuffer("contenido");
 
         if (!contenido.isEmpty()) {
           switch (tipo) {
@@ -319,7 +320,7 @@ function exportarADisco(directorio) {
             sys.write("ISO-8859-1", directorio + "/scripts/" + file, contenido);
             log.append(util.translate("scripts", "* Exportando " + file + "."));
             break;
-	  case ".py":
+	        case ".py":
             sys.write("UTF-8", directorio + "/scripts/" + file, contenido);
             log.append(util.translate("scripts", "* Exportando " + file + "."));
             break;
@@ -331,10 +332,16 @@ function exportarADisco(directorio) {
             sys.write("ISO-8859-1", directorio + "/tables/" + file, contenido);
             log.append(util.translate("scripts", "* Exportando " + file + "."));
             break;
+          case ".jrxml":
           case ".kut":
             sys.write("ISO-8859-1", directorio + "/reports/" + file, contenido);
             log.append(util.translate("scripts", "* Exportando " + file + "."));
             break;
+          case ".jasper":
+            var file = new QFile(directorio + "/translations/" + file);
+            var ba = new QByteArray(contenido);
+            file.writeBlock(ba);
+            file.close();
           case ".ts":
             sys.write("ISO-8859-1", directorio + "/translations/" + file, contenido);
             log.append(util.translate("scripts", "* Exportando " + file + "."));
