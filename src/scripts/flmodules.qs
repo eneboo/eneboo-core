@@ -94,7 +94,7 @@ function cargarFicheroEnBD(nombre, contenido, log, directorio) {
       cursorFicheros.setModeAccess(cursorFicheros.Edit);
       cursorFicheros.refreshBuffer();
       cursorFicheros.setValueBuffer("idmodulo", cursor.valueBuffer("idmodulo"));
-      if (nombre.endsWith(".jasper")) {
+      if (binary_mode) {
         cursorFicheros.setValueBuffer("sha", util.sha1(contenido.toString()));
         cursorFicheros.setValueBuffer("binario",contenido);
       } else {
