@@ -54,17 +54,27 @@ namespace dbiplus
 
 
     sql_record rec;
-    field_value v;
+    
 
     if (reslt != NULL) {
       for (int i = 0; i < ncol; i++) {
+        field_value v;
+        //Siempre nuevo obj.
+        //printf("\nA) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
+
         if (reslt[i] == NULL) {
+          //Automáticamente marcaremos campo como null
           v.set_asString("");
-          v.set_isNull();
+          v.set_isNull(); 
         } else {
+          printf("\n++++ name:%s, type:%d", r->record_header[i].name.c_str(), r->record_header[i].type);
+
           v.set_asString(reslt[i]);
         }
+
+        //printf("\nB) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
         rec[i] = v;
+        //printf("\nC) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], rec[i].get_asString().c_str(), rec[i].get_isNull() ? "SI": "NO");
       }
       r->records[sz] = rec;
     }
@@ -194,6 +204,9 @@ namespace dbiplus
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
     }
+    if (sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,NULL) != SQLITE_OK) {
+        return DB_CONNECTION_NONE;
+      }
     active = true;
     return DB_CONNECTION_OK;
 

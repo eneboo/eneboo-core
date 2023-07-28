@@ -26,33 +26,36 @@
 static QVariant::Type qDecodeSqliteType(fType t)
 {
   QVariant::Type type = QVariant::Invalid;
-  switch (t) {
-    case ft_Boolean:
-      type = QVariant::Bool;
-      break;
-    case ft_Long:
-    case ft_ULong:
-    case ft_Short:
-    case ft_UShort:
-      type = QVariant::Int;
-      break;
-    case ft_Float:
-    case ft_Double:
-    case ft_LongDouble:
-      type = QVariant::Double;
-      break;
-    case ft_Object:
-      type = QVariant::ByteArray;
-      break;
-    case ft_String:
-    case ft_Char:
-    case ft_WChar:
-    case ft_WideString:
-      type = QVariant::String;
-      break;
-    default:
-      type = QVariant::String;
-      break;
+  switch (t)
+  {
+  case ft_Boolean:
+    type = QVariant::Bool;
+    break;
+  case ft_UShort:
+  case ft_ULong:
+    type = QVariant::UInt;
+    break;
+  case ft_Long:
+  case ft_Short:
+    type = QVariant::Int;
+    break;
+  case ft_Float:
+  case ft_Double:
+  case ft_LongDouble:
+    type = QVariant::Double;
+    break;
+  case ft_Object:
+    type = QVariant::ByteArray;
+    break;
+  case ft_String:
+  case ft_Char:
+  case ft_WChar:
+  case ft_WideString:
+    type = QVariant::String;
+    break;
+  default:
+    type = QVariant::String;
+    break;
   }
   return type;
 }
@@ -75,18 +78,6 @@ bool SqliteDriver::open(const QString &db, const QString &, const QString &, con
 #endif
 
     return false;
-  }
-
-  if (!QFile::exists(db)) {
-    QMessageBox msgBox(tr("AVISO IMPORTANTE") ,
-                       tr("Eneboo puede comportarse de forma inestable con la base de datos SQLite.\n"
-                          "esta opción sólo se ofrece para poder probar fácilmente la aplicación\n"
-                          "sin necesidad de instalar un servidor de bases de datos.\n\n"
-                          "Para asegurar la fiabilidad en entornos en producción utilice un sistema de gestión\n"
-                          "de bases de datos como PostgreSQL o MySQL"),
-                       QMessageBox::NoIcon, QMessageBox::Ok, QMessageBox::NoButton,  QMessageBox::NoButton);
-    msgBox.setIconPixmap(QPixmap::fromMimeSource("bomba.png"));
-    msgBox.exec();
   }
 
   close();

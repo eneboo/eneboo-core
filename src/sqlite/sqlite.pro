@@ -36,7 +36,7 @@ LIBS += -L$$PREFIX/lib
 
 INCLUDEPATH += $$ROOT/src/qt/include ./
 
-VERSION = 3.7.16.2
+VERSION = 3.42
 
 SOURCES += sqlite3.c \
            shell.c \

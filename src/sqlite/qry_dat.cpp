@@ -40,7 +40,7 @@ namespace dbiplus {
 field_value::field_value(){
   str_value = "";
   field_type = ft_String;
-  is_null = false;
+  is_null = true;
   };
 
 field_value::field_value(const char *s) {
@@ -104,45 +104,58 @@ field_value::field_value(const double d) {
 }
   
 field_value::field_value (const field_value & fv) {
-  switch (fv.get_fType()) {
-    case ft_String: {
-      set_asString(fv.get_asString());
-      break;
-    }
-    case ft_Boolean:{
-      set_asBool(fv.get_asBool());
-      break;     
-    }
-    case ft_Char: {
-      set_asChar(fv.get_asChar());
-      break;
-    }
-    case ft_Short: {
-      set_asShort(fv.get_asShort());
-      break;
-    }
-    case ft_UShort: {
-      set_asUShort(fv.get_asUShort());
-      break;
-    }
-    case ft_Long: {
-      set_asLong(fv.get_asLong());
-      break;
-    }
-    case ft_ULong: {
-      set_asULong(fv.get_asULong());
-      break;
-    }
-    case ft_Float: {
-      set_asFloat(fv.get_asFloat());
-      break;
-    }
-    case ft_Double: {
-      set_asDouble(fv.get_asDouble());
-      break;
+
+  if (fv.get_isNull()) {
+    set_asString("");
+    set_isNull();
+  } else {
+
+
+    switch (fv.get_fType()) {
+      case ft_String: {
+        set_asString(fv.get_asString());
+        break;
+      }
+      case ft_Boolean:{
+        set_asBool(fv.get_asBool());
+        break;     
+      }
+      case ft_Char: {
+        set_asChar(fv.get_asChar());
+        break;
+      }
+      case ft_Short: {
+        set_asShort(fv.get_asShort());
+        break;
+      }
+      case ft_UShort: {
+        set_asUShort(fv.get_asUShort());
+        break;
+      }
+      case ft_Long: {
+        set_asLong(fv.get_asLong());
+        break;
+      }
+      case ft_ULong: {
+        set_asULong(fv.get_asULong());
+        break;
+      }
+      case ft_Float: {
+        set_asFloat(fv.get_asFloat());
+        break;
+      }
+      case ft_Double: {
+        set_asDouble(fv.get_asDouble());
+        break;
+      }
+
     }
   }
-  is_null = false;
+
+  //printf("\nCONSTRUCTOR: value:%s, is_null:%s ----> value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
+  if (fv.get_isNull() != get_isNull()) {
+    printf("\nERROR: field_value::field_value(const field_value & fv) - fv.get_isNull() != get_isNull()\n");
+  }
 };
 
 
@@ -161,10 +174,7 @@ string field_value::get_asString() const {
       return tmp;
     }
     case ft_Boolean:{
-      if (bool_value) 
-	return tmp = "True";
-      else
-	return tmp = "False";
+      return tmp = bool_value ? "True" : "False";
     }
     case ft_Char: {
       return tmp = char_value;
@@ -207,19 +217,13 @@ string field_value::get_asString() const {
 bool field_value::get_asBool() const {
     switch (field_type) {
     case ft_String: {
-      if (str_value.c_str() == "True")
-          return true;
-      else
-	return false;
+      return str_value.c_str() == "True";
     }
     case ft_Boolean:{
       return bool_value;
       }
     case ft_Char: {
-      if (char_value == 'T')
-	return true;
-      else
-	return false;
+      return char_value == 'T';
     }
     case ft_Short: {
       return (bool)short_value;
@@ -250,10 +254,7 @@ char field_value::get_asChar() const {
     }
     case ft_Boolean:{
       char c;
-      if (bool_value) 
-	return c='T';
-      else
-	return c='F';
+      return c=bool_value ? 'T' : 'F';
     }
     case ft_Char: {
       return  char_value;
@@ -493,54 +494,56 @@ double field_value::get_asDouble() const {
 
 field_value& field_value::operator= (const field_value & fv) {
   if ( this == &fv ) return *this;
-  
-  switch (fv.get_fType()) {
-    case ft_String: {
-      set_asString(fv.get_asString());
-      return *this;
-      break;
-    }
-    case ft_Boolean:{
-      set_asBool(fv.get_asBool());
-      return *this;
-      break;     
-    }
-    case ft_Char: {
-      set_asChar(fv.get_asChar());
-      return *this;
-      break;
-    }
-    case ft_Short: {
-      set_asShort(fv.get_asShort());
-      return *this;
-      break;
-    }
-    case ft_UShort: {
-      set_asUShort(fv.get_asUShort());
-      return *this;
-      break;
-    }
-    case ft_Long: {
-      set_asLong(fv.get_asLong());
-      return *this;
-      break;
-    }
-    case ft_ULong: {
-      set_asULong(fv.get_asULong());
-      return *this;
-      break;
-    }
-    case ft_Float: {
-      set_asFloat(fv.get_asFloat());
-      return *this;
-      break;
-    }
-    case ft_Double: {
-      set_asDouble(fv.get_asDouble());
-      return *this;
-      break;
-    }
-    }
+
+  if (fv.get_isNull()) {
+    set_asString("");
+    set_isNull();
+  } else {
+      switch (fv.get_fType()) {
+        case ft_String: {
+          set_asString(fv.get_asString());
+          break;
+        }
+        case ft_Boolean:{
+          set_asBool(fv.get_asBool());
+          break;     
+        }
+        case ft_Char: {
+          set_asChar(fv.get_asChar());
+          break;
+        }
+        case ft_Short: {
+          set_asShort(fv.get_asShort());
+          break;
+        }
+        case ft_UShort: {
+          set_asUShort(fv.get_asUShort());
+          break;
+        }
+        case ft_Long: {
+          set_asLong(fv.get_asLong());
+          break;
+        }
+        case ft_ULong: {
+          set_asULong(fv.get_asULong());
+          break;
+        }
+        case ft_Float: {
+          set_asFloat(fv.get_asFloat());
+          break;
+        }
+        case ft_Double: {
+          set_asDouble(fv.get_asDouble());
+          break;
+        }
+      }
+  } 
+
+    //printf("\nOPERATOR: value:%s, is_null:%s ----> value:%s, is_null:%s",fv.get_asString().c_str(),fv.get_isNull()?"true":"false",get_asString().c_str(),get_isNull()?"true":"false");
+  if (fv.get_isNull() != get_isNull()) {
+    printf("\nERROR: field_value::operator= : fv.get_isNull() != get_isNull()\n");
+  }
+    return *this;
 };
 
 
@@ -548,47 +551,58 @@ field_value& field_value::operator= (const field_value & fv) {
 //Set functions
 void field_value::set_asString(const char *s) {
   str_value = s;
-  field_type = ft_String;};
+  field_type = ft_String;
+  is_null = false;};
 
 void field_value::set_asString(const string & s) {
   str_value = s;
-  field_type = ft_String;};
+  field_type = ft_String;
+  is_null = false;};
   
 void field_value::set_asBool(const bool b) {
   bool_value = b; 
-  field_type = ft_Boolean;};
+  field_type = ft_Boolean;
+  is_null = false;};
   
 void field_value::set_asChar(const char c) {
   char_value = c; 
-  field_type = ft_Char;};
+  field_type = ft_Char;
+  is_null = false;};
   
 void field_value::set_asShort(const short s) {
   short_value = s; 
-  field_type = ft_Short;};
+  field_type = ft_Short;
+  is_null = false;};
   
 void field_value::set_asUShort(const unsigned short us) {
   ushort_value = us; 
-  field_type = ft_UShort;};
+  field_type = ft_UShort;
+  is_null = false;};
   
 void field_value::set_asLong(const long l) {
   long_value = l; 
-  field_type = ft_Long;};
+  field_type = ft_Long;
+  is_null = false;};
 
 void field_value::set_asInteger(const int i) {
   long_value = (long)i; 
-  field_type = ft_Long;};
+  field_type = ft_Long;
+  is_null = false;};
   
 void field_value::set_asULong(const unsigned long ul) {
   long_value = ul; 
-  field_type = ft_ULong;};
+  field_type = ft_ULong;
+  is_null = false;};
   
 void field_value::set_asFloat(const float f) {
   float_value = f; 
-  field_type = ft_Float;};
+  field_type = ft_Float;
+  is_null = false;};
   
 void field_value::set_asDouble(const double d) {
   double_value = d; 
-  field_type = ft_Double;};
+  field_type = ft_Double;
+  is_null = false;};
 
   
 fType field_value::get_field_type() {
