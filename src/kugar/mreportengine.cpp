@@ -1400,7 +1400,7 @@ void MReportEngine::updateCsvData(int level, uint &currRecord, QString &csvData)
 
         setFieldValues(&fields, level, detail, ptrRecord);
 
-        /* if (detail->mustBeDrawed(ptrRecord)) {
+        if (detail->mustBeDrawed(ptrRecord)) {
           detail->setCalcFieldData(0, 0, ptrRecord, fillRecords_);
 
           MReportSection *rS = findDetail(level + 1);
@@ -1415,7 +1415,7 @@ void MReportEngine::updateCsvData(int level, uint &currRecord, QString &csvData)
             }
             csvData += "\n";
           }
-        } */
+        }
         ++currRecord;
       } else {
         updateCsvData(currLevel, currRecord, csvData);
