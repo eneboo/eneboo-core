@@ -30,6 +30,7 @@ OPT_FIXXP=no
 OPT_CONSOLE_DEBUG=no
 OPT_CONSOLE=no
 OPT_GDB=no
+OPT_DEVELOPER=no
 
 QT_CHECK=" -DQT_CHECK_NULL"
 QT_DEBUG=""
@@ -157,12 +158,12 @@ for a in "$@"; do
     ;;
     -developer)
       OPT_GDB=yes
-      OPT_SQLLOG=yes
+      #OPT_SQLLOG=yes
       OPT_QUICK_CLIENT=no
       OPT_DEBUGGER=yes
-      OPT_AQ_DEBUG=yes
+      #OPT_AQ_DEBUG=yes
       QT_DEBUG_OPT="-debug"
-      BUILD_NUMBER="$BUILD_NUMBER-developer"
+      OPT_DEVELOPER=yes
     ;;
 
 
@@ -215,9 +216,15 @@ fi
 if [ "$OPT_QUICK_CLIENT" == "yes" ]; then
   QT_DEBUG="$QT_DEBUG -DFL_QUICK_CLIENT"
   BUILD_NUMBER="$BUILD_NUMBER-quick"
-else
+elif [ "$OPT_DEVELOPER" == "yes" ]; then
+  BUILD_NUMBER="$BUILD_NUMBER-developer"
+else 
   BUILD_NUMBER="$BUILD_NUMBER-dba"
 fi
+
+
+
+
 if [ "$OPT_NEBULA_BUILD" == "yes" ]; then
   QT_DEBUG="$QT_DEBUG -DAQ_NEBULA_BUILD"
   BUILD_NUMBER="$BUILD_NUMBER-nebula"
