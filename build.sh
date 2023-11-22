@@ -155,6 +155,14 @@ for a in "$@"; do
       OPT_QMAKESPEC="qws/linux-generic-g++"
       export QMAKESPEC=$OPT_QMAKESPEC
     ;;
+    -developer)
+      OPT_GDB=yes
+      OPT_SQLLOG=yes
+      OPT_QUICK_CLIENT=no
+      OPT_DEBUGGER=yes
+    ;;
+
+
     -prefix|-platform)
       VAR=`echo $a | sed "s,^-\(.*\),\1,"`
       shift
