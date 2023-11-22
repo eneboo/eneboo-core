@@ -160,6 +160,7 @@ for a in "$@"; do
       OPT_SQLLOG=yes
       OPT_QUICK_CLIENT=no
       OPT_DEBUGGER=yes
+      BUILD_NUMBER="$BUILD_NUMBER-developer"
     ;;
 
 
