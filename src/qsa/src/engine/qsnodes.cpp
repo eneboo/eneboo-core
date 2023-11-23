@@ -83,7 +83,7 @@ QUICKCORE_EXPORT bool aqQSARunning = false;
     QSNode::ref();          \
   }             \
   bool name::deref() {                                \
-    printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
+    ref_printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
     if (node1 && node1->deref()) { delete node1; node1 = 0; }\
     return QSNode::deref();       \
   }
