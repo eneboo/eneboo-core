@@ -346,9 +346,11 @@ QString FLModulesStaticLoader::content(const QString &n, AQStaticBdInfo *b)
       if (!warn_->warns_.contains(msg)) {
         warn_->warns_ << msg;
         warn_->paths_ << QString(n + ':' + info->path_);
-        if (FLSettings::readBoolEntry("ebcomportamiento/SLConsola", true))
+      } 
+      if (FLSettings::readBoolEntry("ebcomportamiento/SLConsola", true)) {
         qWarning("CARGA ESTATICA ACTIVADA:" + n + " -> " + info->path_);
       }
+        
       return FLManagerModules::contentFS(info->path_ + separator + n);
     }
   }
