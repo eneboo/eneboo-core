@@ -465,7 +465,7 @@ QString FLManagerModules::contentStatic(const QString &n)
     QString sha(FLUtil::sha1(str_ret));
     QString *s = 0;
     if (dictKeyFiles && (s = dictKeyFiles->find(n)) && *s == sha) {
-      return QString::null;
+      return str_ret;
     } else if (dictKeyFiles && n.endsWith(".qs")) {
       dictKeyFiles->replace(n, new QString(sha));
     }
