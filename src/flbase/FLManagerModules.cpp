@@ -459,18 +459,21 @@ void FLManagerModules::staticLoaderSetup()
 
 QString FLManagerModules::contentStatic(const QString &n)
 {
+  qWarning(QApplication::tr("FLManagerModules:contentStatic : Buscando fichero en carga estática: %1").arg(n));
   QString str_ret(FLModulesStaticLoader::content(n, staticBdInfo_));
 
   if (!str_ret.isEmpty()) {
+    qWarning(QApplication::tr("FLManagerModules:contentStatic : Fichero Encontrado"));
     QString sha(FLUtil::sha1(str_ret));
     QString *s = 0;
     if (dictKeyFiles && (s = dictKeyFiles->find(n)) && *s == sha) {
+      qWarning(QApplication::tr("FLManagerModules:contentStatic : ERROR EN HASH"));
       return QString::null;
     } else if (dictKeyFiles && n.endsWith(".qs")) {
       dictKeyFiles->replace(n, new QString(sha));
     }
   }
-
+  qWarning(QApplication::tr("FLManagerModules:contentStatic : Termiando ok"));
   return str_ret;
 }
 
