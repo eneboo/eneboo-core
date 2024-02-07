@@ -467,7 +467,8 @@ QString FLManagerModules::contentStatic(const QString &n)
     QString sha(FLUtil::sha1(str_ret));
     QString *s = 0;
     if (dictKeyFiles && (s = dictKeyFiles->find(n)) && *s == sha) {
-      qWarning(QApplication::tr("FLManagerModules:contentStatic : ERROR EN HASH"));
+
+      qWarning(QApplication::tr("FLManagerModules:contentStatic : ERROR EN HASH %1 vs %2").arg(*s).arg(sha));
       return QString::null;
     } else if (dictKeyFiles && n.endsWith(".qs")) {
       dictKeyFiles->replace(n, new QString(sha));
