@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+ versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 /****************************************************************************
@@ -220,17 +220,8 @@ void IdeWindow::saveScript(QSScript *s)
   tabWidget->setTabLabel(editor, aqFormatTabLabel(s));
   tabWidget->setTabToolTip(editor, aqFormatTabToolTip(s));
   QTextStream stream(&file);
-
-  if (fileName.endsWith(".qs")) {
-         s.setCodec( QTextCodec::codecForName("ISO-8859-1") ); 
-    } 
-  else
-    {
-         s.setCodec( QTextCodec::codecForName("UTF-8") );
-    }
-    
-
-  stream << s->code().remove("var form = this; //auto-added\n").latin1();
+  stream.setEncoding(QTextStream::Latin1);
+  stream << s->code().remove("var form = this; //auto-added\n");
 }
 
 void IdeWindow::scriptSave()
@@ -486,7 +477,7 @@ void IdeWindow::removePage(QSScript *s)
   if (editor->isModified() &&
       QMessageBox::Yes == QMessageBox::question(
         this, tr("Guardar cambios"),
-        tr("El fichero ha sido modificado\n¿ Quiere guardar los cambios ?"),
+        tr("El fichero ha sido modificado\n? Quiere guardar los cambios ?"),
         QMessageBox::No, QMessageBox::Yes | QMessageBox::Default)) {
     saveScript(s);
   }
@@ -511,7 +502,7 @@ void IdeWindow::removePage()
   if (editor->isModified() &&
       QMessageBox::Yes == QMessageBox::question(
         this, tr("Guardar cambios"),
-        tr("El fichero ha sido modificado\n\n¿ Quiere guardar los cambios ?"),
+        tr("El fichero ha sido modificado\n\n? Quiere guardar los cambios ?"),
         QMessageBox::No, QMessageBox::Yes | QMessageBox::Default)) {
     saveScript(s);
   }
@@ -1194,7 +1185,7 @@ void IdeWindow::syncEditor(QSEditor *e)
     QString text(scriptTextFileName(eFileName));
     if (!text.isEmpty() && text != eText) {
       QString msg(tr("El archivo\n%1\nasociado al editor ha cambiado en el disco.\n\n"
-                     "¿Quiere volver a cargar el archivo?"));
+                     "?Quiere volver a cargar el archivo?"));
       int res = QMessageBox::question(
                   this, tr("Detectados cambios en disco"), msg.arg(eFileName),
                   QMessageBox::No, QMessageBox::Yes | QMessageBox::Default);
