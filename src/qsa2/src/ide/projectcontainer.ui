@@ -1,0 +1,170 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QSProjectContainer</class>
+<comment>***************************************************************************
+** $Id: projectcontainer.ui  1.1.5   edited 2004-01-27T13:26:12$
+**
+** Copyright (C) 2001-2003 Trolltech AS.  All rights reserved.
+**
+** This file is part of the Qt Script for Applications framework (QSA).
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** Licensees holding a valid Qt Script for Applications license may use
+** this file in accordance with the Qt Script for Applications License
+** Agreement provided with the Software.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about QSA Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+****************************************************************************</comment>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>QSProjectContainer</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>250</width>
+            <height>483</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Project Scripts</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>pixFind_</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="pixmap">
+                        <pixmap>image54645</pixmap>
+                    </property>
+                    <property name="scaledContents">
+                        <bool>false</bool>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>leFind_</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Scripts</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Clases</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Funciones</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Variables</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Todo</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>cbFind_</cstring>
+                    </property>
+                    <property name="editable">
+                        <bool>false</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QListView">
+            <column>
+                <property name="text">
+                    <string>Scripts</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>scriptsListView_</cstring>
+            </property>
+            <property name="allColumnsShowFocus">
+                <bool>true</bool>
+            </property>
+            <property name="rootIsDecorated">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<images>
+    <image name="image54645">
+        <data format="PNG" length="464">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000019749444154789ca593b18b13411487bfb7d930d358d8052c048b5d0e943412c1269ac3cadd54572b5606025e6da59558aa8d9bceca4e10922b0477dc431bfd03520cd86bbd4d86dc30367bc77ae6c2a9bf66e60def7d7cc51bf8cf48bb188fc77742088f8061f374184278b1582ccab3009de34b9ee7cf81199068ada34ea7137bef7744e45e9224ca5abb1122005996ed8ac847adb59b4ea75f87c3e14f00634caf288ac16ab552c0ee7c3e37a701118088ec03b4870146a3d18fc964f20d2084b0bfc9206acedb4aa9757bb80d514aad45e4d636c03f276af48c73ae6b8ce99d6e28cbb2e79ceb8610aa330122f212a0288a411b628ce9cd66b301401cc7af36014ef620cbb26722f2184029b50670ce755bbd6febbabe5f55d5511b70b207d6da3249922f2272d17b7fc97b7f1442f81045d127e03a704d2975b5dfefbf5f2e97fe0f836dc9b2ec89883c6dca83baaef7aaaa5afd66b02dd6dac3344d2f003781442975234dd377d6daf5b90c8e6df33c7f0d3c041091cfc0dd7319b44c0ed234bd02f481cbc0f7f86f0040d05a3f68fe8668addffc0213b6957558a77edf0000000049454e44ae426082</data>
+    </image>
+</images>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

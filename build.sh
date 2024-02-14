@@ -158,12 +158,13 @@ for a in "$@"; do
     ;;
     -developer)
       OPT_GDB=yes
-      OPT_SQLLOG=yes
+      #OPT_SQLLOG=yes
       OPT_QUICK_CLIENT=no
       OPT_DEBUGGER=yes
       #OPT_AQ_DEBUG=yes
       QT_DEBUG_OPT="-debug"
       OPT_DEVELOPER=yes
+      QSADIR=qsa2
     ;;
 
 
@@ -596,6 +597,11 @@ then
   echo "DEFINES *= QSDEBUGGER QSDEBUGGER_VISUAL AQ_DEBUGGER FL_DEBUGGER" >> settings.pro  
 fi
 
+if [ "$QSADIR" = "qsa2" ] 
+then
+    echo "DEFINES *= QSDEVELOPER" >> settings.pro
+fi
+
 if [ "$OPT_AQ_DEBUG" = "yes" ]
 then
   echo "DEFINES *= AQ_DEBUG" >> settings.pro
@@ -715,7 +721,7 @@ $CMD_MAKE $MAKE_INSTALL || exit 1
 
 export QTDIR=$PREFIX
 
-echo "Compilando QSA..."
+echo "Compilando QSA ($QSADIR) ..."
 cd $BASEDIR/src/$QSADIR
 cp -fv ../qt/.qmake.cache .qmake.cache
 cp -fv ../qt/.qmake.cache src/$QSADIR/
