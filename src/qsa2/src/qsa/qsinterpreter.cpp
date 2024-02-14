@@ -32,6 +32,7 @@
 #include "qswrapperfactory.h"
 #ifdef QSDEBUGGER
 #include "../kernel/quickdebugger.h"
+#include "../ide/qsworkbench.h"
 #endif
 #include "../kernel/quickinterpreter.h"
 #include "../kernel/quickobjects.h"
@@ -1081,7 +1082,7 @@ void QSInterpreter::runtimeError(const QString &message,
     if (QMessageBox::question(0,
                          QString::fromLatin1("Depurador de Eneboo"),
                          QString::fromLatin1("Se ha detectado un error\n\n"
-                                     "Â¿ Desea visualizar el script ?"),
+                                     "¿ Desea visualizar el script ?"),
                          QMessageBox::Yes,
                          QMessageBox::No ) == QMessageBox::Yes)
                          {
