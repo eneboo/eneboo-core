@@ -164,6 +164,7 @@ for a in "$@"; do
       #OPT_AQ_DEBUG=yes
       QT_DEBUG_OPT="-debug"
       OPT_DEVELOPER=yes
+      QSADIR=qsa2
     ;;
 
 
@@ -715,7 +716,7 @@ $CMD_MAKE $MAKE_INSTALL || exit 1
 
 export QTDIR=$PREFIX
 
-echo "Compilando QSA..."
+echo "Compilando QSA ($QSADIR) ..."
 cd $BASEDIR/src/$QSADIR
 cp -fv ../qt/.qmake.cache .qmake.cache
 cp -fv ../qt/.qmake.cache src/$QSADIR/
