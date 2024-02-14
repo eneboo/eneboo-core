@@ -597,6 +597,11 @@ then
   echo "DEFINES *= QSDEBUGGER QSDEBUGGER_VISUAL AQ_DEBUGGER FL_DEBUGGER" >> settings.pro  
 fi
 
+if [ "$QSADIR" = "qsa2" ] 
+then
+    echo "DEFINES *= QSDEVELOPER" >> settings.pro
+fi
+
 if [ "$OPT_AQ_DEBUG" = "yes" ]
 then
   echo "DEFINES *= AQ_DEBUG" >> settings.pro

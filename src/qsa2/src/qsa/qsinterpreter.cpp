@@ -80,7 +80,7 @@ public:
   int timeoutInterval;
 
   // ### AbanQ
-  /** Indica si el intérprete puede interactuar con el GUI, por defecto activado */
+  /** Indica si el intï¿½rprete puede interactuar con el GUI, por defecto activado */
   bool interactiveGUI_;
   // ### AbanQ
 };
@@ -1077,17 +1077,30 @@ void QSInterpreter::runtimeError(const QString &message,
       else
         qWarning(errorMsg);
     }
+  } else if (errorMode() == AskForDebug) {
+    if (QMessageBox::question(0,
+                         QString::fromLatin1("Depurador de Eneboo"),
+                         QString::fromLatin1("Se ha detectado un error\n\n"
+                                     "Â¿ Desea visualizar el script ?"),
+                         QMessageBox::Yes,
+                         QMessageBox::No ) == QMessageBox::Yes)
+                         {
+                         QSScript *scr = d->project->script(scriptName);
+                         if (!scr)
+    				return;
+		 	QSWorkbench *wb = new QSWorkbench(d->project);
+		 	wb->open();
+		 	wb->showScript( scr );
+                         }
+                         
+    qDebug("Error in script: '%s', line: %d\n  %s\n",
+           scriptName.latin1(), lineNumber, message.latin1());
   }
 #else
-  QString warnNoCert(tr("It is very probable that the version of  the modules or  application you  are<br/>"
-                        "using is too old or is not signed and certified by InfoSiAL. In this case you<br/>"
-                        "can not run normally  AbanQ. You  can get an updated and certified version of<br/>"
-                        "AbanQ from http://www.infosial.com"));
   QString errorMsg(QString::fromLatin1("The following error occurred in "
                                        "line <b>%1</b> of  <b>%2</b> while executing "
-                                       "the script:<pre><font color=red>%3</font></pre>"
-                                       "<pre><b>%4</b></pre>")
-                   .arg(lineNumber).arg(scriptName).arg(message).arg(warnNoCert));
+                                       "the script:<pre><font color=red>%3</font></pre>")
+                   .arg(lineNumber).arg(scriptName).arg(message));
   if (d->interactiveGUI_)
     QMessageBox::critical(qApp->mainWidget(), QString::fromLatin1("Error"), errorMsg);
   else

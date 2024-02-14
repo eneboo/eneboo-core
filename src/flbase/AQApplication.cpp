@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qdom.h>
@@ -104,15 +104,15 @@ else
 #endif
   }
 
-//#ifdef QSDEBUGGER
-//  project_->evaluate();
-//  if (i && i->hadError()) {
-//    i->stopExecution();
-//    i->clear();
-//    project_->clearObjects();
-//    loadScriptsFromModule("sys");
-//  }
-//#endif
+#ifdef QSDEVELOPER
+  project_->evaluate();
+  if (i && i->hadError()) {
+    i->stopExecution();
+    i->clear();
+    project_->clearObjects();
+    loadScriptsFromModule("sys");
+  }
+#endif
 
   d->aqAppScriptObject_ = new QObject(this, "aqAppScript");
   project_->addObject(d->aqAppScriptObject_);
