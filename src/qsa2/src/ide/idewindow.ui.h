@@ -1185,7 +1185,7 @@ void IdeWindow::syncEditor(QSEditor *e)
     QString text(scriptTextFileName(eFileName));
     if (!text.isEmpty() && text != eText) {
       QString msg(tr("El archivo\n%1\nasociado al editor ha cambiado en el disco.\n\n"
-                     "?Quiere volver a cargar el archivo?"));
+                     "¿Quiere volver a cargar el archivo?"));
       int res = QMessageBox::question(
                   this, tr("Detectados cambios en disco"), msg.arg(eFileName),
                   QMessageBox::No, QMessageBox::Yes | QMessageBox::Default);

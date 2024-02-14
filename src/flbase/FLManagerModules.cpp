@@ -658,7 +658,7 @@ QString FLManagerModules::contentCode(const QString &n)
     return content(n);
   QString s(contentCached(n));
   if (!s.left(45).lower().contains("var form"))
-    s.prepend("var form = this;\n");
+    s.prepend("var form = this; //auto-added\n");
 
 #if 0
   QRegExp rx;
