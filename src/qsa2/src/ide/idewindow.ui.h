@@ -220,7 +220,17 @@ void IdeWindow::saveScript(QSScript *s)
   tabWidget->setTabLabel(editor, aqFormatTabLabel(s));
   tabWidget->setTabToolTip(editor, aqFormatTabToolTip(s));
   QTextStream stream(&file);
-  stream << s->code().remove("var form = this; //auto-added\n");
+
+  if (fileName.endsWith(".qs")) {
+         s.setCodec( QTextCodec::codecForName("ISO-8859-1") ); 
+    } 
+  else
+    {
+         s.setCodec( QTextCodec::codecForName("UTF-8") );
+    }
+    
+
+  stream << s->code().remove("var form = this; //auto-added\n").latin1();
 }
 
 void IdeWindow::scriptSave()

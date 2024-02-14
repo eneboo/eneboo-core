@@ -158,7 +158,7 @@ for a in "$@"; do
     ;;
     -developer)
       OPT_GDB=yes
-      OPT_SQLLOG=yes
+      #OPT_SQLLOG=yes
       OPT_QUICK_CLIENT=no
       OPT_DEBUGGER=yes
       #OPT_AQ_DEBUG=yes
