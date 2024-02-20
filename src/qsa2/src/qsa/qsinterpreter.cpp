@@ -81,7 +81,7 @@ public:
   int timeoutInterval;
 
   // ### AbanQ
-  /** Indica si el int�rprete puede interactuar con el GUI, por defecto activado */
+  /** Indica si el intérprete puede interactuar con el GUI, por defecto activado */
   bool interactiveGUI_;
   // ### AbanQ
 };
@@ -1082,7 +1082,7 @@ void QSInterpreter::runtimeError(const QString &message,
     if (QMessageBox::question(0,
                          QString::fromLatin1("Depurador de Eneboo"),
                          QString::fromLatin1("Se ha detectado un error\n\n"
-                                     "� Desea visualizar el script ?"),
+                                     "¿ Desea visualizar el script ?"),
                          QMessageBox::Yes,
                          QMessageBox::No ) == QMessageBox::Yes)
                          {

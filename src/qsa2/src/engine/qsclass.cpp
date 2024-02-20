@@ -70,6 +70,7 @@ void QSClass::clear()
   //Q_ASSERT(mmap);
   if (mmap) {
     for (QSMemberMap::ConstIterator it = mmap->begin(); it != mmap->end(); ++it) {
+     if((*it).type())
       if ((*it).type() == QSMember::ScriptFunction) {
         //Q_ASSERT((*it).scriptFunction);
         if ((*it).scriptFunction) {
