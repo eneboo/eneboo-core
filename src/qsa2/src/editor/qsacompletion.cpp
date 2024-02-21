@@ -581,7 +581,7 @@ QValueList<QPair<QString, QString> > QSACompletion::parseAssignments(const QStri
     }
 
     if (last.isSpace()) {
-      if (code[(int)(i - 2)] != '.' && c != '=' && c != ';' && c != '{' && c != '}' && c != '(' && c != ')') {
+      if (code[(int)(i-2)] != '.' && c != '=' && c != ';' && c != '{' && c != '}' && c != '(' && c != ')') {
         if (state == LeftHandSide)
           leftHandBuffer = QString::null;
         else if (state == RightHandSight)

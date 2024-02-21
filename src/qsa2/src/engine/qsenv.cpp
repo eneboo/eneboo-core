@@ -143,8 +143,9 @@ void QSEnv::clear()
 
 #ifdef QSDEBUGGER
   it = QPtrListIterator<QSClass>(classList);
-  while ((cur = it()))
+  while ((cur = it()) != 0) {
     cur->clear();
+  }    
 #endif
 
   classList.clear();
