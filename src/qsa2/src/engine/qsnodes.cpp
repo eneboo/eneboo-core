@@ -136,6 +136,20 @@ QUICKCORE_EXPORT bool aqQSARunning = false;
     return QSNode::deref();       \
   }
 
+#define QSNODE_REF_IMPL_21(name, node1, node2)     \
+  void name::ref() {                                  \
+    ref_printf(#name "::ref(%p) count: %d -> %d\n", this, refCount, refCount+1);  \
+    if (node1) node1->ref();   \
+    if (node2) node2->ref();   \
+    QSNode::ref();          \
+  }             \
+  bool name::deref() {                                \
+    ref_printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
+    if (node1 && node1->deref()) { node1 = 0; } \
+    if (node2 && node2->deref()) { node2 = 0; } \
+    return QSNode::deref();       \
+  }
+
 #ifdef QSNODES_ALLOC_DEBUG
 uint QSNode::qsNodeCount = 0;
 #endif
@@ -2063,7 +2077,7 @@ QSNODE_REF_IMPL_2(QSShiftNode, term1, term2)
 QSNODE_REF_IMPL_2(QSSourceElementsNode, element, elements)
 QSNODE_REF_IMPL_2(QSStatListNode, statement, list)
 QSNODE_REF_IMPL_2(QSSwitchNode, expr, block)
-QSNODE_REF_IMPL_2(QSVarBindingListNode, list, binding)
+QSNODE_REF_IMPL_21(QSVarBindingListNode, list, binding)
 QSNODE_REF_IMPL_2(QSVarBindingNode, var, assign)
 QSNODE_REF_IMPL_2(QSVarDefNode, list, attrs)
 QSNODE_REF_IMPL_2(QSWhileNode, expr, statement)
