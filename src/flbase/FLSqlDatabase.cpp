@@ -85,6 +85,9 @@ QString FLSqlDatabase::driverAliasToDriverName(const QString &alias)
     return "FLQMYSQL4";
   if (alias == "MySQL_NO_INNODB")
     return "FLQMYSQL4_NO_INNODB";
+  if (alias == "SQLApi") {
+    return "FLsqlapi";
+  }
   return alias;
 }
 
@@ -98,6 +101,9 @@ QString FLSqlDatabase::driverNameToDriverAlias(const QString &name)
     return "MySQL";
   if (name == "FLQMYSQL4_NO_INNODB")
     return "MySQL_NO_INNODB";
+  if (name == "FLsqlapi") {
+    return "SQLApi";
+  }
   return name;
 }
 
