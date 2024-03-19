@@ -84,7 +84,7 @@ QUICKCORE_EXPORT bool aqQSARunning = false;
   }             \
   bool name::deref() {                                \
     ref_printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
-    if (node1 && node1->deref()) { delete node1; node1 = 0; }\
+    if (node1 && node1->deref()) { node1 = 0; }\
     return QSNode::deref();       \
   }
 
@@ -97,8 +97,8 @@ QUICKCORE_EXPORT bool aqQSARunning = false;
   }             \
   bool name::deref() {                                \
     ref_printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
-    if (node1 && node1->deref()) { delete node1; node1 = 0; } \
-    if (node2 && node2->deref()) { delete node2; node2 = 0; } \
+    if (node1 && node1->deref()) { node1 = 0; } \
+    if (node2 && node2->deref()) { node2 = 0; } \
     return QSNode::deref();       \
   }
 
@@ -112,9 +112,9 @@ QUICKCORE_EXPORT bool aqQSARunning = false;
   }             \
   bool name::deref() {                                \
     ref_printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
-    if (node1 && node1->deref()) { delete node1; node1 = 0; }\
-    if (node2 && node2->deref()) { delete node2; node2 = 0; }\
-    if (node3 && node3->deref()) { delete node3; node3 = 0; }\
+    if (node1 && node1->deref()) { node1 = 0; }\
+    if (node2 && node2->deref()) { node2 = 0; }\
+    if (node3 && node3->deref()) { node3 = 0; }\
     return QSNode::deref();       \
   }
 
@@ -129,10 +129,10 @@ QUICKCORE_EXPORT bool aqQSARunning = false;
   }             \
   bool name::deref() {                                \
     ref_printf(#name "::deref(%p): count: %d -> %d\n", this, refCount, refCount-1); \
-    if (node1 && node1->deref()) { delete node1; node1 = 0; }\
-    if (node2 && node2->deref()) { delete node2; node2 = 0; }\
-    if (node3 && node3->deref()) { delete node3; node3 = 0; }\
-    if (node4 && node4->deref()) { delete node4; node4 = 0; }\
+    if (node1 && node1->deref()) { node1 = 0; }\
+    if (node2 && node2->deref()) { node2 = 0; }\
+    if (node3 && node3->deref()) { node3 = 0; }\
+    if (node4 && node4->deref()) { node4 = 0; }\
     return QSNode::deref();       \
   }
 
