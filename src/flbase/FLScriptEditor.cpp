@@ -31,12 +31,12 @@ email                : mail@infosial.com
 #include "../qsa2/src/ide/replacetext.h"
 #include "../qsa2/src/ide/preferencescontainer.h"
 #include "../qsa2/tools/designer/editor/preferences.h"
+#endif
 #ifndef QSDEVELOPER 
 #ifdef QSDEBUGGER
 #include "../qsa/src/ide/replacetext.h"
 #include "../qsa/src/ide/preferencescontainer.h"
 #include "../qsa/tools/designer/editor/preferences.h"
-#endif
 #endif
 #endif
 
