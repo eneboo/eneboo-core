@@ -339,7 +339,7 @@ void FLManagerModules::init()
     QString driverName(db_->driverName());
     modVer = curSet.valueBuffer("valor").toString();
     if (!modVer.isEmpty() && modVer[0] != '#') {
-      if (driverName == "FLsqlite") {
+      if (driverName == "FLsqlite" || driverName == "FLsqlapi") {
         if (!db_->dbAux()->recordInfo("flfiles").contains("binario"))
           modVer = QString::null;
       } else {

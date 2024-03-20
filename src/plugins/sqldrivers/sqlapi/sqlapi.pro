@@ -1,4 +1,4 @@
-PRJ_MODULE      = SqlDrivers-SqlLite
+PRJ_MODULE      = SqlDrivers-SqlApi
 exists(../../../../settings.pro) {
         include(../../../../settings.pro)
 }
