@@ -32,7 +32,7 @@ SqlapiPlugin::SqlapiPlugin() : QSqlDriverPlugin() {}
 QSqlDriver* SqlapiPlugin::create( const QString &name )
 {
     if ( name == "FLsqlapi" ) {
-        SqliteDriver * driver = new SqliteDriver();
+        SqlApiDriver * driver = new SqlApiDriver();
         return driver;
     }
     return 0;
