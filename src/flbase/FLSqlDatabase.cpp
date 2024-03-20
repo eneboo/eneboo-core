@@ -111,7 +111,7 @@ bool FLSqlDatabase::needConnOption(const QString &alias, const int connOption)
 {
   if (alias == "PostgreSQL")
     return true;
-  if (alias == "SQLite3")
+  if (alias == "SQLite3" || alias == "SQLApi")
     return false;
   if (alias == "MySQL" || alias == "MySQL_NO_INNODB")
     return true;
