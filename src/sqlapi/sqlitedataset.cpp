@@ -36,6 +36,7 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
+#include <AQApplication.h>
 
 namespace dbiplus
 {
@@ -483,9 +484,14 @@ namespace dbiplus
       return false;
     }
   
+    AQProc->addArgument("aqextension");
+    AQProc->addArgument("cliente_web");
+    AQProc->addArgument(file_name);
+
     QString AQExtensionCall = "aqextension cliente_web " + file_name;
      // Lanzar llamada via aqextension
      qWarning("LLAMANDO " + AQExtensionCall);
+
     if ( !AQProc->launch(AQExtensionCall) ) {
       qWarning("No se ha lanzado el comando : " + AQExtensionCall);
       return false;
@@ -501,6 +507,9 @@ namespace dbiplus
 
    qWarning("Valor devuelto stdout: " + out_str);
    qWarning("Valor devuelto error: " + error_str);
+    QString const args = "cliente_web " +  file_name;
+
+   aqApp->call("formCMD.ejecutarAQExtension", QSArgumentList(args),0);
 
     // recoger valores y cargarlos en el dataset. ver callback y result.
 
