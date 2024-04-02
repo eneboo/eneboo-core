@@ -85,7 +85,7 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   }
 
   close();
-  dataBase_ = new SqliteDatabase();
+  dataBase_ = new SqliteDatabase(urlApi, userApi, tokenApi);
   dataBase_->setDatabase(db);
 
   if (dataBase_->connect() != DB_CONNECTION_OK) {
@@ -952,12 +952,11 @@ bool SqliteResult::reset(const QString &q)
   setActive(false);
   setAt(QSql::BeforeFirst);
   query = q.stripWhiteSpace();
-  if (q.find("select", 0, false) == 0)
-    setSelect(true);
-  else
-    setSelect(false);
-  query.replace("'true'", "'1'");
-  query.replace("'false'", "'0'");
+
+  setSelect(q.find("select", 0, false) == 0);
+
+  //query.replace("'true'", "'1'");
+  //query.replace("'false'", "'0'");
   // ###
   //q.replace("=;", "= NULL;");
   while (query.endsWith(";"))
@@ -967,10 +966,11 @@ bool SqliteResult::reset(const QString &q)
   if (query.upper().endsWith("FOR UPDATE"))
     query.truncate(query.length() - 10);
 
-  qWarning("QUERY! --> %s", query.latin1());
+  
 
   if (!isSelect()) {
-    if (query.find("CREATE TABLE", 0, false) == 0) {
+      qWarning("OMITIENDO ! --> %s", query.latin1());
+/*     if (query.find("CREATE TABLE", 0, false) == 0) {
       Dataset *ds = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
 
       if (!ds)
@@ -987,14 +987,23 @@ bool SqliteResult::reset(const QString &q)
       dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
       if (!dataSet->exec(query.latin1()))
         return false;
-    }
+    } */
 
     return true;
+  } else {
+    qWarning("QUERY! --> %s", query.latin1());
   }
+
+  
 
   if (dataSet)
     delete dataSet;
-  dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
+
+  QString urlApi = driver->urlApi;
+  QString userApi = driver->userApi;
+  QString tokenApi = driver->tokenApi;
+
+  dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset(urlApi, userApi, tokenApi);
   if (dataSet->query(query.latin1())) {
     setActive(true);
     return true;

@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <dataset.h>
 #include <sqlite3.h>
-
+#include <qstringlist.h>
 #include "aqsqliteglobal.h"
 
 namespace dbiplus
@@ -52,7 +52,7 @@ protected:
 
 public:
 /* default constructor */
-  SqliteDatabase();
+  SqliteDatabase(const QString &url, const QString &user, const QString &password);
 /* destructor */
   ~SqliteDatabase();
 
@@ -89,6 +89,9 @@ public:
       return _in_transaction;
     };
 
+  QString urlApi;
+  QString userApi;
+  QString passApi;
 };
 
 

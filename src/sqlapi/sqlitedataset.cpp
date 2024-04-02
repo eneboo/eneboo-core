@@ -84,9 +84,12 @@ namespace dbiplus
 
   //************* SqliteDatabase implementation ***************
 
-  SqliteDatabase::SqliteDatabase()
+  SqliteDatabase::SqliteDatabase(const QString &url, const QString &user, const QString &password)
   {
-
+    urlApi = url;
+    userApi = user;
+    passApi = password;
+    
     active = false;
     _in_transaction = false;    // for transaction
 
@@ -446,12 +449,14 @@ namespace dbiplus
 
     close();
 
-    if (db->setErr(sqlite3_exec(handle(), query, &callback, &result, &errmsg), query) == SQLITE_OK) {
+    qWarning("LANZANDO QUERY VIA API %s --> %s", ((SqliteDatabase *)db)->userApi, qry);
+
+/*     if (db->setErr(sqlite3_exec(handle(), query, &callback, &result, &errmsg), query) == SQLITE_OK) {
       active = true;
       ds_state = dsSelect;
       this->first();
       return true;
-    }
+    } */
     return false;
   }
 
