@@ -30,6 +30,7 @@
 #include "win64.h"
 #endif
 
+#include "qplatformdefs.h"
 #include <iostream>
 #include <string>
 
