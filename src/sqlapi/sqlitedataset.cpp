@@ -449,7 +449,11 @@ namespace dbiplus
 
     close();
 
-    qWarning("LANZANDO QUERY VIA API %s --> %s", ((SqliteDatabase *)db)->userApi, qry);
+    qWarning("LANZANDO QUERY VIA API " + ((SqliteDatabase *)db)->userApi + " --> " +  qry);
+
+    // Lanzar llamada via aqextension
+
+    // recoger valores y cargarlos en el dataset. ver callback y result.
 
 /*     if (db->setErr(sqlite3_exec(handle(), query, &callback, &result, &errmsg), query) == SQLITE_OK) {
       active = true;
