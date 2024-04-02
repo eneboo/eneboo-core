@@ -90,6 +90,9 @@ private:
   QSqlRecord record(const FLTableMetaData *mtd) const;
   QSqlRecordInfo recordInfo2(const QString &tablename) const;
   SqliteDatabase *dataBase_;
+  QString urlApi;
+  QString userApi;
+  QString tokenApi;
 };
 
 class SqliteResult : public QSqlResult
