@@ -109,12 +109,8 @@ QString FLSqlDatabase::driverNameToDriverAlias(const QString &name)
 
 bool FLSqlDatabase::needConnOption(const QString &alias, const int connOption)
 {
-  if (alias == "PostgreSQL")
-    return true;
-  if (alias == "SQLite3" || alias == "SQLApi")
+  if (alias == "SQLite3")
     return false;
-  if (alias == "MySQL" || alias == "MySQL_NO_INNODB")
-    return true;
   return true;
 }
 
@@ -124,6 +120,8 @@ QString FLSqlDatabase::defaultPort(const QString &alias)
     return "5432";
   if (alias == "MySQL" || alias == "MySQL_NO_INNODB")
     return "3306";
+  if (alias == "SQLApi")
+    return "8005";
   return QString::null;
 }
 
