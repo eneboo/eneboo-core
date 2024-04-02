@@ -61,7 +61,11 @@ static QVariant::Type qDecodeSqliteType(fType t)
 }
 
 SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
-  FLSqlDriver(parent, name), dataBase_(0) {}
+  FLSqlDriver(parent, name), dataBase_(0)
+  {
+    qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
+    //recogemos url hosts para hacer llamadas.
+  }
 
 SqlApiDriver::~SqlApiDriver() {}
 
