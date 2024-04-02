@@ -107,7 +107,12 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
 bool SqlApiDriver::open(const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &connOpts)
 {
   qWarning(tr("SqlApiDriver::open : DB: %1, USER: %2, PASS: %3, HOSTS: %4, PORT: %d").arg(db).arg(user).arg(password).arg(host), port);
-  urlApi.append("http://").append(host).append(":").append(QString::number(port)).append("/api");
+  urlApi.append("http://").append(host).append(":");
+  qWarning("P1");
+  urlApi.append(QString::number(port));
+  qWarning("P2");
+  urlApi.append("/api");
+  qWarning("P3");
   userApi = user;
   tokenApi = password;
   qWarning(tr("SqlApiDriver::open(2) : URL: %1, USER: %2, TOKEN: %3").arg(urlApi).arg(userApi).arg(tokenApi));
