@@ -36,7 +36,6 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
-#include <AQApplication.h>
 
 namespace dbiplus
 {
@@ -507,9 +506,6 @@ namespace dbiplus
 
    qWarning("Valor devuelto stdout: " + out_str);
    qWarning("Valor devuelto error: " + error_str);
-    QString const args = "cliente_web " +  file_name;
-
-   aqApp->call("formCMD.ejecutarAQExtension", QSArgumentList(args),0);
 
     // recoger valores y cargarlos en el dataset. ver callback y result.
 
