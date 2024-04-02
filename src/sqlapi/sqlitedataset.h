@@ -33,7 +33,9 @@
 #include <dataset.h>
 #include <sqlite3.h>
 #include <qstringlist.h>
+#include <qprocess.h>
 #include "aqsqliteglobal.h"
+#include <qapplication.h>
 
 namespace dbiplus
 {
@@ -91,7 +93,8 @@ public:
 
   QString urlApi;
   QString userApi;
-  QString passApi;
+  QString tokenApi;
+  QProcess *AQProc;
 };
 
 

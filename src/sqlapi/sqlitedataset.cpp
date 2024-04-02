@@ -88,7 +88,8 @@ namespace dbiplus
   {
     urlApi = url;
     userApi = user;
-    passApi = password;
+    tokenApi = password;
+    AQProc = new QProcess(0);
     
     active = false;
     _in_transaction = false;    // for transaction
@@ -104,6 +105,10 @@ namespace dbiplus
   SqliteDatabase::~SqliteDatabase()
   {
     disconnect();
+    if ( AQProc && AQProc->isRunning() ) {
+      AQProc->tryTerminate();
+      AQProc->kill();
+    }
   }
 
 
@@ -449,9 +454,52 @@ namespace dbiplus
 
     close();
 
-    qWarning("LANZANDO QUERY VIA API " + ((SqliteDatabase *)db)->userApi + " --> " +  qry);
+    QString url = ((SqliteDatabase *)db)->urlApi; 
+    QString token = ((SqliteDatabase *)db)->tokenApi; 
+    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
-    // Lanzar llamada via aqextension
+    QString folder = getenv("TPM");
+    if (folder.isEmpty()) {
+      folder = getenv("TMPDIR");
+      if (folder.isEmpty()) {
+        folder = "/tmp/";
+      }
+    }
+
+    QString file_name = folder + "data_api";
+
+    qWarning("LANZANDO QUERY VIA API " + url + " --> " +  qry);
+
+    const QString cadena = '{\n"metodo": "GET",\n"url": "'+ url + '",\n"params": "__QRY__' + qry + '__QRY__",\n"headers": { "Authorization": "Token ' + token +'"},\n"codificacion": "UTF-8",\n}';
+    // guradar cadena en fichero data.
+    QFile fi(file_name);
+    if (fi.open(IO_WriteOnly)) {
+      QTextStream t(&fi);
+      t << cadena;
+      fi.close();
+    } else {
+      qWarning("no se ha podido escribir en el fichero " +  file_name);
+      return false;
+    }
+  
+    QString AQExtensionCall = "aqextension cliente_web " + file_name;
+     // Lanzar llamada via aqextension
+     qWarning("LLAMANDO " + AQExtensionCall);
+    if ( !AQProc->launch(AQExtensionCall) ) {
+      qWarning("No se ha lanzado el comando : " + AQExtensionCall);
+      return false;
+    }
+
+    while (AQProc->isRunning()) {
+      //Esperamos a que termine
+      qApp->processEvents();
+    }
+
+    QString error_str = AQProc->readStderr().data();
+    QString out_str = AQProc->readStdout().data();
+
+   qWarning("Valor devuelto stdout: " + out_str);
+   qWarning("Valor devuelto error: " + error_str);
 
     // recoger valores y cargarlos en el dataset. ver callback y result.
 
