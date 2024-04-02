@@ -999,11 +999,7 @@ bool SqliteResult::reset(const QString &q)
   if (dataSet)
     delete dataSet;
 
-  QString urlApi = driver->urlApi;
-  QString userApi = driver->userApi;
-  QString tokenApi = driver->tokenApi;
-
-  dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset(urlApi, userApi, tokenApi);
+  dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
   if (dataSet->query(query.latin1())) {
     setActive(true);
     return true;
