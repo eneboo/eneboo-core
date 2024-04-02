@@ -30,7 +30,7 @@
 #include "win64.h"
 #endif
 
-#include "qglobal.h"
+#include "cstdlib"
 #include <iostream>
 #include <string>
 
