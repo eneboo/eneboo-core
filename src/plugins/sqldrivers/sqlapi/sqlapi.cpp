@@ -104,8 +104,9 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   }
 }
 
-bool SqlApiDriver::open(const QString &db, const QString &, const QString &, const QString &host, int , const QString &)
+bool SqlApiDriver::open(const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &connOpts)
 {
+  qWarning("SqlApiDriver::open : DB: %s, USER: %s, PASS: %s, HOSTS: %s, PORT: %d", db, user, password, host, port);
   return open(db, QString::null, QString::null, QString::null, 0);
 }
 
