@@ -469,10 +469,11 @@ namespace dbiplus
 
     QString file_name = folder + "data_api";
 
-    qWarning("LANZANDO QUERY VIA API " + url + " --> " +  qry);
+    //qWarning("LANZANDO QUERY VIA API " + url + " --> " +  qry);
 
-    const QString cadena = '{\n"metodo": "GET",\n"url": "'+ url + '",\n"params":{"delegate_qry":"' + qry + '",\n"headers": { "Authorization": "Token ' + token +'"},\n"codificacion": "UTF-8",\n}';
+    const QString cadena = '{\n"metodo": "GET",\n"url": "' + url + '",\n"params":{"delegate_qry":"' + qry + '",\n"headers": { "Authorization": "Token ' + token +'"},\n"codificacion": "UTF-8",\n}';
     // guradar cadena en fichero data.
+    qWarning("GUARDANDO QUERY VIA API " + file_name + ", cadena:" + cadena);
     QFile fi(file_name);
     if (fi.open(IO_WriteOnly)) {
       QTextStream t(&fi);
