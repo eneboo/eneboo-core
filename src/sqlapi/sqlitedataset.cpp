@@ -64,7 +64,7 @@ namespace dbiplus
         //printf("\nA) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
 
         if (reslt[i] == NULL) {
-          //Automáticamente marcaremos campo como null
+          //Automï¿½ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
@@ -471,7 +471,7 @@ namespace dbiplus
 
     qWarning("LANZANDO QUERY VIA API " + url + " --> " +  qry);
 
-    const QString cadena = '{\n"metodo": "GET",\n"url": "'+ url + '",\n"params": "__QRY__' + qry + '__QRY__",\n"headers": { "Authorization": "Token ' + token +'"},\n"codificacion": "UTF-8",\n}';
+    const QString cadena = '{\n"metodo": "GET",\n"url": "'+ url + '",\n"params":{"delegate_qry":"' + qry + '",\n"headers": { "Authorization": "Token ' + token +'"},\n"codificacion": "UTF-8",\n}';
     // guradar cadena en fichero data.
     QFile fi(file_name);
     if (fi.open(IO_WriteOnly)) {
@@ -482,17 +482,22 @@ namespace dbiplus
       qWarning("no se ha podido escribir en el fichero " +  file_name);
       return false;
     }
-  
-    AQProc->addArgument("aqextension");
+
+    QString path_exec = qApp->applicationDirPath() + "/aqextension";
+    QString AQExtensionCall = path_exec + " cliente_web " + file_name;
+
+    AQProc->clearArguments();
+    AQProc->addArgument(path_exec);
     AQProc->addArgument("cliente_web");
     AQProc->addArgument(file_name);
 
-    QString AQExtensionCall = "aqextension cliente_web " + file_name;
+    
+    QString salida = "";
      // Lanzar llamada via aqextension
      qWarning("LLAMANDO " + AQExtensionCall);
 
-    if ( !AQProc->launch(AQExtensionCall) ) {
-      qWarning("No se ha lanzado el comando : " + AQExtensionCall);
+    if ( !AQProc->launch(salida) ) {
+      qWarning("No se ha lanzado el comando : " + salida);
       return false;
     }
 
@@ -506,6 +511,7 @@ namespace dbiplus
 
    qWarning("Valor devuelto stdout: " + out_str);
    qWarning("Valor devuelto error: " + error_str);
+   qWarning("Valor salida: " + salida);
 
     // recoger valores y cargarlos en el dataset. ver callback y result.
 
