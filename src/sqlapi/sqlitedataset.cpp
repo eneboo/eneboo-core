@@ -523,6 +523,8 @@ namespace dbiplus
      return false;
    }
 
+   qWarning("DATOS EN FICHERO DEVUELTOS: " + salida);
+
   // recoger valores y cargarlos en el dataset.
 
   QStringList lista_registros(QStringList::split("\n", salida));
