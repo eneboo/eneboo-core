@@ -69,7 +69,6 @@ namespace dbiplus
           v.set_isNull(); 
         } else {
           //printf("\n++++ name:%s, type:%d", r->record_header[i].name.c_str(), r->record_header[i].type);
-
           v.set_asString(reslt[i]);
         }
 
@@ -468,12 +467,8 @@ namespace dbiplus
     }
 
     QString file_name = folder + "data_api";
-
-    //qWarning("LANZANDO QUERY VIA API " + url + " --> " +  qry);
-
-    //const QString cadena = '{\n"metodo": "GET",\n"url": "' + url + '",\n"params":{"delegate_qry":"' + qry + '",\n"headers": { "Authorization": "Token ' + token +'"},\n"codificacion": "UTF-8",\n}';
-    
-    const QString cadena = "{\n\"metodo\": \"GET\",\n\"url\": " + url + "\"}\n\"params\":{\"delegate_qry\":\"" + qry + "\",\n\"headers\": { \"Authorization\": \"Token " + token + "\"},\n\"codificacion\": \"UTF-8\",\n}";
+    QString fichero_salida =  folder + "delegate_qry" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
+    const QString cadena = "{\n\"metodo\": \"GET\",\n\"url\": " + url + "/delegate_qry\"}\n\"params\":{\"delegate_qry\":\"" + qry + "\",\n\"headers\": { \"Authorization\": \"Token " + token + "\"},\n\"codificacion\": \"UTF-8\",\n\"fsalida\":\"" + fichero_salida + "\"}";
     
     // guradar cadena en fichero data.
     qWarning("GUARDANDO QUERY VIA API " + file_name + ", cadena:" + cadena);
@@ -517,15 +512,80 @@ namespace dbiplus
    qWarning("Valor devuelto error: " + error_str);
    qWarning("Valor salida: " + salida);
 
-    // recoger valores y cargarlos en el dataset. ver callback y result.
+   //Leer un fichero y cargar el contenido
+   QFile fi2(fichero_salida);
+   if (fi2.open(IO_ReadOnly)) {
+     
+     salida = fi2.readAll().data();
+     fi2.close();
+   } else {
+     qWarning("no se ha podido leer el fichero " +  fichero_salida);
+     return false;
+   }
 
+  // recoger valores y cargarlos en el dataset.
+
+  QStringList lista_registros(QStringList::split("\n", salida));
+  QString separador_campos = "|^|";
+
+  result.record_header.clear();
+  bool first = true;
+  for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
+    QString registro = *it;
+
+    QStringList lista_valores(QStringList::split(separador_campos, registro));
+
+    if (first == true) { //cabecera ...
+      // Cargamos registro de cabecera:
+      for (int i = 0; i < lista_valores.size(); i++) {
+        const QString datos_columna = lista_valores[i];
+        QStringList columna = QStringList::split("|", datos_columna);
+        result.record_header[i].name = *columna[0];
+      }
+      first = false;
+      continue;
+    } else { // valores ...
+
+
+
+    int sz = result.records.size(); 
+    
+    // Creamos listado con valores
+    sql_record rec;
+    for (int i = 0; i < lista_valores.size(); i++) {  
+
+      field_value v;
+      const std::string valor = lista_valores[i];
+    
+      
+      if (valor == NULL) {
+          //Automáticamente marcaremos campo como null
+          v.set_asString("");
+          v.set_isNull(); 
+        } else {
+          v.set_asString(valor); // entra siempre como string ...
+        }
+       rec[i] = v;
+ 
+      }
+
+    result.records[sz] = rec;
+
+    }
+  }
+
+  active = true;
+  ds_state = dsSelect;
+  this->first();
+  return true;
+  
 /*     if (db->setErr(sqlite3_exec(handle(), query, &callback, &result, &errmsg), query) == SQLITE_OK) {
       active = true;
       ds_state = dsSelect;
       this->first();
       return true;
     } */
-    return false;
+
   }
 
   bool SqliteDataset::query(const string &q)
