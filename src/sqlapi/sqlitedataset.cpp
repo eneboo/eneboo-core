@@ -468,7 +468,7 @@ namespace dbiplus
 
     QString file_name = folder + "data_api";
     QString fichero_salida =  folder + "delegate_qry" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
-    const QString cadena = "{\n\"metodo\": \"GET\",\n\"url\": \"" + url + "/delegate_qry\"}\n\"params\":{\"delegate_qry\":\"" + qry + "\",\n\"headers\": { \"Authorization\": \"Token " + token + "\"},\n\"codificacion\": \"UTF-8\",\n\"fsalida\":\"" + fichero_salida + "\"}";
+    const QString cadena = "{\n\"metodo\": \"GET\",\n\"url\": \"" + url + "/delegate_qry\",\n\"params\":{\"delegate_qry\":\"" + qry + "\"},\n\"headers\": { \"Authorization\": \"Token " + token + "\"},\n\"codificacion\": \"UTF-8\",\n\"fsalida\":\"" + fichero_salida + "\"}";
     
     // guradar cadena en fichero data.
     qWarning("GUARDANDO QUERY VIA API " + file_name + ", cadena:" + cadena);
@@ -561,7 +561,7 @@ namespace dbiplus
     
       
       if (valor == NULL) {
-          //Automáticamente marcaremos campo como null
+          //Automï¿½ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
