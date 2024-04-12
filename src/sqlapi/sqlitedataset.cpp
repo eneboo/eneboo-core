@@ -466,9 +466,24 @@ namespace dbiplus
       }
     }
 
-    QString file_name = folder + "data_api";
-    QString fichero_salida =  folder + "delegate_qry" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
-    const QString cadena = "{\n\"metodo\": \"GET\",\n\"url\": \"" + url + "/delegate_qry\",\n\"params\":{\"delegate_qry\":\"" + qry + "\"},\n\"headers\": { \"Authorization\": \"Token " + token + "\"},\n\"codificacion\": \"UTF-8\",\n\"fsalida\":\"" + fichero_salida + "\"}";
+    QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
+    QString separador_campos = "|^|";
+    QString separador_lineas = "|^^|";
+    QString file_name = folder + "data_api" + "_" + timestamp + ".json";
+    QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
+    QString cadena = "{\n";
+    cadena += "\"metodo\": \"GET\",\n";
+    cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
+    cadena += "\"params\":{\n";
+    cadena += "\"delegate_qry\":\"" + qry + "\",\n";
+    cadena += "\"separador_campos\":\"" + separador_campos + "\",\n";
+    cadena += "\"separador_lineas\":\"" + separador_lineas + "\"\n";
+    cadena += "},\n";
+    cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
+    cadena += "\"codificacion\": \"UTF-8\",\n";
+    cadena += "\"tipo_payload\": \"STRING\",\n";
+    cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
+    cadena += "}";
     
     // guradar cadena en fichero data.
     qWarning("GUARDANDO QUERY VIA API " + file_name + ", cadena:" + cadena);
@@ -506,13 +521,21 @@ namespace dbiplus
     }
 
     QString error_str = AQProc->readStderr().data();
+/*     
     QString out_str = AQProc->readStdout().data();
 
    qWarning("Valor devuelto stdout: " + out_str);
    qWarning("Valor devuelto error: " + error_str);
-   qWarning("Valor salida: " + salida);
+   qWarning("Valor salida: " + salida); */
 
    //Leer un fichero y cargar el contenido
+    if (!QFile::exists(fichero_salida)) {
+      qWarning("No existe el fichero " + fichero_salida);
+      qWarning("Error " + error_str);
+      return false;
+    }
+
+
    QFile fi2(fichero_salida);
    if (fi2.open(IO_ReadOnly)) {
      
@@ -523,12 +546,26 @@ namespace dbiplus
      return false;
    }
 
-   qWarning("DATOS EN FICHERO DEVUELTOS: " + salida);
+  //Limpia caracteres raros inicio y fin...
 
-  // recoger valores y cargarlos en el dataset.
 
-  QStringList lista_registros(QStringList::split("\n", salida));
-  QString separador_campos = "|^|";
+  const QString marca_inicio = "\"\\\""; 
+  const QString marca_fin = "\\\"\"";
+  if (salida.startsWith(marca_inicio)) {
+    // Eliminar del inicio de salida
+    salida = salida.right(salida.length() - marca_inicio.length());
+  }
+  if (salida.endsWith(marca_fin)) {
+    // Eliminar del final de salida
+    salida = salida.left(salida.length() - marca_fin.length());
+  }
+
+  //)
+
+
+
+  QStringList lista_registros(QStringList::split(separador_lineas, salida));
+  
 
   result.record_header.clear();
   bool first = true;
