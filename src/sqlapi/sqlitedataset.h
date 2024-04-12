@@ -93,6 +93,7 @@ public:
 
   QString urlApi;
   QString userApi;
+  QString passwordApi;
   QString tokenApi;
   QProcess *AQProc;
 };
@@ -142,6 +143,9 @@ public:
 /* set autorefresh boolean value (if true - refresh the data after edit() 
 or insert() operations default = false) */
   void set_autorefresh(bool val);
+  QString lanzar_llamada_aqextension(const QString &file_name, const QString &fichero_salida);
+  QString generar_fichero_aqextension(const QString &cadena);
+  bool hacer_login_usuario(const string &user, const string &passwd);
 
 /* opens a query  & then sets a query results */
   virtual void open();

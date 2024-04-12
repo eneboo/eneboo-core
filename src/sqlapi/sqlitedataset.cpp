@@ -36,6 +36,7 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
+#include "qtmd5.h"
 
 namespace dbiplus
 {
@@ -327,6 +328,147 @@ namespace dbiplus
     autorefresh = val;
   }
 
+  QString SqliteDataset::generar_fichero_aqextension(const QString &cadena)
+  {
+
+    QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
+    QString folder = getenv("TPM");
+    if (folder.isEmpty()) {
+      folder = getenv("TMPDIR");
+      if (folder.isEmpty()) {
+        folder = "/tmp/";
+      }
+    }
+    QString fichero_datos = folder + "data_api" + "_" + timestamp + ".json";
+
+    // Guardar cadena en fichero data.
+    qWarning("GUARDANDO QUERY VIA API " + fichero_datos + ", cadena:" + cadena);
+    QFile fi(fichero_datos);
+    if (fi.open(IO_WriteOnly)) {
+      QTextStream t(&fi);
+      t << cadena;
+      fi.close();
+    } else {
+      qWarning("no se ha podido escribir en el fichero " +  fichero_datos);
+      return "";
+    }
+
+    return fichero_datos;
+  }
+
+  bool SqliteDataset::hacer_login_usuario(const string &user, const string &passwd)
+  {
+    // Hacemos login con aqextension y guardamos el token devuelto ....
+    QString token;
+    QString cadena;
+
+    QString folder = getenv("TPM");
+    if (folder.isEmpty()) {
+      folder = getenv("TMPDIR");
+      if (folder.isEmpty()) {
+        folder = "/tmp/";
+      }
+    }
+    QString passwd_md5 = qtMD5(QString(passwd).utf8());
+    qWarning("El password "  + passwd + " pasa a ser " + passwd_md5);
+    
+    QString fichero_salida = folder + "data_token.txt";
+    QString url = ((SqliteDatabase *)db)->urlApi; 
+    QString cadena = "{\n";
+    cadena += "\"metodo\": \"GET\",\n";
+    cadena += "\"url\": \"" + url + "/login\",\n";
+    cadena += "\"params\": {\n";
+    cadena += "\"user\": \"" + user + "\",\n";
+    cadena += "\"passwd\": \"" + passwd_md5 + "\"\n";
+    cadena += "}\n";
+    cadena += "}";
+    
+    QString fichero_datos = generar_fichero_aqextension(cadena);
+    if (fichero_datos == "") {
+      qWarning("Error al generar fichero de datos");
+      return false;
+    }
+    QString token = lanzar_llamada_aqextension(fichero_datos, fichero_salida);
+
+
+    qWarning("Token: " + token);
+    if (token == "error") {
+      qWarning("Error al lanzar llamada aqextension");
+      return false;
+    }
+
+    ((SqliteDatabase *)db)->tokenApi = token;
+    return true;
+  }
+
+  QString SqliteDataset::lanzar_llamada_aqextension(const QString &file_name, const QString &fichero_salida)
+  {
+    
+    QString path_exec = qApp->applicationDirPath() + "/aqextension";
+    QString AQExtensionCall = path_exec + " cliente_web " + file_name;
+
+    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
+
+    AQProc->clearArguments();
+    AQProc->addArgument(path_exec);
+    AQProc->addArgument("cliente_web");
+    AQProc->addArgument(file_name);
+
+    
+    QString salida = "";
+     // Lanzar llamada via aqextension
+     qWarning("LLAMANDO " + AQExtensionCall);
+
+    if ( !AQProc->launch(salida) ) {
+      qWarning("No se ha lanzado el comando : " + salida);
+      return "error";
+    }
+
+    while (AQProc->isRunning()) {
+      //Esperamos a que termine
+      qApp->processEvents();
+    }
+
+    QString error_str = AQProc->readStderr().data();
+/*     
+    QString out_str = AQProc->readStdout().data();
+
+   qWarning("Valor devuelto stdout: " + out_str);
+   qWarning("Valor devuelto error: " + error_str);
+   qWarning("Valor salida: " + salida); */
+
+   //Leer un fichero y cargar el contenido
+  if (!QFile::exists(fichero_salida)) {
+    qWarning("No existe el fichero " + fichero_salida);
+    qWarning("Error " + error_str);
+    return "error";
+  }
+
+
+  QFile fi_salida(fichero_salida);
+  if (fi_salida.open(IO_ReadOnly)) {
+    
+    salida = fi_salida.readAll().data();
+    fi_salida.close();
+  } else {
+    qWarning("no se ha podido leer el fichero " +  fichero_salida);
+    return "error";
+  }
+    //Limpia caracteres raros inicio y fin...
+  const QString marca_inicio = "\"\\\""; 
+  const QString marca_fin = "\\\"\"";
+  if (salida.startsWith(marca_inicio)) {
+    // Eliminar del inicio de salida
+    salida = salida.right(salida.length() - marca_inicio.length());
+  }
+  if (salida.endsWith(marca_fin)) {
+    // Eliminar del final de salida
+    salida = salida.left(salida.length() - marca_fin.length());
+  }
+
+  return salida;
+}
+
 
 
   //--------- protected functions implementation -----------------//
@@ -455,8 +597,15 @@ namespace dbiplus
     close();
 
     QString url = ((SqliteDatabase *)db)->urlApi; 
-    QString token = ((SqliteDatabase *)db)->tokenApi; 
-    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
+    
+    
+    if (((SqliteDatabase *)db)->tokenApi.isEmpty()) {
+      qWarning("No hay token disponible. Solicitando ...");
+      QString user = ((SqliteDatabase *)db)->userApi;
+      QString password = ((SqliteDatabase *)db)->passwordApi;
+      hacer_login_usuario(user, password);
+    }
+    QString token = ((SqliteDatabase *)db)->tokenApi;
 
     QString folder = getenv("TPM");
     if (folder.isEmpty()) {
@@ -466,11 +615,12 @@ namespace dbiplus
       }
     }
 
+
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
     QString separador_campos = "|^|";
     QString separador_lineas = "|^^|";
-    QString file_name = folder + "data_api" + "_" + timestamp + ".json";
     QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
+
     QString cadena = "{\n";
     cadena += "\"metodo\": \"GET\",\n";
     cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
@@ -485,107 +635,41 @@ namespace dbiplus
     cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
     cadena += "}";
     
-    // guradar cadena en fichero data.
-    qWarning("GUARDANDO QUERY VIA API " + file_name + ", cadena:" + cadena);
-    QFile fi(file_name);
-    if (fi.open(IO_WriteOnly)) {
-      QTextStream t(&fi);
-      t << cadena;
-      fi.close();
-    } else {
-      qWarning("no se ha podido escribir en el fichero " +  file_name);
+    QString fichero_datos = generar_fichero_aqextension(cadena);
+    if (fichero_datos == "") {
+      qWarning("Error al generar fichero de datos");
       return false;
     }
 
-    QString path_exec = qApp->applicationDirPath() + "/aqextension";
-    QString AQExtensionCall = path_exec + " cliente_web " + file_name;
-
-    AQProc->clearArguments();
-    AQProc->addArgument(path_exec);
-    AQProc->addArgument("cliente_web");
-    AQProc->addArgument(file_name);
-
-    
-    QString salida = "";
-     // Lanzar llamada via aqextension
-     qWarning("LLAMANDO " + AQExtensionCall);
-
-    if ( !AQProc->launch(salida) ) {
-      qWarning("No se ha lanzado el comando : " + salida);
-      return false;
-    }
-
-    while (AQProc->isRunning()) {
-      //Esperamos a que termine
-      qApp->processEvents();
-    }
-
-    QString error_str = AQProc->readStderr().data();
-/*     
-    QString out_str = AQProc->readStdout().data();
-
-   qWarning("Valor devuelto stdout: " + out_str);
-   qWarning("Valor devuelto error: " + error_str);
-   qWarning("Valor salida: " + salida); */
-
-   //Leer un fichero y cargar el contenido
-    if (!QFile::exists(fichero_salida)) {
-      qWarning("No existe el fichero " + fichero_salida);
-      qWarning("Error " + error_str);
-      return false;
-    }
-
-
-   QFile fi2(fichero_salida);
-   if (fi2.open(IO_ReadOnly)) {
-     
-     salida = fi2.readAll().data();
-     fi2.close();
-   } else {
-     qWarning("no se ha podido leer el fichero " +  fichero_salida);
-     return false;
-   }
-
-  //Limpia caracteres raros inicio y fin...
-
-
-  const QString marca_inicio = "\"\\\""; 
-  const QString marca_fin = "\\\"\"";
-  if (salida.startsWith(marca_inicio)) {
-    // Eliminar del inicio de salida
-    salida = salida.right(salida.length() - marca_inicio.length());
-  }
-  if (salida.endsWith(marca_fin)) {
-    // Eliminar del final de salida
-    salida = salida.left(salida.length() - marca_fin.length());
-  }
-
-  //)
-
-
+  QString salida = lanzar_llamada_aqextension(fichero_datos, fichero_salida);
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
 
   result.record_header.clear();
   bool first = true;
+  qWarning("PROCESANDO LINEAS RECIBIDAS");
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
+    
+    qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
     QStringList lista_valores(QStringList::split(separador_campos, registro));
 
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
+      qWarning("PROCESANDO CABECERA"); 
       for (int i = 0; i < lista_valores.size(); i++) {
         const QString datos_columna = lista_valores[i];
         QStringList columna = QStringList::split("|", datos_columna);
+        qWarning("COLUMNA: %d -> %s (%s) ", i, *columna[0], *columna[1]);
         result.record_header[i].name = *columna[0];
       }
       first = false;
       continue;
     } else { // valores ...
 
-
+    qWarning("PROCESANDO VALORES");
 
     int sz = result.records.size(); 
     
@@ -598,7 +682,7 @@ namespace dbiplus
     
       
       if (valor == NULL) {
-          //Automï¿½ticamente marcaremos campo como null
+          //Automáticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
