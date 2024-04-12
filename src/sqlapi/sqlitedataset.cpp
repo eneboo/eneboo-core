@@ -359,8 +359,6 @@ namespace dbiplus
   bool SqliteDataset::hacer_login_usuario(const string &user, const string &passwd)
   {
     // Hacemos login con aqextension y guardamos el token devuelto ....
-    QString token;
-    QString cadena;
 
     QString folder = getenv("TPM");
     if (folder.isEmpty()) {
