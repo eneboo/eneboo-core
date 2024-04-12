@@ -36,7 +36,7 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
-#include "qtmd5.h"
+#include <qtmd5.h>
 
 namespace dbiplus
 {
