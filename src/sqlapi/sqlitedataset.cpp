@@ -404,7 +404,7 @@ namespace dbiplus
     return true;
   }
 
-  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida = "")
+  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida)
   {
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
