@@ -85,7 +85,8 @@ public:
 
   QString urlApi;
   QString userApi;
-  QString tokenApi;
+  QString passwordApi;
+
 
 private:
 

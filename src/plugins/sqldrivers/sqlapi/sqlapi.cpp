@@ -85,7 +85,7 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   }
 
   close();
-  dataBase_ = new SqliteDatabase(urlApi, userApi, tokenApi);
+  dataBase_ = new SqliteDatabase(urlApi, userApi, passwordApi);
   dataBase_->setDatabase(db);
 
   if (dataBase_->connect() != DB_CONNECTION_OK) {
@@ -109,8 +109,8 @@ bool SqlApiDriver::open(const QString &db, const QString &user, const QString &p
   qWarning(tr("SqlApiDriver::open : DB: %1, USER: %2, PASS: %3, HOSTS: %4, PORT: %d").arg(db).arg(user).arg(password).arg(host), port);
   urlApi = "http://" + host + ":" + QString::number(port) + "/api";
   userApi = user;
-  tokenApi = password;
-  qWarning(tr("SqlApiDriver::open(2) : URL: %1, USER: %2, TOKEN: %3").arg(urlApi).arg(userApi).arg(tokenApi));
+  passwordApi = password;
+  qWarning(tr("SqlApiDriver::open(2) : URL: %1, USER: %2, PASS: %3").arg(urlApi).arg(userApi).arg(passwordApi));
   return open(db, QString::null, QString::null, QString::null, 0);
 }
 

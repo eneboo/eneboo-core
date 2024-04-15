@@ -89,7 +89,8 @@ namespace dbiplus
   {
     urlApi = url;
     userApi = user;
-    tokenApi = password;
+    passwordApi = password;
+    tokenApi = "";
     AQProc = new QProcess(0);
     
     active = false;
