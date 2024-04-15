@@ -391,7 +391,7 @@ namespace dbiplus
       qWarning("Error al generar fichero de datos");
       return false;
     }
-    QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos);
+    QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
     QString token = data_received.right(data_received.find("'token': '") + 10).left(token.length() - 2);
 
     qWarning("Token: " + token);
