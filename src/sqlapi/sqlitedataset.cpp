@@ -369,19 +369,20 @@ namespace dbiplus
     }
     qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
     //QString passwd_md5 = (QString(passwd).utf8());
-    QString fichero_salida_pass = folder + "datar.md5";
+    //QString fichero_salida_pass = folder + "datar.md5";
 
-    QString passwd_md5 = lanzar_llamada_aqextension(QString("md5"), passwd, fichero_salida_pass);
-    qWarning("El password "  + passwd + " pasa a ser " + passwd_md5);
+    //QString passwd_md5 = lanzar_llamada_aqextension(QString("md5"), passwd, fichero_salida_pass);
+    //passwd_md5 = passwd_md5.left(passwd_md5.length() - 1);
+    //qWarning("El password "  + passwd + " pasa a ser " + passwd_md5);
     
     QString fichero_salida = folder + "data_token.txt";
     QString url = ((SqliteDatabase *)db)->urlApi; 
     QString cadena = "{\n";
-    cadena += "\"metodo\": \"GET\",\n";
+    cadena += "\"metodo\": \"POST\",\n";
     cadena += "\"url\": \"" + url + "/login\",\n";
     cadena += "\"params\": {\n";
-    cadena += "\"user\": \"" + user + "\",\n";
-    cadena += "\"passwd\": \"" + passwd_md5 + "\"\n";
+    cadena += "\"username\": \"" + user + "\",\n";
+    cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "}\n";
     cadena += "}";
     
@@ -390,8 +391,8 @@ namespace dbiplus
       qWarning("Error al generar fichero de datos");
       return false;
     }
-    QString token = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
-
+    QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos);
+    QString token = data_received.right(data_received.find("'token': '") + 10).left(token.length() - 2);
 
     qWarning("Token: " + token);
     if (token == "error") {
@@ -403,7 +404,7 @@ namespace dbiplus
     return true;
   }
 
-  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida)
+  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida = "")
   {
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
@@ -643,7 +644,7 @@ namespace dbiplus
       return false;
     }
 
-  QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
+  QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos);
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
