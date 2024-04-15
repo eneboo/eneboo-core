@@ -370,7 +370,7 @@ namespace dbiplus
     qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
     //QString passwd_md5 = (QString(passwd).utf8());
     QString fichero_salida_pass = folder + "datar.md5";
-    
+
     QString passwd_md5 = lanzar_llamada_aqextension(QString("md5"), passwd, fichero_salida_pass);
     qWarning("El password "  + passwd + " pasa a ser " + passwd_md5);
     
@@ -643,7 +643,7 @@ namespace dbiplus
       return false;
     }
 
-  QString salida = lanzar_llamada_aqextension(fichero_datos, fichero_salida);
+  QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
