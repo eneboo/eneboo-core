@@ -143,7 +143,7 @@ public:
 /* set autorefresh boolean value (if true - refresh the data after edit() 
 or insert() operations default = false) */
   void set_autorefresh(bool val);
-  QString lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida = "");
+  QString lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida);
   QString generar_fichero_aqextension(const QString &cadena);
   bool hacer_login_usuario(const string &user, const string &passwd);
 

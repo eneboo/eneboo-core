@@ -644,7 +644,7 @@ namespace dbiplus
       return false;
     }
 
-  QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos);
+  QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
