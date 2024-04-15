@@ -36,7 +36,6 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
-#include <qtmd5.h>
 
 namespace dbiplus
 {
@@ -368,7 +367,11 @@ namespace dbiplus
         folder = "/tmp/";
       }
     }
-    QString passwd_md5 = qtMD5(QString(passwd).utf8());
+    qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
+    //QString passwd_md5 = (QString(passwd).utf8());
+    QString fichero_salida_pass = folder + "datar.md5";
+    
+    QString passwd_md5 = lanzar_llamada_aqextension(QString("md5"), passwd, fichero_salida_pass);
     qWarning("El password "  + passwd + " pasa a ser " + passwd_md5);
     
     QString fichero_salida = folder + "data_token.txt";
@@ -387,7 +390,7 @@ namespace dbiplus
       qWarning("Error al generar fichero de datos");
       return false;
     }
-    QString token = lanzar_llamada_aqextension(fichero_datos, fichero_salida);
+    QString token = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
 
     qWarning("Token: " + token);
@@ -400,18 +403,18 @@ namespace dbiplus
     return true;
   }
 
-  QString SqliteDataset::lanzar_llamada_aqextension(const QString &file_name, const QString &fichero_salida)
+  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida)
   {
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
-    QString AQExtensionCall = path_exec + " cliente_web " + file_name;
+    QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
 
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
     AQProc->clearArguments();
     AQProc->addArgument(path_exec);
-    AQProc->addArgument("cliente_web");
-    AQProc->addArgument(file_name);
+    AQProc->addArgument(accion);
+    AQProc->addArgument(argumento);
 
     
     QString salida = "";

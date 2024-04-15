@@ -34,7 +34,7 @@ TARGET = sqlapi
 
 LIBS += -L$$PREFIX/lib
 
-INCLUDEPATH += $$ROOT/src/qt/include $$ROOT/src/qt/qmake ./
+INCLUDEPATH += $$ROOT/src/qt/include ./
 
 VERSION = 1.00
 
