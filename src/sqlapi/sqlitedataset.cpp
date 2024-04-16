@@ -383,7 +383,7 @@ namespace dbiplus
     cadena += "\"params\": {\n";
     cadena += "\"username\": \"" + user + "\",\n";
     cadena += "\"password\": \"" + passwd + "\"\n";
-    cadena += "}\n";
+    cadena += "},\n";
     cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
     cadena += "}";
