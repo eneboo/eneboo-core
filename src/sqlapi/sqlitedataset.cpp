@@ -384,6 +384,8 @@ namespace dbiplus
     cadena += "\"username\": \"" + user + "\",\n";
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "}\n";
+    cadena += "\"tipo_payload\": \"STRING\",\n";
+    cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
     cadena += "}";
     
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -468,6 +470,8 @@ namespace dbiplus
     // Eliminar del final de salida
     salida = salida.left(salida.length() - marca_fin.length());
   }
+
+  qWarning("lanzar_llamada_aqextension: Valor salida: " + salida);
 
   return salida;
 }
