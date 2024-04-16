@@ -36,7 +36,6 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
-#include "../flbase/AQApplication.h"
 
 namespace dbiplus
 {
@@ -369,18 +368,6 @@ namespace dbiplus
       }
     }
     qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
-
-    qWarning("Prueba");
-    QSArgumentList argsList;
-    QStringList argumentos;
-    argumentos.append("login");
-    argumentos.append(user);
-    argumentos.append(passwd);
-
-    argsList.append(QSArgument(argumentos));
-    QSArgument resupuesta = aqApp->call("sys.llamada_aqextension", argsList, 0);
-    qWarning("FIn llamada");
-
     //QString passwd_md5 = (QString(passwd).utf8());
     //QString fichero_salida_pass = folder + "datar.md5";
 

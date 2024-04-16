@@ -13,8 +13,8 @@ var form = this;
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+   versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 function init() {
@@ -46,7 +46,7 @@ function init() {
      		{
         	var funcion = new Function( valor );
     		try {
-    			funcion(); //Ejecuta la función
+    			funcion(); //Ejecuta la funci?n
   		    } catch(e) {
     				debug(e);
   			       }
@@ -337,7 +337,7 @@ function registerUpdate(input)
   var errors = unpacker.errorMessages();
   if (errors.length != 0) {
     var msg = sys.translate(
-                "Hubo los siguientes errores al intentar cargar los módulos:"
+                "Hubo los siguientes errores al intentar cargar los m?dulos:"
               );
     msg += "\n";
     for (var i = 0; i < errors.length; ++i)
@@ -375,9 +375,9 @@ function warnLocalChanges(changes)
   diag.modal = true;
 
   var txt = "";
-  txt += sys.translate("¡¡ CUIDADO !! DETECTADOS CAMBIOS LOCALES\n\n");
-  txt += sys.translate("Se han detectado cambios locales en los módulos desde\n");
-  txt += sys.translate("la última actualización/instalación de un paquete de módulos.\n");
+  txt += sys.translate("?? CUIDADO !! DETECTADOS CAMBIOS LOCALES\n\n");
+  txt += sys.translate("Se han detectado cambios locales en los m?dulos desde\n");
+  txt += sys.translate("la ?ltima actualizaci?n/instalaci?n de un paquete de m?dulos.\n");
   txt += sys.translate("Si continua es posible que estos cambios sean sobreescritos por\n");
   txt += sys.translate("los cambios que incluye el paquete que quiere cargar.\n\n");
   txt += "\n\n";
@@ -399,7 +399,7 @@ function warnLocalChanges(changes)
   lay.addWidget(ted);
 
   var lbl2 = new QLabel(diag);
-  lbl2.text = sys.translate("¿Que desea hacer?");
+  lbl2.text = sys.translate("?Que desea hacer?");
   lbl2.alignment = AQS.AlignTop | AQS.WordBreak;
   lay.addWidget(lbl2);
 
@@ -452,7 +452,7 @@ function localChanges()
   var docUpt = new QDomDocument;
   if (!docUpt.setContent(strXmlUpt)) {
     errorMsgBox(sys.translate(
-                  "Error XML al intentar cargar la definición de los ficheros."
+                  "Error XML al intentar cargar la definici?n de los ficheros."
                 ));
     return ret;
   }
@@ -730,11 +730,11 @@ function loadAbanQPackage(input, warnBackup)
 {
   if (warnBackup && interactiveGUI()) {
     var txt = "";
-    txt += sys.translate("Asegúrese de tener una copia de seguridad de todos los datos\n");
+    txt += sys.translate("Aseg?rese de tener una copia de seguridad de todos los datos\n");
     txt += sys.translate("y de que  no hay ningun otro  usuario conectado a la base de\n");
     txt += sys.translate("datos mientras se realiza la carga.\n\n");
     txt += "\n\n";
-    txt += sys.translate("¿Desea continuar?");
+    txt += sys.translate("?Desea continuar?");
     if (MessageBox.Yes != MessageBox.warning(txt, MessageBox.No, MessageBox.Yes))
       return;
   }
@@ -753,7 +753,7 @@ function loadAbanQPackage(input, warnBackup)
       var errors = unpacker.errorMessages();
       if (errors.length != 0) {
         var msg = sys.translate(
-                    "Hubo los siguientes errores al intentar cargar los módulos:"
+                    "Hubo los siguientes errores al intentar cargar los m?dulos:"
                   );
         msg += "\n";
         for (var i = 0; i < errors.length; ++i)
@@ -761,7 +761,7 @@ function loadAbanQPackage(input, warnBackup)
         errorMsgBox(msg);
         ok = false;
       }
-      //debug("Versión " + unpacker.getVersion()); //devuelve el fabricante del paquete
+      //debug("Versi?n " + unpacker.getVersion()); //devuelve el fabricante del paquete
           //Por ahora los paquetes a cargar usan la misma estructura
                    unpacker.jump(); //Espacio1
                    unpacker.jump(); //Espacio2
@@ -777,12 +777,12 @@ function loadAbanQPackage(input, warnBackup)
 
     if (!ok) {
       errorMsgBox(sys.translate(
-                    "No se ha podido realizar la carga de los módulos."
+                    "No se ha podido realizar la carga de los m?dulos."
                   ));
     } else {
       registerUpdate(input);
       if (warnBackup) {
-        infoMsgBox(sys.translate("La carga de módulos se ha realizado con éxito."));
+        infoMsgBox(sys.translate("La carga de m?dulos se ha realizado con ?xito."));
       }
       sys.AQTimer.singleShot(0, sys.reinit);
       var tmpVar = new FLVar;
@@ -798,7 +798,7 @@ function loadFilesDef(un)
 
   if (!doc.setContent(filesDef)) {
     errorMsgBox(sys.translate(
-                  "Error XML al intentar cargar la definición de los ficheros."
+                  "Error XML al intentar cargar la definici?n de los ficheros."
                 ));
     return false;
   }
@@ -898,12 +898,12 @@ function checkProjectName(proName)
     return AQUtil.writeDBSettingEntry("projectname", proName);
 
   var txt = "";
-  txt += sys.translate("¡¡ CUIDADO !! POSIBLE INCOHERENCIA EN LOS MÓDULOS\n\n");
-  txt += sys.translate("Está intentando cargar un proyecto o rama de módulos cuyo\n");
+  txt += sys.translate("?? CUIDADO !! POSIBLE INCOHERENCIA EN LOS M?DULOS\n\n");
+  txt += sys.translate("Est? intentando cargar un proyecto o rama de m?dulos cuyo\n");
   txt += sys.translate("nombre difiere del instalado actualmente en la base de datos.\n");
-  txt += sys.translate("Es posible que la estructura de los módulos que quiere cargar\n");
+  txt += sys.translate("Es posible que la estructura de los m?dulos que quiere cargar\n");
   txt += sys.translate("sea completamente distinta a la instalada actualmente, y si continua\n");
-  txt += sys.translate("podría dañar el código, datos y la estructura de tablas de Eneboo.\n\n");
+  txt += sys.translate("podr?a da?ar el c?digo, datos y la estructura de tablas de Eneboo.\n\n");
   txt += sys.translate("- Nombre del proyecto instalado: %1\n").arg(dbProName);
   txt += sys.translate("- Nombre del proyecto a cargar: %1\n\n").arg(proName);
   txt += "\n\n";
@@ -913,7 +913,7 @@ function checkProjectName(proName)
     return false;
   }
 
-  txt += sys.translate("¿Desea continuar?");
+  txt += sys.translate("?Desea continuar?");
   return (MessageBox.Yes == MessageBox.warning(txt, MessageBox.No, MessageBox.Yes,
                                                MessageBox.NoButton, "AbanQ"));
 }
@@ -925,7 +925,7 @@ function loadModulesDef(un)
 
   if (!doc.setContent(modulesDef)) {
     errorMsgBox(sys.translate(
-                  "Error XML al intentar cargar la definición de los módulos."
+                  "Error XML al intentar cargar la definici?n de los m?dulos."
                 ));
     return false;
   }
@@ -938,7 +938,7 @@ function loadModulesDef(un)
   var ok = true;
   var modules = root.childNodes();
 
-  AQUtil.createProgressDialog(sys.translate("Registrando módulos"), modules.length());
+  AQUtil.createProgressDialog(sys.translate("Registrando m?dulos"), modules.length());
 
   for (var i = 0; i < modules.length(); ++i) {
     var it = modules.item(i);
@@ -951,11 +951,11 @@ function loadModulesDef(un)
     }
 
     AQUtil.setProgress(i);
-    AQUtil.setLabelText(sys.translate("Registrando módulo") + " " + mod.id);
+    AQUtil.setLabelText(sys.translate("Registrando m?dulo") + " " + mod.id);
 
     if (!registerArea(mod) || !registerModule(mod)) {
       errorMsgBox(sys.translate(
-                    "Error registrando el módulo"
+                    "Error registrando el m?dulo"
                   ) + " " + mod.id);
       ok = false;
       break;
@@ -1038,7 +1038,7 @@ function infoPopup(msg)
 {
   if ((typeof msg) != "string")
     return;
-  var caption = sys.translate("AbanQ Información");
+  var caption = sys.translate("AbanQ Informaci?n");
   var regExp = new RegExp("\n");
   regExp.global = true;
   var msgHtml = "<img source=\"about.png\" align=\"right\">" +
@@ -1126,7 +1126,7 @@ function questionMsgBox(msg, keyRemember, txtRemember, forceShow,
   lay3.spacing = 6;
 
   var pbYes = new QPushButton(diag);
-  pbYes.text = txtYes ? txtYes : sys.translate("Sí");
+  pbYes.text = txtYes ? txtYes : sys.translate("S?");
   var pbNo = new QPushButton(diag);
   pbNo.text = txtNo ? txtNo : sys.translate("No");
   lay3.addWidget(pbYes);
@@ -1223,23 +1223,23 @@ class AbanQUpdater
 
 function updateAbanQ()
 {
-  MessageBox.warning(sys.translate("Funcionalidad no soportada aún en Eneboo."), MessageBox.Ok, MessageBox.NoButton,MessageBox.NoButton, "Eneboo");
+  MessageBox.warning(sys.translate("Funcionalidad no soportada a?n en Eneboo."), MessageBox.Ok, MessageBox.NoButton,MessageBox.NoButton, "Eneboo");
   return;
   /*
   var msg = "";
-  msg += sys.translate("Se va a proceder a conectar a través de Internet\n");
+  msg += sys.translate("Se va a proceder a conectar a trav?s de Internet\n");
   msg += sys.translate("con los sistemas de InfoSiAL S.L. para obtener la\n");
-  msg += sys.translate("herramienta de actualización de AbanQ.\n\n");
-  msg += sys.translate("Esta es una nueva herramienta que le permitirá mantener\n");
-  msg += sys.translate("actualizados, de forma cómoda y totalmente automática,\n");
-  msg += sys.translate("los módulos y extensiones que tenga instalados. Además le\n");
-  msg += sys.translate("mantendrá informado de las últimas mejoras que están o\n");
-  msg += sys.translate("estarán disponibles en próximas versiones.\n\n");
-  msg += sys.translate("¿ Desea continuar ?\n");
+  msg += sys.translate("herramienta de actualizaci?n de AbanQ.\n\n");
+  msg += sys.translate("Esta es una nueva herramienta que le permitir? mantener\n");
+  msg += sys.translate("actualizados, de forma c?moda y totalmente autom?tica,\n");
+  msg += sys.translate("los m?dulos y extensiones que tenga instalados. Adem?s le\n");
+  msg += sys.translate("mantendr? informado de las ?ltimas mejoras que est?n o\n");
+  msg += sys.translate("estar?n disponibles en pr?ximas versiones.\n\n");
+  msg += sys.translate("? Desea continuar ?\n");
 
   var txtRem = "";
   txtRem += sys.translate("No volver a mostrar este mensaje, permitir siempre\n");
-  txtRem += sys.translate("conectar automáticamente con InfoSiAL");
+  txtRem += sys.translate("conectar autom?ticamente con InfoSiAL");
 
   if (questionMsgBox(msg, "autoConnectInfoSiAL", txtRem) != MessageBox.Yes)
     return;
@@ -1306,7 +1306,7 @@ function exportModules()
     return;
 
   var p = 0;
-  AQUtil.createProgressDialog(sys.translate("Exportando módulos"), qry.size() - 1);
+  AQUtil.createProgressDialog(sys.translate("Exportando m?dulos"), qry.size() - 1);
 
   while (qry.next()) {
     var idMod = qry.value(0);
@@ -1343,7 +1343,7 @@ function exportModules()
   }
 
   AQUtil.destroyProgressDialog();
-  infoMsgBox(sys.translate("Módulos exportados en:\n") + dirBasePath);
+  infoMsgBox(sys.translate("M?dulos exportados en:\n") + dirBasePath);
 }
 
 function xmlModule(idMod)
@@ -1496,13 +1496,13 @@ function importModules(warnBackup)
     warnBackup = true;
   if (warnBackup && interactiveGUI()) {
     var txt = "";
-    txt += sys.translate("Asegúrese de tener una copia de seguridad de todos los datos\n");
+    txt += sys.translate("Aseg?rese de tener una copia de seguridad de todos los datos\n");
     txt += sys.translate("y de que  no hay ningun otro  usuario conectado a la base de\n");
-    txt += sys.translate("datos mientras se realiza la importación.\n\n");
+    txt += sys.translate("datos mientras se realiza la importaci?n.\n\n");
     txt += sys.translate("Obtenga soporte en");
     txt += " http://www.infosial.com\n(c) InfoSiAL S.L.";
     txt += "\n\n";
-    txt += sys.translate("¿Desea continuar?");
+    txt += sys.translate("?Desea continuar?");
     if (MessageBox.Yes != MessageBox.warning(txt, MessageBox.No, MessageBox.Yes))
       return;
   }
@@ -1511,7 +1511,7 @@ function importModules(warnBackup)
 
   var dirAnt = AQUtil.readSettingEntry(key);
   var dirMods = FileDialog.getExistingDirectory(dirAnt ? dirAnt : false,
-                                                sys.translate("Directorio de Módulos"));
+                                                sys.translate("Directorio de M?dulos"));
   if (!dirMods)
     return;
   dirMods = Dir.cleanDirPath(dirMods);
@@ -1527,14 +1527,14 @@ function importModules(warnBackup)
     AQUtil.setProgress(i);
 
     if (!importModule(listFilesMod[i])) {
-      errorMsgBox(sys.translate("Error al cargar el módulo:\n") + listFilesMod[i]);
+      errorMsgBox(sys.translate("Error al cargar el m?dulo:\n") + listFilesMod[i]);
       break;
     }
   }
 
   AQUtil.destroyProgressDialog();
   AQUtil.writeSettingEntry(key, dirMods);
-  infoMsgBox(sys.translate("Importación de módulos finalizada."));
+  infoMsgBox(sys.translate("Importaci?n de m?dulos finalizada."));
   sys.AQTimer.singleShot(0, sys.reinit);
 }
 
@@ -1545,7 +1545,7 @@ function selectModsDialog(listFilesMod)
   dialog.cancelButtonText = sys.translate("Cancelar");
 
   var bgroup = new GroupBox;
-  bgroup.title = sys.translate("Seleccione módulos a importar");
+  bgroup.title = sys.translate("Seleccione m?dulos a importar");
   dialog.add(bgroup);
 
   var res = [];
@@ -1596,7 +1596,7 @@ function importModule(modPath)
     }
 
     if (!registerArea(mod) || !registerModule(mod)) {
-      errorMsgBox(sys.translate("Error registrando el módulo") + " " + mod.id);
+      errorMsgBox(sys.translate("Error registrando el m?dulo") + " " + mod.id);
       return false;
     }
 
@@ -2005,7 +2005,7 @@ class AbanQDbDumper
     } else {
       this.setState(
         true,
-        sys.translate("Copia de seguridad realizada con éxito en:\n%1").arg(this.fileName_)
+        sys.translate("Copia de seguridad realizada con ?xito en:\n%1").arg(this.fileName_)
       );
       this.funLog_(this.state_.msg);
     }
@@ -2293,7 +2293,7 @@ function runObjMethod(container, component, method, param)
   if (method in c) {
     var s = container.name + ".child(\"" + component + "\")." + method;
     var m = eval(s);
-    if (typeof m == "function") { // Método
+    if (typeof m == "function") { // M?todo
       m(param);
     } else { // Propiedad
       eval(s + " = " + param);
@@ -2304,7 +2304,7 @@ function runObjMethod(container, component, method, param)
   return true;
 }
 
-/// Realiza una conexión comprobando antes si el emisor existe
+/// Realiza una conexi?n comprobando antes si el emisor existe
 function connectSS(ssSender, ssSignal, ssReceiver, ssSlot)
 {
   if (!ssSender) {
@@ -2313,7 +2313,7 @@ function connectSS(ssSender, ssSignal, ssReceiver, ssSlot)
   connect(ssSender, ssSignal, ssReceiver, ssSlot);
   return true;
 }
-/** Encapsula una función en una transacción.
+/** Encapsula una funci?n en una transacci?n.
 Ejemplo de uso:
     var oParam = new Object;
     oParam.curImport = cursor;
@@ -2349,7 +2349,7 @@ function runTransaction(f, oParam)
       if (errorMsg) {
         warnMsgBox(errorMsg);
       } else {
-        warnMsgBox(translate("Error al ejecutar la función"));
+        warnMsgBox(translate("Error al ejecutar la funci?n"));
       }
       return false;
     }
@@ -2363,7 +2363,7 @@ function runTransaction(f, oParam)
     if (errorMsg) {
       warnMsgBox(errorMsg  + ": " + e.toString());
     } else {
-      warnMsgBox(translate("Error ejecutando la función") + ":\n" + e);
+      warnMsgBox(translate("Error ejecutando la funci?n") + ":\n" + e);
     }
     return false;
   }
@@ -2456,7 +2456,7 @@ function qsaExceptions()
 function serverTime()
 {
   var db = aqApp.db().db();
-  // o así
+  // o as?
   //var db = AQSql.database().db();
   var sql = "select current_time";
   var ahora;
@@ -2469,15 +2469,4 @@ function serverTime()
 
 function delegateCommit(cursor) {
 	return formHTTP.iface.saveCursor(cursor);
-}
-
-function llamada_aqextension(argumentos) {
-  debug("HOLASSS");
-  if (argumentos[0] == "login") {
-    const user = argumentos[1];
-    const pass = argumentos[2];
-    debug("Vamos con el login");
-  }
-
-  return "ok";
 }
