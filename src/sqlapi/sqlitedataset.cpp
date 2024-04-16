@@ -378,9 +378,12 @@ namespace dbiplus
     QString fichero_salida = folder + "data_token.txt";
     QString url = ((SqliteDatabase *)db)->urlApi; 
     QString cadena = "{\n";
+
+    url = url.replace("/api", "");
+
     cadena += "\"metodo\": \"POST\",\n";
     cadena += "\"url\": \"" + url + "/login\",\n";
-    cadena += "\"params\": {\n";
+    cadena += "\"data\": {\n";
     cadena += "\"username\": \"" + user + "\",\n";
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
