@@ -2472,6 +2472,7 @@ function delegateCommit(cursor) {
 }
 
 function llamada_aqextension(argumentos) {
+  debug("HOLASSS");
   if (argumentos[0] == "login") {
     const user = argumentos[1];
     const pass = argumentos[2];

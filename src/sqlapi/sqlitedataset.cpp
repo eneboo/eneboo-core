@@ -378,7 +378,8 @@ namespace dbiplus
     argumentos.append(passwd);
 
     argsList.append(QSArgument(argumentos));
-    QSArgument resupuesta = aqApp->call("sys.llamada_aqextension", argsList, 0);
+    QSArgument resupuesta = aqApp->call("sys.iface.llamada_aqextension", argsList, 0);
+    qWarning("FIn llamada");
 
     //QString passwd_md5 = (QString(passwd).utf8());
     //QString fichero_salida_pass = folder + "datar.md5";
