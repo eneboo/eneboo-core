@@ -464,7 +464,7 @@ namespace dbiplus
     return "error";
   }
     //Limpia caracteres raros inicio y fin...
-  const QString marca_inicio = "\"\\\""; 
+/*   const QString marca_inicio = "\"\\\""; 
   const QString marca_fin = "\\\"\"";
   if (salida.startsWith(marca_inicio)) {
     // Eliminar del inicio de salida
@@ -473,7 +473,7 @@ namespace dbiplus
   if (salida.endsWith(marca_fin)) {
     // Eliminar del final de salida
     salida = salida.left(salida.length() - marca_fin.length());
-  }
+  } */
 
   qWarning("lanzar_llamada_aqextension: Valor salida: " + salida);
 
@@ -653,6 +653,19 @@ namespace dbiplus
     }
 
   QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
+
+  if (salida.find("\"result\": \"ko\"")) {
+    qWarning("Error al ejecutar query: " + salida);
+    return false;
+  } else {
+    qWarning("Query ejecutado correctamente");
+  }
+  salida = salida.right(salida.length() - (salida.find("\"data\":") + 7));
+  salida = salida.left(salida.length() - 2);
+
+  qWarning("DATOS PREPROCESO:" + salida);
+  //QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
+  //QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
