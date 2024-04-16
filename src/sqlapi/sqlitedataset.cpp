@@ -659,7 +659,7 @@ namespace dbiplus
 
   result.record_header.clear();
   bool first = true;
-  qWarning("PROCESANDO LINEAS RECIBIDAS");
+  qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
     qWarning("PROCESANDO LINEA");
@@ -669,29 +669,28 @@ namespace dbiplus
 
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
-      qWarning("PROCESANDO CABECERA"); 
+      qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (int i = 0; i < lista_valores.size(); i++) {
-        const QString datos_columna = lista_valores[i];
+        qWarning("COLUMNA: %d", i);
+        const QString datos_columna = QString(lista_valores[i]);
         QStringList columna = QStringList::split("|", datos_columna);
         qWarning("COLUMNA: %d -> %s (%s) ", i, *columna[0], *columna[1]);
         result.record_header[i].name = *columna[0];
       }
+      qWarning("CABECERA CARGADA");
       first = false;
       continue;
     } else { // valores ...
 
-    qWarning("PROCESANDO VALORES");
+    qWarning("PROCESANDO VALORES LINEA");
 
     int sz = result.records.size(); 
     
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
-
-      field_value v;
       const std::string valor = lista_valores[i];
-    
-      
+      field_value v;
       if (valor == NULL) {
           //Automáticamente marcaremos campo como null
           v.set_asString("");
