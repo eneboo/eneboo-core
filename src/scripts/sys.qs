@@ -2470,3 +2470,13 @@ function serverTime()
 function delegateCommit(cursor) {
 	return formHTTP.iface.saveCursor(cursor);
 }
+
+function llamada_aqextension(argumentos) {
+  if (argumentos[0] == "login") {
+    const user = argumentos[1];
+    const pass = argumentos[2];
+    debug("Vamos con el login");
+  }
+
+  return "ok";
+}
