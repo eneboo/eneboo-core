@@ -387,7 +387,6 @@ namespace dbiplus
     cadena += "\"username\": \"" + user + "\",\n";
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
-    cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
     cadena += "}";
     
@@ -397,7 +396,7 @@ namespace dbiplus
       return false;
     }
     QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
-    QString token = data_received.right(data_received.find("'token': '") + 10).left(token.length() - 2);
+    QString token = data_received.right(data_received.find("\"token\": \"") + 10).left(token.length() - 2);
 
     qWarning("Token: " + token);
     if (token == "error") {
