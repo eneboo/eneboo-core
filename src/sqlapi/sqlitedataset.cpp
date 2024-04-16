@@ -396,7 +396,7 @@ namespace dbiplus
       return false;
     }
     QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
-    QString token = data_received.right(data_received.length() - data_received.find("\"token\": \""));
+    QString token = data_received.right(data_received.length() - data_received.find("\"token\": \"") + 10);
     qWarning("Token(1): " + token);
     token = token.left(token.find("\""));
 
