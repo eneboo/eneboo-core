@@ -410,7 +410,7 @@ namespace dbiplus
   {
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
-    QString AQExtensionCall = path_exec + " " + accion + " " + argumento + " " + fichero_salida;
+    QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
 
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
@@ -418,7 +418,7 @@ namespace dbiplus
     AQProc->addArgument(path_exec);
     AQProc->addArgument(accion);
     AQProc->addArgument(argumento);
-    AQProc->addArgument(fichero_salida);
+    //AQProc->addArgument(fichero_salida);
     
     QString salida = "";
      // Lanzar llamada via aqextension
