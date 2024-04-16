@@ -636,7 +636,7 @@ namespace dbiplus
     cadena += "\"metodo\": \"GET\",\n";
     cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
     cadena += "\"params\":{\n";
-    cadena += "\"delegate_qry\":\"" + qry + "\",\n";
+    cadena += "\"sql\":\"" + qry + "\",\n";
     cadena += "\"separador_campos\":\"" + separador_campos + "\",\n";
     cadena += "\"separador_lineas\":\"" + separador_lineas + "\"\n";
     cadena += "},\n";

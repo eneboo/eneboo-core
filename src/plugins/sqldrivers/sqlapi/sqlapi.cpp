@@ -925,38 +925,34 @@ QSqlRecordInfo SqlApiDriver::recordInfo(const QSqlQuery &query) const
 
 QStringList SqlApiDriver::tables(const QString &typeName) const
 {
-  QStringList res;
+  QStringList tl;
   if (!isOpen() || !dataBase_)
-    return res;
+    return tl;
   int type = typeName.toInt();
 
-  QSqlQuery q = createQuery();
-  q.setForwardOnly(TRUE);
-#if (QT_VERSION-0 >= 0x030000)
-  if ((type & (int)QSql::Tables) && (type & (int)QSql::Views))
-    q.exec("SELECT name FROM sqlite_master WHERE type='table' OR type='view'");
-  else if (typeName.isEmpty() || (type & (int)QSql::Tables))
-    q.exec("SELECT name FROM sqlite_master WHERE type='table'");
-  else if (type & (int)QSql::Views)
-    q.exec("SELECT name FROM sqlite_master WHERE type='view'");
-#else
-  q.exec("SELECT name FROM sqlite_master WHERE type='table' OR type='view'");
-#endif
-
-
-  if (q.isActive()) {
-    while (q.next())
-      res.append(q.value(0).toString());
+  QSqlQuery *t = new QSqlQuery(createQuery());
+  t->setForwardOnly(true);
+  if (typeName.isEmpty() || ((type & (int) QSql::Tables) == (int) QSql::Tables)) {
+    t->exec("select relname from pg_class where ( relkind = 'r' ) "
+            "and ( relname !~ '^Inv' ) " "and ( relname !~ '^pg_' ) ");
+    while (t->next())
+      tl.append(t->value(0).toString());
+  }
+  if ((type & (int) QSql::Views) == (int) QSql::Views) {
+    t->exec("select relname from pg_class where ( relkind = 'v' ) "
+            "and ( relname !~ '^Inv' ) " "and ( relname !~ '^pg_' ) ");
+    while (t->next())
+      tl.append(t->value(0).toString());
+  }
+  if ((type & (int) QSql::SystemTables) == (int) QSql::SystemTables) {
+    t->exec("select relname from pg_class where ( relkind = 'r' ) "
+            "and ( relname like 'pg_%' ) ");
+    while (t->next())
+      tl.append(t->value(0).toString());
   }
 
-#if (QT_VERSION-0 >= 0x030000)
-  if (type & (int)QSql::SystemTables) {
-    // there are no internal tables beside this one:
-    res.append("sqlite_master");
-  }
-#endif
-
-  return res;
+  delete t;
+  return tl;
 }
 
 QString SqlApiDriver::formatDatabaseName(const QString &name)
