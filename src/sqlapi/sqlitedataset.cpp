@@ -694,8 +694,8 @@ namespace dbiplus
         qWarning("COLUMNA: %d -> %s (%s) ", col_numero, *columna[0], *columna[1]);
         
         for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
-          QString nombre_columna = QString(*it3);
-          qWarning("Especificando nombre col : %d -> %s", col_numero, nombre_columna);
+          QString nombre_columna = *it3;
+          qWarning("Especificando nombre col : %d", col_numero);
           result.record_header[col_numero].name = nombre_columna.utf8();
           break;
         }
