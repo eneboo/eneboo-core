@@ -664,7 +664,7 @@ namespace dbiplus
   }
   const int pos_data = salida.find("\"data\": \"");
   //qWarning("pos_data: " + QString::number(pos_data));
-  salida = salida.right(salida.length() - (pos_data + 8));
+  salida = salida.right(salida.length() - (pos_data + 9));
   //qWarning("DATOS PREPROCESO1 :" + salida);
   salida = salida.left(salida.length() - 2);
 
