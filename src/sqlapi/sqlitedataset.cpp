@@ -475,7 +475,7 @@ namespace dbiplus
     salida = salida.left(salida.length() - marca_fin.length());
   } */
 
-  qWarning("lanzar_llamada_aqextension: Valor salida: " + salida);
+  // qWarning("lanzar_llamada_aqextension: Valor salida: " + salida);
 
   return salida;
 }
@@ -654,7 +654,7 @@ namespace dbiplus
 
   QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
-  if (salida.find("\"result\": \"ko\"")) {
+  if (salida.find("\"result\": \"ko\"") >= 0) {
     qWarning("Error al ejecutar query: " + salida);
     return false;
   } else {
@@ -705,7 +705,7 @@ namespace dbiplus
       const std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL) {
-          //Automáticamente marcaremos campo como null
+          //Automï¿½ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
