@@ -658,12 +658,17 @@ namespace dbiplus
     qWarning("Error al ejecutar query: " + salida);
     return false;
   } else {
+    const int pos_ok = salida.find("\"result\": \"ok\"");
+    qWarning("pos_ok: " + QString::number(pos_ok));
     qWarning("Query ejecutado correctamente");
   }
-  salida = salida.right(salida.length() - (salida.find("\"data\":") + 7));
+  const int pos_data = salida.find("\"data\": \"");
+  qWarning("pos_data: " + QString::number(pos_data));
+  salida = salida.right(salida.length() - (pos_data + 7));
+  qWarning("DATOS PREPROCESO1 :" + salida);
   salida = salida.left(salida.length() - 2);
 
-  qWarning("DATOS PREPROCESO:" + salida);
+  qWarning("DATOS PREPROCESO2 :" + salida);
   //QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
   //QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
 
