@@ -683,12 +683,16 @@ namespace dbiplus
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
       qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
-      for (int i = 0; i < lista_valores.size(); i++) {
-        qWarning("COLUMNA: %d", i);
-        const QString datos_columna = QString(lista_valores[i]);
+      for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
+        const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);
-        qWarning("COLUMNA: %d -> %s (%s) ", i, *columna[0], *columna[1]);
-        result.record_header[i].name = *columna[0];
+        qWarning("COLUMNA: %s (%s) ", *columna[0], *columna[1]);
+        const int col_numero = result.record_header.size() + 1;
+        for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
+          result.record_header[col_numero].name = std::string(*it3);
+          break;
+        }
+        
       }
       qWarning("CABECERA CARGADA");
       first = false;
