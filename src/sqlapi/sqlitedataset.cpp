@@ -667,6 +667,14 @@ namespace dbiplus
   salida = salida.right(salida.length() - (pos_data + 9));
   //qWarning("DATOS PREPROCESO1 :" + salida);
   salida = salida.left(salida.length() - 2);
+  //replace tabulaciones
+  salida = salida.replace("\\t", "\t");
+  salida = salida.replace("\\r", "\r");
+  // replace saltos de linea
+  salida = salida.replace("\\n", "\n");
+  // replace comillas dobles
+  salida = salida.replace("\\\"", "\"");  
+
 
   //qWarning("DATOS PREPROCESO2 :" + salida);
   //QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
