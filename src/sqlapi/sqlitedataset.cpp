@@ -659,16 +659,16 @@ namespace dbiplus
     return false;
   } else {
     const int pos_ok = salida.find("\"result\": \"ok\"");
-    qWarning("pos_ok: " + QString::number(pos_ok));
+    //qWarning("pos_ok: " + QString::number(pos_ok));
     qWarning("Query ejecutado correctamente");
   }
   const int pos_data = salida.find("\"data\": \"");
-  qWarning("pos_data: " + QString::number(pos_data));
-  salida = salida.right(salida.length() - (pos_data + 7));
-  qWarning("DATOS PREPROCESO1 :" + salida);
+  //qWarning("pos_data: " + QString::number(pos_data));
+  salida = salida.right(salida.length() - (pos_data + 8));
+  //qWarning("DATOS PREPROCESO1 :" + salida);
   salida = salida.left(salida.length() - 2);
 
-  qWarning("DATOS PREPROCESO2 :" + salida);
+  //qWarning("DATOS PREPROCESO2 :" + salida);
   //QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
   //QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
 
@@ -680,7 +680,7 @@ namespace dbiplus
   qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
-    qWarning("PROCESANDO LINEA");
+    //qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
     QStringList lista_valores(QStringList::split(separador_campos, registro));
@@ -690,11 +690,8 @@ namespace dbiplus
       qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         const int col_numero = result.record_header.size() + 1;
-        qWarning("A");
         const QString datos_columna = *it2;
-        qWarning("B");
         QStringList columna = QStringList::split("|", datos_columna);
-        qWarning("C");
         for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
           QString nombre_columna = *it3;
           qWarning("Especificando nombre col : %d", col_numero);
@@ -709,10 +706,9 @@ namespace dbiplus
       continue;
     } else { // valores ...
 
-    qWarning("PROCESANDO VALORES LINEA");
-
     int sz = result.records.size(); 
-    
+
+    qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
