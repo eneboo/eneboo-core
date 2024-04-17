@@ -642,7 +642,7 @@ namespace dbiplus
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
     cadena += "\"codificacion\": \"UTF-8\",\n";
-    cadena += "\"tipo_payload\": \"STRING\",\n";
+    //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
     cadena += "}";
     
@@ -719,7 +719,7 @@ namespace dbiplus
       const std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL) {
-          //Autom�ticamente marcaremos campo como null
+          //Automáticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
