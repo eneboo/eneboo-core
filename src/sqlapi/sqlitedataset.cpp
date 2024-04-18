@@ -388,7 +388,7 @@ namespace dbiplus
     cadena += "\"username\": \"" + user + "\",\n";
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
-    cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
+    cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
     cadena += "\"only_key\":\"token\"\n";
     cadena += "}";
     
@@ -649,9 +649,9 @@ namespace dbiplus
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
     cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
-    cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
-    cadena += "\"only_key\":\"data\"\n";
-    cadena += "\"close_when_finish\":false\n";
+    cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
+    cadena += "\"only_key\":\"data\",\n";
+    cadena += "\"close_when_finish\":false,\n";
     cadena += "\"stdin_token\":\"" + stdin_token + "\"\n";
     cadena += "}";
     
