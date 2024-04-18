@@ -451,12 +451,29 @@ namespace dbiplus
 
     QString out_str = "";
     QString prueba = "";
+    QString prueba2 = "";
+    qWarning("Esperando mientras se ejecuta el proceso");
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
       prueba = AQProc->readLineStdout();
+      prueba2 = AQProc->readLineStderr();
+
+      if (!prueba2.isEmpty()) {
+        qWarning("Valor devuelto stdout(prueba2): " + prueba2);
+
+      } else {
+        QByteArray ba = AQProc->readStderr(); 
+        QString prueba4 = ba.data();
+        qWarning("Valor devuelto stdout(prueba4): " + prueba4);
+      }
+
       if (!prueba.isEmpty()) {
         qWarning("Valor devuelto stdout(prueba): " + prueba);
+      } else {
+        QByteArray ba = AQProc->readStdout(); 
+        QString prueba3 = ba.data();
+        qWarning("Valor devuelto stdout(prueba3): " + prueba3);
       }
 
       if (!buffer_proceso.isEmpty()) {
@@ -469,6 +486,7 @@ namespace dbiplus
         }
       }
     }
+    qWarning("Fin de la espera");
 
   
   if (!QFile::exists(fichero_salida)) {
