@@ -455,9 +455,9 @@ namespace dbiplus
     qWarning("Esperando mientras se ejecuta el proceso");
     while (AQProc->isRunning()) {
       //Esperamos a que termine
-      qApp->processEvents();
       prueba = AQProc->readLineStdout();
       prueba2 = AQProc->readLineStderr();
+      qApp->processEvents();
 
       if (!prueba2.isEmpty()) {
         qWarning("Valor devuelto stdout(prueba2): " + prueba2);
@@ -465,7 +465,9 @@ namespace dbiplus
       } else {
         QByteArray ba = AQProc->readStderr(); 
         QString prueba4 = ba.data();
-        qWarning("Valor devuelto stdout(prueba4): " + prueba4);
+        if (!prueba4.isEmpty()) {
+          qWarning("Valor devuelto stdout(prueba4): " + prueba4);
+        }
       }
 
       if (!prueba.isEmpty()) {
@@ -473,7 +475,9 @@ namespace dbiplus
       } else {
         QByteArray ba = AQProc->readStdout(); 
         QString prueba3 = ba.data();
-        qWarning("Valor devuelto stdout(prueba3): " + prueba3);
+        if (!prueba3.isEmpty()) {
+          qWarning("Valor devuelto stdout(prueba3): " + prueba3);
+        }
       }
 
       if (!buffer_proceso.isEmpty()) {
