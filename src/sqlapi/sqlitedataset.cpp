@@ -468,11 +468,11 @@ namespace dbiplus
 
   QString salida = "";
   QFile fi_salida(fichero_salida);
-  
-  while(!fi_salida.isReadable()) {
+
+/*   while(!fi_salida.isReadable()) {
     qWarning("Esperando a que el fichero " + fichero_salida + " se cierre");
     qApp->processEvents();
-  }
+  } */
 
   // Leer salida (si existe)QFile::isReadable
   if (fi_salida.open(IO_ReadOnly)) {
