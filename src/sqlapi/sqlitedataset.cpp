@@ -418,7 +418,6 @@ namespace dbiplus
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
     QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
-    QString stdin_token = "|^*~";
 
     if (!AQProc->isRunning()) {
       AQProc->clearArguments();
@@ -469,6 +468,13 @@ namespace dbiplus
 
   QString salida = "";
   QFile fi_salida(fichero_salida);
+  
+  while(!fi_salida.isReadable()) {
+    qWarning("Esperando a que el fichero " + fichero_salida + " se cierre");
+    qApp->processEvents();
+  }
+
+  // Leer salida (si existe)QFile::isReadable
   if (fi_salida.open(IO_ReadOnly)) {
     salida = fi_salida.readAll().data();
     fi_salida.close();
@@ -476,6 +482,8 @@ namespace dbiplus
     qWarning("no se ha podido leer el fichero " +  fichero_salida);
     salida = "error";
   }
+
+  QFile::remove(fichero_salida);
 
   salida = salida.left(salida.length() - 1); // Fix caracter extraño en salida
 
@@ -649,7 +657,6 @@ namespace dbiplus
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
     cadena += "\"only_key\":\"data\",\n";
     cadena += "\"close_when_finish\":false,\n";
-    cadena += "\"stdin_token\":\"" + stdin_token + "\"\n";
     cadena += "}";
     
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -665,48 +672,22 @@ namespace dbiplus
       return false;
     }
 
-  /* if (salida.find("\"result\": \"ko\"") >= 0) {
-    qWarning("Error al ejecutar query: " + salida);
-    return false;
-  } else {
-    const int pos_ok = salida.find("\"result\": \"ok\"");
-    //qWarning("pos_ok: " + QString::number(pos_ok));
-    qWarning("Query ejecutado correctamente");
-  }
-  const int pos_data = salida.find("\"data\": \"");
-  //qWarning("pos_data: " + QString::number(pos_data));
-  salida = salida.right(salida.length() - (pos_data + 9));
-  //qWarning("DATOS PREPROCESO1 :" + salida);
-  salida = salida.left(salida.length() - 2);
-  //replace tabulaciones
-  salida = salida.replace("\\t", "\t");
-  salida = salida.replace("\\r", "\r");
-  // replace saltos de linea
-  salida = salida.replace("\\n", "\n");
-  // replace comillas dobles
-  salida = salida.replace("\\\"", "\"");   */
-
-
-  //qWarning("DATOS PREPROCESO2 :" + salida);
-  //QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
-  //QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
-
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
 
   result.record_header.clear();
   bool first = true;
-  //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
+  qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
-    //qWarning("PROCESANDO LINEA");
+    qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
     QStringList lista_valores(QStringList::split(separador_campos, registro));
 
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
-      //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
+      qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
@@ -720,14 +701,14 @@ namespace dbiplus
         }
         
       }
-      //qWarning("CABECERA CARGADA");
+      qWarning("CABECERA CARGADA");
       first = false;
       continue;
     } else { // valores ...
 
     int sz = result.records.size(); 
 
-    //qWarning("PROCESANDO VALORES LINEA NÂº %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
@@ -748,6 +729,8 @@ namespace dbiplus
 
     }
   }
+
+  qWarning("Registros cargados!");
 
   active = true;
   ds_state = dsSelect;
