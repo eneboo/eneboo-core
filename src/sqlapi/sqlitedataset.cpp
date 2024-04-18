@@ -485,7 +485,7 @@ namespace dbiplus
 
   QFile::remove(fichero_salida);
 
-  salida = salida.left(salida.length() - 1); // Fix caracter extraño en salida
+  salida = salida.left(salida.length() - 2); // Fix caracter extraño en salida
 
   return salida;
 }
@@ -656,7 +656,7 @@ namespace dbiplus
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
     cadena += "\"only_key\":\"data\",\n";
-    cadena += "\"close_when_finish\":false,\n";
+    cadena += "\"close_when_finish\":false\n";
     cadena += "}";
     
     QString fichero_datos = generar_fichero_aqextension(cadena);
