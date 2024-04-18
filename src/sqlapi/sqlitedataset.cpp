@@ -445,6 +445,7 @@ namespace dbiplus
       }
     } else {
       // Solo pasarle argumento ...
+      qWarning("NUEVO ARGUMENTO " + argumento);
       AQProc->writeToStdin(argumento);
     }
 
@@ -453,6 +454,7 @@ namespace dbiplus
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
+      buffer_proceso = AQProc->readLineStdout();
       if (!buffer_proceso.isEmpty()) {
         qWarning("Valor devuelto stdout: " + buffer_proceso);
         QString out_str = buffer_proceso;
