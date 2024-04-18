@@ -449,45 +449,12 @@ namespace dbiplus
       AQProc->writeToStdin(argumento);
     }
 
-    QString out_str = "";
-    QString prueba = "";
-    QString prueba2 = "";
     qWarning("Esperando mientras se ejecuta el proceso");
     while (AQProc->isRunning()) {
       //Esperamos a que termine
-      prueba = AQProc->readLineStdout();
-      prueba2 = AQProc->readLineStderr();
       qApp->processEvents();
-
-      if (!prueba2.isEmpty()) {
-        qWarning("Valor devuelto stdout(prueba2): " + prueba2);
-
-      } else {
-        QByteArray ba = AQProc->readStderr(); 
-        QString prueba4 = ba.data();
-        if (!prueba4.isEmpty()) {
-          qWarning("Valor devuelto stdout(prueba4): " + prueba4);
-        }
-      }
-
-      if (!prueba.isEmpty()) {
-        qWarning("Valor devuelto stdout(prueba): " + prueba);
-      } else {
-        QByteArray ba = AQProc->readStdout(); 
-        QString prueba3 = ba.data();
-        if (!prueba3.isEmpty()) {
-          qWarning("Valor devuelto stdout(prueba3): " + prueba3);
-        }
-      }
-
-      if (!buffer_proceso.isEmpty()) {
-        qWarning("Valor devuelto stdout(buffer): " + buffer_proceso);
-        QString out_str = buffer_proceso;
-        buffer_proceso = "";
-        if (out_str.find(stdin_token) > -1) {
-          qWarning("¡Token detectado!.\n" + stdin_token + "\nProcesando fichero " + fichero_salida);
-          break;
-        }
+      if(QFile::exists(fichero_salida)) {
+        break;
       }
     }
     qWarning("Fin de la espera");
