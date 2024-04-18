@@ -450,17 +450,21 @@ namespace dbiplus
     }
 
     QString out_str = "";
-
+    QString prueba = "";
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
-      buffer_proceso = AQProc->readLineStdout();
+      prueba = AQProc->readLineStdout();
+      if (!prueba.isEmpty()) {
+        qWarning("Valor devuelto stdout(prueba): " + prueba);
+      }
+
       if (!buffer_proceso.isEmpty()) {
-        qWarning("Valor devuelto stdout: " + buffer_proceso);
+        qWarning("Valor devuelto stdout(buffer): " + buffer_proceso);
         QString out_str = buffer_proceso;
         buffer_proceso = "";
         if (out_str.find(stdin_token) > -1) {
-          qWarning("¡Token detectado!.\nProcesando fichero " + fichero_salida);
+          qWarning("¡Token detectado!.\n" + stdin_token + "\nProcesando fichero " + fichero_salida);
           break;
         }
       }
