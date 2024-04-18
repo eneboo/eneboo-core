@@ -95,7 +95,6 @@ public:
   QString userApi;
   QString passwordApi;
   QString tokenApi;
-  QProcess *AQProc;
 };
 
 
@@ -113,6 +112,8 @@ protected:
   result_set exec_res;
   bool autorefresh;
   char* errmsg;
+  QProcess *AQProc;
+  QString buffer_proceso;
   
     sqlite3 *handle();
 
@@ -174,6 +175,8 @@ or insert() operations default = false) */
   virtual void next();
 /* Go to record No (starting with 0) */
   virtual bool seek(int pos=0);
+
+  
 
 
 };

@@ -90,7 +90,6 @@ namespace dbiplus
     userApi = user;
     passwordApi = password;
     tokenApi = "";
-    AQProc = new QProcess(0);
     
     active = false;
     _in_transaction = false;    // for transaction
@@ -106,10 +105,6 @@ namespace dbiplus
   SqliteDatabase::~SqliteDatabase()
   {
     disconnect();
-    if ( AQProc && AQProc->isRunning() ) {
-      AQProc->tryTerminate();
-      AQProc->kill();
-    }
   }
 
 
@@ -306,6 +301,7 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
+    AQProc = new QProcess(0);
   }
 
 
@@ -315,11 +311,16 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
+    AQProc = new QProcess(0);
   }
 
   SqliteDataset::~SqliteDataset()
   {
     //if (errmsg) sqlite_freemem(&errmsg);
+    if ( AQProc && AQProc->isRunning() ) {
+      AQProc->tryTerminate();
+      AQProc->kill();
+    }
   }
 
 
@@ -388,6 +389,7 @@ namespace dbiplus
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
+    cadena += "\"only_key\":\"token\"\n";
     cadena += "}";
     
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -395,16 +397,17 @@ namespace dbiplus
       qWarning("Error al generar fichero de datos");
       return false;
     }
-    QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
-    QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
-    qWarning("Token(1): " + token);
-    token = token.left(token.find("\""));
+    QString token = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
+    //QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
+    //qWarning("Token(1): " + token);
+    //token = token.left(token.find("\""));
 
-    qWarning("Token(2): " + token);
     if (token == "error") {
       qWarning("Error al lanzar llamada aqextension");
       return false;
     }
+
+    qWarning("Token(2): " + token);
 
     ((SqliteDatabase *)db)->tokenApi = token;
     return true;
@@ -415,67 +418,69 @@ namespace dbiplus
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
     QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
+    QString stdin_token = "|^*~";
 
-    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
+    if (!AQProc->isRunning()) {
+      AQProc->clearArguments();
+      AQProc->addArgument(path_exec);
+      AQProc->addArgument(accion);
+      AQProc->addArgument(argumento);
 
-    AQProc->clearArguments();
-    AQProc->addArgument(path_exec);
-    AQProc->addArgument(accion);
-    AQProc->addArgument(argumento);
-    //AQProc->addArgument(fichero_salida);
+      buffer_proceso = "";
     
-    QString salida = "";
-     // Lanzar llamada via aqextension
-     qWarning("LLAMANDO " + AQExtensionCall);
 
-    if ( !AQProc->launch(salida) ) {
-      qWarning("No se ha lanzado el comando : " + salida);
-      return "error";
+      /* AQProc->clearArguments();
+      AQProc->addArgument(path_exec);
+      AQProc->addArgument(accion);
+      AQProc->addArgument(argumento); */
+      //AQProc->addArgument(fichero_salida);
+      
+      
+      // Lanzar llamada via aqextension
+      qWarning("LLAMANDO " + AQExtensionCall);
+
+      if ( !AQProc->launch(buffer_proceso) ) {
+        qWarning("No se ha lanzado el comando : " + buffer_proceso);
+        return "error";
+      }
+    } else {
+      // Solo pasarle argumento ...
+      AQProc->writeToStdin(argumento);
     }
+
+    QString out_str = "";
 
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
+      if (!buffer_proceso.isEmpty()) {
+        qWarning("Valor devuelto stdout: " + buffer_proceso);
+        QString out_str = buffer_proceso;
+        buffer_proceso = "";
+        if (out_str.find(stdin_token) > -1) {
+          qWarning("�Token detectado!.\nProcesando fichero " + fichero_salida);
+          break;
+        }
+      }
     }
 
-    QString error_str = AQProc->readStderr().data();
-/*     
-    QString out_str = AQProc->readStdout().data();
-
-   qWarning("Valor devuelto stdout: " + out_str);
-   qWarning("Valor devuelto error: " + error_str);
-   qWarning("Valor salida: " + salida); */
-
-   //Leer un fichero y cargar el contenido
+  
   if (!QFile::exists(fichero_salida)) {
     qWarning("No existe el fichero " + fichero_salida);
+    QString error_str = AQProc->readStderr().data();
     qWarning("Error " + error_str);
     return "error";
   }
 
-
+  QString salida = "";
   QFile fi_salida(fichero_salida);
   if (fi_salida.open(IO_ReadOnly)) {
-    
     salida = fi_salida.readAll().data();
     fi_salida.close();
   } else {
     qWarning("no se ha podido leer el fichero " +  fichero_salida);
-    return "error";
+    salida = "error";
   }
-    //Limpia caracteres raros inicio y fin...
-/*   const QString marca_inicio = "\"\\\""; 
-  const QString marca_fin = "\\\"\"";
-  if (salida.startsWith(marca_inicio)) {
-    // Eliminar del inicio de salida
-    salida = salida.right(salida.length() - marca_inicio.length());
-  }
-  if (salida.endsWith(marca_fin)) {
-    // Eliminar del final de salida
-    salida = salida.left(salida.length() - marca_fin.length());
-  } */
-
-  // qWarning("lanzar_llamada_aqextension: Valor salida: " + salida);
 
   return salida;
 }
@@ -631,6 +636,7 @@ namespace dbiplus
     QString separador_campos = "|^|";
     QString separador_lineas = "|^^|";
     QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
+    QString stdin_token = "|^*~";
 
     QString cadena = "{\n";
     cadena += "\"metodo\": \"GET\",\n";
@@ -644,6 +650,9 @@ namespace dbiplus
     cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\"\n";
+    cadena += "\"only_key\":\"data\"\n";
+    cadena += "\"close_when_finish\":false\n";
+    cadena += "\"stdin_token\":\"" + stdin_token + "\"\n";
     cadena += "}";
     
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -654,7 +663,12 @@ namespace dbiplus
 
   QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
-  if (salida.find("\"result\": \"ko\"") >= 0) {
+  if (salida == "error") {
+      qWarning("Error al lanzar llamada aqextension");
+      return false;
+    }
+
+  /* if (salida.find("\"result\": \"ko\"") >= 0) {
     qWarning("Error al ejecutar query: " + salida);
     return false;
   } else {
@@ -673,7 +687,7 @@ namespace dbiplus
   // replace saltos de linea
   salida = salida.replace("\\n", "\n");
   // replace comillas dobles
-  salida = salida.replace("\\\"", "\"");  
+  salida = salida.replace("\\\"", "\"");   */
 
 
   //qWarning("DATOS PREPROCESO2 :" + salida);
@@ -685,7 +699,7 @@ namespace dbiplus
 
   result.record_header.clear();
   bool first = true;
-  qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
+  //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
     //qWarning("PROCESANDO LINEA");
@@ -695,7 +709,7 @@ namespace dbiplus
 
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
-      qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
+      //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
@@ -709,14 +723,14 @@ namespace dbiplus
         }
         
       }
-      qWarning("CABECERA CARGADA");
+      //qWarning("CABECERA CARGADA");
       first = false;
       continue;
     } else { // valores ...
 
     int sz = result.records.size(); 
 
-    qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
