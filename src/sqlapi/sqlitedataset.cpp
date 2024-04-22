@@ -440,7 +440,7 @@ namespace dbiplus
       // Lanzar llamada via aqextension
       qWarning("LLAMANDO " + AQExtensionCall);
 
-      if ( !AQProc->launch(buffer_proceso) ) {
+      if ( !AQProc->start() ) {
         qWarning("No se ha lanzado el comando : " + buffer_proceso);
         return "error";
       }
