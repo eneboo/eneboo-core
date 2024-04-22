@@ -107,6 +107,7 @@ namespace dbiplus
   {
     disconnect();
     if ( AQProc && AQProc->isRunning() ) {
+      qWarning("AQProc->kill()!!");
       AQProc->tryTerminate();
       AQProc->kill();
     }
@@ -444,7 +445,7 @@ namespace dbiplus
     } else {
       // Solo pasarle argumento ...
       qWarning("NUEVO ARGUMENTO " + argumento);
-      AQProc->writeToStdin(argumento);
+      AQProc->writeToStdin(argumento + "\n");
     }
 
     qWarning("Esperando mientras se ejecuta el proceso");
