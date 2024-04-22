@@ -343,7 +343,7 @@ namespace dbiplus
     QString fichero_datos = folder + "data_api" + "_" + timestamp + ".json";
 
     // Guardar cadena en fichero data.
-    qWarning("GUARDANDO QUERY VIA API " + fichero_datos + ", cadena:" + cadena);
+    //qWarning("GUARDANDO QUERY VIA API " + fichero_datos + ", cadena:" + cadena);
     QFile fi(fichero_datos);
     if (fi.open(IO_WriteOnly)) {
       QTextStream t(&fi);
@@ -420,6 +420,7 @@ namespace dbiplus
     QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
 
     if (!AQProc->isRunning()) {
+      qWarning("PROCESO PARADO! :(");
       AQProc->clearArguments();
       AQProc->addArgument(path_exec);
       AQProc->addArgument(accion);
@@ -453,6 +454,7 @@ namespace dbiplus
       //Esperamos a que termine
       qApp->processEvents();
       if(QFile::exists(fichero_salida)) {
+        qWarning("Fichero salida encontrado");
         break;
       }
     }
@@ -483,7 +485,7 @@ namespace dbiplus
     salida = "error";
   }
 
-  QFile::remove(fichero_salida);
+  //QFile::remove(fichero_salida);
 
   salida = salida.left(salida.length() - 2); // Fix caracter extraño en salida
 
@@ -680,7 +682,7 @@ namespace dbiplus
   qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
-    qWarning("PROCESANDO LINEA");
+    //qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
     QStringList lista_valores(QStringList::split(separador_campos, registro));
