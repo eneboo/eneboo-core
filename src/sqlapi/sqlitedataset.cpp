@@ -416,12 +416,13 @@ namespace dbiplus
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida)
   {
     
-    QString path_exec = qApp->applicationDirPath() + "/aqextension";
+    QString path_exec = qApp->applicationDirPath() + "/aqextension.py";
     QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
 
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
       AQProc->clearArguments();
+      AQProc->addArgument("python3");
       AQProc->addArgument(path_exec);
       AQProc->addArgument(accion);
       AQProc->addArgument(argumento);
