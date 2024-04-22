@@ -318,6 +318,7 @@ namespace dbiplus
   {
     //if (errmsg) sqlite_freemem(&errmsg);
     if ( AQProc && AQProc->isRunning() ) {
+      qWarning("*** terminando proceso de aqextension");
       AQProc->tryTerminate();
       AQProc->kill();
     }
