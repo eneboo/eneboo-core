@@ -95,6 +95,7 @@ public:
   QString userApi;
   QString passwordApi;
   QString tokenApi;
+  QProcess *AQProc;
 };
 
 
@@ -112,10 +113,8 @@ protected:
   result_set exec_res;
   bool autorefresh;
   char* errmsg;
-  QProcess *AQProc;
-  QString buffer_proceso;
   
-    sqlite3 *handle();
+  sqlite3 *handle();
 
 /* Makes direct queries to database */
   virtual void make_query(StringList &_sql);

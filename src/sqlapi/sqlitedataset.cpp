@@ -100,11 +100,16 @@ namespace dbiplus
     db = "sqlite.db";
     login = "root";
     passwd, "";
+    AQProc = new QProcess(0);
   }
 
   SqliteDatabase::~SqliteDatabase()
   {
     disconnect();
+    if ( AQProc && AQProc->isRunning() ) {
+      AQProc->tryTerminate();
+      AQProc->kill();
+    }
   }
 
 
@@ -301,7 +306,6 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
-    AQProc = new QProcess(0);
   }
 
 
@@ -311,17 +315,11 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
-    AQProc = new QProcess(0);
   }
 
   SqliteDataset::~SqliteDataset()
   {
     //if (errmsg) sqlite_freemem(&errmsg);
-    if ( AQProc && AQProc->isRunning() ) {
-      qWarning("*** terminando proceso de aqextension");
-      AQProc->tryTerminate();
-      AQProc->kill();
-    }
   }
 
 
@@ -419,6 +417,7 @@ namespace dbiplus
     
     QString path_exec = qApp->applicationDirPath() + "/aqextension.py";
     QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
+    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
@@ -427,8 +426,6 @@ namespace dbiplus
       AQProc->addArgument(path_exec);
       AQProc->addArgument(accion);
       AQProc->addArgument(argumento);
-
-      buffer_proceso = "";
     
 
       /* AQProc->clearArguments();
@@ -442,7 +439,6 @@ namespace dbiplus
       qWarning("LLAMANDO " + AQExtensionCall);
 
       if ( !AQProc->start() ) {
-        qWarning("No se ha lanzado el comando : " + buffer_proceso);
         return "error";
       }
     } else {
