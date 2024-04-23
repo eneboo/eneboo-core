@@ -59,7 +59,7 @@ void test_sha256(const string name, const string str)
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     if (ss.str() == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacío.");
+    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacï¿½o.");
     else
     	{
     ss << "  " << name;
@@ -157,7 +157,7 @@ void FLManagerModules::loadAllIdModules()
     FLInfoMod *infoMod = new FLInfoMod();
     infoMod->idModulo = QString("sys");
     infoMod->idArea = QString("sys");
-    infoMod->descripcion = QString("Administración");
+    infoMod->descripcion = QString("Administraciï¿½n");
     infoMod->version = QString("0.0");
     infoMod->icono = contentFS(AQ_DATA + "/sys.xpm");
     infoMod->areaDescripcion = QString("Sistema");
@@ -323,10 +323,10 @@ void FLManagerModules::init()
   tmpTMD = db_->manager()->createSystemTable("flsettings");
   tmpTMD = db_->manager()->createSystemTable("flserial");
   tmpTMD = db_->manager()->createSystemTable("flvar");
-//-->FLLarge único   
+//-->FLLarge ï¿½nico   
   if (aqApp->singleFLLarge())
     tmpTMD = db_->manager()->createSystemTable("fllarge");
-//<--FLarge único
+//<--FLarge ï¿½nico
 
   tmpTMD = db_->manager()->createSystemTable("flupdates");
 
@@ -339,9 +339,11 @@ void FLManagerModules::init()
     QString driverName(db_->driverName());
     modVer = curSet.valueBuffer("valor").toString();
     if (!modVer.isEmpty() && modVer[0] != '#') {
-      if (driverName == "FLsqlite" || driverName == "FLsqlapi") {
+      if (driverName == "FLsqlite") {
         if (!db_->dbAux()->recordInfo("flfiles").contains("binario"))
           modVer = QString::null;
+      } else if (driverName == "FLsqlapi") {
+         modVer = '@';
       } else {
         QSqlQuery qryFil("select * from flfiles limit 1", db_->dbAux());
         if (!db_->dbAux()->recordInfo(qryFil).contains("binario"))
@@ -405,7 +407,7 @@ void FLManagerModules::init()
     cursor.refreshBuffer();
     cursor.setValueBuffer("idmodulo", "sys");
     cursor.setValueBuffer("idarea", "sys");
-    cursor.setValueBuffer("descripcion", QApplication::tr("Administración"));
+    cursor.setValueBuffer("descripcion", QApplication::tr("Administraciï¿½n"));
     cursor.setValueBuffer("icono", contentFS(AQ_DATA + "/sys.xpm"));
     cursor.setValueBuffer("bloqueo", QVariant(false, 0));
     cursor.commitBuffer();
@@ -672,9 +674,9 @@ QString FLManagerModules::contentCode(const QString &n)
   s.replace(rx, "\n");
   //rx.setMinimal(true);
   //rx.setPattern("class\\s+(\\w+)\\s+extends\\s+\\1([\\s\n]*\\{.*\\}[\\s\n]*\\})");
-  //scode.replace(rx, "/* ¡¡ ERROR !! : LA CLASE HEREDA DE ELLA MISMA."
-  //               "\nCODIGO INHABILITADO AUTOMÁTICAMENTE POR AbanQ :\n\n"
-  //               "class \\1 extends \\1 \\2\n\n ¡¡ FIN ERROR !! */");
+  //scode.replace(rx, "/* ï¿½ï¿½ ERROR !! : LA CLASE HEREDA DE ELLA MISMA."
+  //               "\nCODIGO INHABILITADO AUTOMï¿½TICAMENTE POR AbanQ :\n\n"
+  //               "class \\1 extends \\1 \\2\n\n ï¿½ï¿½ FIN ERROR !! */");
 #endif
 
   return s;
@@ -836,7 +838,7 @@ void FLManagerModules::setActiveIdModule(const QString &id)
     activeIdModule_ = id;
   } else {
 #ifdef FL_DEBUG
-    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un módulo inexistente"));
+    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un mï¿½dulo inexistente"));
 #endif
     activeIdArea_ = QString::null;
     activeIdModule_ = QString::null;
