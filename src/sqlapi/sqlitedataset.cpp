@@ -470,11 +470,12 @@ namespace dbiplus
   QString salida = "";
   QFile fi_salida(fichero_salida);
 
-  sleep(0.1);
+  //sleep(0.1);
 
   // Leer salida (si existe)QFile::isReadable
   if (fi_salida.open(IO_ReadOnly)) {
-    salida = fi_salida.readAll().data();
+    QTextStream t(&fi_salida);
+    salida = t.read();
     fi_salida.close();
   } else {
     qWarning("no se ha podido leer el fichero " +  fichero_salida);
