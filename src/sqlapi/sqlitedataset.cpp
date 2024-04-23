@@ -360,7 +360,7 @@ namespace dbiplus
   bool SqliteDataset::hacer_login_usuario(const string &user, const string &passwd)
   {
     // Hacemos login con aqextension y guardamos el token devuelto ....
-
+    qWarning("No hay token disponible. Solicitando ...");
     QString folder = getenv("TPM");
     if (folder.isEmpty()) {
       folder = getenv("TMPDIR");
@@ -368,7 +368,7 @@ namespace dbiplus
         folder = "/tmp/";
       }
     }
-    qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
+    //qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
     //QString passwd_md5 = (QString(passwd).utf8());
     //QString fichero_salida_pass = folder + "datar.md5";
 
@@ -413,78 +413,67 @@ namespace dbiplus
     return true;
   }
 
-  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida)
+  QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
     
-    QString path_exec = qApp->applicationDirPath() + "/aqextension.py";
-    QString AQExtensionCall = path_exec + " " + accion + " " + argumento;
+    QString path_exec = qApp->applicationDirPath() + "/aqextension";
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
       AQProc->clearArguments();
-      AQProc->addArgument("python3");
       AQProc->addArgument(path_exec);
       AQProc->addArgument(accion);
-      AQProc->addArgument(argumento);
-    
-
-      /* AQProc->clearArguments();
-      AQProc->addArgument(path_exec);
-      AQProc->addArgument(accion);
-      AQProc->addArgument(argumento); */
-      //AQProc->addArgument(fichero_salida);
-      
-      
-      // Lanzar llamada via aqextension
-      qWarning("LLAMANDO " + AQExtensionCall);
+      AQProc->addArgument(fichero_datos);
 
       if ( !AQProc->start() ) {
         return "error";
       }
     } else {
       // Solo pasarle argumento ...
-      qWarning("NUEVO ARGUMENTO " + argumento);
-      AQProc->writeToStdin(argumento + "\n");
+      qWarning("NUEVO ARGUMENTO " + fichero_datos);
+      AQProc->writeToStdin(fichero_datos + "\n");
     }
 
-    qWarning("Esperando mientras se ejecuta el proceso");
+    //qWarning("Esperando mientras se ejecuta el proceso");
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
       if(QFile::exists(fichero_salida)) {
-        qWarning("Fichero salida encontrado");
+        //qWarning("Fichero salida encontrado");
         break;
       }
     }
-    qWarning("Fin de la espera");
+    //qWarning("Fin de la espera");
 
   
   if (!QFile::exists(fichero_salida)) {
-    qWarning("No existe el fichero " + fichero_salida);
+    qWarning("No existe fichero salida " + fichero_salida + ", fichero datos: " + fichero_datos);
     QString error_str = AQProc->readStderr().data();
-    qWarning("Error " + error_str);
+    qWarning("Error devuelto: " + error_str);
     return "error";
   }
 
   QString salida = "";
   QFile fi_salida(fichero_salida);
 
-  //sleep(0.1);
-
-  // Leer salida (si existe)QFile::isReadable
   if (fi_salida.open(IO_ReadOnly)) {
     QTextStream t(&fi_salida);
     salida = t.read();
     fi_salida.close();
+
+
+
   } else {
-    qWarning("no se ha podido leer el fichero " +  fichero_salida);
+    qWarning("No se ha podido leer el fichero " +  fichero_salida + ", aunque existe");
     salida = "error";
   }
 
+  if (salida == "") {
+    QFile::remove(fichero_salida);
+    QFile::remove(fichero_datos);
+  }
   //QFile::remove(fichero_salida);
-
-  //salida = salida.left(salida.length() - 1); // Fix caracter extraño en salida
 
   return salida;
 }
@@ -620,7 +609,7 @@ namespace dbiplus
     
     
     if (((SqliteDatabase *)db)->tokenApi.isEmpty()) {
-      qWarning("No hay token disponible. Solicitando ...");
+      
       QString user = ((SqliteDatabase *)db)->userApi;
       QString password = ((SqliteDatabase *)db)->passwordApi;
       hacer_login_usuario(user, password);
@@ -640,7 +629,6 @@ namespace dbiplus
     QString separador_campos = "|^|";
     QString separador_lineas = "|^^|";
     QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
-    QString stdin_token = "|^*~";
 
     QString cadena = "{\n";
     cadena += "\"metodo\": \"GET\",\n";
@@ -676,7 +664,7 @@ namespace dbiplus
 
   result.record_header.clear();
   bool first = true;
-  qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
+  //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
     //qWarning("PROCESANDO LINEA");
@@ -686,21 +674,21 @@ namespace dbiplus
 
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
-      qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
+      //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);
         for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
           QString nombre_columna = *it3;
-          qWarning("Especificando nombre col : %d", col_numero);
-          qWarning(nombre_columna);
+          //qWarning("Especificando nombre col : %d", col_numero);
+          //qWarning(nombre_columna);
           result.record_header[col_numero].name = nombre_columna.utf8();
           break;
         }
         
       }
-      qWarning("CABECERA CARGADA");
+      //qWarning("CABECERA CARGADA");
       first = false;
       continue;
     } else { // valores ...
@@ -729,7 +717,7 @@ namespace dbiplus
     }
   }
 
-  qWarning("Registros cargados!");
+  //qWarning("Registros cargados!");
 
   active = true;
   ds_state = dsSelect;
