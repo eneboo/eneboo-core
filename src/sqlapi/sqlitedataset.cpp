@@ -484,7 +484,7 @@ namespace dbiplus
 
   //QFile::remove(fichero_salida);
 
-  salida = salida.left(salida.length() - 1); // Fix caracter extraño en salida
+  //salida = salida.left(salida.length() - 1); // Fix caracter extraño en salida
 
   return salida;
 }
