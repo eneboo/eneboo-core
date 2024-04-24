@@ -661,6 +661,7 @@ namespace dbiplus
   
 
   result.record_header.clear();
+  result.records.clear();
   bool first = true;
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
