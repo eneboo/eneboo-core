@@ -63,7 +63,7 @@ static QVariant::Type qDecodeSqliteType(fType t)
 SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
   FLSqlDriver(parent, name), dataBase_(0)
   {
-    qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
+    //qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
     //recogemos url hosts para hacer llamadas.
   }
 
@@ -106,11 +106,11 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
 
 bool SqlApiDriver::open(const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &connOpts)
 {
-  qWarning(tr("SqlApiDriver::open : DB: %1, USER: %2, PASS: %3, HOSTS: %4, PORT: %d").arg(db).arg(user).arg(password).arg(host), port);
+  //qWarning(tr("SqlApiDriver::open : DB: %1, USER: %2, PASS: %3, HOSTS: %4, PORT: %d").arg(db).arg(user).arg(password).arg(host), port);
   urlApi = "http://" + host + ":" + QString::number(port) + "/api";
   userApi = user;
   passwordApi = password;
-  qWarning(tr("SqlApiDriver::open(2) : URL: %1, USER: %2, PASS: %3").arg(urlApi).arg(userApi).arg(passwordApi));
+  //qWarning(tr("SqlApiDriver::open(2) : URL: %1, USER: %2, PASS: %3").arg(urlApi).arg(userApi).arg(passwordApi));
   return open(db, QString::null, QString::null, QString::null, 0);
 }
 
@@ -263,7 +263,7 @@ QString SqlApiDriver::formatValueLike(int t, const QVariant &v, const bool upper
   switch (t) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
+      if (s == QApplication::tr("Sï¿½").left(1).upper())
         res = "='t'";
       else if (s == QApplication::tr("No").left(1).upper())
         res = "='f'";
@@ -306,7 +306,7 @@ QString SqlApiDriver::formatValue(int t, const QVariant &v, const bool upper)
   switch (FLFieldMetaData::flDecodeType(t)) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
+      if (s == QApplication::tr("Sï¿½").left(1).upper())
         res = "'t'";
       else if (s == QApplication::tr("No").left(1).upper())
         res = "'f'";

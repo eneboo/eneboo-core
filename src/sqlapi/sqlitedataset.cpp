@@ -389,7 +389,8 @@ namespace dbiplus
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"only_key\":\"token\"\n";
+    cadena += "\"only_key\":\"token\",\n";
+    cadena += "\"close_when_finish\":false\n";
     cadena += "}";
     
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -431,7 +432,7 @@ namespace dbiplus
       }
     } else {
       // Solo pasarle argumento ...
-      qWarning("NUEVO ARGUMENTO " + fichero_datos);
+      //qWarning("NUEVO ARGUMENTO " + fichero_datos);
       AQProc->writeToStdin(fichero_datos + "\n");
     }
 
@@ -461,9 +462,6 @@ namespace dbiplus
     QTextStream t(&fi_salida);
     salida = t.read();
     fi_salida.close();
-
-
-
   } else {
     qWarning("No se ha podido leer el fichero " +  fichero_salida + ", aunque existe");
     salida = "error";
