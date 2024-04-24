@@ -2134,6 +2134,7 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       if (!fieldsOrderBy.isEmpty())
       {
         qry->setOrderBy(fieldsOrderBy);
+        qWarning("ORDER BY:\"" + fieldsOrderBy + "\"");
         setSort(QSqlIndex::fromStringList(QStringList::split(',', fieldsOrderBy), this));
       }
 
@@ -2145,9 +2146,10 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
     return exec(d->query_);
   }
 
-  if (!sort.field(d->metadata_->primaryKey()) &&
-      !fieldsOrderBy.upper().contains(d->metadata_->primaryKey().upper()))
+  if (!sort.field(d->metadata_->primaryKey()) && !fieldsOrderBy.upper().contains(d->metadata_->primaryKey().upper())) {
+    qWarning("ORDER BY2:\"" + d->metadata_->primaryKey() + "\"");
     fields << d->metadata_->primaryKey();
+  }
 
   return QSqlCursor::select(finalFilter, QSqlIndex::fromStringList(fields, this));
 }
