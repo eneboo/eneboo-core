@@ -653,7 +653,7 @@ namespace dbiplus
   QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
   if (salida == "error") {
-      qWarning("Error al lanzar llamada aqextension");
+      qWarning("Error al lanzar llamada aqextension. SQL:" + QString(qry));
       return false;
     }
 
@@ -681,7 +681,7 @@ namespace dbiplus
           QString nombre_columna = *it3;
           //qWarning("Especificando nombre col : %d", col_numero);
           //qWarning(nombre_columna);
-          result.record_header[col_numero].name = nombre_columna.utf8();
+          result.record_header[col_numero].name = nombre_columna.simplifyWhiteSpace().utf8();
           break;
         }
         
@@ -697,7 +697,7 @@ namespace dbiplus
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
-      const std::string valor = lista_valores[i];
+      const std::string valor = lista_valores[i].simplifyWhiteSpace();
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
           //Automáticamente marcaremos campo como null
