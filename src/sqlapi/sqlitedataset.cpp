@@ -699,7 +699,7 @@ namespace dbiplus
     for (int i = 0; i < lista_valores.size(); i++) {  
       const std::string valor = lista_valores[i];
       field_value v;
-      if (valor == NULL || valor == "NULL") {
+      if (valor == NULL || valor == "|^N^|") {
           //Automáticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
