@@ -37,6 +37,8 @@
 #include "sqlitedataset.h"
 #include <unistd.h>
 
+#define LIMIT_RESULT 49
+
 namespace dbiplus
 {
   //************* Callback function ***************************
@@ -618,9 +620,162 @@ namespace dbiplus
       return false;
 
     close();
-
-    QString url = ((SqliteDatabase *)db)->urlApi; 
+    sql = query;
     
+    result.record_header.clear();
+    result.records.clear();
+    result.total_records = 0;
+
+    gestionar_consulta_paginada(0);
+
+  
+
+  active = true;
+  ds_state = dsSelect;
+  this->first();
+  return true;
+  }
+
+  bool SqliteDataset::query(const string &q)
+  {
+    return query(q.c_str());
+  }
+
+  void SqliteDataset::open(const string &sql)
+  {
+    set_select_sql(sql);
+    open();
+  }
+
+  void SqliteDataset::open()
+  {
+    if (select_sql.size()) {
+      query(select_sql.c_str());
+    } else {
+      ds_state = dsInactive;
+    }
+  }
+
+
+  void SqliteDataset::close()
+  {
+    Dataset::close();
+    result.record_header.clear();
+    result.records.clear();
+    edit_object->clear();
+    fields_object->clear();
+    ds_state = dsInactive;
+    active = false;
+  }
+
+
+  void SqliteDataset::cancel()
+  {
+    if ((ds_state == dsInsert) || (ds_state == dsEdit))
+      if (result.record_header.size()) ds_state = dsSelect;
+      else ds_state = dsInactive;
+  }
+
+
+  int SqliteDataset::num_rows()
+  {
+    return result.total_records;
+
+    //return result.records.size();
+  }
+
+
+  bool SqliteDataset::eof()
+  {
+    return feof;
+  }
+
+
+  bool SqliteDataset::bof()
+  {
+    return fbof;
+  }
+
+
+  void SqliteDataset::first()
+  {
+    Dataset::first();
+    this->fill_fields();
+  }
+
+  void SqliteDataset::last()
+  {
+    Dataset::last();
+    fill_fields();
+  }
+
+  void SqliteDataset::prev(void)
+  {
+    Dataset::prev();
+    fill_fields();
+  }
+
+  void SqliteDataset::next(void)
+  {
+    Dataset::next();
+    if (!eof())
+      fill_fields();
+  }
+
+  bool SqliteDataset::fetch_rows(int pos)
+  {
+    qWarning("FETCH_ROWS!! %d" , pos);
+    int offset = result.records.size();
+    int new_size;
+    int new_offset;
+    
+    while (true) {
+      gestionar_consulta_paginada(offset);
+      if (offset >= result.total_records) {
+        return false;
+      }
+      if (result.records.size() > pos) {
+        return true;
+      }
+
+      offset += LIMIT_RESULT;
+    }
+  }
+
+
+
+
+
+  QString SqliteDataset::generarJsonQuery(const QString &qry, const QString &fichero_salida,const int offset)
+  {
+    QString url = ((SqliteDatabase *)db)->urlApi; 
+    QString token = ((SqliteDatabase *)db)->tokenApi;
+
+
+
+    QString cadena = "{\n";
+    cadena += "\"metodo\": \"GET\",\n";
+    cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
+    cadena += "\"params\":{\n";
+    cadena += "\"sql\":\"" + qry + "\",\n";
+    cadena += "\"offset\":" + QString::number(offset) + ",\n";
+    cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + ",\n";
+    cadena += "},\n";
+    cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
+    cadena += "\"codificacion\": \"UTF-8\",\n";
+    //cadena += "\"tipo_payload\": \"STRING\",\n";
+    cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
+    cadena += "\"only_key\":\"data\",\n";
+    cadena += "\"close_when_finish\":false\n";
+    cadena += "}";
+
+    return cadena;
+  }
+
+  bool SqliteDataset::gestionar_consulta_paginada(const int offset)
+  {
+    
+    QString current_sql = sql;
     
     if (((SqliteDatabase *)db)->tokenApi.isEmpty()) {
       
@@ -632,7 +787,7 @@ namespace dbiplus
       }
       }
 
-    QString token = ((SqliteDatabase *)db)->tokenApi;
+    
 
     QString folder = getenv("TPM");
     if (folder.isEmpty()) {
@@ -642,46 +797,33 @@ namespace dbiplus
       }
     }
 
-
-    QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
     QString separador_campos = "|^|";
     QString separador_lineas = "|^^|";
+    QString separador_total = "@";
+
+
+    QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
     QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
-
-    QString cadena = "{\n";
-    cadena += "\"metodo\": \"GET\",\n";
-    cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
-    cadena += "\"params\":{\n";
-    cadena += "\"sql\":\"" + qry + "\",\n";
-    cadena += "\"separador_campos\":\"" + separador_campos + "\",\n";
-    cadena += "\"separador_lineas\":\"" + separador_lineas + "\"\n";
-    cadena += "},\n";
-    cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
-    cadena += "\"codificacion\": \"UTF-8\",\n";
-    //cadena += "\"tipo_payload\": \"STRING\",\n";
-    cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"only_key\":\"data\",\n";
-    cadena += "\"close_when_finish\":false\n";
-    cadena += "}";
-    
+    QString cadena = generarJsonQuery(current_sql, fichero_salida, separador_campos, separador_lineas, offset);    
     QString fichero_datos = generar_fichero_aqextension(cadena);
-    if (fichero_datos == "") {
-      qWarning("Error al generar fichero de datos");
-      return false;
-    }
-
-  QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
+    QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
   if (salida == "error") {
-      qWarning("Error al lanzar llamada aqextension. SQL:" + QString(qry));
+      qWarning("Error al lanzar llamada aqextension. SQL:" + QString(current_sql));
       return false;
     }
+  
+
+  QStringList lista_arrobas = QStringList::split(separador_total, salida);
+  for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
+    result.total_records = QString(*it).toInt();
+    // TODO: forwardonly.
+    qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+    break;
+  }
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
-
-  result.record_header.clear();
-  result.records.clear();
   bool first = true;
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
@@ -738,112 +880,21 @@ namespace dbiplus
     result.records[sz] = rec;
 
     }
+
   }
-
-  //qWarning("Registros cargados!");
-
-  active = true;
-  ds_state = dsSelect;
-  this->first();
+  qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   return true;
-  
-/*     if (db->setErr(sqlite3_exec(handle(), query, &callback, &result, &errmsg), query) == SQLITE_OK) {
-      active = true;
-      ds_state = dsSelect;
-      this->first();
-      return true;
-    } */
-
   }
-
-  bool SqliteDataset::query(const string &q)
-  {
-    return query(q.c_str());
-  }
-
-  void SqliteDataset::open(const string &sql)
-  {
-    set_select_sql(sql);
-    open();
-  }
-
-  void SqliteDataset::open()
-  {
-    if (select_sql.size()) {
-      query(select_sql.c_str());
-    } else {
-      ds_state = dsInactive;
-    }
-  }
-
-
-  void SqliteDataset::close()
-  {
-    Dataset::close();
-    result.record_header.clear();
-    result.records.clear();
-    edit_object->clear();
-    fields_object->clear();
-    ds_state = dsInactive;
-    active = false;
-  }
-
-
-  void SqliteDataset::cancel()
-  {
-    if ((ds_state == dsInsert) || (ds_state == dsEdit))
-      if (result.record_header.size()) ds_state = dsSelect;
-      else ds_state = dsInactive;
-  }
-
-
-  int SqliteDataset::num_rows()
-  {
-    return result.records.size();
-  }
-
-
-  bool SqliteDataset::eof()
-  {
-    return feof;
-  }
-
-
-  bool SqliteDataset::bof()
-  {
-    return fbof;
-  }
-
-
-  void SqliteDataset::first()
-  {
-    Dataset::first();
-    this->fill_fields();
-  }
-
-  void SqliteDataset::last()
-  {
-    Dataset::last();
-    fill_fields();
-  }
-
-  void SqliteDataset::prev(void)
-  {
-    Dataset::prev();
-    fill_fields();
-  }
-
-  void SqliteDataset::next(void)
-  {
-    Dataset::next();
-    if (!eof())
-      fill_fields();
-  }
-
 
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
+      if (result.total_records > result.records.size()) {
+        if (!fetch_rows(pos)) {
+          qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
+          return false;
+        }
+      }
       Dataset::seek(pos);
       fill_fields();
       return true;

@@ -146,6 +146,14 @@ or insert() operations default = false) */
   QString lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida);
   QString generar_fichero_aqextension(const QString &cadena);
   bool hacer_login_usuario(const string &user, const string &passwd);
+  int last_offset;
+  QString sql;
+  bool fetch_rows(int pos);
+  bool seek(int pos=0);
+  bool gestionar_consulta_paginada(const int offset);
+  QString generarJsonQuery(const QString &qry, const QString &fichero_salida, const int offset);
+
+
 
 /* opens a query  & then sets a query results */
   virtual void open();
@@ -173,7 +181,7 @@ or insert() operations default = false) */
   virtual void prev();
   virtual void next();
 /* Go to record No (starting with 0) */
-  virtual bool seek(int pos=0);
+  
 
   
 
