@@ -404,7 +404,7 @@ namespace dbiplus
     //token = token.left(token.find("\""));
 
     if (token == "error") {
-      qWarning("Error al lanzar llamada aqextension");
+      qWarning("Error al solicitar login");
       return false;
     }
 
@@ -416,14 +416,27 @@ namespace dbiplus
 
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
-    
-    QString path_exec = "python3 " + qApp->applicationDirPath() + "/aqextension.py";
+    bool usar_py = true;
+
+    QString path_exec = "";
+    QString comando_txt = "";
+    if (usar_py) {
+      path_exec = qApp->applicationDirPath() + "/aqextension.py";
+      comando_txt = "python3 " + path_exec + " " + accion + " " + fichero_datos;
+    } else {
+      path_exec = qApp->applicationDirPath() + "/aqextension";
+      comando_txt = path_exec + " " + accion + " " + fichero_datos;
+    }
+
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
-    qWarning("FICHERO DATOS: " + fichero_datos);
+    qWarning("Comando: " + comando_txt);
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
       AQProc->clearArguments();
+      if (usar_py) {
+        AQProc->addArgument("python3");
+      }
       AQProc->addArgument(path_exec);
       AQProc->addArgument(accion);
       AQProc->addArgument(fichero_datos);
@@ -613,8 +626,12 @@ namespace dbiplus
       
       QString user = ((SqliteDatabase *)db)->userApi;
       QString password = ((SqliteDatabase *)db)->passwordApi;
-      hacer_login_usuario(user, password);
-    }
+      if (!hacer_login_usuario(user, password)) {
+        qWarning("Error al hacer login. QUERY Cancelada");
+        return false;
+      }
+      }
+
     QString token = ((SqliteDatabase *)db)->tokenApi;
 
     QString folder = getenv("TPM");
