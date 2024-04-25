@@ -420,6 +420,7 @@ namespace dbiplus
     QString path_exec = qApp->applicationDirPath() + "/aqextension";
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
+    qWarning("FICHERO DATOS: " + fichero_datos);
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
       AQProc->clearArguments();
@@ -432,7 +433,6 @@ namespace dbiplus
       }
     } else {
       // Solo pasarle argumento ...
-      //qWarning("NUEVO ARGUMENTO " + fichero_datos);
       AQProc->writeToStdin(fichero_datos + "\n");
     }
 
@@ -452,6 +452,9 @@ namespace dbiplus
     qWarning("No existe fichero salida " + fichero_salida + ", fichero datos: " + fichero_datos);
     QString error_str = AQProc->readStderr().data();
     qWarning("Error devuelto: " + error_str);
+    qWarning("Reiniciando proceso");
+    AQProc->tryTerminate();
+    ((SqliteDatabase *)db)->AQProc = new QProcess();
     return "error";
   }
 
