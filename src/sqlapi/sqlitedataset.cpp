@@ -702,7 +702,11 @@ namespace dbiplus
           QString nombre_columna = *it3;
           //qWarning("Especificando nombre col : %d", col_numero);
           //qWarning(nombre_columna);
-          result.record_header[col_numero].name = nombre_columna.simplifyWhiteSpace().utf8();
+          if (nombre_columna.endsWith(" ")) {
+            nombre_columna = nombre_columna.left(nombre_columna.length() - 1);
+          }
+          
+          result.record_header[col_numero].name = nombre_columna.utf8();
           break;
         }
         
@@ -718,7 +722,7 @@ namespace dbiplus
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
-      const std::string valor = lista_valores[i].simplifyWhiteSpace();
+      const std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
           //Automáticamente marcaremos campo como null
