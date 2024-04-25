@@ -417,7 +417,7 @@ namespace dbiplus
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
     
-    QString path_exec = qApp->applicationDirPath() + "/aqextension";
+    QString path_exec = "python3 " + qApp->applicationDirPath() + "/aqextension.py";
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
     qWarning("FICHERO DATOS: " + fichero_datos);
