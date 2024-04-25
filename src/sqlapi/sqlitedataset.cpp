@@ -468,8 +468,8 @@ namespace dbiplus
   }
 
   if (salida == "") {
-    QFile::remove(fichero_salida);
-    QFile::remove(fichero_datos);
+    //QFile::remove(fichero_salida);
+    //QFile::remove(fichero_datos);
   }
   //QFile::remove(fichero_salida);
 
@@ -694,7 +694,7 @@ namespace dbiplus
 
     int sz = result.records.size(); 
 
-    //qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA Nï¿½ %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
