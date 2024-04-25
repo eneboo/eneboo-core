@@ -804,7 +804,7 @@ namespace dbiplus
 
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
     QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
-    QString cadena = generarJsonQuery(current_sql, fichero_salida, separador_campos, separador_lineas, offset);    
+    QString cadena = generarJsonQuery(current_sql, fichero_salida, offset);    
     QString fichero_datos = generar_fichero_aqextension(cadena);
     QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
 
