@@ -730,11 +730,16 @@ namespace dbiplus
     int new_offset;
     
     while (true) {
-      gestionar_consulta_paginada(offset);
+      if (!gestionar_consulta_paginada(offset)) {
+        qWarning("SALE A " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
+        return false;
+      }
       if (offset >= result.total_records) {
+        qWarning("SALE B " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
         return false;
       }
       if (result.records.size() > pos) {
+        qWarning("SALE C " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
         return true;
       }
 
