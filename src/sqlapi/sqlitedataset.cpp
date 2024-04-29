@@ -37,7 +37,7 @@
 #include "sqlitedataset.h"
 #include <unistd.h>
 
-#define LIMIT_RESULT 49
+#define LIMIT_RESULT 2000
 
 namespace dbiplus
 {
@@ -818,7 +818,7 @@ namespace dbiplus
   for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
     result.total_records = QString(*it).toInt();
     // TODO: forwardonly.
-    qWarning("PAGINACIÃ“N: TOTAL RECORDS: %d", result.total_records);
+    qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
     break;
   }
 
@@ -882,7 +882,7 @@ namespace dbiplus
     }
 
   }
-  qWarning("PAGINACIÃ“N: CURRENT:" + QString::number(result.records.size()));
+  qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   return true;
   }
 
@@ -891,7 +891,7 @@ namespace dbiplus
     if (ds_state == dsSelect) {
       if (result.total_records > result.records.size()) {
         if (!fetch_rows(pos)) {
-          qWarning("Error al recuperar registro. La posiciÃ³n %d deberÃ­a de existir." , pos);
+          qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
         }
       }
