@@ -911,7 +911,7 @@ namespace dbiplus
     }
 
 
-      while(!fetching) {
+      while(fetching) {
         // Esperamos a que se pueda hacer fetch ...
         qApp->processEvents();
       }
