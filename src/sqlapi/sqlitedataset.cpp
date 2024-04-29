@@ -730,6 +730,7 @@ namespace dbiplus
     int new_offset;
     
     while (true) {
+      qWarning("CURRENT OFFSET %d", offset);
       if (!gestionar_consulta_paginada(offset)) {
         qWarning("SALE A " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
         return false;
