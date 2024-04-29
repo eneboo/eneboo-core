@@ -177,7 +177,6 @@ typedef query_data::iterator qry_itor;
 struct result_set {
   record_prop record_header;
   query_data records;
-  int total_records;
 };
 
 } // namespace
