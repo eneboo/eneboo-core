@@ -759,7 +759,7 @@ namespace dbiplus
     cadena += "\"params\":{\n";
     cadena += "\"sql\":\"" + qry + "\",\n";
     cadena += "\"offset\":" + QString::number(offset) + ",\n";
-    cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + ",\n";
+    cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
     cadena += "\"codificacion\": \"UTF-8\",\n";
