@@ -748,7 +748,7 @@ namespace dbiplus
         break;
       }
       if (result.records.size() > pos) {
-        qWarning("SALE C " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
+        qWarning("SALE C size:" + QString::number(result.records.size()) + ", total:" + QString::number(result.total_records) + ", pos:" + QString::number(pos));
         fecth_result = true;
         break;
       }
@@ -916,17 +916,13 @@ namespace dbiplus
         qApp->processEvents();
       }
 
-      if (pos < highest_pos_fetching) {
-        return true; // No hace falta hacer fetch ...
-      }
-
-
-
-      int records_size = result.records.size();
-      if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
-        if (!fetch_rows(pos)) {
-          qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
-          return false;
+      if (pos == highest_pos_fetching) { // Si la posicion es la mas alta que se ha solicitado ...
+        int records_size = result.records.size();
+        if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
+          if (!fetch_rows(pos)) {
+            qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
+            return false;
+          }
         }
       }
       Dataset::seek(pos);
