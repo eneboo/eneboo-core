@@ -889,7 +889,8 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      if (result.total_records > result.records.size()) {
+      int records_size = result.records.size();
+      if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
         if (!fetch_rows(pos)) {
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
