@@ -145,14 +145,16 @@ or insert() operations default = false) */
   void set_autorefresh(bool val);
   QString lanzar_llamada_aqextension(const QString &accion, const QString &argumento, const QString &fichero_salida);
   QString generar_fichero_aqextension(const QString &cadena);
+  QString generarJsonQuery(const QString &qry, const QString &fichero_salida, const int offset);
   bool hacer_login_usuario(const string &user, const string &passwd);
-  int last_offset;
-  QString sql;
   bool fetch_rows(int pos);
   bool seek(int pos=0);
   bool gestionar_consulta_paginada(const int offset);
+  
+  QString sql;
+  int last_offset;
+  int highest_pos_fetching;
   bool fetching;
-  QString generarJsonQuery(const QString &qry, const QString &fichero_salida, const int offset);
 
 
 

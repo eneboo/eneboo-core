@@ -310,6 +310,7 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     fetching = false;
+    highest_pos_fetching = 0;
   }
 
 
@@ -320,6 +321,7 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     fetching = false;
+    highest_pos_fetching = 0;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -904,8 +906,24 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
+    if (highest_pos_fetching < pos) {
+      highest_pos_fetching = pos;
+    }
+
+
+      while(!fetching) {
+        // Esperamos a que se pueda hacer fetch ...
+        qApp->processEvents();
+      }
+
+      if (pos < highest_pos_fetching) {
+        return true; // No hace falta hacer fetch ...
+      }
+
+
+
       int records_size = result.records.size();
-      if (!fetching && pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
+      if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
         if (!fetch_rows(pos)) {
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
