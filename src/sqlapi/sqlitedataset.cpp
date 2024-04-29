@@ -732,7 +732,6 @@ namespace dbiplus
     int offset = result.records.size();
     int new_size;
     int new_offset;
-    fetching = true;
     bool fecth_result;
     
     while (true) {
@@ -755,7 +754,6 @@ namespace dbiplus
 
       offset += LIMIT_RESULT;
     }
-    fetching = false;
     return fecth_result;
   }
 
@@ -906,7 +904,7 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-    if (highest_pos_fetching < pos) {
+    if (highest_pos_fetching <= pos) {
       highest_pos_fetching = pos;
     }
 
@@ -915,19 +913,26 @@ namespace dbiplus
         // Esperamos a que se pueda hacer fetch ...
         qApp->processEvents();
       }
-
+      
       if (pos == highest_pos_fetching) { // Si la posicion es la mas alta que se ha solicitado ...
+        fetching = true;
         int records_size = result.records.size();
         if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
+          
           if (!fetch_rows(pos)) {
             qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
+            fetching = false;
             return false;
           }
         }
+        fetching = false;
       }
-      Dataset::seek(pos);
-      fill_fields();
-      return true;
+      
+      if (pos > result.records.size()) {
+        Dataset::seek(pos);
+        fill_fields();
+        return true;
+      }
     }
     return false;
   }
