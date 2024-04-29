@@ -151,6 +151,7 @@ or insert() operations default = false) */
   bool fetch_rows(int pos);
   bool seek(int pos=0);
   bool gestionar_consulta_paginada(const int offset);
+  bool fetching;
   QString generarJsonQuery(const QString &qry, const QString &fichero_salida, const int offset);
 
 

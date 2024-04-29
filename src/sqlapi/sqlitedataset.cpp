@@ -309,6 +309,7 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
+    fetching = false;
   }
 
 
@@ -318,6 +319,7 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
+    fetching = false;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -728,24 +730,31 @@ namespace dbiplus
     int offset = result.records.size();
     int new_size;
     int new_offset;
+    fetching = true;
+    bool fecth_result;
     
     while (true) {
       qWarning("CURRENT OFFSET %d", offset);
       if (!gestionar_consulta_paginada(offset)) {
         qWarning("SALE A " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
-        return false;
+        fecth_result = false;
+        break;
       }
       if (offset >= result.total_records) {
         qWarning("SALE B " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
-        return false;
+        fecth_result = false;
+        break;
       }
       if (result.records.size() > pos) {
         qWarning("SALE C " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
-        return true;
+        fecth_result = true;
+        break;
       }
 
       offset += LIMIT_RESULT;
     }
+    fetching = false;
+    return fecth_result;
   }
 
 
@@ -896,7 +905,7 @@ namespace dbiplus
   {
     if (ds_state == dsSelect) {
       int records_size = result.records.size();
-      if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
+      if (!fetching && pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
         if (!fetch_rows(pos)) {
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
