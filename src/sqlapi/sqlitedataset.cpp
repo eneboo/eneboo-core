@@ -928,7 +928,7 @@ namespace dbiplus
         fetching = false;
       }
       
-      if (pos > result.records.size()) {
+      if (pos < result.records.size()) {
         Dataset::seek(pos);
         fill_fields();
         return true;
