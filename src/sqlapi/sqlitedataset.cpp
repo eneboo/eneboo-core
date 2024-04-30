@@ -438,8 +438,8 @@ namespace dbiplus
       qWarning("Eliminando fichero salida " + fichero_salida);
       QFile::remove(fichero_salida);
     }
-    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
-
+    //QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
+    QProcess *AQProc = new QProcess();
     qWarning("Comando: " + comando_txt);
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
@@ -481,6 +481,8 @@ namespace dbiplus
     ((SqliteDatabase *)db)->AQProc = new QProcess();
     return "error";
   }
+  AQProc->tryTerminate();
+  
 
   QString salida = "";
   QFile fi_salida(fichero_salida);
