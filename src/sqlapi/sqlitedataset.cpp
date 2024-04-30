@@ -310,7 +310,6 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     fetching = false;
-    highest_pos_fetching = 0;
   }
 
 
@@ -321,7 +320,6 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     fetching = false;
-    highest_pos_fetching = 0;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -904,9 +902,6 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-    if (highest_pos_fetching <= pos) {
-      highest_pos_fetching = pos;
-    }
 
 
       while(fetching) {
@@ -914,7 +909,7 @@ namespace dbiplus
         qApp->processEvents();
       }
       
-      if (pos == highest_pos_fetching) { // Si la posicion es la mas alta que se ha solicitado ...
+
         fetching = true;
         int records_size = result.records.size();
         if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
@@ -926,7 +921,6 @@ namespace dbiplus
           }
         }
         fetching = false;
-      }
       
       if (pos < result.records.size()) {
         Dataset::seek(pos);
