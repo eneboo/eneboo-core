@@ -733,15 +733,14 @@ namespace dbiplus
 
   bool SqliteDataset::fetch_rows(int pos)
   {
-    qWarning("FETCH_ROWS!! %d" , pos);
+    
     int offset = result.records.size();
     int new_size;
     int new_offset;
     bool fecth_result;
     fetching = true;
-    
     while (true) {
-      qWarning("CURRENT OFFSET %d", offset);
+      qWarning("FETCH_ROWS!! " + QString::number(pos) + " " + QString::number(offset));
       if (!gestionar_consulta_paginada(offset)) {
         qWarning("SALE A " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
         fecth_result = false;
@@ -913,12 +912,12 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      qWarning("SEEK %d", pos);
+      
       int records_size = result.records.size();
 
       // Descarto seeks bajos (previos)...
       if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
-        
+        qWarning("FETCH %d", pos);
         if (!fetch_rows(pos)) {
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
