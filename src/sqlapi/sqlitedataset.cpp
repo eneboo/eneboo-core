@@ -310,6 +310,7 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     fetching = false;
+    last_fetch_pos = 0;
   }
 
 
@@ -320,6 +321,7 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     fetching = false;
+    last_fetch_pos = 0;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -731,6 +733,7 @@ namespace dbiplus
     int new_size;
     int new_offset;
     bool fecth_result;
+    fetching = true;
     
     while (true) {
       qWarning("CURRENT OFFSET %d", offset);
@@ -752,6 +755,7 @@ namespace dbiplus
 
       offset += LIMIT_RESULT;
     }
+    fetching = false;
     return fecth_result;
   }
 
@@ -903,26 +907,27 @@ namespace dbiplus
   {
     if (ds_state == dsSelect) {
 
+      if (pos > last_fetch_pos) { //El seek mas alto me lo guardo
+        last_fetch_pos = pos;
+      }
 
       while(fetching) {
-        // Esperamos a que se pueda hacer fetch ...
         qApp->processEvents();
       }
-      
 
-        fetching = true;
-        int records_size = result.records.size();
-        if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
-          
-          if (!fetch_rows(pos)) {
-            qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
-            fetching = false;
-            return false;
-          }
+
+      int records_size = result.records.size();
+
+      // Descarto seeks bajos (previos)...
+      if (pos == last_fetch_pos && pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
+        
+        if (!fetch_rows(pos)) {
+          qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
+          return false;
         }
-        fetching = false;
+      }
       
-      if (pos < result.records.size()) {
+    if (pos < result.records.size()) {
         Dataset::seek(pos);
         fill_fields();
         return true;

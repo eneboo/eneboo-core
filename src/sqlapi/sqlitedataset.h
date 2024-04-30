@@ -154,6 +154,7 @@ or insert() operations default = false) */
   QString sql;
   int last_offset;
   bool fetching;
+  int last_fetch_pos;
 
 
 
