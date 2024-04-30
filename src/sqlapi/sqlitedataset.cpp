@@ -436,7 +436,7 @@ namespace dbiplus
 
     if (QFile::exists(fichero_salida)) {
       qWarning("Eliminando fichero salida " + fichero_salida);
-      QFile::remove(fichero_salida)
+      QFile::remove(fichero_salida);
     }
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
