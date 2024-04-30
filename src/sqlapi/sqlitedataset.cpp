@@ -438,8 +438,8 @@ namespace dbiplus
       qWarning("Eliminando fichero salida " + fichero_salida);
       QFile::remove(fichero_salida);
     }
-    //QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
-    QProcess *AQProc = new QProcess();
+    QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
+
     qWarning("Comando: " + comando_txt);
     if (!AQProc->isRunning()) {
       qWarning("PROCESO PARADO! :(");
@@ -481,8 +481,6 @@ namespace dbiplus
     ((SqliteDatabase *)db)->AQProc = new QProcess();
     return "error";
   }
-  AQProc->tryTerminate();
-  
 
   QString salida = "";
   QFile fi_salida(fichero_salida);
@@ -915,7 +913,7 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-
+      qWarning("SEEK %d", pos);
       int records_size = result.records.size();
 
       // Descarto seeks bajos (previos)...
@@ -925,7 +923,7 @@ namespace dbiplus
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
         }
-      } 
+      }
       
     if (pos < result.records.size()) {
         Dataset::seek(pos);
