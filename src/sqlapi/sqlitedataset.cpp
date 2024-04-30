@@ -913,28 +913,17 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      qWarning("SEEK %d", pos);
-      if (pos > last_fetch_pos) { //El seek mas alto me lo guardo
-        last_fetch_pos = pos;
-      }
-
-      while(fetching) {
-        qApp->processEvents();
-      }
-
 
       int records_size = result.records.size();
 
       // Descarto seeks bajos (previos)...
-      if (pos == last_fetch_pos && pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
+      if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
         
         if (!fetch_rows(pos)) {
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
         }
-      } else {
-        qWarning("FETCH CANCELADO. %d", pos);
-      }
+      } 
       
     if (pos < result.records.size()) {
         Dataset::seek(pos);
