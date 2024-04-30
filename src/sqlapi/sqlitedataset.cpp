@@ -434,6 +434,10 @@ namespace dbiplus
       comando_txt = path_exec + " " + accion + " " + fichero_datos;
     }
 
+    if (QFile::exists(fichero_salida)) {
+      qWarning("Eliminando fichero salida " + fichero_salida);
+      QFile::remove(fichero_salida)
+    }
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
 
     qWarning("Comando: " + comando_txt);
@@ -452,10 +456,11 @@ namespace dbiplus
       }
     } else {
       // Solo pasarle argumento ...
+      qWarning("PROCESO EN EJECUCION! :)");
       AQProc->writeToStdin(fichero_datos + "\n");
     }
 
-    //qWarning("Esperando mientras se ejecuta el proceso");
+    qWarning("Esperando a que se procese la llamada");
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
@@ -464,7 +469,7 @@ namespace dbiplus
         break;
       }
     }
-    //qWarning("Fin de la espera");
+    qWarning("Fin de la espera");
 
   
   if (!QFile::exists(fichero_salida)) {
@@ -741,6 +746,8 @@ namespace dbiplus
         qWarning("SALE A " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
         fecth_result = false;
         break;
+      } else {
+        qWarning("A OK! " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
       }
       if (offset >= result.total_records) {
         qWarning("SALE B " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
@@ -830,7 +837,7 @@ namespace dbiplus
       return false;
     }
   
-
+  qWarning("Procesando respuesta");
   QStringList lista_arrobas = QStringList::split(separador_total, salida);
   for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
     result.total_records = QString(*it).toInt();
@@ -906,7 +913,7 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-
+      qWarning("SEEK %d", pos);
       if (pos > last_fetch_pos) { //El seek mas alto me lo guardo
         last_fetch_pos = pos;
       }
@@ -925,6 +932,8 @@ namespace dbiplus
           qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
           return false;
         }
+      } else {
+        qWarning("FETCH CANCELADO. %d", pos);
       }
       
     if (pos < result.records.size()) {
