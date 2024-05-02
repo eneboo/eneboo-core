@@ -161,6 +161,7 @@ or insert() operations default = false) */
   bool debug_sql;
   bool debug_paginacion;
   bool debug_aqextension; 
+  int last_pos_fetched;
 
 
 

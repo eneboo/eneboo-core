@@ -315,6 +315,7 @@ namespace dbiplus
     debug_sql = false;
     debug_paginacion = true;
     debug_aqextension = false;
+    last_pos_fetched = 0;
   }
 
 
@@ -328,6 +329,7 @@ namespace dbiplus
     debug_sql = false;
     debug_paginacion = true;
     debug_aqextension = false;
+    last_pos_fetched = 0;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -781,7 +783,6 @@ bool SqliteDataset::fetch_rows(int pos) {
         qWarning(" + Bloque %d añadido a pila_paginación pos:(%d) %d - %d ", codigo_bloque, pos, codigo_bloque * LIMIT_RESULT , (((codigo_bloque + 1) * LIMIT_RESULT) - 1));
         lista_bloques_pila_paginacion();
       } */
-      
     } else { // si esta en la pila, no hago nada
       return true;
     }
@@ -814,7 +815,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
       //semaforo_fetching = true;
       if (debug_paginacion) {
-        qWarning(" * Bloque %d en proceso", codigo_bloque);
+        qWarning(" + Bloque %d en proceso", codigo_bloque);
       }
       
       bool fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
@@ -824,7 +825,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       //semaforo_fetching = false;
       
       if (debug_paginacion) {
-        qWarning(" - Bloque %d Procesado %s", codigo_bloque, fetch_result ? "OK" : "FALLO");
+        qWarning(" - Bloque %d (%d : %s) Procesado %s , rango: %d - %d", codigo_bloque, pos, result.records.count(pos) == 1 ? "OK" : "KO", fetch_result ? "OK" : "FALLO", codigo_bloque, codigo_bloque + LIMIT_RESULT - 1);
         //lista_bloques_pila_paginacion();
       }
 
@@ -986,11 +987,16 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
+    
     if (ds_state == dsSelect) {
+      //last_pos_fetched = pos;
       if (result.records.count(pos) == 1 || fetch_rows(pos)) {
-        Dataset::seek(pos);
-          fill_fields();
-          return true;
+        //if (last_pos_fetched == pos) {
+            Dataset::seek(pos);
+            fill_fields();
+            return true;
+        //}
+
       }
     }
     return false;
