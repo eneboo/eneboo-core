@@ -310,8 +310,7 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
-    fetching = false;
-    last_fetch_pos = 0;
+    semaforo_fetching = false;
   }
 
 
@@ -321,8 +320,7 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
-    fetching = false;
-    last_fetch_pos = 0;
+    semaforo_fetching = false;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -436,14 +434,19 @@ namespace dbiplus
     }
 
     if (QFile::exists(fichero_salida)) {
-      qWarning("Eliminando fichero salida " + fichero_salida);
+      if (debug_aqextension) {
+        qWarning("Eliminando fichero salida " + fichero_salida);
+      }
       QFile::remove(fichero_salida);
     }
     QProcess *AQProc = ((SqliteDatabase *)db)->AQProc;
-
-    qWarning("Comando: " + comando_txt);
+    if (debug_aqextension) {
+      qWarning("Comando: " + comando_txt);
+    }
     if (!AQProc->isRunning()) {
-      qWarning("PROCESO PARADO! :(");
+      if (debug_aqextension) {
+        qWarning("PROCESO PARADO! :(");
+      }
       AQProc->clearArguments();
       if (usar_py) {
         AQProc->addArgument("python3");
@@ -457,11 +460,15 @@ namespace dbiplus
       }
     } else {
       // Solo pasarle argumento ...
-      qWarning("PROCESO EN EJECUCION! :)");
+      if (debug_aqextension) {
+        qWarning("PROCESO EN EJECUCION! :)");
+      }
       AQProc->writeToStdin(fichero_datos + "\n");
     }
 
-    qWarning("Esperando a que se procese la llamada");
+    if (debug_aqextension) {
+      qWarning("Esperando a que se procese la llamada");
+    }
     while (AQProc->isRunning()) {
       //Esperamos a que termine
       qApp->processEvents();
@@ -470,8 +477,9 @@ namespace dbiplus
         break;
       }
     }
-    qWarning("Fin de la espera");
-
+    if (debug_aqextension) {
+      qWarning("Fin de la espera");
+    }
   
   if (!QFile::exists(fichero_salida)) {
     qWarning("No existe fichero salida " + fichero_salida + ", fichero datos: " + fichero_datos);
@@ -743,10 +751,13 @@ int SqliteDataset::resuelve_bloque(const int posicion) {
 
 void SqliteDataset::lista_bloques_pila_paginacion()
 {
+    if (!debug_paginacion) {
+      return;
+    }
       //Muestro lista de bloques en pantalla
     qWarning("Pila de bloques:");
     for (list<int>::iterator it = pila_paginacion.begin(); it != pila_paginacion.end(); ++it) {
-      qWarning("\t- %d", *it);
+      qWarning("\t\t- %d", *it);
     }
 }
 
@@ -759,21 +770,31 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la pila, lo meto el primero
       lista_bloques[codigo_bloque] = false;
       pila_paginacion.push_front(codigo_bloque);
-      qWarning(" + Bloque %d añadido a pila_paginación", codigo_bloque);
+      if (debug_paginacion) {
+        qWarning(" + Bloque %d añadido a pila_paginación pos:(%d)", codigo_bloque, pos);
+      }
+      
     } else { // si esta en la pila, no hago nada
       return true;
     }
-
     lista_bloques_pila_paginacion();
 
     bool fetch_result = false;
     while (true) {
       // compruebo si el bloque está en la lista
-      if (pila_paginacion.front() == codigo_bloque) { // Si esto el primero lanzo la consulta ...
+      if (pila_paginacion.front() == codigo_bloque && !semaforo_fetching) { // Si esto el primero lanzo la consulta ...
+          if (debug_paginacion) {
+            qWarning(" * Bloque %d en proceso", codigo_bloque);
+          }
+          semaforo_fetching = true;
           fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
           pila_paginacion.pop_front(); //Quito el bloque de la lista
           lista_bloques[codigo_bloque] = true;
-          qWarning(" - Bloque %d Procesado", codigo_bloque);
+          semaforo_fetching = false;
+          if (debug_paginacion) {
+            qWarning(" - Bloque %d Procesado", codigo_bloque);
+          }
+          lista_bloques_pila_paginacion();
           }
       
       if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
@@ -782,6 +803,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       }
 
       if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
+          qWarning(":( estoy perdido %s" , pos);
           break;
       }
 
@@ -794,39 +816,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     return fetch_result;
 }
 
-/*   bool SqliteDataset::fetch_rows(int pos)
-  {
-    
-    int offset = result.records.size();
-    int new_size;
-    int new_offset;
-    bool fecth_result;
-    fetching = true;
-    while (true) {
-      qWarning("FETCH_ROWS!! " + QString::number(pos) + " " + QString::number(offset));
-      if (!gestionar_consulta_paginada(offset)) {
-        qWarning("SALE A " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
-        fecth_result = false;
-        break;
-      } else {
-        qWarning("A OK! " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
-      }
-      if (offset >= result.total_records) {
-        qWarning("SALE B " + QString::number(result.records.size()) + " " + QString::number(result.total_records));
-        fecth_result = false;
-        break;
-      }
-      if (result.records.size() > pos) {
-        qWarning("SALE C size:" + QString::number(result.records.size()) + ", total:" + QString::number(result.total_records) + ", pos:" + QString::number(pos));
-        fecth_result = true;
-        break;
-      }
 
-      offset += LIMIT_RESULT;
-    }
-    fetching = false;
-    return fecth_result;
-  } */
 
 
 
@@ -898,13 +888,17 @@ bool SqliteDataset::fetch_rows(int pos) {
       qWarning("Error al lanzar llamada aqextension. SQL:" + QString(current_sql));
       return false;
     }
+  if (debug_sql) {
+    qWarning("Procesando respuesta");
+  }
   
-  qWarning("Procesando respuesta");
   QStringList lista_arrobas = QStringList::split(separador_total, salida);
   for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
     result.total_records = QString(*it).toInt();
     // TODO: forwardonly.
-    qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+    if (debug_sql) {
+      qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+    }
     break;
   }
 
@@ -969,7 +963,9 @@ bool SqliteDataset::fetch_rows(int pos) {
     }
 
   }
-  qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+  if (debug_sql) {
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+  }
   return true;
   }
 
