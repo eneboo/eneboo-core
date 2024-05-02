@@ -779,62 +779,56 @@ bool SqliteDataset::fetch_rows(int pos) {
       pila_paginacion.push_front(codigo_bloque);
       if (debug_paginacion) {
         qWarning(" + Bloque %d añadido a pila_paginación pos:(%d) %d - %d ", codigo_bloque, pos, codigo_bloque * LIMIT_RESULT , (((codigo_bloque + 1) * LIMIT_RESULT) - 1));
+        lista_bloques_pila_paginacion();
       }
       
     } else { // si esta en la pila, no hago nada
       return true;
     }
-    lista_bloques_pila_paginacion();
+    
 
-    bool fetch_result = false;
     while (true) {
-      //qApp->processEvents();
-
-      if (semaforo_fetching) {
-        sleep(1);
+      if (semaforo_fetching || (pila_paginacion.size() > 0 && pila_paginacion.front() != codigo_bloque)) {
         if (debug_paginacion) {
-          qWarning(" ^ Bloque %d en espera", codigo_bloque);
+          qWarning(" ^ Bloque %d en espera, next: %d", codigo_bloque, pila_paginacion.size() > 0 ? pila_paginacion.front() : -1);
+
         }
+        sleep(1);
         continue;
       }
-
-      if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
-          fetch_result = true;
-          break;
-      }
-
-      if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
-          qWarning(":( estoy perdido %s" , pos);
-          break;
-      }
-
-      // compruebo si el bloque está en la lista
-      if (pila_paginacion.front() == codigo_bloque) { // Si esto el primero lanzo la consulta ...
-          semaforo_fetching = true;
-          if (debug_paginacion) {
-            qWarning(" * Bloque %d en proceso", codigo_bloque);
-          }
-          
-          fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
-          // eliminamos codigo_bloque de pila_paginacion
-          if (debug_paginacion) {
-            qWarning(" ** Eliminado bloque %d de pila", codigo_bloque);
-          }
-          pila_paginacion.remove(codigo_bloque);
-
-          lista_bloques[codigo_bloque] = true;
-          semaforo_fetching = false;
-          if (debug_paginacion) {
-            qWarning(" - Bloque %d Procesado", codigo_bloque);
-            lista_bloques_pila_paginacion();
-          }
-          
-      } 
+      break;
     }
 
+    if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
+        if (debug_paginacion) {
+          qWarning(":) Ya existe pos %s" , pos);
+        }
+      return true;
+    }
+
+    if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
+        qWarning(":( estoy perdido %s" , pos);
+        return false;
+    }
+
+
+      semaforo_fetching = true;
+      if (debug_paginacion) {
+        qWarning(" * Bloque %d en proceso", codigo_bloque);
+      }
+      pila_paginacion.remove(codigo_bloque);
+      bool fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
+      // eliminamos codigo_bloque de pila_paginacion
       
 
-    return fetch_result;
+      lista_bloques[codigo_bloque] = true;
+      semaforo_fetching = false;
+      if (debug_paginacion) {
+        qWarning(" - Bloque %d Procesado", codigo_bloque);
+        lista_bloques_pila_paginacion();
+      }
+
+      return fetch_result;      
 }
 
 
