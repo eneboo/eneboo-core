@@ -37,6 +37,7 @@
 #include "sqlitedataset.h"
 #include <unistd.h>
 #include <math.h>
+#include <time.h>
 
 #define LIMIT_RESULT 2000
 
@@ -761,7 +762,7 @@ void SqliteDataset::lista_bloques_pila_paginacion()
       return;
     }
       //Muestro lista de bloques en pantalla
-    qWarning("Pila de bloques:");
+    qWarning("\tPila de bloques:");
     for (list<int>::iterator it = pila_paginacion.begin(); it != pila_paginacion.end(); ++it) {
       qWarning("\t\t- %d", *it);
     }
@@ -777,7 +778,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       lista_bloques[codigo_bloque] = false;
       pila_paginacion.push_front(codigo_bloque);
       if (debug_paginacion) {
-        qWarning(" + Bloque %d añadido a pila_paginación pos:(%d)", codigo_bloque, pos);
+        qWarning(" + Bloque %d añadido a pila_paginación pos:(%d) %d - %d ", codigo_bloque, pos, codigo_bloque * LIMIT_RESULT , (((codigo_bloque + 1) * LIMIT_RESULT) - 1));
       }
       
     } else { // si esta en la pila, no hago nada
@@ -787,22 +788,16 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     bool fetch_result = false;
     while (true) {
-      // compruebo si el bloque está en la lista
-      if (pila_paginacion.front() == codigo_bloque && !semaforo_fetching) { // Si esto el primero lanzo la consulta ...
-          if (debug_paginacion) {
-            qWarning(" * Bloque %d en proceso", codigo_bloque);
-          }
-          semaforo_fetching = true;
-          fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
-          pila_paginacion.pop_front(); //Quito el bloque de la lista
-          lista_bloques[codigo_bloque] = true;
-          semaforo_fetching = false;
-          if (debug_paginacion) {
-            qWarning(" - Bloque %d Procesado", codigo_bloque);
-          }
-          lista_bloques_pila_paginacion();
-          }
-      
+      //qApp->processEvents();
+
+      if (semaforo_fetching) {
+        sleep(1);
+        if (debug_paginacion) {
+          qWarning(" ^ Bloque %d en espera", codigo_bloque);
+        }
+        continue;
+      }
+
       if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
           fetch_result = true;
           break;
@@ -813,8 +808,28 @@ bool SqliteDataset::fetch_rows(int pos) {
           break;
       }
 
-      // Espero a que sea mi turno ....
-      qApp->processEvents();
+      // compruebo si el bloque está en la lista
+      if (pila_paginacion.front() == codigo_bloque) { // Si esto el primero lanzo la consulta ...
+          semaforo_fetching = true;
+          if (debug_paginacion) {
+            qWarning(" * Bloque %d en proceso", codigo_bloque);
+          }
+          
+          fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
+          // eliminamos codigo_bloque de pila_paginacion
+          if (debug_paginacion) {
+            qWarning(" ** Eliminado bloque %d de pila", codigo_bloque);
+          }
+          pila_paginacion.remove(codigo_bloque);
+
+          lista_bloques[codigo_bloque] = true;
+          semaforo_fetching = false;
+          if (debug_paginacion) {
+            qWarning(" - Bloque %d Procesado", codigo_bloque);
+            lista_bloques_pila_paginacion();
+          }
+          
+      } 
     }
 
       
