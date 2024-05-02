@@ -848,6 +848,7 @@ namespace dbiplus
   QStringList lista_registros(QStringList::split(separador_lineas, salida));
   
   bool first = true;
+  int posicion_idx = offset;
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
@@ -881,7 +882,7 @@ namespace dbiplus
       continue;
     } else { // valores ...
 
-    int sz = result.records.size(); 
+
 
     //qWarning("PROCESANDO VALORES LINEA N� %d" , sz);
     // Creamos listado con valores
@@ -900,8 +901,8 @@ namespace dbiplus
  
       }
 
-    result.records[sz] = rec;
-
+    result.records[posicion_idx] = rec;
+    posicion_idx += 1;
     }
 
   }
