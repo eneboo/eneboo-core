@@ -818,7 +818,7 @@ bool SqliteDataset::fetch_rows(int pos) {
         qWarning(" + Bloque %d en proceso", codigo_bloque);
       }
       
-      bool fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
+      bool fetch_result = gestionar_consulta_paginada(codigo_bloque * LIMIT_RESULT); // Aqui realizo la carga del bloque
       // eliminamos codigo_bloque de pila_paginacion
       lista_bloques[codigo_bloque] = fetch_result;
       //pila_paginacion.remove(codigo_bloque);
