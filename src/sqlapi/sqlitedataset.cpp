@@ -825,7 +825,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       //semaforo_fetching = false;
       
       if (debug_paginacion) {
-        qWarning(" - Bloque %d (%d : %s) Procesado %s , rango: %d - %d", codigo_bloque, pos, result.records.count(pos) == 1 ? "OK" : "KO", fetch_result ? "OK" : "FALLO", codigo_bloque, codigo_bloque + LIMIT_RESULT - 1);
+        qWarning(" - Bloque %d (%d : %s) Procesado %s , rango: %d - %d", codigo_bloque, pos, result.records.count(pos) == 1 ? "OK" : "KO", fetch_result ? "OK" : "FALLO", codigo_bloque * LIMIT_RESULT, (codigo_bloque * LIMIT_RESULT) + LIMIT_RESULT - 1);
         //lista_bloques_pila_paginacion();
       }
 
