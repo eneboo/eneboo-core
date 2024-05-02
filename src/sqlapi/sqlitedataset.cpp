@@ -311,6 +311,9 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     semaforo_fetching = false;
+    debug_sql = false;
+    debug_paginacion = true;
+    debug_aqextension = false;
   }
 
 
@@ -321,6 +324,9 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     semaforo_fetching = false;
+    debug_sql = false;
+    debug_paginacion = true;
+    debug_aqextension = false;
   }
 
   SqliteDataset::~SqliteDataset()

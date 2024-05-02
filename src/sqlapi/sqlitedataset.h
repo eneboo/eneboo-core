@@ -158,9 +158,9 @@ or insert() operations default = false) */
   typedef map<int,bool> bloque_paginado;
   bloque_paginado lista_bloques;
   std::list <int> pila_paginacion;
-  bool debug_sql = false;
-  bool debug_paginacion = true;
-  bool debug_aqextension = true;
+  bool debug_sql;
+  bool debug_paginacion;
+  bool debug_aqextension; 
 
 
 
