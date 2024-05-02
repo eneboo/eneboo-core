@@ -150,11 +150,17 @@ or insert() operations default = false) */
   bool fetch_rows(int pos);
   bool seek(int pos=0);
   bool gestionar_consulta_paginada(const int offset);
+  int resuelve_bloque(const int posicion);
+  void lista_bloques_pila_paginacion();
   
   QString sql;
   int last_offset;
   bool fetching;
   int last_fetch_pos;
+  typedef map<int,bool> bloque_paginado;
+  bloque_paginado lista_bloques;
+  std::list <int> pila_paginacion;
+
 
 
 

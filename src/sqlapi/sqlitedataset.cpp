@@ -36,6 +36,7 @@
 
 #include "sqlitedataset.h"
 #include <unistd.h>
+#include <math.h>
 
 #define LIMIT_RESULT 2000
 
@@ -634,6 +635,8 @@ namespace dbiplus
     result.record_header.clear();
     result.records.clear();
     result.total_records = 0;
+    pila_paginacion.clear();
+    lista_bloques.clear();
 
     gestionar_consulta_paginada(0);
 
@@ -671,6 +674,8 @@ namespace dbiplus
     Dataset::close();
     result.record_header.clear();
     result.records.clear();
+    pila_paginacion.clear();
+    lista_bloques.clear();
     edit_object->clear();
     fields_object->clear();
     ds_state = dsInactive;
@@ -731,7 +736,65 @@ namespace dbiplus
       fill_fields();
   }
 
-  bool SqliteDataset::fetch_rows(int pos)
+int SqliteDataset::resuelve_bloque(const int posicion) {
+  
+    int parte_entera = result.total_records > 0 ? floor(posicion / LIMIT_RESULT): 0;
+}
+
+void SqliteDataset::lista_bloques_pila_paginacion()
+{
+      //Muestro lista de bloques en pantalla
+    qWarning("Pila de bloques:");
+    for (list<int>::iterator it = pila_paginacion.begin(); it != pila_paginacion.end(); ++it) {
+      qWarning("\t- %d", *it);
+    }
+}
+
+
+bool SqliteDataset::fetch_rows(int pos) {
+    
+    
+    int codigo_bloque = resuelve_bloque(pos);
+    
+    if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la pila, lo meto el primero
+      lista_bloques[codigo_bloque] = false;
+      pila_paginacion.push_front(codigo_bloque);
+      qWarning(" + Bloque %d añadido a pila_paginación", codigo_bloque);
+    } else { // si esta en la pila, no hago nada
+      return true;
+    }
+
+    lista_bloques_pila_paginacion();
+
+    bool fetch_result = false;
+    while (true) {
+      // compruebo si el bloque está en la lista
+      if (pila_paginacion.front() == codigo_bloque) { // Si esto el primero lanzo la consulta ...
+          fetch_result = gestionar_consulta_paginada(codigo_bloque); // Aqui realizo la carga del bloque
+          pila_paginacion.pop_front(); //Quito el bloque de la lista
+          lista_bloques[codigo_bloque] = true;
+          qWarning(" - Bloque %d Procesado", codigo_bloque);
+          }
+      
+      if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
+          fetch_result = true;
+          break;
+      }
+
+      if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
+          break;
+      }
+
+      // Espero a que sea mi turno ....
+      qApp->processEvents();
+    }
+
+      
+
+    return fetch_result;
+}
+
+/*   bool SqliteDataset::fetch_rows(int pos)
   {
     
     int offset = result.records.size();
@@ -763,7 +826,7 @@ namespace dbiplus
     }
     fetching = false;
     return fecth_result;
-  }
+  } */
 
 
 
@@ -913,22 +976,10 @@ namespace dbiplus
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      
-      int records_size = result.records.size();
-
-      // Descarto seeks bajos (previos)...
-      if (pos >= records_size && records_size < result.total_records ) { // Si la pos no esta cargada y quedan pendeintes de carga ...
-        qWarning("FETCH %d", pos);
-        if (!fetch_rows(pos)) {
-          qWarning("Error al recuperar registro. La posición %d debería de existir." , pos);
-          return false;
-        }
-      }
-      
-    if (pos < result.records.size()) {
+      if (fetch_rows(pos)) {
         Dataset::seek(pos);
-        fill_fields();
-        return true;
+          fill_fields();
+          return true;
       }
     }
     return false;
