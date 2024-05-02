@@ -654,7 +654,7 @@ namespace dbiplus
     lista_bloques.clear();
 
     gestionar_consulta_paginada(0);
-
+    lista_bloques[0] = true;
   
 
   active = true;
@@ -801,13 +801,13 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
         if (debug_paginacion) {
-          qWarning(":) Ya existe pos %s" , pos);
+          qWarning(":) Ya existe pos %d" , pos);
         }
       return true;
     }
 
     if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
-        qWarning(":( estoy perdido %s" , pos);
+        qWarning(":( estoy perdido %d" , pos);
         return false;
     }
 
@@ -987,7 +987,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      if (fetch_rows(pos)) {
+      if (result.records.count(pos) == 1 || fetch_rows(pos)) {
         Dataset::seek(pos);
           fill_fields();
           return true;
