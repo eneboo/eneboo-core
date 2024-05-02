@@ -584,7 +584,7 @@ namespace dbiplus
   }
 
 
-  void SqliteDataset::fill_fields()
+/*   void SqliteDataset::fill_fields()
   {
     //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
     if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < frecno)) return;
@@ -596,6 +596,30 @@ namespace dbiplus
 
     //Filling result
     if (result.records.size() != 0) {
+      for (int i = 0; i < result.records[frecno].size(); i++) {
+        (*fields_object)[i].val = result.records[frecno][i];
+        (*edit_object)[i].val = result.records[frecno][i];
+      }
+    } else
+      for (int i = 0; i < result.record_header.size(); i++) {
+        (*fields_object)[i].val = "";
+        (*edit_object)[i].val = "";
+      }
+
+  } */
+
+void SqliteDataset::fill_fields()
+  {
+    //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
+    if ((db == NULL) || (result.record_header.size() == 0) || (num_rows() < frecno)) return;
+    if (fields_object->size() == 0) // Filling columns name
+      for (int i = 0; i < result.record_header.size(); i++) {
+        (*fields_object)[i].props = result.record_header[i];
+        (*edit_object)[i].props = result.record_header[i];
+      }
+
+    //Filling result
+    if (num_rows() != 0) {
       for (int i = 0; i < result.records[frecno].size(); i++) {
         (*fields_object)[i].val = result.records[frecno][i];
         (*edit_object)[i].val = result.records[frecno][i];
