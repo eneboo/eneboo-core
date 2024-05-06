@@ -3188,8 +3188,8 @@ void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
 void FLSqlCursor::activateDelegateCommit()
 {
       bool result_ = false;
-      QString label_ = "FLSqlCursor::activateDelegateCommit (" + mtd->name() + "): ";
-      QString id_mod_ = db()->managerModules()->idModuleOfFile(mtd->name() + QString::fromLatin1(".mtd"));
+      QString label_ = "FLSqlCursor::activateDelegateCommit (" + metadata()->name() + "): ";
+      QString id_mod_ = db()->managerModules()->idModuleOfFile(metadata()->name() + QString::fromLatin1(".mtd"));
       QString fun_module_ = "sys";
 
       if (!id_mod_.isEmpty())
@@ -3198,7 +3198,7 @@ void FLSqlCursor::activateDelegateCommit()
       }
       QString fun_name_ = fun_module_ + ".useDelegateCommit";
 
-      FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
+      FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
       QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
       if (v.isValid())
       {
