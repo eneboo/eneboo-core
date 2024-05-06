@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLDataTable.h"
@@ -174,32 +174,7 @@ void FLDataTable::setFLSqlCursor(FLSqlCursor *c)
     if (cursor_)
     {
 
-      bool result_ = false;
-      FLTableMetaData *mtd = cursor_->metadata();
-      QString label_ = "FLDataTable::setFLSqlCursor (" + mtd->name() + "): ";
-
-      QString id_mod_ = cursor_->db()->managerModules()->idModuleOfFile(mtd->name() + QString::fromLatin1(".mtd"));
-      QString fun_module_ = "sys";
-
-      if (!id_mod_.isEmpty())
-      {
-        fun_module_ = id_mod_;
-      }
-      QString fun_name_ = fun_module_ + ".useDelegateCommit";
-
-      FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
-      QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
-      if (v.isValid())
-      {
-        result_ = v.toBool();
-        qWarning(label_ + fun_name_ + " retorna " + (result_ ? "true" : "false"));
-      }
-      // else
-      //{
-      //   qWarning(label_ + "No hay respuesta de " + fun_name_ + "(cursor). Asumiento false");
-      // }
-
-      cursor_->isDelegateCommit = result_;
+      cursor_->activateDelegateCommit();
 
       if (curChg)
       {
@@ -488,7 +463,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     if (!cursor_->QSqlCursor::seek(row))
     {
 #ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+      qWarning(tr("FLDataTable::paintCell() : Posiciï¿½n no vï¿½lida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
@@ -758,7 +733,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     }
     else
     {
-      text = field->value().toBool() ? tr("Sí") : tr("No");
+      text = field->value().toBool() ? tr("Sï¿½") : tr("No");
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);
     }

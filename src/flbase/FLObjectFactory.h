@@ -1847,6 +1847,12 @@ public slots:
     return obj_;
   }
 
+  void activateDelegateCommit() {
+    if (obj_) {
+      obj_->activateDelegateCommit();
+    }
+  }
+
   /**
   Uso interno. Obsoleto
   */

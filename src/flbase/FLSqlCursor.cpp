@@ -3184,3 +3184,31 @@ void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
     setFilter("");
   }
 }
+
+void FLSqlCursor::activateDelegateCommit()
+{
+      bool result_ = false;
+      QString label_ = "FLSqlCursor::activateDelegateCommit (" + mtd->name() + "): ";
+      QString id_mod_ = db()->managerModules()->idModuleOfFile(mtd->name() + QString::fromLatin1(".mtd"));
+      QString fun_module_ = "sys";
+
+      if (!id_mod_.isEmpty())
+      {
+        fun_module_ = id_mod_;
+      }
+      QString fun_name_ = fun_module_ + ".useDelegateCommit";
+
+      FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
+      QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
+      if (v.isValid())
+      {
+        result_ = v.toBool();
+        qWarning(label_ + fun_name_ + " retorna " + (result_ ? "true" : "false"));
+      }
+      // else
+      //{
+      //   qWarning(label_ + "No hay respuesta de " + fun_name_ + "(cursor). Asumiento false");
+      // }
+
+      isDelegateCommit = result_;
+}

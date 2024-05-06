@@ -888,6 +888,8 @@ protected:
 
   bool lastDelegateCommitResult;
   bool isDelegateCommit;
+
+  void activateDelegateCommit();
   /**
    Guarda una copia de persistentFilter_ para cuando termina el cursor restaurarlo.
   */
