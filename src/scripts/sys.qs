@@ -726,7 +726,7 @@ function loadModules(input, warnBackup)
     loadAbanQPackage(input, warnBackup);
 }
 
-function loadAbanQPackage(input, warnBackup)
+function loadAbanQPackage(input, warnBackup, alterMode)
 {
   if (warnBackup && interactiveGUI()) {
     var txt = "";
@@ -737,6 +737,16 @@ function loadAbanQPackage(input, warnBackup)
     txt += sys.translate("¿Desea continuar?");
     if (MessageBox.Yes != MessageBox.warning(txt, MessageBox.No, MessageBox.Yes))
       return;
+  }
+
+  var legacy = true;
+  if (alterMode == undefined) {
+    var conf = new AQSettings();
+    const alterConf = conf.readBoolEntry("ebcomportamiento/alter_table_inmediate");
+    alterMode = alterConf ? true : false;
+ 
+  } else {
+    legacy = alterMode == "false";
   }
 
   if (input) {
@@ -767,13 +777,15 @@ function loadAbanQPackage(input, warnBackup)
                    unpacker.jump(); //Espacio2
                    unpacker.jump(); //Espacio3
 
- 
+      
       if (ok)
         ok = loadModulesDef(unpacker);
-
+      
       if (ok)
-        ok = loadFilesDef(unpacker);
+        ok = loadFilesDef(unpacker, legacy);
     }
+
+
 
     if (!ok) {
       errorMsgBox(sys.translate(
@@ -791,7 +803,775 @@ function loadAbanQPackage(input, warnBackup)
   }
 }
 
-function loadFilesDef(un)
+function loadModified(extension)
+{
+  var changes = localChanges();
+  var result = [];
+
+  if (!interactiveGUI()) {
+    for (var key in changes) {
+      if (key == "size")
+        continue;
+      var chg = changes[key].split('@');
+      if (chg[1] == "mod" && chg[0].endsWith(extension))
+        result.push(chg[0]);
+    }
+  }
+  return result;
+}
+
+
+
+function backupTable(metadataName, destFileName)
+{
+  var ok = true;
+  var sql = "";
+  var manager = aqApp.db().manager();
+  const metadata = manager.metadata(metadataName); 
+
+  if (metadata.isQuery()) {
+    debug("Omitiendo vista " + metadataName);
+    ok = true;
+  }
+
+  if (ok) {
+    debug("Backing up " + metadataName + " on " + destFileName);
+    // Crear dump de datos en carpeta cache de eneboo.
+    const objFile = new File(destFileName);
+    dumper = new AbanQDbDumper(null, objFile.path, false, null, Dir.cleanDirPath(destFileName), metadataName);
+    dumper.initDump();
+
+
+    
+
+  }
+  
+
+
+  if (!ok) {
+    debug("Backup failed");
+  }
+  return ok;
+}
+
+function clearSqlFiles(fileName)
+{
+  fileName += ".sql";
+
+  if (File.exists(fileName)) {
+    debug("Borrando fichero sql de cache " + fileName);
+    File.remove(fileName);
+  
+  } else {
+    debug("No existe fichero sql de cache " + fileName);
+  }
+
+}
+
+
+function updateTable(dataStr)
+{
+  var newXml = new QDomDocument;
+  if (!newXml.setContent(dataStr)) {
+    errorMsgBox(sys.translate(
+                  "Error XML al intentar cargar la definición de los ficheros."
+                ));
+  return false; 
+  }
+
+  var root = newXml.firstChild();
+  var tableName = root.namedItem("name").toElement().text();
+  
+  var cachePath = sys.diskCacheAbsDirPath();
+  if (!cachePath.endsWith("/")) {
+    cachePath += "/";
+  }
+
+  const hoy = new Date();
+  const sqlFileName = Dir.convertSeparators(cachePath + tableName + "_" + hoy.toString("yyyyMMddhhmmss") + ".backup");
+
+
+  const changes = resolveDiffs(root);
+  var ok = changes != false;
+
+  
+
+  if (ok) {
+    const errors = changes['errors'];
+    if (errors.length > 0) {
+      for (var i = 0; i < errors.length; i++) {
+        debug("Error :: " + errors[i]);
+        ok = false;
+      }
+    }
+
+    if (ok) {
+      if (changes['dirty'].length > 0 || changes['new'].length > 0 || changes['deleted'].length > 0) {
+        debug("Cambios en " + tableName);
+        ok = backupTable(tableName, sqlFileName);
+        debug("Backup " + (ok ? "ok": "ko"));
+        if (ok) {
+          ok = applyChanges(tableName, changes);
+          debug("Cambios aplicados " + (ok ? "ok": "ko"));
+          if (ok) {
+              ok = updateMetadata(tableName, dataStr);
+              if (ok){
+                  clearSqlFiles(sqlFileName);
+                }
+          } 
+          
+        if (!ok) {
+            debug("Error aplicando cambios a tabla " + tableName + ".\nLa copia de respaldo está en " + sqlFileName + ".sql");
+          }
+        }
+      }  
+    }
+  }
+  
+
+
+if (!ok) {
+  
+  aqApp.generalExit(false);
+  throw("Se ha producido un error al actualizar la tabla " + tableName);
+
+}
+
+return ok;
+}
+
+function updateMetadata(name, content)
+{
+  const nombreSinExt = name.split(".")[0];
+  const ok = AQUtil.sqlUpdate("flmetadata", "xml" , AQUtil.sha1(content), "tabla = '" + nombreSinExt + "'");
+  debug("Update flmetadata " + name + " " + (ok ? "ok" : "ko"));
+  return ok;
+}
+
+function applyChanges(tableName, changes)
+{
+  var ok = true;
+
+  const dirty_columns = changes['dirty'];
+  const new_columns = changes['new'];
+  const deleted_columns = changes['deleted'];
+
+  sys.addDatabase("AuxAlter");
+  
+
+  debug("Aplicando cambios via Aux");
+  // Delete campos
+  for (var i = 0; i < deleted_columns.length; i++) {
+    const name = deleted_columns[i];
+    debug("Borrando campo " + tableName + "." + name);
+    const sql_del_list = resolveSql(tableName, {name : deleted_columns[i]}, "DELETE");
+    if (sql_del_list) {
+      for (var i = 0; i< sql_del_list.length ; i++) {
+        const sql_del = sql_del_list[i];                  
+        const result_del = AQUtil.execSql(sql_del, "AuxAlter");
+        if (!result_del) {
+          debug("Error borrando campo " + tableName + "." + name);
+          ok = false;
+          break;
+        }
+      }
+    } else {
+      debug("Error generando consulta borrar campo " + tableName + "." + name);
+      ok = false;
+      break;
+    }
+  }
+
+  
+
+  if (ok) {
+    // Add campos
+    for (var i = 0; i < new_columns.length; i++) {
+      const name = new_columns[i]['name'];
+      debug("Añadiendo campo " + tableName + "." + name);
+      const sql_add_list = resolveSql(tableName, new_columns[i], "CREATE");
+      if (sql_add_list) {
+        for (var i = 0; i< sql_add_list.length ; i++) {
+          const sql_add = sql_add_list[i];                  
+          const result_add = AQUtil.execSql(sql_add, "AuxAlter");
+          if (!result_add) {
+            debug("Error añadiendo campo " + tableName + "." + name);
+            ok = false;
+            break;
+          }
+        }
+      } else {
+        debug("Error generando consulta añadir campo " + tableName + "." + name);
+        ok = false;
+        break;
+      
+      }
+    }
+  }
+
+  if (ok) {
+
+    // Modificar campos
+    for (var i = 0; i < dirty_columns.length; i++) {
+      const name = dirty_columns[i].name;
+      debug("Modificando campo " + tableName + "." + name);
+      const sql_mod_list = resolveSql(tableName, dirty_columns[i], "ALTER");
+
+      //debug("SQL modificando campo " + name + " es " + sql_mod);
+
+      if (sql_mod_list) {
+        for (var i = 0; i< sql_mod_list.length ; i++) {
+          const sql_mod = sql_mod_list[i];        
+          const result_mod = AQUtil.execSql(sql_mod, "AuxAlter");
+          if (!result_mod) {
+            debug("Error modificando campo " + tableName + "." + name);
+            ok = false;
+            break;
+          }
+
+        }
+
+
+
+      } else {
+        debug("Error generando consulta actualizar campo " + tableName + "." + name);
+        ok = false;
+        break;
+      
+      }
+    }
+  }
+
+
+  return ok;
+}
+
+function resolveSql(tableName, dirty_column, mode)
+{
+
+  var driver = aqApp.db().driverName();
+  var typeBd = 0;
+  var alter_column = "";
+  var add_column = "";
+  var drop_column = "";
+  var post_sql = "";
+  var sqlType = {};
+  //debug("DATA:" + dirty_column);
+  // for (key in dirty_column) {
+  //  debug("** key " + key + " value " + dirty_column[key]);
+  
+  // } 
+
+  const column_name = dirty_column["name"];
+ 
+
+  if (driver.startsWith("FLQPSQL")) {
+    typeBd = 1;
+    alter_column = "ALTER COLUMN";
+    add_column = "ADD COLUMN";
+    drop_column = "DROP COLUMN";
+    sqlType = {
+      'stringlist' : 'TEXT',
+      'string' : 'VARCHAR',
+      'int' : 'INT2',
+      'serial' : 'INT4',
+      'uint' : 'INT4',
+      'double' : 'FLOAT8',
+      'bool' : 'BOOLEAN',
+      'unlock': 'BOOLEAN',
+      'date': 'DATE',
+      'time': 'TIME',
+      'timestamp': 'TIMESTAMP',
+      'pixmap': 'TEXT',
+      'bytearray': 'BYTEA'
+    };
+
+  } else if (driver.startsWith("FLQMYSQL")) {
+    typeBd = 2;
+    alter_column = "MODIFY";
+    add_column = "ADD";
+    drop_column = "DROP COLUMN";
+    sqlType = {
+      'stringlist' : 'MEDIUMTEXT',
+      'string' : 'VARCHAR',
+      'int' : 'INT',
+      'serial' : 'INT UNSIGNED',
+      'uint' : 'INT UNSIGNED',
+      'double' : 'DECIMAL',
+      'bool' : 'BOOL',
+      'unlock': 'BOOL',
+      'date': 'DATE',
+      'time': 'TIME',
+      'timestamp': 'TIMESTAMP',
+      'pixmap': 'MEDIUMTEXT',
+      'bytearray': 'LONGBLOB'
+    };
+
+  } else {
+      alter_column = "";
+      add_column = "ADD";
+      drop_column = "DROP";
+
+      sqlType = {
+        'stringlist' : 'TEXT',
+        'string' : 'VARCHAR',
+        'int' : 'INTEGER',
+        'serial' : 'INTEGER',
+        'uint' : 'INTEGER',
+        'double' : 'FLOAT',
+        'bool' : 'BOOLEAN',
+        'unlock': 'BOOLEAN',
+        'date': 'VARCHAR(20)',
+        'time': 'VARCHAR(20)',
+        'pixmap': 'TEXT',
+        'bytearray': 'CLOB'
+      };
+
+  }
+
+  if (typeBd == 0 && mode == "ALTER") { // SQLITE
+    debug("Modo " + mode + " no soportado para esta BD");
+    return false;
+  }
+  
+  var beforeSQL = [];
+  var afterSQL = [];
+  const alterSQL = "ALTER TABLE " + (typeBd == 1 ? "public.": "") +  tableName;
+
+  if (mode == "CREATE" || mode == "DELETE") { // DELETE
+    beforeSQL.push([alterSQL, drop_column,"IF","EXISTS", column_name].join(" "));
+    if (mode == "DELETE") {
+      const constraintName = [tableName, column_name, "key"].join("_");
+      beforeSQL.push([alterSQL,drop_column,"IF","EXISTS", constraintName].join(" "));
+      return beforeSQL;
+    }
+  }
+
+  if (!(dirty_column.type in sqlType)) {
+    debug("No se conoce transformación para el tipo " + dirty_column.type);
+    return false;
+  }
+
+  var allow = false;
+  const defaultVal = 'default_val' in dirty_column ? dirty_column.default_val:  "";
+  const defaultSQL = [alterSQL, mode == "CREATE" ? add_column : alter_column, column_name].join(" ");
+
+
+
+  var type_ = sqlType[dirty_column.type];
+
+  if (mode == "ALTER") { // ALTER
+    if (typeBd == 1) {
+      type_ = "TYPE " + type_;
+      if ('length' in dirty_column && dirty_column.length > 0) {
+        type_ += "(" + dirty_column.length + ") " + "USING substr(" + column_name + ", 1, " + dirty_column.length  +")";
+      }
+
+    } else if (typeBd == 2) {
+      if(type_ == "VARCHAR") {
+        const length_ = dirty_column.length ? dirty_column.length : "255";
+        beforeSQL.push(["UPDATE", tableName, "set", column_name,"=","left(" + column_name + "," + length_ + ")"].join(" "));
+        type_ += "(" + length_ + ")";
+      } else if (type_ == 'DECIMAL') {
+        type_ += ((dirty_column.partI + dirty_column.partD) + ", " + dirty_column.partD);
+      }
+    }
+  } else { // CREATE
+    if (typeBd == 1) {
+      if ('length' in dirty_column && dirty_column.length > 0) {
+        type_ += "(" + dirty_column.length + ") ";      
+      }
+    } else if (typeBd == 2) {
+      if(type_ == "VARCHAR") {
+        const length_ = dirty_column.length ? dirty_column.length : "255";
+        type_ += "(" + length_ + ")";
+      } else if (type_ == 'DECIMAL') {
+        type_ += ((dirty_column.partI + dirty_column.partD) + ", " + dirty_column.partD);
+      }
+    }
+  }
+
+  var sql = [defaultSQL , type_].join(" "); 
+  var separator = "";
+  const tiposField = ['stringlist', 'string', 'date', 'time', 'pixmap'];
+  for (var i = 0; i < tiposField.length; i++) {
+    if (tiposField[i] == dirty_column.type) {
+      separator = "'";
+      break;
+    }
+  }
+
+  const valueSep = separator + defaultVal + separator;
+  const allow = 'allowNull' in dirty_column && dirty_column.allowNull == "true";
+
+
+  if (mode == "ALTER") { // ALTER
+    if ("pk" in dirty_column) {
+      beforeSQL.push([defaultSQL, (dirty_column.pk == "true" ? "ADD" : "DROP"), "PRIMARY KEY"].join(" "));
+    }
+
+    if ('unique' in dirty_column) {
+      const unique = dirty_column.unique == "true";
+      
+      if (typeBd == 1) {
+          const constraintName = [tableName, column_name, "key"].join("_");
+          beforeSQL.push([alterSQL,"DROP","CONSTRAINT","IF","EXISTS", constraintName].join(" "));
+          if (unique)
+          beforeSQL.push([alterSQL,"ADD", "CONSTRAINT", constraintName, "UNIQUE", "(", column_name, ")"].join(" "));
+        } else {
+          beforeSQL.push([alterSQL, "ADD", "UNIQUE", "(", column_name, ")"].join(" "));
+        }
+        
+    }
+
+    if ('allowNull' in dirty_column) {
+      if (!allow) {
+        beforeSQL.push(["UPDATE", (typeBd == 1 ? "public.": "") +  tableName, "SET", column_name + " = " + valueSep, "WHERE", column_name, "IS", "NULL"].join(" "));
+      }
+      beforeSQL.push([defaultSQL, typeBd == 1 ? (allow ? "DROP" : "SET") : "", typeBd == 1 ? "NOT NULL" : allow ? "NULL": "NOT NULL"].join(" "));
+    }
+
+  } else { // CREATE
+      if ("pk" in dirty_column) {
+        sql += (dirty_column.pk == "true" ? "PRIMARY KEY" : "");
+      }
+      if ('unique' in dirty_column) {
+        const unique = dirty_column.unique == "true";
+        if (typeBd == 1) {
+          if (unique) {
+            const constraintName = [tableName, column_name, "key"].join("_");
+            sql += ["","CONSTRAINT", constraintName, "UNIQUE (" + column_name + ")"].join(" ");
+          } 
+        } else {
+          if (unique) {
+            sql += ["", "UNIQUE (" + column_name + ")"].join(" ");
+          }
+        }                
+      }
+
+      if ('allowNull' in dirty_column) {
+        sql += (allow ? " NULL" : " NOT NULL");
+    }
+
+    if (!allow) {
+      if (typeBd == 1) {
+        sql += ["DEFAULT", valueSep].join(" "); //CREA CON DEFAULT , porque sin el dará FALLO
+        afterSQL.push([alterSQL, alter_column, column_name, "DROP", "DEFAULT"].join(" ")); // QUITAMOS EL DEFAULT DE ANTES.
+      }
+    }
+
+  }
+
+
+  if (!allow && defaultVal == "") {
+    debug("No se puede usar el campo " + tableName + "." + column_name + " sin default y no nulo");
+    return false;
+  }
+  
+
+  var result = [];
+
+  for (var i = 0; i < beforeSQL.length; i++) { // BEFORESQL
+    result.push(beforeSQL[i]);
+  }
+
+  result.push(sql);
+
+  for (var i = 0; i < afterSQL.length; i++) { // AFTERSQL
+    result.push(afterSQL[i]);
+  }
+
+  return result;
+}
+
+function resolveMetaFromElem(elem)
+{
+ var meta =  {
+    "name": elem.namedItem("name").toElement().text(),
+    "length": elem.namedItem("length") ? elem.namedItem("length").toElement().text() : 0,
+    "allowNull":  elem.namedItem("null").toElement().text(),
+    "type": elem.namedItem("type").toElement().text(),
+    "pk": elem.namedItem("pk") ? elem.namedItem("pk").toElement().text(): false,
+    "unique": elem.namedItem("unique") && elem.namedItem("unique").toElement().text() ? elem.namedItem("unique").toElement().text() : false,
+    "partI": elem.namedItem("partI") && elem.namedItem("partI").toElement().text() ? elem.namedItem("partI").toElement().text(): 0,
+    "partD": elem.namedItem("partD") && elem.namedItem("partD").toElement().text() ? elem.namedItem("partD").toElement().text(): 0,
+    "default_val": elem.namedItem("default") && elem.namedItem("default").toElement().text() ? elem.namedItem("default").toElement().text(): undefined,
+  };
+
+  if (meta['length'] == "") {
+    meta['length'] = 0;
+  }
+
+  if (meta['allowNull'] == "") {
+    meta['allowNull'] = true;
+  }
+
+  if (meta['default_val'] == undefined) {
+    meta['default_val'] = "";
+  
+  }
+
+  if (meta['default_val'] != undefined && meta['default_val'].find('QT_TRANSLATE_NOOP') > -1) {
+    meta['default_val'] = meta['default_val'].right(meta['default_val'].length - 30);
+    meta['default_val'] = meta['default_val'].left(meta['default_val'].length - 2);
+  }
+
+  return meta;
+}
+
+
+
+function resolveDiffs(newXml)
+{
+
+  var dirty = [];
+  var news = [];
+  var deleted = [];
+  var errors = [];
+
+
+
+  var manager = aqApp.db().manager();
+  
+
+  var tableName = newXml.namedItem("name").toElement().text();
+  var isQuery = newXml.namedItem("query").toElement().text() != "";
+
+  //debug("Query " + tableName + ":" + (isQuery ? "SI" : "NO"));
+
+  if (!isQuery) {
+
+    //debug("dataNew :" + tableName); 
+
+    const oldMetadata = manager.metadata(tableName);
+
+    //debug ("dataOld :"  + oldMetadata.name);
+    deleted = oldMetadata.fieldList(false).split(",");
+
+    var ckLists = [];
+    var changeCk = false;
+    const childs = newXml.childNodes();
+    const fieldNames = oldMetadata.fieldList(false).split(",");
+  
+
+    //debug("HIJOS :" + childs.length());
+    // repasar hijos
+    for (var i = 0; i < childs.length() ; i++) {
+      const elem = childs.item(i).toElement();
+      const tagName = elem.tagName();
+      if (tagName != "field") {
+        continue; 
+      } 
+
+      const name = elem.namedItem("name").toElement().text();
+      const isPk = elem.namedItem("pk").toElement().text() == "true";
+      const isCk = elem.namedItem("ck").toElement().text() == "true";
+      const newMeta = resolveMetaFromElem(elem);
+
+      //debug("** Comprobando " + name);
+      for (var j = 0; j < deleted.length; j++) {
+        if (deleted[j] == name) {
+          deleted.splice(j, 1);
+          break;
+        }
+      }
+
+      //debug("* CK0 * " + name + " cambia a " + (isCk ? "SI" : "NO") );
+      var metaField = null;
+
+      for (var i = 0; i < fieldNames.length; i++) {
+        if (fieldNames[i] == name) {
+          metaField = oldMetadata.field(name);
+          break;
+        }
+      }
+
+
+      if (metaField != null) {
+        if (isCk) {
+          ckLists.push(name); // Solo comprueba entre campos existentes
+        } 
+
+        if (isCk != metaField.isCompoundKey()) {
+          changeCk = true;
+        }
+        
+      } else if (isCk) {
+        changeCk = true;
+      } 
+
+
+
+
+
+
+      if (metaField == null) {
+      //  debug("Nuevo campo " + name);
+        news.push(newMeta);
+      } else {
+
+      if (metaField.isPrimaryKey() != isPk) {
+        errors.push("El campo " + tableName + "." + name + " está marcado como PK y en la configuracion actual es "+ tableName + "." + oldMetadata.primaryKey());
+        continue;
+      }
+
+        //debug("Buscando diferencias en campo " + name);
+        const resultDiff = resolveDiff(newMeta, metaField);
+        if (resultDiff == false) {
+          debug("No se pudo resolver la diferencia en campo " + name);
+          return false;
+        
+        } else {
+          var hasChanges = resultDiff[0];
+          var data = resultDiff[1];
+        
+          if (hasChanges) {    
+            data["name"] = name;
+  /*           if (!("type" in data)) {
+              data["type"] = elem.namedItem("type").toElement().text();
+            
+            } */
+            dirty.push(data); 
+            } else {
+              //debug("No hay diferencias en campo " + name);
+            }
+        }
+      }
+
+
+
+
+    }
+
+    if (changeCk && ckLists.length > 0) { // Si cambia la CK compruebo que no existan problemas con los nuevos campos
+      var select = ckLists.join(",")
+      var qry = new FLSqlQuery();
+      qry.setSelect(select);
+      qry.setFrom(tableName);
+      qry.setWhere("1 = 1 GROUP BY " + select + " HAVING(COUNT(*)) > 1"); 
+      if (!qry.exec() || qry.size() > 0) {
+        var msg = "Existen campos CK (" + select + ") duplicados en la tabla " + tableName + ":\n";
+        msg += "Campos CK: " + select + "\n";
+        msg += "Duplicados: \n";
+        while(qry.next()) {
+          var tmpLine = [];
+          for (var i = 0 ; i < ckLists.length ; i++) {
+            tmpLine.push(qry.value(i));
+          }
+
+          msg += tmpLine.join(",") + "\n";
+        }
+        errors.push(msg);
+      } else {
+        debug("No se detectan problemas con los nuevos CK " + select);
+      } 
+
+    }
+
+  }
+
+  var result_list = {'dirty':[],'new':[],'deleted':[], 'errors':[]};
+  if (!isQuery) {
+    result_list['dirty'] = dirty;
+    result_list['new'] = news;
+    result_list['deleted'] = deleted;
+    result_list['errors'] = errors;
+  }
+
+  return result_list;
+}
+
+function resolveDiff(newMeta, metaField) {
+
+
+
+  const array_types = {
+    3 : "string",
+    4: "stringlist",
+    6: "pixmap",
+    16: "int",
+    17: "uint",
+    18: "bool",
+    19: "double",
+    26: "date",
+    27: "time",
+    28: "timestamp",
+    29: "bytearray",
+    100: "serial",
+    200: "unlock"
+    
+
+  };
+
+
+
+
+
+  if (!(metaField.type() in array_types)) {
+    debug("No se encuentra tipo de campo " + newMeta["name"] + ", tipo:" + metaField.type());
+    return false;
+  }
+
+  var old_meta = {
+    "length": metaField.length(),
+    "allowNull":  metaField.allowNull(),
+    "type" : array_types[metaField.type()],
+    "pk": metaField.isPrimaryKey(),
+    "unique": metaField.isUnique(),
+    "partI": metaField.partInteger(),
+    "partD": metaField.partDecimal(),
+    "default_val": metaField.defaultValue(),
+  };
+
+  if (old_meta['default_val'] == 'undefined') {
+    old_meta['default_val'] = "";
+  }
+
+
+  const propertyList = ['length','allowNull', 'type', 'pk', 'unique', 'partI','partD', "default_val"];
+  
+  var result = {};
+  var found = false;
+  for(var i = 0; i < propertyList.length; i++) {
+    const propertyName = propertyList[i];
+    const fieldType = newMeta['type'];
+    if (fieldType != "double" && (propertyName == "partD" || propertyName == "partI")) {
+      continue;
+    }
+
+    if (propertyName == "length" && !(fieldType == "string" || fieldType == "counter")) {
+      continue;
+    }
+
+    if (mismatchedProperty(propertyName, old_meta, newMeta)) {
+      debug("Hay diferencia en propiedad " + propertyName + ", old: " + old_meta[propertyName] + ", new: " + newMeta[propertyName] );
+      result[propertyName] = newMeta[propertyName];
+      found = true;
+    }
+  }
+  if (found) {
+    if (!("type" in result)) {
+      result["type"] = newMeta["type"];
+    }
+    result["length"] = ("length" in result) ? result["length"] : newMeta["length"];
+    result["default_val"] = newMeta['default_val'];
+    result["allowNull"] = ("allowNull" in result) ? result["allowNull"] : newMeta["allowNull"];
+  }
+
+
+  return [found, result];
+}
+
+function mismatchedProperty(name, meta1, meta2) {
+  //debug("Comparando " + name + ": " + meta1[name] + " VS " + meta2[name]);
+  const valor1 = meta1[name] || meta1[name] == false ? meta1[name].toString(): undefined;
+  const valor2 = meta2[name] || meta2[name] == false ? meta2[name].toString(): undefined;
+
+
+  return valor1 != valor2;
+}
+
+function loadFilesDef(un, legacy)
 {
   var filesDef = sys.toUnicode(un.getText(), "utf8");
   var doc = new QDomDocument;
@@ -803,46 +1583,100 @@ function loadFilesDef(un)
     return false;
   }
 
+
   var ok = true;
   var root = doc.firstChild();
   var files = root.childNodes();
 
-  AQUtil.createProgressDialog(sys.translate("Registrando ficheros"), files.length());
+  if (ok) {
+    const sizeFiles = files.length();
+    AQUtil.createProgressDialog(sys.translate("Registrando ficheros"), sizeFiles);
+    var dataFiles = {};
+    
+    for (var i = 0; i < sizeFiles; ++i) {
+      var it = files.item(i);
 
-  for (var i = 0; i < files.length(); ++i) {
-    var it = files.item(i);
+      var fil = {
+        id:         it.namedItem("name").toElement().text(),
+        skip:       it.namedItem("skip").toElement().text(),
+        module:     it.namedItem("module").toElement().text(),
+        text:       it.namedItem("text").toElement().text(),
+        shatext:    it.namedItem("shatext").toElement().text(),
+        binary:     it.namedItem("binary").toElement().text(),
+        shabinary:  it.namedItem("shabinary").toElement().text(),
+        data:  null,
+      }
 
-    var fil = {
-      id:         it.namedItem("name").toElement().text(),
-      skip:       it.namedItem("skip").toElement().text(),
-      module:     it.namedItem("module").toElement().text(),
-      text:       it.namedItem("text").toElement().text(),
-      shatext:    it.namedItem("shatext").toElement().text(),
-      binary:     it.namedItem("binary").toElement().text(),
-      shabinary:  it.namedItem("shabinary").toElement().text()
-    }
-
-    AQUtil.setProgress(i);
-    AQUtil.setLabelText(sys.translate("Registrando fichero") + " " + fil.id);
-
-    if (fil.id.length == 0 || fil.skip == "true")
+      fil.data =  fil.shatext.length > 0 ? un.getText(): un.getBinary();
+      if (fil.id.length == 0 || fil.skip == "true")
       continue;
 
-    if (!registerFile(fil, un)) {
-      errorMsgBox(sys.translate(
-                    "Error registrando el fichero"
-                  ) + " " + fil.id);
-      ok = false;
-      break;
-    }
-  }
+      debug("Fichero " + ( i + 1 )  + "/" + sizeFiles +", name: " + fil.id + ", length: " + fil.data.length);
 
-  AQUtil.destroyProgressDialog();
+      dataFiles[fil.id] = fil;
+    }
+
+    const modifiedTables = loadModified("mtd");
+
+    if (ok) {
+      if (!legacy) {
+        debug("Usando modo inmediato");
+        var manager = aqApp.db().manager();
+        for (key in dataFiles) {
+          for (idx in modifiedTables) {
+            if (modifiedTables[idx] == key) {
+              if (!updateTable(dataFiles[key].data)) {
+                debug("Error actualizando tabla " + key);
+                ok = false;
+                break;
+              
+              }
+            }
+
+          }
+
+          if (!ok) {
+            break;
+          }
+
+        }
+      } else {
+        debug("Usando modo tradicional");
+      }
+    }
+
+    
+    // Registrar ficheros ...
+    if (ok) {
+      var x = 0;
+    
+      for (key in dataFiles) {
+        debug("Registrando fichero " + key);
+        const fil = dataFiles[key];
+        AQUtil.setLabelText(sys.translate("Registrando fichero") + " " + fil.id);
+        AQUtil.setProgress(x);
+        
+        x +=1
+  
+     if (!registerFile(fil)) {
+          errorMsgBox(sys.translate(
+                        "Error registrando el fichero"
+                      ) + " " + fil.id);
+          ok = false;
+          break;
+        }
+  
+      } 
+
+    }
+
+    AQUtil.destroyProgressDialog();
+  }
 
   return ok;
 }
 
-function registerFile(fil, un)
+function registerFile(fil)
 {
 var Dump;
   if (fil.id.endsWith(".xpm")) {
@@ -854,7 +1688,7 @@ var Dump;
 
     cur.setModeAccess(AQSql.Edit);
     cur.refreshBuffer();
-    cur.setValueBuffer("icono", un.getText());
+    cur.setValueBuffer("icono", fil.data);
     return cur.commitBuffer();
   }
 
@@ -870,11 +1704,13 @@ var Dump;
   
   
   if (fil.shatext.length > 0) {
-    var contenido_text = un.getText();
+    var contenido_text = fil.data;
+    const identifier = fil.id;  
+
     cur.setValueBuffer("sha", fil.shatext);
-    cur.setValueBuffer("contenido", fil.id.endsWith(".qs") ? sys.toUnicode(contenido_text, "ISO8859-15"): contenido_text);
+    cur.setValueBuffer("contenido", identifier.endsWith(".qs") ? sys.toUnicode(contenido_text, "ISO8859-15"): contenido_text);
   } else {
-    var contenido_binary = un.getBinary();
+    var contenido_binary = fil.data;
     cur.setValueBuffer("sha", fil.shabinary);
     cur.setValueBuffer("binario", contenido_binary);
   }
@@ -1767,14 +2603,17 @@ class AbanQDbDumper
   var state_;
   var funLog_;
   var proc_;
+  var tableName_;
 
-  function AbanQDbDumper(db, dirBase, showGui, funLog)
+  function AbanQDbDumper(db, dirBase, showGui, funLog, fileName, tableName)
   {
     this.db_ = (db == undefined ? aqApp.db() : db);
     this.showGui_ = (showGui == undefined) ? true : showGui;
     this.dirBase_ = (dirBase == undefined) ? Dir.home : dirBase;
     this.funLog_ = (funLog == undefined) ? this.addLog : funLog;
-    this.fileName_ = this.genFileName();
+    this.fileName_ = (fileName == undefined) ? this.genFileName(): fileName;
+    this.tableName_ = (tableName == undefined) ? null : tableName;
+
   }
 
   function init()
@@ -1868,8 +2707,9 @@ class AbanQDbDumper
     if (this.state_.ok) {
       if (gui) {
         infoMsgBox(this.state_.msg);
+        this.w_.close();
       }
-      this.w_.close();
+      
     } else if (gui)
       sys.errorMsgBox(this.state_.msg);
   }
@@ -1929,9 +2769,11 @@ class AbanQDbDumper
   {
     this.proc_ = new QProcess;
     this.proc_.setArguments(command);
-
-    connect(this.proc_, "readyReadStdout()", this, "readFromStdout()");
-    connect(this.proc_, "readyReadStderr()", this, "readFromStderr()");
+    if (this.tableName_ == null) {
+      connect(this.proc_, "readyReadStdout()", this, "readFromStdout()");
+      connect(this.proc_, "readyReadStderr()", this, "readFromStderr()");
+    }
+    
 
     var ok = this.proc_.start();
     while (ok && this.proc_.isRunning())
@@ -2005,7 +2847,7 @@ class AbanQDbDumper
     } else {
       this.setState(
         true,
-        sys.translate("Copia de seguridad realizada con éxito en:\n%1").arg(this.fileName_)
+        sys.translate("Copia de seguridad realizada con Éxito en:\n%1").arg(this.fileName_ + (typeBd > 0 ? ".sql" : ""))
       );
       this.funLog_(this.state_.msg);
     }
@@ -2015,29 +2857,23 @@ class AbanQDbDumper
 
   function dumpPostgreSQL()
   {
-    var pgDump = "pg_dump";
-    var command;
+    var pgDump = "pg_dump" + (sys.osName() == "WIN32" ? ".exe" : "");
     var fileName = this.fileName_ + ".sql";
     var db = this.db_;
 
-    if (sys.osName() == "WIN32") {
-      pgDump += ".exe";
-      System.setenv("PGPASSWORD", db.password());
-      command = [pgDump,
+    System.setenv("PGPASSWORD", db.password());
+    var command = [pgDump, "-v",
                  "-f", fileName,
                  "-h", db.host(),
                  "-p", db.port(),
-                 "-U", db.user(),
-                 db.database()];
-    } else {
-      System.setenv("PGPASSWORD", db.password());
-      command = [pgDump, "-v",
-                 "-f", fileName,
-                 "-h", db.host(),
-                 "-p", db.port(),
-                 "-U", db.user(),
-                 db.database()];
+                 "-U", db.user()];
+
+    if (this.tableName_ != null) {
+      command.push("-t");
+      command.push(this.tableName_);      
     }
+
+    command.push(db.database());
 
     if (!this.launchProc(command)) {
       this.setState(
@@ -2054,28 +2890,21 @@ class AbanQDbDumper
 
   function dumpMySQL()
   {
-    var myDump = "mysqldump";
-    var command;
+    var myDump = "mysqldump"  + (sys.osName() == "WIN32" ? ".exe" : "");
     var fileName = this.fileName_ + ".sql";
     var db = this.db_;
 
-    if (sys.osName() == "WIN32") {
-      myDump += ".exe";
-      command = [myDump, "-v",
+    var command = [myDump, "-v",
                  "--result-file=" + fileName,
                  "--host=" + db.host(),
                  "--port=" + db.port(),
                  "--password=" + db.password(),
                  "--user=" + db.user(),
-                 db.database()];
-    } else {
-      command = [myDump, "-v",
-                 "--result-file=" + fileName,
-                 "--host=" + db.host(),
-                 "--port=" + db.port(),
-                 "--password=" + db.password(),
-                 "--user=" + db.user(),
-                 db.database()];
+                 db.database()
+                ];
+    
+    if (this.tableName_ != null) {
+      command.push(this.tableName_);      
     }
 
     if (!this.launchProc(command)) {
@@ -2426,6 +3255,7 @@ function launchCommand(command)
     return false;
 
   try {
+    debug("Lanzando proceso " + command.join(" ") + "...");
     Process.execute(command);
     return true;
   } catch (e) {
