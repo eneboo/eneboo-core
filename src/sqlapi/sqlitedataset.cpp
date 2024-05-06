@@ -39,7 +39,7 @@
 #include <math.h>
 #include <time.h>
 
-#define LIMIT_RESULT 2000
+#define LIMIT_RESULT 100
 
 namespace dbiplus
 {
@@ -932,17 +932,20 @@ bool SqliteDataset::fetch_rows(int pos) {
     qWarning("Procesando respuesta");
   }
   
-  QStringList lista_arrobas = QStringList::split(separador_total, salida);
-  for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
-    result.total_records = QString(*it).toInt();
-    // TODO: forwardonly.
-    if (debug_sql) {
-      qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+  if (result.total_records == 0) {
+    QStringList lista_arrobas = QStringList::split(separador_total, salida);
+    for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
+      result.total_records = QString(*it).toInt();
+      // TODO: forwardonly.
+      if (debug_sql) {
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+      }
+      break;
     }
-    break;
   }
 
-  QStringList lista_registros(QStringList::split(separador_lineas, salida));
+  QString salida_datos = salida.right(salida.length() - (salida.find(separador_total) + 1));
+  QStringList lista_registros(QStringList::split(separador_lineas, salida_datos));
   
   bool first = true;
   int posicion_idx = offset;
