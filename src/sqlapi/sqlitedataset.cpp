@@ -1016,11 +1016,12 @@ bool SqliteDataset::fetch_rows(int pos) {
       //last_pos_fetched = pos;
       if (result.records.count(pos) == 1 || fetch_rows(pos)) {
         //if (last_pos_fetched == pos) {
+        if (pos == last_pos_fetched) { // No repintamos!!
             Dataset::seek(pos);
-            if (pos == last_pos_fetched) { // No repintamos!!
-              fill_fields();
-            }
+            fill_fields();
             return true;
+            }
+           
         //}
 
       }
