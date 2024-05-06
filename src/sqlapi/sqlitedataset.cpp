@@ -1019,9 +1019,8 @@ bool SqliteDataset::fetch_rows(int pos) {
         if (pos == last_pos_fetched) { // No repintamos!!
             Dataset::seek(pos);
             fill_fields();
-            return true;
             }
-           
+        return true;
         //}
 
       }
