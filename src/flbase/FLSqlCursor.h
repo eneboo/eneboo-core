@@ -871,6 +871,8 @@ public:
   */
   QString filterAssoc(const QString &fieldName, FLTableMetaData *tableMD = 0);
 
+  void activateDelegateCommit();
+
 protected:
   /**
   Redefinida
@@ -889,7 +891,6 @@ protected:
   bool lastDelegateCommitResult;
   bool isDelegateCommit;
 
-  void activateDelegateCommit();
   /**
    Guarda una copia de persistentFilter_ para cuando termina el cursor restaurarlo.
   */
