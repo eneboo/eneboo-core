@@ -39,7 +39,7 @@
 #include <math.h>
 #include <time.h>
 
-#define LIMIT_RESULT 100
+#define LIMIT_RESULT 1000
 
 namespace dbiplus
 {
@@ -1018,11 +1018,12 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (ds_state == dsSelect) {
       //last_pos_fetched = pos;
       if (result.records.count(pos) == 1 || fetch_rows(pos)) {
-        //if (last_pos_fetched == pos) {
-        if (pos == last_pos_fetched) { // No repintamos!!
-            Dataset::seek(pos);
+
+          Dataset::seek(last_pos_fetched);
+          if (last_pos_fetched == pos) {
             fill_fields();
-            }
+          }
+          
         return true;
         //}
 
