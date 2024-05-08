@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+   versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLDataTable.h"
@@ -488,7 +488,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     if (!cursor_->QSqlCursor::seek(row))
     {
 #ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+      qWarning(tr("FLDataTable::paintCell() : Posici?n no v?lida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
@@ -758,7 +758,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     }
     else
     {
-      text = field->value().toBool() ? tr("Sí") : tr("No");
+      text = field->value().toBool() ? tr("S?") : tr("No");
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);
     }
@@ -1075,18 +1075,26 @@ void FLDataTable::setOnlyTable(bool on)
 
 void FLDataTable::ensureRowSelectedVisible()
 {
+  qWarning("FLDataTable::ensureRowSelectedVisible() inicio");
   if (rowSelected > -1)
   {
-    if (!isUpdatesEnabled() || !viewport()->isUpdatesEnabled())
+    qWarning("FLDataTable::ensureRowSelectedVisible() row: %d", rowSelected);
+    if (!isUpdatesEnabled() || !viewport()->isUpdatesEnabled()) {
+      qWarning("FLDataTable::ensureRowSelectedVisible() sale 1");
       return;
+    }
+
     int cw = columnWidth(colSelected);
+    int cp = columnPos(colSelected);
+    qWarning("FLDataTable::ensureRowSelectedVisible() cp %d cw %d", cp, cw);
     int margin = visibleHeight() / 2;
     int y = rowPos(rowSelected) + rowHeight(rowSelected) / 2;
     if (cw < visibleWidth())
-      ensureVisible(columnPos(colSelected) + cw / 2, y, cw / 2, margin);
+      ensureVisible(cp + cw / 2, y, cw / 2, margin);
     else
-      ensureVisible(columnPos(colSelected), y, 0, margin);
+      ensureVisible(cp, y, 0, margin);
   }
+  qWarning("FLDataTable::ensureRowSelectedVisible() fin");
 }
 
 void FLDataTable::setChecked(bool on)
@@ -1219,7 +1227,8 @@ void FLDataTable::delayedViewportRepaint()
   if (!timerViewRepaint_->isActive())
   {
     setUpdatesEnabled(false);
-    timerViewRepaint_->start(500, true);
+    qWarning("FLDataTable::delayedViewportRepaint() - pintando... en 50ms");
+    timerViewRepaint_->start(50, true);
   }
 }
 
