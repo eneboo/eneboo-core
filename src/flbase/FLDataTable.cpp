@@ -1219,7 +1219,7 @@ void FLDataTable::delayedViewportRepaint()
   if (!timerViewRepaint_->isActive())
   {
     setUpdatesEnabled(false);
-    timerViewRepaint_->start(50, true);
+    timerViewRepaint_->start(500, true);
   }
 }
 
