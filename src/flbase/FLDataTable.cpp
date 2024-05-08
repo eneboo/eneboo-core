@@ -466,6 +466,7 @@ bool FLDataTable::getCellStyle(QBrush &brush, QPen &pen,
 void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
                             bool selected, const QColorGroup &cg)
 {
+  qWarning(tr("FLDataTable::paintCell() : row:%1, col:%2").arg(row).arg(col));
   FLTableMetaData *tMD;
   if (!cursor_ || cursor_->aqWasDeleted() || !(tMD = cursor_->metadata()))
     return;
@@ -1075,26 +1076,18 @@ void FLDataTable::setOnlyTable(bool on)
 
 void FLDataTable::ensureRowSelectedVisible()
 {
-  qWarning("FLDataTable::ensureRowSelectedVisible() inicio");
   if (rowSelected > -1)
   {
-    qWarning("FLDataTable::ensureRowSelectedVisible() row: %d", rowSelected);
-    if (!isUpdatesEnabled() || !viewport()->isUpdatesEnabled()) {
-      qWarning("FLDataTable::ensureRowSelectedVisible() sale 1");
+    if (!isUpdatesEnabled() || !viewport()->isUpdatesEnabled())
       return;
-    }
-
     int cw = columnWidth(colSelected);
-    int cp = columnPos(colSelected);
-    qWarning("FLDataTable::ensureRowSelectedVisible() cp %d cw %d", cp, cw);
     int margin = visibleHeight() / 2;
     int y = rowPos(rowSelected) + rowHeight(rowSelected) / 2;
     if (cw < visibleWidth())
-      ensureVisible(cp + cw / 2, y, cw / 2, margin);
+      ensureVisible(columnPos(colSelected) + cw / 2, y, cw / 2, margin);
     else
-      ensureVisible(cp, y, 0, margin);
+      ensureVisible(columnPos(colSelected), y, 0, margin);
   }
-  qWarning("FLDataTable::ensureRowSelectedVisible() fin");
 }
 
 void FLDataTable::setChecked(bool on)
@@ -1227,7 +1220,6 @@ void FLDataTable::delayedViewportRepaint()
   if (!timerViewRepaint_->isActive())
   {
     setUpdatesEnabled(false);
-    qWarning("FLDataTable::delayedViewportRepaint() - pintando... en 50ms");
     timerViewRepaint_->start(50, true);
   }
 }
