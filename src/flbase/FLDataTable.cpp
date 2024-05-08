@@ -482,7 +482,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
-  qWarning("FLDataTable::paintCell() : row: %d, col: %d, at(): %d", row , col, cursor_->at());
+  qWarning("FLDataTable::paintCell() : row: %d, col: %d, at(): %d", row , col, cursor_->QSqlCursor::at());
   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid())
   {
     if (!cursor_->QSqlCursor::seek(row))
