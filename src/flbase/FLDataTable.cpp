@@ -489,7 +489,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     if (!cursor_->QSqlCursor::seek(row))
     {
 #ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posici?n no v?lida %1 %2").arg(row).arg(tMD->name()));
+      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
