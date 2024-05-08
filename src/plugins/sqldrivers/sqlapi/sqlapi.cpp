@@ -118,7 +118,7 @@ bool SqlApiDriver::tryConnect(const QString &db, const QString &user, const QStr
 {
   if (!open(db, user, password, host, port, QString::null)) {
     if (lastError().type() == QSqlError::Connection) {
-      msgBoxCritical(tr("ConexiÃ³n fallida"),
+      msgBoxCritical(tr("Conexión fallida"),
                      tr("No se pudo conectar con la base de datos %1.").arg(db));
       msgBoxCritical(tr("Error"), QString(lastError().driverText().utf8()) + "\n" +
                      QString(lastError().databaseText().utf8()));
@@ -153,7 +153,7 @@ QString SqlApiDriver::sqlCreateTable(const FLTableMetaData *tmd)
   if (unlocks > 1) {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("No se ha podido crear la tabla ") + tmd->name());
-    qWarning("FLManager : " + QApplication::tr("Hay mÃ¡s de un campo tipo unlock. Solo puede haber uno."));
+    qWarning("FLManager : " + QApplication::tr("Hay más de un campo tipo unlock. Solo puede haber uno."));
 #endif
 
     return QString::null;
@@ -225,7 +225,7 @@ QString SqlApiDriver::sqlCreateTable(const FLTableMetaData *tmd)
         qWarning(QApplication::tr("FLManager : Tabla-> ") +
                  tmd->name() + QApplication::tr(" . Se ha intentado poner una segunda clave primaria para el campo ") +
                  field->name() + QApplication::tr(" , pero el campo ") + primaryKey +
-                 QApplication::tr(" ya es clave primaria. SÃ³lo puede existir una clave primaria en FLTableMetaData, use FLCompoundKey para crear claves compuestas."));
+                 QApplication::tr(" ya es clave primaria. Sólo puede existir una clave primaria en FLTableMetaData, use FLCompoundKey para crear claves compuestas."));
 #endif
 
         return QString::null;
@@ -263,7 +263,7 @@ QString SqlApiDriver::formatValueLike(int t, const QVariant &v, const bool upper
   switch (t) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sï¿½").left(1).upper())
+      if (s == QApplication::tr("Sí").left(1).upper())
         res = "='t'";
       else if (s == QApplication::tr("No").left(1).upper())
         res = "='f'";
@@ -306,7 +306,7 @@ QString SqlApiDriver::formatValue(int t, const QVariant &v, const bool upper)
   switch (FLFieldMetaData::flDecodeType(t)) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sï¿½").left(1).upper())
+      if (s == QApplication::tr("Sí").left(1).upper())
         res = "'t'";
       else if (s == QApplication::tr("No").left(1).upper())
         res = "'f'";
@@ -599,7 +599,7 @@ bool SqlApiDriver::alterTable(const QString &mtd1, const QString &mtd2, const QS
         if (!v.cast(newBuffer->value(newField->name()).type())) {
 #ifdef FL_DEBUG
           qWarning("FLManager::alterTable : " +
-                   QApplication::tr("Los tipos del campo %1 no son compatibles. Se introducirÃ¡ un valor nulo.")
+                   QApplication::tr("Los tipos del campo %1 no son compatibles. Se introducirá un valor nulo.")
                    .arg(newField->name()));
 #endif
         }
@@ -1135,13 +1135,13 @@ int SqliteResult::numRowsAffected()
 void SqlApiDriver::Mr_Proper()
 {
 #if 0
-  QString mproperMsg(tr("Este proceso puede tener una larga duraciÃ³n, dependiendo\n"
-                        "del tamaÃ±o de la base de datos.\n"
+  QString mproperMsg(tr("Este proceso puede tener una larga duración, dependiendo\n"
+                        "del tamaño de la base de datos.\n"
                         "Antes de empezar debe asegurarse que durante todo el proceso\n"
-                        "no habrÃ¡ otros usuarios conectados a esta base de datos, de lo\n"
-                        "contrario los resultados serÃ¡n impredecibles. AsegÃºrese tambiÃ©n\n"
+                        "no habrá otros usuarios conectados a esta base de datos, de lo\n"
+                        "contrario los resultados serán impredecibles. Asegúrese también\n"
                         "de tener una COPIA DE SEGURIDAD actualizada de esta base de datos\n"
-                        "antes de empezar.\n\nÂ¿ Quiere continuar ?"));
+                        "antes de empezar.\n\n¿ Quiere continuar ?"));
   int res = QMessageBox::question(0, tr("Mr. Proper"), mproperMsg, QMessageBox::Yes, QMessageBox::No);
   if (res != QMessageBox::Yes)
     return;
@@ -1192,7 +1192,7 @@ void SqlApiDriver::Mr_Proper()
     FLUtil::setProgress(++steps);
   }
 
-  FLUtil::setLabelText(tr("Inicializando cachÃ©s"));
+  FLUtil::setLabelText(tr("Inicializando cachés"));
   FLUtil::setProgress(++steps);
   qry.exec("delete from flmetadata");
   qry.exec("delete from flvar");

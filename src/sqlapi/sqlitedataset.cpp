@@ -430,7 +430,7 @@ namespace dbiplus
 
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
-    bool usar_py = true;
+    bool usar_py = false;
 
     QString path_exec = "";
     QString comando_txt = "";
@@ -583,30 +583,6 @@ namespace dbiplus
     make_query(delete_sql);
   }
 
-
-/*   void SqliteDataset::fill_fields()
-  {
-    //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-    if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < frecno)) return;
-    if (fields_object->size() == 0) // Filling columns name
-      for (int i = 0; i < result.record_header.size(); i++) {
-        (*fields_object)[i].props = result.record_header[i];
-        (*edit_object)[i].props = result.record_header[i];
-      }
-
-    //Filling result
-    if (result.records.size() != 0) {
-      for (int i = 0; i < result.records[frecno].size(); i++) {
-        (*fields_object)[i].val = result.records[frecno][i];
-        (*edit_object)[i].val = result.records[frecno][i];
-      }
-    } else
-      for (int i = 0; i < result.record_header.size(); i++) {
-        (*fields_object)[i].val = "";
-        (*edit_object)[i].val = "";
-      }
-
-  } */
 
 void SqliteDataset::fill_fields()
   {
@@ -881,6 +857,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
+    cadena += "\"enable_debug\":true,\n";
     cadena += "\"only_key\":\"data\",\n";
     cadena += "\"close_when_finish\":false\n";
     cadena += "}";
