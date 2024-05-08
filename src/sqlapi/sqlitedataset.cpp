@@ -999,10 +999,9 @@ bool SqliteDataset::fetch_rows(int pos) {
           Dataset::seek(last_pos_fetched);
           if (last_pos_fetched == pos) {
             fill_fields();
-            return true;
           }
           
-        
+        return true;
 
       }
     }

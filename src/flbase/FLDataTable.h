@@ -292,7 +292,6 @@ private:
   FLFieldMetaData *paintFieldMtd(const QString &f, FLTableMetaData *t);
   QTimer *timerViewRepaint_;
   /** Almacena el último row que dió false en seek */
-  int last_seek_invalid;
 
 
 public slots:

@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
-   versi?n 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
+   versión 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLDataTable.h"
@@ -89,7 +89,6 @@ FLDataTable::FLDataTable(QWidget *parent, const char *name, bool popup)
     setName("FLDataTable");
   pixOk_ = QPixmap::fromMimeSource("unlock.png");
   pixNo_ = QPixmap::fromMimeSource("lock.png");
-  last_seek_invalid = 0;
 }
 
 FLDataTable::~FLDataTable()
@@ -483,25 +482,16 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
-
-
-
+  qWarning("FLDataTable::paintCell() : row: %d, col: %d,  rowSelected: %d", row , col, rowSelected);
   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid())
   {
     if (!cursor_->QSqlCursor::seek(row))
     {
-      last_seek_invalid = row;
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
-
-    last_seek_invalid = 0;
-  }
-
-  if (last_seek_invalid > 0 && row > last_seek_invalid) {
-    qWarning("Prevención retardo %d" , row);
   }
 
   if (fieldTMD->isCheck())
@@ -768,7 +758,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     }
     else
     {
-      text = field->value().toBool() ? tr("S?") : tr("No");
+      text = field->value().toBool() ? tr("Sí") : tr("No");
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);
     }
