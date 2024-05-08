@@ -494,7 +494,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
   }
 
-  qWarning("FLDataTable::paintCell() : row: %s , at: %s", row, cursor_.at());
+  qWarning("FLDataTable::paintCell() : row: %s , at: %s", row, cursor_->QSqlCursor::at());
 
   if (fieldTMD->isCheck())
   {
