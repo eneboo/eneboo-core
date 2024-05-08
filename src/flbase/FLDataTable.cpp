@@ -89,6 +89,7 @@ FLDataTable::FLDataTable(QWidget *parent, const char *name, bool popup)
     setName("FLDataTable");
   pixOk_ = QPixmap::fromMimeSource("unlock.png");
   pixNo_ = QPixmap::fromMimeSource("lock.png");
+  last_seek_invalid = 0;
 }
 
 FLDataTable::~FLDataTable()
@@ -466,7 +467,6 @@ bool FLDataTable::getCellStyle(QBrush &brush, QPen &pen,
 void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
                             bool selected, const QColorGroup &cg)
 {
-  qWarning(tr("FLDataTable::paintCell() : row:%1, col:%2").arg(row).arg(col));
   FLTableMetaData *tMD;
   if (!cursor_ || cursor_->aqWasDeleted() || !(tMD = cursor_->metadata()))
     return;
@@ -484,15 +484,24 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     return;
   }
 
+
+
   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid())
   {
     if (!cursor_->QSqlCursor::seek(row))
     {
+      last_seek_invalid = row;
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
+
+    last_seek_invalid = 0;
+  }
+
+  if (last_seek_invalid > 0 && row > last_seek_invalid) {
+    qWarning("Prevención retardo %d" , row);
   }
 
   if (fieldTMD->isCheck())
