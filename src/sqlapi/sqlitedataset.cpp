@@ -984,17 +984,12 @@ bool SqliteDataset::fetch_rows(int pos) {
       if (ds_state == dsSelect) {
         if (last_invalid_pos == 0 || (pos < last_invalid_pos || pos > last_invalid_pos + 120)) { 
 
-
-
-          //if (pos > 0) {
-            qWarning(" + %d", pos);
-            
-          //}
-
           bloque_pos = resuelve_bloque(pos);
           bool found = result.records.count(pos) == 1;
-          last_pos_fetched = pos; 
+
+          
           if (!found) {
+              last_pos_fetched = pos; 
               qWarning(" >> %d", pos);
               // last_pos_fetched = pos; 
               found = fetch_rows(pos);
