@@ -981,16 +981,19 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
       qWarning("??: %d , last: %d, invalid: %d" , pos, last_pos_fetched, last_invalid_pos);
+      
+      bloque_pos = resuelve_bloque(pos);
+
       if (ds_state == dsSelect) {
         if (last_invalid_pos == 0 || (pos < last_invalid_pos || pos > last_invalid_pos + 120)) { 
 
-          bloque_pos = resuelve_bloque(pos);
+          
           bool found = result.records.count(pos) == 1;
 
           
           if (!found) {
               last_pos_fetched = pos; 
-              bloque_last = resuelve_bloque(pos);
+              bloque_last = bloque_pos;
               qWarning(" >> %d", pos);
               found = fetch_rows(pos);
               if (pos != last_pos_fetched) {
@@ -1002,7 +1005,7 @@ bool SqliteDataset::fetch_rows(int pos) {
           }
           if (found) {   
             int seek_pos = pos;
-            if (bloque_pos == bloque_last || seek_pos == 0) {
+            if (bloque_pos == bloque_last) {
               qWarning("OK! %d", seek_pos);
               Dataset::seek(seek_pos);
               fill_fields();
