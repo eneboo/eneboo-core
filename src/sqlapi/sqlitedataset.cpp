@@ -311,11 +311,11 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
-    semaforo_fetching = false;
     debug_sql = false;
     debug_paginacion = true;
     debug_aqextension = false;
     last_pos_fetched = 0;
+    last_invalid_pos = 0;
   }
 
 
@@ -325,11 +325,11 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
-    semaforo_fetching = false;
     debug_sql = false;
     debug_paginacion = true;
     debug_aqextension = false;
     last_pos_fetched = 0;
+    last_invalid_pos = 0;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -788,18 +788,6 @@ bool SqliteDataset::fetch_rows(int pos) {
     }
     
 
-/*     while (true) {
-      if (semaforo_fetching || (pila_paginacion.size() > 0 && pila_paginacion.front() != codigo_bloque)) {
-        if (debug_paginacion) {
-          qWarning(" ^ Bloque %d en espera, next: %d", codigo_bloque, pila_paginacion.size() > 0 ? pila_paginacion.front() : -1);
-
-        }
-        sleep(1);
-        continue;
-      }
-      break;
-    } */
-
     if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
         if (debug_paginacion) {
           qWarning(":) Ya existe pos %d" , pos);
@@ -813,7 +801,6 @@ bool SqliteDataset::fetch_rows(int pos) {
     } */
 
 
-      //semaforo_fetching = true;
       if (debug_paginacion) {
         qWarning(" + Bloque %d en proceso", codigo_bloque);
       }
@@ -822,7 +809,6 @@ bool SqliteDataset::fetch_rows(int pos) {
       // eliminamos codigo_bloque de pila_paginacion
       lista_bloques[codigo_bloque] = fetch_result;
       //pila_paginacion.remove(codigo_bloque);
-      //semaforo_fetching = false;
       
       if (debug_paginacion) {
         qWarning(" - Bloque %d (%d : %s) Procesado %s , rango: %d - %d", codigo_bloque, pos, result.records.count(pos) == 1 ? "OK" : "KO", fetch_result ? "OK" : "FALLO", codigo_bloque * LIMIT_RESULT, (codigo_bloque * LIMIT_RESULT) + LIMIT_RESULT - 1);
@@ -991,20 +977,31 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
-    last_pos_fetched = pos;
-    if (ds_state == dsSelect) {
-      //last_pos_fetched = pos;
-      if (result.records.count(pos) == 1 || fetch_rows(pos)) {
+    if (last_invalid_pos == 0 || last_invalid_pos + 1 != pos) {
+      if (ds_state == dsSelect) {
 
-          Dataset::seek(last_pos_fetched);
+        last_pos_fetched = pos;
+        qWarning(" + Nuevo pos %d", pos);
+        last_invalid_pos = 0;
+
+        if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
+
           if (last_pos_fetched == pos) {
+            Dataset::seek(last_pos_fetched);
             fill_fields();
-          }
-          
-        return true;
+            return true;
+          }  
 
-      }
-    }
+        } else {
+          qWarning("Error al cargar registro %d", pos);
+          return false;
+        }
+
+      } // ds_state == dsSelect
+
+    } // last_invalid_pos == 0 || last_invalid_pos + 1 != pos
+    qWarning(" - Nuevo invalid pos %d", pos);
+    last_invalid_pos = pos;
     return false;
   }
 

@@ -154,7 +154,6 @@ or insert() operations default = false) */
   void lista_bloques_pila_paginacion();
   
   QString sql;
-  bool semaforo_fetching;
   typedef map<int,bool> bloque_paginado;
   bloque_paginado lista_bloques;
   std::list <int> pila_paginacion;
@@ -162,6 +161,7 @@ or insert() operations default = false) */
   bool debug_paginacion;
   bool debug_aqextension; 
   int last_pos_fetched;
+  int last_invalid_pos;
 
 
 
