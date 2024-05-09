@@ -990,8 +990,8 @@ bool SqliteDataset::fetch_rows(int pos) {
           
           if (!found) {
               last_pos_fetched = pos; 
+              bloque_last = resuelve_bloque(pos);
               qWarning(" >> %d", pos);
-              // last_pos_fetched = pos; 
               found = fetch_rows(pos);
               if (pos != last_pos_fetched) {
                   int bloque_f = resuelve_bloque(pos);
@@ -1004,9 +1004,6 @@ bool SqliteDataset::fetch_rows(int pos) {
             int seek_pos = pos;
             if (bloque_pos == bloque_last || seek_pos == 0) {
               qWarning("OK! %d", seek_pos);
-              if (pos>0) {
-                bloque_last = resuelve_bloque(pos);
-              }
               Dataset::seek(seek_pos);
               fill_fields();
               return true;
