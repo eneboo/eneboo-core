@@ -783,22 +783,10 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la lista, lo meto el primero
       lista_bloques[codigo_bloque] = false;
     } else { // si esta en la pila, no hago nada
-      while(lista_bloques[codigo_bloque] == false) {
-        qApp->processEvents();
-        sleep(1);
-        qWarning("Esperando pos: %d , bloque: %d", pos, codigo_bloque);
-      }
+      return result.records.count(pos) == 1;
     }
     
-
-    if (result.records.count(pos) == 1) { // Si ya se hizo fetch de mi registro .... salgo
-        if (debug_paginacion) {
-          qWarning(":) Ya existe pos %d" , pos);
-        }
-      return true;
-    }
-
-/*     if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
+  /*     if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
         qWarning(":( estoy perdido %d" , pos);
         return false;
     } */
