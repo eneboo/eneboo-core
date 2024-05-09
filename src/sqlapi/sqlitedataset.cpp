@@ -316,6 +316,8 @@ namespace dbiplus
     debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
+    bloque_last = 0;
+    bloque_pos = 0;
   }
 
 
@@ -330,6 +332,8 @@ namespace dbiplus
     debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
+    bloque_last = 0;
+    bloque_pos = 0;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -982,14 +986,15 @@ bool SqliteDataset::fetch_rows(int pos) {
 
 
 
-          if (pos > 0) {
+          //if (pos > 0) {
             qWarning(" + %d", pos);
             
-          }
+          //}
 
           bloque_pos = resuelve_bloque(pos);
           bool found = result.records.count(pos) == 1;
           if (!found) {
+              qWarning(" >> %d", pos);
               last_pos_fetched = pos; 
               found = fetch_rows(pos);
               if (pos != last_pos_fetched) {
@@ -1006,12 +1011,12 @@ bool SqliteDataset::fetch_rows(int pos) {
               fill_fields();
               return true;
             }  
-            qWarning(" - %d Descartada por bloque %d, (last: %d)", pos, last_invalid_pos, last_pos_fetched);
+            qWarning(" - %d Descartada por bloque %d (bloque: %d), last: %d (bloque: %d)", pos, last_invalid_pos, bloque_pos, last_pos_fetched, bloque_last);
           } else {
             qWarning(" - No se encuentra pos %d", pos);
           }
         } else {
-          qWarning(" - %d Descartada por cercania %d , (last: %d)", pos, last_invalid_pos, last_pos_fetched);
+          qWarning(" - %d Descartada por cercania %d (bloque: %d), last: %d (bloque: %d)", pos, last_invalid_pos, bloque_pos, last_pos_fetched, bloque_last);
         } // ds_state == dsSelect
       }
 
