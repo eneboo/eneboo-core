@@ -977,7 +977,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
-    if (last_invalid_pos == 0 || last_invalid_pos + 1 != pos) {
+    if (last_invalid_pos == 0 || (pos < last_invalid_pos|| pos > last_invalid_pos + 120)) {
       if (ds_state == dsSelect) {
 
         last_pos_fetched = pos;
@@ -999,7 +999,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
       } // ds_state == dsSelect
 
-    } // last_invalid_pos == 0 || last_invalid_pos + 1 != pos
+    }
     qWarning(" - Nuevo invalid pos %d", pos);
     last_invalid_pos = pos;
     return false;
