@@ -976,7 +976,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   }
   bool SqliteDataset::seek(int pos)
   {
-      qWarning("?? %d" , pos);
+      qWarning("??: %d , last: %d, invalid: %d" , pos, last_pos_fetched, last_invalid_pos);
       if (ds_state == dsSelect) {
         if (last_invalid_pos == 0 || (pos < last_invalid_pos || pos > last_invalid_pos + 120)) { 
 
@@ -989,8 +989,11 @@ bool SqliteDataset::fetch_rows(int pos) {
 
           int bloque_pos = resuelve_bloque(pos);
           int bloque_last = resuelve_bloque(last_pos_fetched);
-
-          if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
+          bool found = result.records.count(pos) == 1;
+          if (!found) {
+              found = fetch_rows(pos);
+          }
+          if (found) {   
             if (bloque_pos == bloque_last) {
               Dataset::seek(pos);
               fill_fields();
@@ -1004,7 +1007,9 @@ bool SqliteDataset::fetch_rows(int pos) {
                 }
               
             }
-          } 
+          } else {
+            qWarning(" - No se encuentra pos %d", pos);
+          }
         } else {
           qWarning(" - %d Descartada por %d , (last: %d)", pos, last_invalid_pos, last_pos_fetched);
         } // ds_state == dsSelect
