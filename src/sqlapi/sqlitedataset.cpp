@@ -980,72 +980,34 @@ bool SqliteDataset::fetch_rows(int pos) {
       if (ds_state == dsSelect) {
         if (last_invalid_pos == 0 || (pos < last_invalid_pos || pos > last_invalid_pos + 120)) { 
 
+          int bloque_pos = resuelve_bloque(pos);
+          int bloque_last = resuelve_bloque(last_pos_fetched);
+
           if (pos > 0) {
             qWarning(" + nueva pos %d", pos);
             last_pos_fetched = pos; 
           }
 
           if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
-
-
-
-            if (last_pos_fetched == pos) {
-
+            if (bloque_pos == bloque_last) {
               Dataset::seek(pos);
               fill_fields();
               return true;
             }  else {
-              int bloque_pos = resuelve_bloque(pos);
-              int bloque_last = resuelve_bloque(last_pos_fetched);
-              if (bloque_pos != bloque_last) {
-                last_invalid_pos = pos;
-                qWarning(" - Nuevo invalid pos: %d (bloque %d) , valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
-              }
+                if (pos > 0) {
+                  last_invalid_pos = pos;
+                  qWarning(" - Nuevo invalid pos: %d (bloque %d) , valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
+                }
               
             }
           } 
         } else {
-          qWarning(" - %d Descartada por %d", pos, last_invalid_pos );
+          qWarning(" - %d Descartada por %d , (last: %d)", pos, last_invalid_pos, last_pos_fetched);
         } // ds_state == dsSelect
       }
 
     return false;
   } 
-
-/* bool SqliteDataset::seek(int pos)
-  {
-    
-    if (last_invalid_pos == 0 || (pos < last_invalid_pos|| pos > last_invalid_pos + 120)) {
-      if (ds_state == dsSelect) {
-        if (pos > 0) {
-          last_pos_fetched = pos;
-        }
-        qWarning(" + Nuevo pos %d", pos);
-        last_invalid_pos = 0;
-
-        if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
-
-          if (last_pos_fetched == pos) {
-            Dataset::seek(last_pos_fetched);
-            fill_fields();
-            return true;
-          } else {
-            qWarning(" - Nuevo invalid pos %d", pos); // Ha salido de fetch_rows despues de last_post_fetched ( y entró antes )
-            last_invalid_pos = pos;
-          }  
-
-        } else {
-          qWarning("Error al cargar registro %d", pos);
-          return false;
-        }
-
-      } // ds_state == dsSelect
-
-    }
-    return false;
-  }
- */
-
 
   long SqliteDataset::nextid(const char *seq_name)
   {
