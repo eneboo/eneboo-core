@@ -974,9 +974,34 @@ bool SqliteDataset::fetch_rows(int pos) {
   }
   return true;
   }
-
   bool SqliteDataset::seek(int pos)
   {
+
+      if (ds_state == dsSelect) {
+
+        if (pos > 0) {
+          qWarning(" + Nuevo pos %d", pos);
+          last_pos_fetched = pos; // 2040
+        }
+
+        if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
+          if (last_pos_fetched == pos) {
+
+            Dataset::seek(pos);
+            fill_fields();
+            return true;
+          }  else {
+            qWarning(" - Nuevo invalid pos %d", pos);
+          }
+        } 
+      } // ds_state == dsSelect
+
+    return false;
+  } 
+
+/* bool SqliteDataset::seek(int pos)
+  {
+    
     if (last_invalid_pos == 0 || (pos < last_invalid_pos|| pos > last_invalid_pos + 120)) {
       if (ds_state == dsSelect) {
         if (pos > 0) {
@@ -1006,7 +1031,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     }
     return false;
   }
-
+ */
 
 
   long SqliteDataset::nextid(const char *seq_name)
