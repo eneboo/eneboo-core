@@ -982,7 +982,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
           if (pos > 0) {
             qWarning(" + nueva pos %d", pos);
-            last_pos_fetched = pos; // 2040
+            last_pos_fetched = pos; 
           }
 
           if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
@@ -995,7 +995,7 @@ bool SqliteDataset::fetch_rows(int pos) {
               fill_fields();
               return true;
             }  else {
-              if (pos > 0) {
+              if (resuelve_bloque(pos) != resuelve_bloque(last_pos_fetched)) {
                 last_invalid_pos = pos;
                 qWarning(" - Nuevo invalid pos %d , valid: %d", pos, last_pos_fetched);
               }
