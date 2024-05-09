@@ -998,14 +998,15 @@ bool SqliteDataset::fetch_rows(int pos) {
                   qWarning(" - Nuevo invalid pos: %d (bloque %d), valid: %d (bloque %d)", pos, bloque_f, last_pos_fetched, bloque_last);
                   last_invalid_pos = pos;
                   found = false;
-              } else {
-                bloque_last = bloque_pos;
-              }
+              } 
           }
           if (found) {   
             int seek_pos = pos;
             if (bloque_pos == bloque_last || seek_pos == 0) {
               qWarning("OK! %d", seek_pos);
+              if (pos>0) {
+                bloque_last = resuelve_bloque(pos);
+              }
               Dataset::seek(seek_pos);
               fill_fields();
               return true;
