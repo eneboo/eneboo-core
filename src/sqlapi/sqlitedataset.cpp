@@ -967,7 +967,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   return true;
   }
 
-  bool SqliteDataset::seek(int pos)
+/*   bool SqliteDataset::seek(int pos)
   {
       //qWarning("??: %d , last: %d, invalid: %d" , pos, last_pos_fetched, last_invalid_pos);
       
@@ -1011,25 +1011,19 @@ bool SqliteDataset::fetch_rows(int pos) {
       }
 
     return false;
-  }  
+  }   */
 
-/**    bool SqliteDataset::seek(int pos)
+  bool SqliteDataset::seek(int pos)
   {
-      if (ds_state == dsSelect) {
-          
-          bool found = result.records.count(pos) == 1;
-          if (!found) {
-            found = fetch_rows(pos);
-          }
-          if (found) {   
-              Dataset::seek(pos);
-              fill_fields();
-              return true;
-          }  
-            
-      } 
+    if (ds_state == dsSelect) {
+      if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
+          Dataset::seek(pos);
+          fill_fields();
+          return true;
+      }     
+    } 
     return false;
-  }  */
+  }  
 
   long SqliteDataset::nextid(const char *seq_name)
   {
