@@ -782,13 +782,10 @@ bool SqliteDataset::fetch_rows(int pos) {
     
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la lista, lo meto el primero
       lista_bloques[codigo_bloque] = false;
-      //pila_paginacion.push_front(codigo_bloque);
-      /* if (debug_paginacion) {
-        qWarning(" + Bloque %d añadido a pila_paginación pos:(%d) %d - %d ", codigo_bloque, pos, codigo_bloque * LIMIT_RESULT , (((codigo_bloque + 1) * LIMIT_RESULT) - 1));
-        lista_bloques_pila_paginacion();
-      } */
     } else { // si esta en la pila, no hago nada
-      return true;
+      while(lista_bloques[codigo_bloque] == false) {
+        qApp->processEvents();
+      }
     }
     
 
@@ -995,7 +992,7 @@ bool SqliteDataset::fetch_rows(int pos) {
           if (!found) {
               last_pos_fetched = pos; 
               bloque_last = bloque_pos;
-              qWarning(" >> %d", pos);
+              //qWarning(" >> %d", pos);
               found = fetch_rows(pos);
               if (pos != last_pos_fetched) {
                   int bloque_f = resuelve_bloque(pos);
@@ -1013,12 +1010,12 @@ bool SqliteDataset::fetch_rows(int pos) {
               fill_fields();
               return true;
             }  
-            qWarning(" - %d Descartada por bloque %d (bloque: %d), last: %d (bloque: %d)", pos, last_invalid_pos, bloque_pos_now, last_pos_fetched, bloque_last);
+            qWarning(" - Descartada por bloque %d (bloque: %d), last: %d (bloque: %d)", pos, bloque_pos_now, last_pos_fetched, bloque_last);
           } else {
             qWarning(" - No se encuentra pos %d", pos);
           }
         } else {
-          qWarning(" - %d Descartada por cercania %d (bloque: %d), last: %d (bloque: %d)", pos, last_invalid_pos, bloque_pos, last_pos_fetched, bloque_last);
+          qWarning(" -  %d (bloque: %d) Descartada por cercania a %d, last: %d (bloque: %d)", pos, last_invalid_pos, bloque_pos, last_pos_fetched, bloque_last);
         } // ds_state == dsSelect
       }
 
