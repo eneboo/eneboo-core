@@ -999,7 +999,7 @@ bool SqliteDataset::fetch_rows(int pos) {
               // last_pos_fetched = pos; 
               found = fetch_rows(pos);
               if (pos != last_pos_fetched) {
-                  int bloque_f = resuelve_bloque(pos)
+                  int bloque_f = resuelve_bloque(pos);
                   qWarning(" - Nuevo invalid pos: %d (bloque %d), valid: %d (bloque %d)", pos, bloque_f, last_pos_fetched, bloque_last);
                   last_invalid_pos = pos;
                   found = false;
