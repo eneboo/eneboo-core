@@ -976,24 +976,30 @@ bool SqliteDataset::fetch_rows(int pos) {
   }
   bool SqliteDataset::seek(int pos)
   {
-      qWarning("Solicitando %d" , pos);
+      qWarning("?? %d" , pos);
       if (ds_state == dsSelect) {
         if (last_invalid_pos == 0 || (pos < last_invalid_pos || pos > last_invalid_pos + 120)) { 
 
           if (pos > 0) {
-            qWarning(" + Nuevo pos %d", pos);
+            qWarning(" + nueva pos %d", pos);
             last_pos_fetched = pos; // 2040
           }
 
           if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
+
+
+
             if (last_pos_fetched == pos) {
 
               Dataset::seek(pos);
               fill_fields();
               return true;
             }  else {
-              last_invalid_pos = pos;
-              qWarning(" - Nuevo invalid pos %d", pos);
+              if (pos > 0) {
+                last_invalid_pos = pos;
+                qWarning(" - Nuevo invalid pos %d , valid: %d", pos, last_pos_fetched);
+              }
+              
             }
           } 
         } else {
