@@ -995,9 +995,11 @@ bool SqliteDataset::fetch_rows(int pos) {
               fill_fields();
               return true;
             }  else {
-              if (resuelve_bloque(pos) != resuelve_bloque(last_pos_fetched)) {
+              int bloque_pos = resuelve_bloque(pos);
+              int bloque_last = resuelve_bloque(last_pos_fetched);
+              if (bloque_pos != bloque_last) {
                 last_invalid_pos = pos;
-                qWarning(" - Nuevo invalid pos %d , valid: %d", pos, last_pos_fetched);
+                qWarning(" - Nuevo invalid pos: %d (bloque %d) , valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
               }
               
             }
