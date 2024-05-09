@@ -983,38 +983,35 @@ bool SqliteDataset::fetch_rows(int pos) {
 
 
           if (pos > 0) {
-            qWarning(" + nueva pos %d", pos);
-            last_pos_fetched = pos; 
+            qWarning(" + %d", pos);
+            
           }
 
-          int bloque_pos = resuelve_bloque(pos);
-          int bloque_last = resuelve_bloque(last_pos_fetched);
+          bloque_pos = resuelve_bloque(pos);
           bool found = result.records.count(pos) == 1;
           if (!found) {
+              last_pos_fetched = pos; 
               found = fetch_rows(pos);
               if (pos != last_pos_fetched) {
                   qWarning(" - Nuevo invalid pos: %d (bloque %d), valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
                   last_invalid_pos = pos;
+              } else {
+                bloque_last = bloque_pos;
               }
           }
           if (found) {   
             if (bloque_pos == bloque_last) {
+              qWarning("OK! %d", pos);
               Dataset::seek(pos);
               fill_fields();
               return true;
-            }  else {
-/*                 if (pos > 0) {
-                  last_invalid_pos = pos;
-                  qWarning(" - Nuevo invalid pos: %d (bloque %d) , valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
-                } else {
-                  qWarning("Cero!! , last: %d" , last_pos_fetched);
-                } */
-            }
+            }  
+            qWarning(" - %d Descartada por bloque %d, (last: %d)", pos, last_invalid_pos, last_pos_fetched);
           } else {
             qWarning(" - No se encuentra pos %d", pos);
           }
         } else {
-          qWarning(" - %d Descartada por %d , (last: %d)", pos, last_invalid_pos, last_pos_fetched);
+          qWarning(" - %d Descartada por cercania %d , (last: %d)", pos, last_invalid_pos, last_pos_fetched);
         } // ds_state == dsSelect
       }
 

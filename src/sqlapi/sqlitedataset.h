@@ -162,6 +162,8 @@ or insert() operations default = false) */
   bool debug_aqextension; 
   int last_pos_fetched;
   int last_invalid_pos;
+  int bloque_pos;
+  int bloque_last;
 
 
 
