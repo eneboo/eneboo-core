@@ -785,6 +785,8 @@ bool SqliteDataset::fetch_rows(int pos) {
     } else { // si esta en la pila, no hago nada
       while(lista_bloques[codigo_bloque] == false) {
         qApp->processEvents();
+        sleep(1);
+        qWarning("Esperando pos: %d , bloque: %d", pos, codigo_bloque);
       }
     }
     
@@ -809,6 +811,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       bool fetch_result = gestionar_consulta_paginada(codigo_bloque * LIMIT_RESULT); // Aqui realizo la carga del bloque
       // eliminamos codigo_bloque de pila_paginacion
       lista_bloques[codigo_bloque] = fetch_result;
+      qWarning("Bloque %d resuelto", codigo_bloque);
       //pila_paginacion.remove(codigo_bloque);
       
       if (debug_paginacion) {
