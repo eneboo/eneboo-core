@@ -992,6 +992,10 @@ bool SqliteDataset::fetch_rows(int pos) {
           bool found = result.records.count(pos) == 1;
           if (!found) {
               found = fetch_rows(pos);
+              if (pos != last_pos_fetched) {
+                  qWarning(" - Nuevo invalid pos: %d (bloque %d), valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
+                  last_invalid_pos = pos;
+              }
           }
           if (found) {   
             if (bloque_pos == bloque_last) {
@@ -999,13 +1003,12 @@ bool SqliteDataset::fetch_rows(int pos) {
               fill_fields();
               return true;
             }  else {
-                if (pos > 0) {
+/*                 if (pos > 0) {
                   last_invalid_pos = pos;
                   qWarning(" - Nuevo invalid pos: %d (bloque %d) , valid: %d (bloque %d)", pos, bloque_pos, last_pos_fetched, bloque_last);
                 } else {
                   qWarning("Cero!! , last: %d" , last_pos_fetched);
-                }
-              
+                } */
             }
           } else {
             qWarning(" - No se encuentra pos %d", pos);
