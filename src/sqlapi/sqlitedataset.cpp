@@ -990,6 +990,9 @@ bool SqliteDataset::fetch_rows(int pos) {
             Dataset::seek(last_pos_fetched);
             fill_fields();
             return true;
+          } else {
+            qWarning(" - Nuevo invalid pos %d", pos); // Ha salido de fetch_rows despues de last_post_fetched ( y entró antes )
+            last_invalid_pos = pos;
           }  
 
         } else {
@@ -1000,8 +1003,6 @@ bool SqliteDataset::fetch_rows(int pos) {
       } // ds_state == dsSelect
 
     }
-    qWarning(" - Nuevo invalid pos %d", pos);
-    last_invalid_pos = pos;
     return false;
   }
 
