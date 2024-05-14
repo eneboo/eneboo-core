@@ -478,17 +478,12 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
 
   int window_offset = verticalHeader()->offset();
   int cell_top = cr.top();
-  int diff_top = cell_top - window_offset;
-  bool in_range = false;
-  if (diff_top >= -50) {
-    if (diff_top < 1000) {
-      in_range = true;
-    }
-  }
+  bool in_range = cell_top + 20 > window_offset && cell_top < window_offset + 1000;
+
 
   if (in_range == false)
   {
-    qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, diff_top);
+    qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, window_offset);
     return;
   } 
 
