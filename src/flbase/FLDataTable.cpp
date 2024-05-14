@@ -476,16 +476,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     return;
 
 
-  int window_offset = verticalHeader()->offset();
-  int cell_top = cr.top();
-  bool in_range = cell_top + 20 > window_offset && cell_top < window_offset + 1000;
 
-
-  if (in_range == false)
-  {
-    qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, window_offset);
-    return;
-  } 
 
 
   int type = fieldTMD->type();
@@ -510,6 +501,17 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
   }
 
+  int window_offset = verticalHeader()->offset();
+  int cell_top = cr.top();
+  bool in_range = cell_top + 20 > window_offset && cell_top < window_offset + 1000;
+
+
+  if (in_range == false)
+  {
+    //qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, window_offset);
+    qWarning("X %d" , row);
+    return;
+  } 
 
 
   if (fieldTMD->isCheck())
