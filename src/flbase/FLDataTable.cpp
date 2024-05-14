@@ -475,6 +475,24 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
   if (!fieldTMD)
     return;
 
+
+  int window_offset = verticalHeader()->offset();
+  int cell_top = cr.top();
+  int diff_top = cell_top - window_offset;
+  bool in_range = false;
+  if (diff_top >= -50) {
+    if (diff_top < 1000) {
+      in_range = true;
+    }
+  }
+
+  if (in_range == false)
+  {
+    qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, diff_top);
+    return;
+  } 
+
+
   int type = fieldTMD->type();
 
   if (!showAllPixmaps_ && type == QVariant::Pixmap && row != rowSelected)
@@ -482,6 +500,9 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
+
+
+
 
   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid())
   {
@@ -493,6 +514,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
       return;
     }
   }
+
 
 
   if (fieldTMD->isCheck())
