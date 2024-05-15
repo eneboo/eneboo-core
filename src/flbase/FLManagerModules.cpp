@@ -293,9 +293,14 @@ void FLManagerModules::loadKeyFiles()
   q.setForwardOnly(true);
   q.exec("SELECT nombre,sha,idmodulo FROM flfiles");
   QString name;
+  QString sha;
   while (q.next()) {
     name = q.value(0).toString();
-    dictKeyFiles->replace(name, new QString(q.value(1).toString()));
+    sha = q.value(1).toString();
+    if (sha.isEmpty()) {
+      continue;
+    }
+    dictKeyFiles->replace(name, new QString(sha));
     dictModFiles->replace(name.upper(), new QString(q.value(2).toString()));
   }
 }
@@ -476,7 +481,7 @@ QString FLManagerModules::contentStatic(const QString &n)
   return str_ret;
 }
 
-QString FLManagerModules::content(const QString &n, const bool only_fs = false)
+QString FLManagerModules::content(const QString &n, const bool only_fs)
 {
   qWarning("FLManagerModules::content('" + n + "')");
   if (n.isEmpty() || n.length() <= 3)
