@@ -63,15 +63,11 @@ static QVariant::Type qDecodeSqliteType(fType t)
 SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
   FLSqlDriver(parent, name), dataBase_(0)
   {
-
-  lista_tablas_cacheada = new map<int,QStringList>;
     //qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
     //recogemos url hosts para hacer llamadas.
   }
 
-SqlApiDriver::~SqlApiDriver() {
-  lista_tablas_cacheada->clear();
-}
+SqlApiDriver::~SqlApiDriver() {}
 
 SqliteDatabase *SqlApiDriver::dataBase()
 {
