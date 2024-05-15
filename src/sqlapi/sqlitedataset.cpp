@@ -784,7 +784,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       lista_bloques[codigo_bloque] = false;
       qWarning("fetch_rows: %d %d PASO2", pos, codigo_bloque);
     } else { // si esta en la pila, no hago nada
-    qWarning("fetch_rows: %d %d %d PASO3", pos, codigo_bloque, lista_bloques.size());
+    qWarning("fetch_rows: pos: %d, cod_bloque: %d, numero_bloques_existentes: %d, registros: %d PASO3", pos, codigo_bloque, lista_bloques.size(), result.records.size());
       return true;
     }
     
