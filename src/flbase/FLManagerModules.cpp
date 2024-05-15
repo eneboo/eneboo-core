@@ -796,7 +796,7 @@ QString FLManagerModules::shaOfFile(const QString &n)
     if (dictKeyFiles) {
       QString *sha_cached = dictKeyFiles->find(n);
       if (sha_cached) {
-        return sha_cached;
+        return *sha_cached;
       }
     }
     
