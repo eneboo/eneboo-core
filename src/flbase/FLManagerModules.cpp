@@ -792,6 +792,14 @@ void FLManagerModules::setContent(const QString &n, const QString &idM, const QS
 QString FLManagerModules::shaOfFile(const QString &n)
 {
   if (db_->dbAux() && n.left(3) != "sys" && !db_->manager()->isSystemTable(n)) {
+    
+    if (dictKeyFiles) {
+      QString sha_cached = dictKeyFiles->find(n);
+      if (!sha_cached.isEmpty()) {
+        return sha_cached;
+      }
+    }
+    
     QString formatVal(db_->manager()->formatAssignValue("nombre", QVariant::String, n, true));
     QSqlQuery q(QString::null, db_->dbAux());
     q.setForwardOnly(true);
