@@ -65,9 +65,12 @@ SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
   {
     //qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
     //recogemos url hosts para hacer llamadas.
+    lista_tablas_cacheada.clear();
   }
 
-SqlApiDriver::~SqlApiDriver() {}
+SqlApiDriver::~SqlApiDriver() {
+  lista_tablas_cacheada.clear();
+}
 
 SqliteDatabase *SqlApiDriver::dataBase()
 {
