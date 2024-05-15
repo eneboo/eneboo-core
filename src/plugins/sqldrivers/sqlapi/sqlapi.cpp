@@ -1096,7 +1096,7 @@ bool SqliteResult::fetch(int i)
     return true;
 
   setAt(i);
-  qWarning("FETCH! --> %d %s", i, query.latin1());
+  qWarning("FETCH! --> %d (%d) %s", i, dataSet->num_rows(), query.latin1());
   return dataSet->seek(i);
 }
 

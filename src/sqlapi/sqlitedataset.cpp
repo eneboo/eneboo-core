@@ -1015,6 +1015,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
+    qWarning("seek: %d", pos);
     if (ds_state == dsSelect) {
       if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
           Dataset::seek(pos);
