@@ -1100,6 +1100,7 @@ bool SqliteResult::fetch(int i)
     return true;
 
   setAt(i);
+  qWarning("FETCH! --> %d %s", i, query.latin1());
   return dataSet->seek(i);
 }
 
