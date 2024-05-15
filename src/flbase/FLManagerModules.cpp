@@ -798,8 +798,12 @@ QString FLManagerModules::shaOfFile(const QString &n)
       if (sha_cached) {
         return *sha_cached;
       }
-    }
+    } 
+
+    qWarning("FLManagerModules::shaOfFile('" + n + "') no encontrado");
+    return QString::null;
     
+/*     
     QString formatVal(db_->manager()->formatAssignValue("nombre", QVariant::String, n, true));
     QSqlQuery q(QString::null, db_->dbAux());
     q.setForwardOnly(true);
@@ -808,7 +812,7 @@ QString FLManagerModules::shaOfFile(const QString &n)
       return q.value(0).toString();
     return QString::null;
   } else
-    return QString::null;
+    return QString::null; */
 }
 
 QWidget *FLManagerModules::createUI(const QString &n, QObject *connector,
