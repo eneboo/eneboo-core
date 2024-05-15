@@ -1134,6 +1134,11 @@ int SqliteResult::numRowsAffected()
 
 void SqlApiDriver::Mr_Proper()
 {
+  // no hacemos nada...
+}
+
+/* void SqlApiDriver::Mr_Proper()
+{
 #if 0
   QString mproperMsg(tr("Este proceso puede tener una larga duración, dependiendo\n"
                         "del tamaño de la base de datos.\n"
@@ -1209,3 +1214,4 @@ void SqlApiDriver::Mr_Proper()
 #endif
   FLUtil::destroyProgressDialog();
 }
+ */

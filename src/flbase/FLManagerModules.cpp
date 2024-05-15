@@ -799,6 +799,7 @@ QString FLManagerModules::shaOfFile(const QString &n)
         return *sha_cached;
       }
     } 
+  }
 
     qWarning("FLManagerModules::shaOfFile('" + n + "') no encontrado");
     return QString::null;
