@@ -86,7 +86,6 @@ public:
   QString urlApi;
   QString userApi;
   QString passwordApi;
-  map<int,QStringList> tablas_cacheadas;
 
 
 private:

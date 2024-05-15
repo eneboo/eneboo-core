@@ -934,11 +934,6 @@ QStringList SqlApiDriver::tables(const QString &typeName) const
     return tl;
   int type_ = typeName.toInt();
 
-  qWarning("TABLES! %d", type_);
-  if (tablas_cacheadas.count(type_) == 1) {
-    return tablas_cacheadas.at(type_);
-  }
-  qWarning("TABLES! %d sin caché", type_);
   QSqlQuery *t = new QSqlQuery(createQuery());
   t->setForwardOnly(true);
   if (typeName.isEmpty() || ((type_ & (int) QSql::Tables) == (int) QSql::Tables)) {
@@ -959,13 +954,6 @@ QStringList SqlApiDriver::tables(const QString &typeName) const
     while (t->next())
       tl.append(t->value(0).toString());
   }
-
-  // guardar tl en lista_tablas_cacheada con un for con iterator
-
-  tablas_cacheadas[type_] = tl;
-
-  
-
 
   delete t;
   return tl;
