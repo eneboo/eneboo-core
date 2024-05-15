@@ -760,7 +760,6 @@ void SqliteDataset::fill_fields()
 int SqliteDataset::resuelve_bloque(const int posicion) {
   
     int parte_entera = num_rows() > 0 ? floor(posicion / LIMIT_RESULT): 0;
-    qWarning("Parte entera: %d de %d", parte_entera, num_rows());
     return parte_entera;
 }
 
