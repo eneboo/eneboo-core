@@ -777,12 +777,14 @@ void SqliteDataset::lista_bloques_pila_paginacion()
 
 bool SqliteDataset::fetch_rows(int pos) {
     
-    
+    qWarning("fetch_rows: %d PASO1", pos);
     int codigo_bloque = resuelve_bloque(pos);
     
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la lista, lo meto el primero
       lista_bloques[codigo_bloque] = false;
+      qWarning("fetch_rows: %d %d PASO2", pos, codigo_bloque);
     } else { // si esta en la pila, no hago nada
+    qWarning("fetch_rows: %d %d %d PASO3", pos, codigo_bloque, lista_bloques.size());
       return true;
     }
     
@@ -1015,8 +1017,9 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
-    qWarning("seek: %d", pos);
+
     if (ds_state == dsSelect) {
+      qWarning("seek: %d", pos);
       if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
           Dataset::seek(pos);
           fill_fields();
