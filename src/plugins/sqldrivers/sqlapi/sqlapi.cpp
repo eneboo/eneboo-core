@@ -63,13 +63,14 @@ static QVariant::Type qDecodeSqliteType(fType t)
 SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
   FLSqlDriver(parent, name), dataBase_(0)
   {
+
+  lista_tablas_cacheada = new map<int,QStringList>;
     //qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
     //recogemos url hosts para hacer llamadas.
-    lista_tablas_cacheada.clear();
   }
 
 SqlApiDriver::~SqlApiDriver() {
-  lista_tablas_cacheada.clear();
+  lista_tablas_cacheada->clear();
 }
 
 SqliteDatabase *SqlApiDriver::dataBase()
@@ -934,8 +935,8 @@ QStringList SqlApiDriver::tables(const QString &typeName) const
   int type_ = typeName.toInt();
 
   qWarning("TABLES! %d", type_);
-  if (lista_tablas_cacheada.count(type_) == 1) {
-    return lista_tablas_cacheada[type_];
+  if (tablas_cacheadas.count(type_) == 1) {
+    return tablas_cacheadas.at(type_);
   }
   qWarning("TABLES! %d sin caché", type_);
   QSqlQuery *t = new QSqlQuery(createQuery());
@@ -959,7 +960,12 @@ QStringList SqlApiDriver::tables(const QString &typeName) const
       tl.append(t->value(0).toString());
   }
 
-  lista_tablas_cacheada[type_] = tl;
+  // guardar tl en lista_tablas_cacheada con un for con iterator
+
+  tablas_cacheadas[type_] = tl;
+
+  
+
 
   delete t;
   return tl;
