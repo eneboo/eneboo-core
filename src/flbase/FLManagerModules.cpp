@@ -59,7 +59,7 @@ void test_sha256(const string name, const string str)
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     if (ss.str() == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-    	qWarning("FLManagerModules : Fichero " + QString(name) + " vac?o.");
+    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacío.");
     else
     	{
     ss << "  " << name;
@@ -81,8 +81,8 @@ public:
   QString version;
   QCString icono;
   QString areaDescripcion;
-  QDomDocument signatures;
-  QDomDocument certificates;
+  //QDomDocument signatures;
+  //QDomDocument certificates;
 };
 
 FLManagerModules::FLManagerModules(FLSqlDatabase *db) : db_(db)
@@ -132,24 +132,24 @@ void FLManagerModules::loadAllIdModules()
     infoMod->areaDescripcion = q.value(5).toString();
     dictInfoMods->replace(infoMod->idModulo.upper(), infoMod);
 
-    QString signatures = contentCached(infoMod->idModulo + ".signatures");
-    QString certificates = contentCached(infoMod->idModulo + ".certificates");
+    //QString signatures = contentCached(infoMod->idModulo + ".signatures");
+    //QString certificates = contentCached(infoMod->idModulo + ".certificates");
 
-    QDomDocument xmlDocSignatures;
-    xmlDocSignatures.setContent(signatures);
+    //QDomDocument xmlDocSignatures;
+    //xmlDocSignatures.setContent(signatures);
 
-    QDomDocument xmlDocCertificates;
-    xmlDocCertificates.setContent(certificates);
+    //QDomDocument xmlDocCertificates;
+    //xmlDocCertificates.setContent(certificates);
     
-    infoMod->signatures = xmlDocSignatures;
-    infoMod->certificates = xmlDocCertificates;
+    //infoMod->signatures = xmlDocSignatures;
+    //infoMod->certificates = xmlDocCertificates;
     
     if (infoMod->idModulo != "sys")
       listAllIdModules_->append(infoMod->idModulo);
     else
       sysModuleFound = true;
     
-    checkSignatures(infoMod);
+    //checkSignatures(infoMod);
         
     
   }
@@ -157,7 +157,7 @@ void FLManagerModules::loadAllIdModules()
     FLInfoMod *infoMod = new FLInfoMod();
     infoMod->idModulo = QString("sys");
     infoMod->idArea = QString("sys");
-    infoMod->descripcion = QString("Administraci?n");
+    infoMod->descripcion = QString("Administración");
     infoMod->version = QString("0.0");
     infoMod->icono = contentFS(AQ_DATA + "/sys.xpm");
     infoMod->areaDescripcion = QString("Sistema");
@@ -166,7 +166,7 @@ void FLManagerModules::loadAllIdModules()
 }
 
 
-void FLManagerModules::checkSignatures(FLInfoMod *mod)
+/* void FLManagerModules::checkSignatures(FLInfoMod *mod)
 {
     QDomDocument sig = mod->signatures;
     QDomDocument cert = mod->certificates;
@@ -255,7 +255,7 @@ void FLManagerModules::checkSignatures(FLInfoMod *mod)
     
     
 
-}
+} */
 
 void FLManagerModules::loadIdAreas()
 {
@@ -323,10 +323,10 @@ void FLManagerModules::init()
   tmpTMD = db_->manager()->createSystemTable("flsettings");
   tmpTMD = db_->manager()->createSystemTable("flserial");
   tmpTMD = db_->manager()->createSystemTable("flvar");
-//-->FLLarge ?nico   
+//-->FLLarge único   
   if (aqApp->singleFLLarge())
     tmpTMD = db_->manager()->createSystemTable("fllarge");
-//<--FLarge ?nico
+//<--FLarge único
 
   tmpTMD = db_->manager()->createSystemTable("flupdates");
 
@@ -407,7 +407,7 @@ void FLManagerModules::init()
     cursor.refreshBuffer();
     cursor.setValueBuffer("idmodulo", "sys");
     cursor.setValueBuffer("idarea", "sys");
-    cursor.setValueBuffer("descripcion", QApplication::tr("Administraci?n"));
+    cursor.setValueBuffer("descripcion", QApplication::tr("Administración"));
     cursor.setValueBuffer("icono", contentFS(AQ_DATA + "/sys.xpm"));
     cursor.setValueBuffer("bloqueo", QVariant(false, 0));
     cursor.commitBuffer();
@@ -476,7 +476,7 @@ QString FLManagerModules::contentStatic(const QString &n)
   return str_ret;
 }
 
-QString FLManagerModules::content(const QString &n)
+QString FLManagerModules::content(const QString &n, const bool only_fs = false)
 {
   qWarning("FLManagerModules::content('" + n + "')");
   if (n.isEmpty() || n.length() <= 3)
@@ -509,6 +509,10 @@ QString FLManagerModules::content(const QString &n)
 
   if (!retFS.isEmpty()) {
     return retFS;
+  }
+
+  if (only_fs) {
+    return QString::null;
   }
 
   if (notSysTable) {
@@ -673,11 +677,6 @@ QString FLManagerModules::contentCode(const QString &n)
   s.replace(rx, "=");
   rx.setPattern("[\n\r]{3,}");
   s.replace(rx, "\n");
-  //rx.setMinimal(true);
-  //rx.setPattern("class\\s+(\\w+)\\s+extends\\s+\\1([\\s\n]*\\{.*\\}[\\s\n]*\\})");
-  //scode.replace(rx, "/* ?? ERROR !! : LA CLASE HEREDA DE ELLA MISMA."
-  //               "\nCODIGO INHABILITADO AUTOM?TICAMENTE POR AbanQ :\n\n"
-  //               "class \\1 extends \\1 \\2\n\n ?? FIN ERROR !! */");
 #endif
 
   return s;
@@ -728,16 +727,20 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
       s = FLMemCache::find(n);
       if (s)
         return *s;
-      key = shaOfFile(n);
+
+/*       key = shaOfFile(n);
       if (shaKey)
-        *shaKey = key;
+        *shaKey = key; */
     }
-  } else
-    return content(n);
+  } else {
+    qWarning("FLManagerModules::contentCached('" + n + "') notsystable");
+    return content(n, true);
+  }
+    
 
   if (key.isEmpty()) {
     qWarning("FLManagerModules::contentCached('" + n + "') content");
-    str_ret = content(n);
+    str_ret = content(n, true);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
@@ -842,7 +845,7 @@ void FLManagerModules::setActiveIdModule(const QString &id)
     activeIdModule_ = id;
   } else {
 #ifdef FL_DEBUG
-    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un m?dulo inexistente"));
+    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un módulo inexistente"));
 #endif
     activeIdArea_ = QString::null;
     activeIdModule_ = QString::null;
