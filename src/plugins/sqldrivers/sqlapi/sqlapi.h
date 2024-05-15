@@ -87,6 +87,8 @@ public:
   QString userApi;
   QString passwordApi;
 
+  bool SqlApiDriver::existsTable(const QString &n) const;
+
 
 private:
 
