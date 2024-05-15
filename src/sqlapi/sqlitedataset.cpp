@@ -68,7 +68,7 @@ namespace dbiplus
         //printf("\nA) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
 
         if (reslt[i] == NULL) {
-          //Automï¿½ticamente marcaremos campo como null
+          //Autom?ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
@@ -759,7 +759,9 @@ void SqliteDataset::fill_fields()
 
 int SqliteDataset::resuelve_bloque(const int posicion) {
   
-    int parte_entera = result.total_records > 0 ? floor(posicion / LIMIT_RESULT): 0;
+    int parte_entera = num_rows() > 0 ? floor(posicion / LIMIT_RESULT): 0;
+    qWarning("Parte entera: %d de %d", parte_entera, num_rows());
+    return parte_entera;
 }
 
 void SqliteDataset::lista_bloques_pila_paginacion()
@@ -777,14 +779,12 @@ void SqliteDataset::lista_bloques_pila_paginacion()
 
 bool SqliteDataset::fetch_rows(int pos) {
     
-    qWarning("fetch_rows: %d PASO1", pos);
+    
     int codigo_bloque = resuelve_bloque(pos);
     
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la lista, lo meto el primero
       lista_bloques[codigo_bloque] = false;
-      qWarning("fetch_rows: %d %d PASO2", pos, codigo_bloque);
     } else { // si esta en la pila, no hago nada
-    qWarning("fetch_rows: pos: %d, cod_bloque: %d, numero_bloques_existentes: %d, registros: %d PASO3", pos, codigo_bloque, lista_bloques.size(), result.records.size());
       return true;
     }
     
@@ -895,7 +895,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACI?N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -941,14 +941,14 @@ bool SqliteDataset::fetch_rows(int pos) {
 
 
 
-    //qWarning("PROCESANDO VALORES LINEA Nï¿½ %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
       const std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
-          //AutomÃ¡ticamente marcaremos campo como null
+          //Automáticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
@@ -964,7 +964,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACI?N: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
@@ -1017,9 +1017,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
-
     if (ds_state == dsSelect) {
-      qWarning("seek: %d", pos);
       if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
           Dataset::seek(pos);
           fill_fields();
