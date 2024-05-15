@@ -928,23 +928,25 @@ QStringList SqlApiDriver::tables(const QString &typeName) const
   QStringList tl;
   if (!isOpen() || !dataBase_)
     return tl;
-  int type = typeName.toInt();
+  int type_ = typeName.toInt();
+
+  qWarning("TABLES! %d", type_);
 
   QSqlQuery *t = new QSqlQuery(createQuery());
   t->setForwardOnly(true);
-  if (typeName.isEmpty() || ((type & (int) QSql::Tables) == (int) QSql::Tables)) {
+  if (typeName.isEmpty() || ((type_ & (int) QSql::Tables) == (int) QSql::Tables)) {
     t->exec("select relname from pg_class where ( relkind = 'r' ) "
             "and ( relname !~ '^Inv' ) " "and ( relname !~ '^pg_' ) ");
     while (t->next())
       tl.append(t->value(0).toString());
   }
-  if ((type & (int) QSql::Views) == (int) QSql::Views) {
+  if ((type_ & (int) QSql::Views) == (int) QSql::Views) {
     t->exec("select relname from pg_class where ( relkind = 'v' ) "
             "and ( relname !~ '^Inv' ) " "and ( relname !~ '^pg_' ) ");
     while (t->next())
       tl.append(t->value(0).toString());
   }
-  if ((type & (int) QSql::SystemTables) == (int) QSql::SystemTables) {
+  if ((type_ & (int) QSql::SystemTables) == (int) QSql::SystemTables) {
     t->exec("select relname from pg_class where ( relkind = 'r' ) "
             "and ( relname like 'pg_%' ) ");
     while (t->next())

@@ -483,7 +483,7 @@ QString FLManagerModules::contentStatic(const QString &n)
 
 QString FLManagerModules::content(const QString &n, const bool only_fs)
 {
-  qWarning("FLManagerModules::content('" + n + "')");
+  //qWarning("FLManagerModules::content('" + n + "')");
   if (n.isEmpty() || n.length() <= 3)
     return QString::null;
 
@@ -703,7 +703,7 @@ QString FLManagerModules::contentFS(const QString &pN)
 
 QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
 {
-  qWarning("FLManagerModules::contentCached('" + n + "')");
+  //qWarning("FLManagerModules::contentCached('" + n + "')");
   if (n.isEmpty() || n.length() <= 3)
     return QString::null;
 
@@ -738,20 +738,20 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
         *shaKey = key; */
     }
   } else {
-    qWarning("FLManagerModules::contentCached('" + n + "') notsystable");
+    //qWarning("FLManagerModules::contentCached('" + n + "') notsystable");
     return content(n, true);
   }
     
 
   if (key.isEmpty()) {
-    qWarning("FLManagerModules::contentCached('" + n + "') content");
+    //qWarning("FLManagerModules::contentCached('" + n + "') content");
     str_ret = content(n, true);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
-    qWarning("FLManagerModules::contentCached('" + n + "') AQ_DISKCACHE_FIND");
+    //qWarning("FLManagerModules::contentCached('" + n + "') AQ_DISKCACHE_FIND");
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
