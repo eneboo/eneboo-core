@@ -794,8 +794,8 @@ QString FLManagerModules::shaOfFile(const QString &n)
   if (db_->dbAux() && n.left(3) != "sys" && !db_->manager()->isSystemTable(n)) {
     
     if (dictKeyFiles) {
-      QString sha_cached = dictKeyFiles->find(n);
-      if (!sha_cached.isEmpty()) {
+      QString *sha_cached = dictKeyFiles->find(n);
+      if (sha_cached) {
         return sha_cached;
       }
     }
