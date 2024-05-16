@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLDataTable.h"
@@ -505,11 +505,22 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     if (!cursor_->QSqlCursor::seek(row))
     {
 #ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+      qWarning(tr("FLDataTable::paintCell() : Posiciï¿½n no vï¿½lida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
   }
+
+int window_offset2 = verticalHeader()->offset();
+int cell_top2 = cr.top();
+bool in_range2 = cell_top + 20 > window_offset && cell_top < window_offset + 1000;
+
+if (in_range2 == false)
+  {
+    //qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, window_offset);
+    qWarning("NON GRATO!! row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top2);
+    return;
+  } 
 
 
 
@@ -778,7 +789,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     }
     else
     {
-      text = field->value().toBool() ? tr("Sí") : tr("No");
+      text = field->value().toBool() ? tr("Sï¿½") : tr("No");
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);
     }
