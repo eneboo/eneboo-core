@@ -2863,7 +2863,7 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
               last_ch = ch;
               last_cw = cw;
               last_cx = cx;
-              qWarning("QTable::drawContents nueva vista: row: %d, cx: %d, cy: %d, cw: %d, ch: %d", r, cx, cy, cw, ch); 
+              //qWarning("QTable::drawContents nueva vista: row: %d, cx: %d, cy: %d, cw: %d, ch: %d", r, cx, cy, cw, ch); 
       }
 
 
