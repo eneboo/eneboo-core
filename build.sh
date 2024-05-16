@@ -882,9 +882,8 @@ cp -f ./src/fllite/images/icon*.png $PREFIX/share/eneboo/images 2> /dev/null
 cp -f ./src/forms/*.ui $PREFIX/share/eneboo/forms 2> /dev/null
 cp -f ./src/tables/*.mtd $PREFIX/share/eneboo/tables 2> /dev/null
 cp -f ./src/translations/*.ts $PREFIX/share/eneboo/translations 2> /dev/null
-if [ ! -f "./src/splashscreen.png" ]; then
-  cp ./src/splashscreen.png $PREFIX/share/eneboo/splashscreen.png 2> /dev/null
-fi
+cp ./src/splashscreen.png $PREFIX/share/eneboo/splashscreen.png 2> /dev/null
+
 #cp -f ./src/scripts/*.qs $PREFIX/share/eneboo/scripts 2> /dev/null
 rm $PREFIX/share/eneboo/scripts/* 2> /dev/null
 cp -f ./src/scripts/*.qs $PREFIX/share/eneboo/scripts 2> /dev/null
