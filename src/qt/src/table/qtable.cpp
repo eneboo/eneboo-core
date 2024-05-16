@@ -41,6 +41,7 @@
 #endif
 
 #include "qtable.h"
+#define AQ_NO_INVERSE_PAINT
 
 #ifndef QT_NO_TABLE
 
@@ -2805,6 +2806,7 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
   // ### AbanQ
 #if defined(AQ_NO_INVERSE_PAINT)
   // Go through the rows
+
   for (int r = rowfirst; r <= rowlast; ++r) {
     // get row position and height
     int rowp = rowPos(r);
@@ -2846,6 +2848,14 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
       if (focusStl != FollowStyle && selected && !currentInSelection &&
           r == curRow && c == curCol)
         selected = FALSE;
+
+      int window_offset = verticalHeader()->offset();
+      bool in_range = rowp + 20 > window_offset && rowp < window_offset + 1000;
+      if (!in_range) {
+        qWarning("QTable::drawContents omitido: rowp=%d, window_offset=%d", rowp, window_offset);
+        return;
+      }
+      
       paintCell(p, r, c, QRect(colp, rowp, colw, rowh), selected);
       p->translate(-colp, -rowp);
 
