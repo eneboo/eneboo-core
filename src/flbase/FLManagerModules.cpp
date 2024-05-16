@@ -348,7 +348,7 @@ void FLManagerModules::init()
         if (!db_->dbAux()->recordInfo("flfiles").contains("binario"))
           modVer = QString::null;
       } else if (driverName == "FLsqlapi") {
-         modVer = '@';
+         modVer = AQ_VERSION;
       } else {
         QSqlQuery qryFil("select * from flfiles limit 1", db_->dbAux());
         if (!db_->dbAux()->recordInfo(qryFil).contains("binario"))
