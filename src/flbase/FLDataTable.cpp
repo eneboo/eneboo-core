@@ -475,20 +475,6 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
   if (!fieldTMD)
     return;
 
-
-  int window_offset = verticalHeader()->offset();
-  int cell_top = cr.top();
-  bool in_range = cell_top + 20 > window_offset && cell_top < window_offset + 1000;
-
-
-  if (in_range == false)
-  {
-    //qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, window_offset);
-    qWarning("X row: %d, offset: %d, cell_top: %d" , row, window_offset, cell_top);
-    return;
-  } 
-
-
   int type = fieldTMD->type();
 
   if (!showAllPixmaps_ && type == QVariant::Pixmap && row != rowSelected)
@@ -496,9 +482,6 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
-
-
-
 
   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid())
   {
@@ -512,12 +495,12 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
   }
 
 int window_offset2 = verticalHeader()->offset();
+int cell_top = cr.top();
 bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1000;
 
 if (in_range2 == false)
   {
-    //qWarning("%d (%d) no se pinta por fuera de rango (%d)", row, cell_top, window_offset);
-    qWarning("NON GRATO!! row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top);
+    qWarning("Omitida row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top);
     return;
   } 
 

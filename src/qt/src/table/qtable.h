@@ -488,6 +488,8 @@ protected:
   EditMode editMode() const;
   int currEditRow() const;
   int currEditCol() const;
+  int last_cy;
+  int last_ch;
 
 protected slots:
   virtual void columnWidthChanged(int col);

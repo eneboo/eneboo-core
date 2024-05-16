@@ -2853,8 +2853,14 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
       bool in_range = rowp + 20 > window_offset && rowp < window_offset + 1000;
       if (!in_range) {
         qWarning("QTable::drawContents omitido: rowp=%d, window_offset=%d", rowp, window_offset);
+        qWarning("Repintar: cx: %d, cy: %d, cw: %d, ch: %d, last_cy: %d, last_ch: %d", cx, cy, cw, ch, last_cy, last_ch); // cx, cw
+        // guardar cy, ch
+        drawContents(p, cx, last_cy, cw, last_ch);
         return;
       }
+
+      last_cy = cy;
+      last_ch = ch;
       
       paintCell(p, r, c, QRect(colp, rowp, colw, rowh), selected);
       p->translate(-colp, -rowp);
