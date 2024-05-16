@@ -2855,10 +2855,10 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
         qWarning("QTable::drawContents omitido: row=%d, rowp=%d, window_offset=%d", r, rowp, window_offset);
         qWarning("QTable::drawContents repintar current: cx: %d, cy: %d, cw: %d, ch: %d:",last_cx, last_cy, last_cw, last_ch); // cx, cw
         // guardar cy, ch
-        drawContents(p, last_cx, last_cy, last_cw, last_ch);
+        drawContents(p, 0, last_cy, last_cw, last_ch);
         return;
       }
-      if (last_cy != cy || last_ch != ch || last_cw != cw || last_cx != cx) {
+      if (last_cy != cy || last_ch != ch || last_cw != cw) {
               last_cy = cy;
               last_ch = ch;
               last_cw = cw;
