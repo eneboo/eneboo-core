@@ -490,6 +490,8 @@ protected:
   int currEditCol() const;
   int last_cy;
   int last_ch;
+  int last_cw;
+  int last_cx;
 
 protected slots:
   virtual void columnWidthChanged(int col);
