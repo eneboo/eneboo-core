@@ -2852,8 +2852,8 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
       int window_offset = verticalHeader()->offset();
       bool in_range = rowp + 20 > window_offset && rowp < window_offset + 1000;
       if (!in_range) {
-        qWarning("QTable::drawContents omitido: rowp=%d, window_offset=%d", rowp, window_offset);
-        qWarning("QTable::drawContents repintar: cx: %d, cy: %d, cw: %d, ch: %d: %d", cx, last_cy, cw, last_ch); // cx, cw
+        qWarning("QTable::drawContents omitido: row=%d, rowp=%d, window_offset=%d", r, rowp, window_offset);
+        qWarning("QTable::drawContents repintar current: cx: %d, cy: %d, cw: %d, ch: %d:",last_cx, last_cy, last_cw, last_ch); // cx, cw
         // guardar cy, ch
         drawContents(p, last_cx, last_cy, last_cw, last_ch);
         return;
@@ -2863,7 +2863,7 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
               last_ch = ch;
               last_cw = cw;
               last_cx = cx;
-              qWarning("QTable::drawContents nueva vista: cx: %d, cy: %d, cw: %d, ch: %d", cx, cy, cw, ch); 
+              qWarning("QTable::drawContents nueva vista: row: %d, cx: %d, cy: %d, cw: %d, ch: %d", r, cx, cy, cw, ch); 
       }
 
 
