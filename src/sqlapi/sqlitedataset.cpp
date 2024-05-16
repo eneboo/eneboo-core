@@ -784,7 +784,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la lista, lo meto el primero
       lista_bloques[codigo_bloque] = false;
     } else { // si esta en la pila, no hago nada
-      return true;
+      return result.records.count(pos) == 1;
     }
     
   /*     if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
@@ -963,7 +963,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACI?N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
