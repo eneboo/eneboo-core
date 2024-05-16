@@ -489,6 +489,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     {
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+      delayedViewportRepaint();
 #endif
       return;
     }
