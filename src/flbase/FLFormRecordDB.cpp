@@ -647,7 +647,7 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
 
   if (cursor_)
   {
-    int levels = cursor_->transactionLevel() - initTransLevel;
+    int levels = initTransLevel == 0 ? initTransLevel : cursor_->transactionLevel() - initTransLevel;
     if (levels > 0)
     {
       cursor_->rollbackOpened(
