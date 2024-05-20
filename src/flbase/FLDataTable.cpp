@@ -489,7 +489,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     {
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
-      delayedViewportRepaint();
+      
 #endif
       return;
     }
@@ -502,6 +502,7 @@ bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1
 if (in_range2 == false)
   {
     qWarning("Omitida row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top);
+    delayedViewportRepaint();
     return;
   } 
 

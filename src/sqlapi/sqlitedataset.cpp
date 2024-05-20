@@ -784,7 +784,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (lista_bloques.count(codigo_bloque) == 0) { // si no esta en la lista, lo meto el primero
       lista_bloques[codigo_bloque] = false;
     } else { // si esta en la pila, no hago nada
-      return result.records.count(pos) == 1;
+      return true;
     }
     
   /*     if (pila_paginacion.size() == 0) { // Si no hay bloques en la pila, salgo
