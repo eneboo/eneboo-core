@@ -621,7 +621,8 @@ void SqliteDataset::fill_fields()
     int res;
     exec_res.record_header.clear();
     exec_res.records.clear();
-    if (res = db->setErr(sqlite3_exec(handle(), sql.c_str(), &callback, &exec_res, &errmsg), sql.c_str()) == SQLITE_OK)
+    SqliteDataset::sql = sql;
+    if (gestionar_consulta_paginada(0))
       return res;
     else
       return DB_ERROR;
