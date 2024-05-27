@@ -1011,10 +1011,6 @@ bool SqliteResult::reset(const QString &q)
 
   dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
 
-  if (!isSelect()) {
-    dataSet->is_query = false;
-  }
-
   if (!dataSet->exec(query.latin1())) {
       return false;
     }
