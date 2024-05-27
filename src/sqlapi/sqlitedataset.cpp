@@ -862,6 +862,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       QString password = ((SqliteDatabase *)db)->passwordApi;
       if (!hacer_login_usuario(user, password)) {
         qWarning("Error al hacer login. QUERY Cancelada");
+        db->setErr(SQLITE_ERROR, "auth error");
         return false;
       }
       }
