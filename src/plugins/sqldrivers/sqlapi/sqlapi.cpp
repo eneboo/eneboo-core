@@ -1005,45 +1005,23 @@ bool SqliteResult::reset(const QString &q)
   if (query.upper().endsWith("FOR UPDATE"))
     query.truncate(query.length() - 10);
 
-  
-
-  if (!isSelect()) {
-      qWarning("OMITIENDO ! --> %s", query.latin1());
-/*     if (query.find("CREATE TABLE", 0, false) == 0) {
-      Dataset *ds = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
-
-      if (!ds)
-        return false;
-
-      if (!ds->exec(query.latin1())) {
-        delete ds;
-        return false;
-      }
-      delete ds;
-    } else {
-      if (dataSet)
-        delete dataSet;
-      dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
-      if (!dataSet->exec(query.latin1()))
-        return false;
-    } */
-
-    return true;
-  } else {
-    qWarning("QUERY! --> %s", query.latin1());
+  if (dataSet) {
+    delete dataSet;
   }
 
-  
-
-  if (dataSet)
-    delete dataSet;
-
   dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
-  if (dataSet->query(query.latin1())) {
-    setActive(true);
+
+  if (!isSelect()) {
+    dataSet->is_query = false;
+  }
+
+  if (!dataSet->exec(query.latin1())) {
+      return false;
+    }
+    if (isSelect()) {
+      setActive(true);
+    }
     return true;
-  } else
-    return false;
 }
 
 QVariant SqliteResult::data(int i)

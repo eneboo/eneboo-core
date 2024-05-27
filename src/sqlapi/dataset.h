@@ -175,6 +175,8 @@ namespace dbiplus
       return false;
     };
 
+    bool is_query;
+
   };
 
 

@@ -318,6 +318,7 @@ namespace dbiplus
     last_invalid_pos = 0;
     bloque_last = 0;
     bloque_pos = 0;
+    is_query = true;
   }
 
 
@@ -334,6 +335,7 @@ namespace dbiplus
     last_invalid_pos = 0;
     bloque_last = 0;
     bloque_pos = 0;
+    is_query = true;
   }
 
   SqliteDataset::~SqliteDataset()
@@ -658,8 +660,13 @@ void SqliteDataset::fill_fields()
     result.total_records = 0;
     pila_paginacion.clear();
     lista_bloques.clear();
-
-    gestionar_consulta_paginada(0);
+    bool res = true;
+    res = gestionar_consulta_paginada(0); 
+    if (!res) {
+      db->setErr(SQLITE_ERROR,sql);
+      return false;
+    }
+   
     lista_bloques[0] = true;
   
 
@@ -829,6 +836,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
     cadena += "\"params\":{\n";
     cadena += "\"sql\":\"" + qry + "\",\n";
+    cadena += "\"is_query\":" + QString(is_query ? "true" : "false") + ",\n";
     cadena += "\"offset\":" + QString::number(offset) + ",\n";
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
