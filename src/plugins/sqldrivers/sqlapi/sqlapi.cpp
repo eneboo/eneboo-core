@@ -92,7 +92,7 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
 #ifdef FL_DEBUG
     qWarning("SqlApiDriver::open() : %s", dataBase_->getErrorMsg());
 #endif
-
+   
     setOpen(false);
     setOpenError(true);
     setLastError(QSqlError(dataBase_->getErrorMsg(), QString::null, QSqlError::Unknown));
@@ -100,6 +100,10 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   } else {
     setOpen(true);
     setOpenError(false);
+    
+
+
+    userIdApi = dataBase_->userIdApi;
     return true;
   }
 }

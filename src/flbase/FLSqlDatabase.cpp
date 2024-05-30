@@ -26,7 +26,6 @@ email                : mail@infosial.com
 #include "FLSqlCursor.h"
 #include "FLManager.h"
 #include "FLManagerModules.h"
-#include "sqlapi.h"
 
 extern QSInterpreter *globalAQSInterpreter;
 
@@ -190,11 +189,11 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
   dbAux_->setConnectOptions(connOpts);
 
   if (dr->tryConnect(database_, user_, password_, host_, port_)) {
-
-    if (driverName() == "sqlApi") {      
-      user_ = ((SqlApiDriver *)dr)->dataBase()->userIdApi;
-     qWarning("FLSqlDatabase::connectDB: user_ = %s", user_);
+    if (driverName_ == "sqlApi") {
+      qWarning("SETEANDO USERID CORRECTO %s", dr->userIdApi);
+      user_ = dr->userIdApi;
     }
+
 
     db_->setDatabaseName(database_);
     db_->setUserName(user_);

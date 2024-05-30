@@ -29,7 +29,6 @@ INCLUDEPATH += $$ROOT \
     $$ROOT/src/posprinter \
     $$ROOT/src/flmail \
     $$ROOT/src/serialport \
-    $$ROOT/src/sqlapi \
     $$ROOT/src
 
 win32 { 
