@@ -220,7 +220,14 @@ namespace dbiplus
     }
     if (sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,NULL) != SQLITE_OK) {
         return DB_CONNECTION_NONE;
-      }
+    }
+
+    SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
+    ds->sql = "select * from pg_stat_activity where datname = '" + db + "'";
+    if (!ds->gestionar_consulta_paginada(0)) {
+      return DB_CONNECTION_NONE;
+    }
+  
     active = true;
     return DB_CONNECTION_OK;
 
@@ -407,19 +414,21 @@ namespace dbiplus
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"only_key\":\"token\",\n";
+    //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false\n";
     cadena += "}";
-    
+    qWarning("Fichero salida token : " + fichero_salida);
     QString fichero_datos = generar_fichero_aqextension(cadena);
     if (fichero_datos == "") {
       qWarning("Error al generar fichero de datos");
       return false;
     }
-    QString token = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
-    //QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
+    QString data_received = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
+    QString token = data_received.right(data_received.length() - (data_received.find("\"token\": \"") + 10));
     //qWarning("Token(1): " + token);
-    //token = token.left(token.find("\""));
+    token = token.left(token.find("\""));
+
+    
 
     if (token == "error") {
       qWarning("Error al solicitar login");
@@ -902,7 +911,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACI?N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
