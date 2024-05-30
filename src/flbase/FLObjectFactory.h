@@ -504,7 +504,7 @@ public slots:
     if (!srcDb)
       return false;
     return FLSqlConnections::addDatabase(srcDb->driverName(), srcDb->database(),
-                                         srcDb->user(), srcDb->password(), srcDb->host(),
+                                         srcDb->user_, srcDb->password(), srcDb->host(),
                                          srcDb->port(), newConnName);
   }
 
