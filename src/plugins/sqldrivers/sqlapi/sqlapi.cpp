@@ -229,7 +229,7 @@ QString SqlApiDriver::sqlCreateTable(const FLTableMetaData *tmd)
         qWarning(QApplication::tr("FLManager : Tabla-> ") +
                  tmd->name() + QApplication::tr(" . Se ha intentado poner una segunda clave primaria para el campo ") +
                  field->name() + QApplication::tr(" , pero el campo ") + primaryKey +
-                 QApplication::tr(" ya es clave primaria. S?lo puede existir una clave primaria en FLTableMetaData, use FLCompoundKey para crear claves compuestas."));
+                 QApplication::tr(" ya es clave primaria. Sólo puede existir una clave primaria en FLTableMetaData, use FLCompoundKey para crear claves compuestas."));
 #endif
 
         return QString::null;
