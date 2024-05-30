@@ -476,6 +476,9 @@ public:
 
   QString remote_user_;
 
+  /** Usuario utilizado para conectar a la base de datos actual */
+  QString user_;
+
 private:
 
   /**
@@ -492,8 +495,7 @@ private:
   /** Nombre de la base de datos actual */
   QString database_;
 
-  /** Usuario utilizado para conectar a la base de datos actual */
-  QString user_;
+
 
   /** Contraseña utilizada para conectar a la base de datos actual */
   QString password_;
