@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <dataset.h>
 #include <sqlite3.h>
-
+#include <qstring.h>
 #include "aqsqliteglobal.h"
 
 namespace dbiplus
