@@ -180,6 +180,7 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
   FLSqlDriver *dr = ::qt_cast<FLSqlDriver *>(dbAux_->driver());
   database_ = dr->formatDatabaseName(database);
   user_ = user;
+  remote_user_ = "";
   password_ = password;
   host_ = host;
   port_ = port;
@@ -206,9 +207,7 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
       return false;
 
     if (driverName_ == "FLsqlapi") {
-      user_ = dr->userIdApi;
-      db_->setUserName(user_);
-      dbAux_->setUserName(user_);
+      remote_user_ = user_;
     }
 
 

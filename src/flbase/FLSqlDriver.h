@@ -135,6 +135,9 @@ public:
   FLSqlDatabase *db() const;
 
   QString userIdApi;
+  QString urlApi;
+  QString userApi;
+  QString passwordApi;
 
 protected:
 

@@ -252,7 +252,7 @@ public:
   @return Usuario utilizado para conectar a la base de datos actual
   */
   QString user() const {
-    return user_;
+    return remote_user_ == "" ? user_ : remote_user_;
   }
 
   /**
@@ -473,6 +473,8 @@ public:
   QString connectOptions() const;
   
   QValueStack<int> cursorsOpened;
+
+  QString remote_user_;
 
 private:
 

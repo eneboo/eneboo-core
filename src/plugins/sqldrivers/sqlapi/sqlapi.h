@@ -83,10 +83,6 @@ public:
   bool alterTable(const QString &mtd1, const QString &mtd2, const QString &key = QString::null);
   void Mr_Proper();
 
-  QString urlApi;
-  QString userApi;
-  QString passwordApi;
-
   bool existsTable(const QString &n) const;
 
 
