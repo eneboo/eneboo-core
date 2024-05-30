@@ -89,6 +89,7 @@ public:
       return _in_transaction;
     };
 
+  QString userIdApi;
 };
 
 

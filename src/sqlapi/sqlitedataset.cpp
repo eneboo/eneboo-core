@@ -94,6 +94,7 @@ namespace dbiplus
     userApi = user;
     passwordApi = password;
     tokenApi = "";
+    userIdApi="";
     
     active = false;
     _in_transaction = false;    // for transaction
@@ -428,15 +429,17 @@ namespace dbiplus
     //qWarning("Token(1): " + token);
     token = token.left(token.find("\""));
 
-    
+    QString user_id = data_received.right(data_received.length() - (data_received.find("\"user\": \"") + 9));
+    user_id = user_id.left(user_id.find("\""));
+
 
     if (token == "error") {
       qWarning("Error al solicitar login");
       return false;
     }
-
+    qWarning("User: " + user_id);
     qWarning("Token(2): " + token);
-
+    ((SqliteDatabase *)db)->userIdApi = user_id;
     ((SqliteDatabase *)db)->tokenApi = token;
     return true;
   }
