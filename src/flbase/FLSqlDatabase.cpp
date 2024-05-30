@@ -189,13 +189,6 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
   dbAux_->setConnectOptions(connOpts);
 
   if (dr->tryConnect(database_, user_, password_, host_, port_)) {
-    qWarning("DRIVER " + driverName_);
-    if (driverName_ == "FLsqlapi") {
-      qWarning("SETEANDO USERID CORRECTO " + dr->userIdApi);
-      user_ = dr->userIdApi;
-    }
-
-
     db_->setDatabaseName(database_);
     db_->setUserName(user_);
     db_->setPassword(password_);
@@ -211,6 +204,13 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
     dbAux_->setPort(port_);
     if (!dbAux_->open())
       return false;
+
+    if (driverName_ == "FLsqlapi") {
+      user_ = dr->userIdApi;
+      db_->setUserName(user_);
+      dbAux_->setUserName(user_);
+    }
+
 
     connectionName_ = connName;
     initInternal();

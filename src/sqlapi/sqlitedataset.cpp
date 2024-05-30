@@ -223,10 +223,13 @@ namespace dbiplus
         return DB_CONNECTION_NONE;
     }
 
-    SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
-    ds->sql = "select * from pg_stat_activity where datname = '" + db + "'";
-    if (!ds->gestionar_consulta_paginada(0)) {
-      return DB_CONNECTION_NONE;
+
+    if (tokenApi == "") {
+      SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
+      ds->sql = "select * from pg_stat_activity where datname = '" + db + "'";
+      if (!ds->gestionar_consulta_paginada(0)) {
+        return DB_CONNECTION_NONE;
+      }
     }
   
     active = true;
