@@ -233,7 +233,10 @@ namespace dbiplus
         qWarning("Connection failure");
         return DB_CONNECTION_NONE;
       }
-      databaseApi = ds->fv("db_name").get_asString();
+      ds->first();
+      QString field_name = ds->fieldName(0);
+      qWarning("fn: " + field_name);
+      databaseApi = ds->fv(field_name).get_asString();
       qWarning("Connected to " + databaseApi);
 
     }
