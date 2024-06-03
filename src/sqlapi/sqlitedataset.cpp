@@ -854,6 +854,9 @@ bool SqliteDataset::fetch_rows(int pos) {
     QString url = ((SqliteDatabase *)db)->urlApi; 
     QString token = ((SqliteDatabase *)db)->tokenApi;
 
+    QString qry_formatted = qry;
+    qry_formatted = qry_formatted.replace("\"", "\\\"");
+    qry_formatted = qry_formatted.replace(",", "\\,");
 
 
     QString cadena = "{\n";
