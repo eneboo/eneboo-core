@@ -858,7 +858,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     QString qry_formatted = qry;
     qry_formatted = qry_formatted.replace("\"", "\\\"");
-    qry_formatted = qry_formatted.replace(",", "\\,");
+    //qry_formatted = qry_formatted.replace(",", "\\,");
 
 
     QString cadena = "{\n";
