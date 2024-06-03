@@ -863,7 +863,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"metodo\": \"GET\",\n";
     cadena += "\"url\": \"" + url + "/delegate_qry\",\n";
     cadena += "\"params\":{\n";
-    cadena += "\"sql\":\"" + qry + "\",\n";
+    cadena += "\"sql\":\"" + qry_formatted + "\",\n";
     cadena += "\"is_query\":" + QString(qry.lower().startsWith("select") ? "true" : "false") + ",\n";
     cadena += "\"offset\":" + QString::number(offset) + ",\n";
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
