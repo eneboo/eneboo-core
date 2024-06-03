@@ -303,6 +303,7 @@ namespace dbiplus
   void SqliteDatabase::start_transaction()
   {
     if (active) {
+      qWarning("FIXME: start_transaction");
       sqlite3_exec(conn, "begin", NULL, NULL, NULL);
       _in_transaction = true;
     }
@@ -311,6 +312,7 @@ namespace dbiplus
   void SqliteDatabase::commit_transaction()
   {
     if (active) {
+      qWarning("FIXME: commit_transaction");
       sqlite3_exec(conn, "commit", NULL, NULL, NULL);
       _in_transaction = false;
     }
@@ -319,6 +321,7 @@ namespace dbiplus
   void SqliteDatabase::rollback_transaction()
   {
     if (active) {
+      qWarning("FIXME: rollback_transaction");
       sqlite3_exec(conn, "rollback", NULL, NULL, NULL);
       _in_transaction = false;
     }
