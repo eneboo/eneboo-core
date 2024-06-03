@@ -90,6 +90,7 @@ public:
     };
 
   QString userIdApi;
+  QString databaseApi;
 
 };
 

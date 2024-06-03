@@ -228,11 +228,14 @@ namespace dbiplus
       SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
       QString texto = "check connection to " + db;
       qWarning(texto);
-      ds->sql = "select * from pg_stat_activity where datname = '" + db + "'";
+      ds->sql = "select current_database() as db_name";
       if (!ds->gestionar_consulta_paginada(0)) {
         return DB_CONNECTION_NONE;
       }
+      databaseApi = ds->fv("db_name").get_asString();
     }
+
+    
   
     active = true;
     return DB_CONNECTION_OK;

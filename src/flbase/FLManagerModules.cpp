@@ -896,7 +896,7 @@ void FLManagerModules::writeState()
 {
   QString idDB = "noDB";
   if (db_->dbAux())
-    idDB = db_->database() + db_->host() + db_->user_ + db_->driverName() + QString::number(db_->port());
+    idDB = db_->database2() + db_->host() + db_->user2() + db_->driverName() + QString::number(db_->port());
 
   FLSettings::writeEntry("Modules/activeIdModule/" + idDB, activeIdModule_);
   FLSettings::writeEntry("Modules/activeIdArea/" + idDB, activeIdArea_);

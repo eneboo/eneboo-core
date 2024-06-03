@@ -207,7 +207,8 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
       return false;
 
     if (driverName_ == "FLsqlapi") {
-      remote_user_ = dr->userIdApi;
+      setRemoteUser(dr->userIdApi);
+      setRemoteDatabase(dr->databaseApi);
     }
 
 

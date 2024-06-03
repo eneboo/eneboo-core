@@ -96,6 +96,7 @@ public:
   QString passwordApi;
   QString tokenApi;
   QString userIdApi;
+  QString databaseApi;
   QProcess *AQProc;
 };
 
