@@ -226,13 +226,16 @@ namespace dbiplus
 
     if (tokenApi == "") {
       SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
-      QString texto = "check connection to " + db;
+      QString texto = "check connection to remote database";
       qWarning(texto);
       ds->sql = "select current_database() as db_name";
       if (!ds->gestionar_consulta_paginada(0)) {
+        qWarning("Connection failure");
         return DB_CONNECTION_NONE;
       }
       databaseApi = ds->fv("db_name").get_asString();
+      qWarning("Connected to " + databaseApi);
+
     }
 
     
