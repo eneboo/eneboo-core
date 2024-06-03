@@ -35,6 +35,7 @@
 #include <string>
 
 #include "sqlitedataset.h"
+#include <qtextcodec.h>
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
@@ -387,6 +388,7 @@ namespace dbiplus
     QFile fi(fichero_datos);
     if (fi.open(IO_WriteOnly)) {
       QTextStream t(&fi);
+      t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
       t << cadena;
       fi.close();
     } else {
