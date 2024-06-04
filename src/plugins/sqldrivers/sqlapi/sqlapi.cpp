@@ -122,13 +122,13 @@ bool SqlApiDriver::open(const QString &db, const QString &user, const QString &p
 bool SqlApiDriver::tryConnect(const QString &db, const QString &user, const QString &password, const QString &host, int port)
 {
   if (!open(db, user, password, host, port, QString::null)) {
-    if (lastError().type() == QSqlError::Connection) {
+    //if (lastError().type() == QSqlError::Connection) {
       msgBoxCritical(tr("Conexión fallida"),
-                     tr("No se pudo conectar con la base de datos %1.").arg(db));
+                     tr("No se pudo conectar con %1.").arg(urlApi));
       msgBoxCritical(tr("Error"), QString(lastError().driverText().utf8()) + "\n" +
                      QString(lastError().databaseText().utf8()));
       return false;
-    }
+    //}
   }
 
   return true;
