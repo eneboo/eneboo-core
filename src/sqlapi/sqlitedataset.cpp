@@ -619,11 +619,7 @@ namespace dbiplus
 void SqliteDataset::fill_fields()
   {
     //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-    qWarning("fill " + QString::number(frecno));
-    if ((db == NULL) || (result.record_header.size() == 0) || (result.total_records == 0 ) || (num_rows() < frecno)) {
-      qWarning("No hay datos");
-      return;
-    }
+    if ((db == NULL) || (result.record_header.size() == 0) || (num_rows() < frecno)) return;
     if (fields_object->size() == 0) // Filling columns name
       for (int i = 0; i < result.record_header.size(); i++) {
         (*fields_object)[i].props = result.record_header[i];
@@ -696,15 +692,14 @@ void SqliteDataset::fill_fields()
     if (!res) {
       db->setErr(SQLITE_ERROR,sql);
       return false;
-    }   
+    }
+   
     lista_bloques[0] = true;
   
 
   active = true;
   ds_state = dsSelect;
-  qWarning("P1");
-  first();
-  qWarning("P4");
+  this->first();
   return true;
   }
 
@@ -753,7 +748,6 @@ void SqliteDataset::fill_fields()
 
   int SqliteDataset::num_rows()
   {
-    qWarning("D");
     return result.total_records;
 
     //return result.records.size();
@@ -774,9 +768,7 @@ void SqliteDataset::fill_fields()
 
   void SqliteDataset::first()
   {
-    qWarning("A");
     Dataset::first();
-    qWarning("B");
     this->fill_fields();
   }
 
@@ -952,7 +944,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
-  qWarning("PROCESANDO LINEAS RECIBIDAS (%d) , CADENA: " + cadena, lista_registros.count());
+  //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
     //qWarning("PROCESANDO LINEA");
