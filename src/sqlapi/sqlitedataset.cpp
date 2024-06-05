@@ -334,7 +334,7 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
-    debug_sql = false;
+    debug_sql = true;
     debug_paginacion = true;
     debug_aqextension = false;
     last_pos_fetched = 0;
@@ -350,7 +350,7 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
-    debug_sql = false;
+    debug_sql = true;
     debug_paginacion = true;
     debug_aqextension = false;
     last_pos_fetched = 0;
@@ -1001,6 +1001,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     }
 
   }
+  qWarning("FIN PROCESO LINEAS");
   if (debug_sql) {
     qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
