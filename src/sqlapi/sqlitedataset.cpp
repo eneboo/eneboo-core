@@ -952,7 +952,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
-  qWarning("PROCESANDO LINEAS RECIBIDAS (%d) , CADENA: (%s)", lista_registros.count(), cadena);
+  qWarning("PROCESANDO LINEAS RECIBIDAS (%d) , CADENA: " + cadena, lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
     //qWarning("PROCESANDO LINEA");
