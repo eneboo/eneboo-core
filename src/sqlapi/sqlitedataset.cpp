@@ -945,6 +945,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool first = true;
   int posicion_idx = offset;
   qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
+  
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
     qWarning("PROCESANDO LINEA");
@@ -953,6 +954,12 @@ bool SqliteDataset::fetch_rows(int pos) {
     QStringList lista_valores(QStringList::split(separador_campos, registro));
 
     if (first == true) { //cabecera ...
+      first = false;
+
+      if (result.total_records == 0) { //Si total_records es 0, no ha cabeceras ni datos
+        result.record_header.clear();
+        result.records.clear();
+      }
       // Cargamos registro de cabecera:
       qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
@@ -973,8 +980,8 @@ bool SqliteDataset::fetch_rows(int pos) {
         
       }
       qWarning("CABECERA CARGADA");
-      first = false;
-      continue;
+      
+
     } else { // valores ...
 
 
