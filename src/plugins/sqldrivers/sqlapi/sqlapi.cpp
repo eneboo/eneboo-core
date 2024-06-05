@@ -697,8 +697,14 @@ bool SqlApiDriver::hasFeature(QSqlDriver::DriverFeature feature) const
 
 bool SqlApiDriver::beginTransaction()
 {
+  qWarning("FIXME: start_transaction");
+  msgBoxCritical(tr("Transacción"), tr("beginTransaction no está permitido"));
+  return false;
+
   if (!isOpen() || !dataBase_)
     return false;
+
+
 
   dataBase_->start_transaction();
   return true;
@@ -706,6 +712,10 @@ bool SqlApiDriver::beginTransaction()
 
 bool SqlApiDriver::commitTransaction()
 {
+  qWarning("FIXME: commit_transaction");
+  msgBoxCritical(tr("Transacción"), tr("commitTransaction no está permitido"));
+  return false;
+
   if (!isOpen() || !dataBase_)
     return false;
 
@@ -715,6 +725,10 @@ bool SqlApiDriver::commitTransaction()
 
 bool SqlApiDriver::rollbackTransaction()
 {
+  qWarning("FIXME: rollback_transaction");
+  msgBoxCritical(tr("Transacción"), tr("rollbackTransaction no está permitido"));
+  return false;
+
   if (!isOpen() || !dataBase_)
     return false;
 

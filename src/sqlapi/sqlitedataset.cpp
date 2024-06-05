@@ -303,7 +303,6 @@ namespace dbiplus
   void SqliteDatabase::start_transaction()
   {
     if (active) {
-      qWarning("FIXME: start_transaction");
       sqlite3_exec(conn, "begin", NULL, NULL, NULL);
       _in_transaction = true;
     }
@@ -312,7 +311,6 @@ namespace dbiplus
   void SqliteDatabase::commit_transaction()
   {
     if (active) {
-      qWarning("FIXME: commit_transaction");
       sqlite3_exec(conn, "commit", NULL, NULL, NULL);
       _in_transaction = false;
     }
@@ -321,7 +319,6 @@ namespace dbiplus
   void SqliteDatabase::rollback_transaction()
   {
     if (active) {
-      qWarning("FIXME: rollback_transaction");
       sqlite3_exec(conn, "rollback", NULL, NULL, NULL);
       _in_transaction = false;
     }
@@ -936,7 +933,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACI?N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -989,7 +986,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       const std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
-          //Automáticamente marcaremos campo como null
+          //Autom?ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
@@ -1005,7 +1002,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACI?N: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
