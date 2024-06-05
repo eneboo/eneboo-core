@@ -933,7 +933,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACI?N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -944,17 +944,17 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
-  //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
+  qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
-    //qWarning("PROCESANDO LINEA");
+    qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
     QStringList lista_valores(QStringList::split(separador_campos, registro));
 
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
-      //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
+      qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
@@ -972,21 +972,21 @@ bool SqliteDataset::fetch_rows(int pos) {
         }
         
       }
-      //qWarning("CABECERA CARGADA");
+      qWarning("CABECERA CARGADA");
       first = false;
       continue;
     } else { // valores ...
 
 
 
-    //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
+    qWarning("PROCESANDO VALORES LINEA N? %d" , posicion_idx);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
       const std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
-          //Autom?ticamente marcaremos campo como null
+          //Automáticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
@@ -1002,7 +1002,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACI?N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
