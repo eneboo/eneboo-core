@@ -703,7 +703,7 @@ void SqliteDataset::fill_fields()
   active = true;
   ds_state = dsSelect;
   qWarning("P1");
-  this->first();
+  first();
   qWarning("P4");
   return true;
   }
