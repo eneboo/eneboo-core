@@ -334,7 +334,7 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
-    debug_sql = true;
+    debug_sql = false;
     debug_paginacion = true;
     debug_aqextension = false;
     last_pos_fetched = 0;
@@ -350,7 +350,7 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
-    debug_sql = true;
+    debug_sql = false;
     debug_paginacion = true;
     debug_aqextension = false;
     last_pos_fetched = 0;
@@ -619,7 +619,10 @@ namespace dbiplus
 void SqliteDataset::fill_fields()
   {
     //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-    if ((db == NULL) || (result.record_header.size() == 0) || (num_rows() < frecno)) return;
+    if ((db == NULL) || (result.record_header.size() == 0) || (result.total_records == 0 ) || (num_rows() < frecno)) {
+      //qWarning("No hay datos");
+      return;
+    }
     if (fields_object->size() == 0) // Filling columns name
       for (int i = 0; i < result.record_header.size(); i++) {
         (*fields_object)[i].props = result.record_header[i];
@@ -688,18 +691,22 @@ void SqliteDataset::fill_fields()
     pila_paginacion.clear();
     lista_bloques.clear();
     bool res = true;
+    qWarning("P1");
     res = gestionar_consulta_paginada(0); 
     if (!res) {
       db->setErr(SQLITE_ERROR,sql);
       return false;
     }
+    qWarning("P2");
    
     lista_bloques[0] = true;
   
 
   active = true;
+  qWarning("P3");
   ds_state = dsSelect;
   this->first();
+  qWarning("P4");
   return true;
   }
 
@@ -945,23 +952,16 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool first = true;
   int posicion_idx = offset;
   qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
-  
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
-    qWarning("PROCESANDO LINEA");
+    //qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
     QStringList lista_valores(QStringList::split(separador_campos, registro));
 
     if (first == true) { //cabecera ...
-      first = false;
-
-      if (result.total_records == 0) { //Si total_records es 0, no ha cabeceras ni datos
-        result.record_header.clear();
-        result.records.clear();
-      }
       // Cargamos registro de cabecera:
-      qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
+      //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
@@ -979,14 +979,14 @@ bool SqliteDataset::fetch_rows(int pos) {
         }
         
       }
-      qWarning("CABECERA CARGADA");
-      
-
+      //qWarning("CABECERA CARGADA");
+      first = false;
+      continue;
     } else { // valores ...
 
 
 
-    qWarning("PROCESANDO VALORES LINEA N? %d" , posicion_idx);
+    //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
@@ -1008,7 +1008,6 @@ bool SqliteDataset::fetch_rows(int pos) {
     }
 
   }
-  qWarning("FIN PROCESO LINEAS");
   if (debug_sql) {
     qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
