@@ -619,8 +619,9 @@ namespace dbiplus
 void SqliteDataset::fill_fields()
   {
     //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
+    qWarning("fill " + QString::number(frecno));
     if ((db == NULL) || (result.record_header.size() == 0) || (result.total_records == 0 ) || (num_rows() < frecno)) {
-      //qWarning("No hay datos");
+      qWarning("No hay datos");
       return;
     }
     if (fields_object->size() == 0) // Filling columns name
@@ -691,20 +692,17 @@ void SqliteDataset::fill_fields()
     pila_paginacion.clear();
     lista_bloques.clear();
     bool res = true;
-    qWarning("P1");
     res = gestionar_consulta_paginada(0); 
     if (!res) {
       db->setErr(SQLITE_ERROR,sql);
       return false;
-    }
-    qWarning("P2");
-   
+    }   
     lista_bloques[0] = true;
   
 
   active = true;
-  qWarning("P3");
   ds_state = dsSelect;
+  qWarning("P1");
   this->first();
   qWarning("P4");
   return true;
@@ -755,6 +753,7 @@ void SqliteDataset::fill_fields()
 
   int SqliteDataset::num_rows()
   {
+    qWarning("D");
     return result.total_records;
 
     //return result.records.size();
@@ -775,7 +774,9 @@ void SqliteDataset::fill_fields()
 
   void SqliteDataset::first()
   {
+    qWarning("A");
     Dataset::first();
+    qWarning("B");
     this->fill_fields();
   }
 

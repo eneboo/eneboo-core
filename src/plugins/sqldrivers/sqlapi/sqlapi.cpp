@@ -699,6 +699,7 @@ bool SqlApiDriver::beginTransaction()
 {
   qWarning("FIXME: start_transaction");
   msgBoxCritical(tr("Transacción"), tr("beginTransaction no está permitido"));
+  //exit(1);
   return false;
 
   if (!isOpen() || !dataBase_)
@@ -714,6 +715,7 @@ bool SqlApiDriver::commitTransaction()
 {
   qWarning("FIXME: commit_transaction");
   msgBoxCritical(tr("Transacción"), tr("commitTransaction no está permitido"));
+  //exit(1);
   return false;
 
   if (!isOpen() || !dataBase_)
@@ -727,6 +729,7 @@ bool SqlApiDriver::rollbackTransaction()
 {
   qWarning("FIXME: rollback_transaction");
   msgBoxCritical(tr("Transacción"), tr("rollbackTransaction no está permitido"));
+  //exit(1);
   return false;
 
   if (!isOpen() || !dataBase_)
