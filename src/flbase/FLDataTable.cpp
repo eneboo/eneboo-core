@@ -773,6 +773,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     }
     else
     {
+      qWarning("PRUEBA " + field->name() + " : " + field->value().toString());
       text = field->value().toBool() ? tr("Sí") : tr("No");
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);

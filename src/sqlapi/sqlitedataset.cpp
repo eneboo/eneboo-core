@@ -73,7 +73,7 @@ namespace dbiplus
           v.set_asString("");
           v.set_isNull(); 
         } else {
-          printf("\n++++ name:%s, type:%d, value:%s", r->record_header[i].name.c_str(), r->record_header[i].type, reslt[i]);
+          //printf("\n++++ name:%s, type:%d", r->record_header[i].name.c_str(), r->record_header[i].type);
           v.set_asString(reslt[i]);
         }
 
@@ -933,7 +933,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIï¿½N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -983,13 +983,19 @@ bool SqliteDataset::fetch_rows(int pos) {
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_valores.size(); i++) {  
-      const std::string valor = lista_valores[i];
+      std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
-          //Automáticamente marcaremos campo como null
+          //Automï¿½ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
+          if (valor == "True") {
+            valor = "False";
+          } else if (valor == "False") {
+            valor = "True";
+          }
+
           v.set_asString(valor); // entra siempre como string ...
         }
        rec[i] = v;
@@ -1002,7 +1008,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIï¿½N: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
