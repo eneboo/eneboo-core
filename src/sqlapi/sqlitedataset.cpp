@@ -933,7 +933,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACI�N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACI?N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -986,16 +986,10 @@ bool SqliteDataset::fetch_rows(int pos) {
       std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
-          //Autom�ticamente marcaremos campo como null
+          //Autom?ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
-          if (valor == "True") {
-            valor = "False";
-          } else if (valor == "False") {
-            valor = "True";
-          }
-
           v.set_asString(valor); // entra siempre como string ...
         }
        rec[i] = v;
@@ -1008,7 +1002,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACI�N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACI?N: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
