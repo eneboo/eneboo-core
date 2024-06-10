@@ -990,6 +990,9 @@ bool SqliteDataset::fetch_rows(int pos) {
           v.set_asString("");
           v.set_isNull(); 
         } else {
+          if (valor == "|^V^|") {
+            valor = "";
+          }
           v.set_asString(valor); // entra siempre como string ...
         }
        rec[i] = v;
