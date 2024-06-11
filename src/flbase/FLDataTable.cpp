@@ -174,32 +174,7 @@ void FLDataTable::setFLSqlCursor(FLSqlCursor *c)
     if (cursor_)
     {
 
-      bool result_ = false;
-      FLTableMetaData *mtd = cursor_->metadata();
-      QString label_ = "FLDataTable::setFLSqlCursor (" + mtd->name() + "): ";
-
-      QString id_mod_ = cursor_->db()->managerModules()->idModuleOfFile(mtd->name() + QString::fromLatin1(".mtd"));
-      QString fun_module_ = "sys";
-
-      if (!id_mod_.isEmpty())
-      {
-        fun_module_ = id_mod_;
-      }
-      QString fun_name_ = fun_module_ + ".useDelegateCommit";
-
-      FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(cursor_);
-      QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
-      if (v.isValid())
-      {
-        result_ = v.toBool();
-        qWarning(label_ + fun_name_ + " retorna " + (result_ ? "true" : "false"));
-      }
-      // else
-      //{
-      //   qWarning(label_ + "No hay respuesta de " + fun_name_ + "(cursor). Asumiento false");
-      // }
-
-      cursor_->isDelegateCommit = result_;
+      cursor_->activateDelegateCommit();
 
       if (curChg)
       {
