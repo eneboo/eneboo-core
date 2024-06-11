@@ -1,7 +1,7 @@
 /***************************************************************************
                             FLSqlQuery.cpp
                          -------------------
-begin                : sáb jun 22 2002
+begin                : s?b jun 22 2002
 copyright            : (C) 2002-2005 by InfoSiAL S.L.
 email                : mail@infosial.com
 ***************************************************************************/
@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+   versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -153,7 +153,7 @@ QString FLSqlQuery::sql()
       if (!v.isValid()) {
         bool ok = true;
         v = QVariant(QInputDialog::getText(QApplication::tr
-                                           ("Entrada de parámetros de la consulta"),
+                                           ("Entrada de par?metros de la consulta"),
                                            it.current() ->alias(), QLineEdit::Normal,
                                            QString::null, &ok, qApp->mainWidget()));
       }
@@ -247,24 +247,15 @@ QVariant FLSqlQuery::value(int i, bool raw) const
   if (!isValid() && i >= 0)
     return QVariant();
   QVariant v(QSqlQuery_value(i));
-  qWarning("VALOR!" + v.toString());
   QVariant::Type type = v.type();
   if (!raw  && type == QVariant::String) {
-    qWarning("String!");
     if (!v.isNull()) {
       QVariant vLarge(d->db_->manager()->fetchLargeValue(v.toString()));
       if (vLarge.isValid())
         return vLarge;
     }
-  } else if (type == QVariant::ULongLong || type == QVariant::LongLong) {
-    qWarning("Double!");
+  } else if (type == QVariant::ULongLong || type == QVariant::LongLong)
     return v.toDouble();
-    
-  } else if  (type == QVariant::Bool) {
-    qWarning("Bool!");
-    return v.toBool();
-    
-  }
   return v;
 }
 
@@ -331,7 +322,7 @@ void FLSqlQuery::showDebug()
 #ifdef FL_DEBUG
   if (!isActive())
     qWarning
-    ("DEBUG : La consulta no está activa : No se ha ejecutado exec() o la sentencia SQL no es válida");
+    ("DEBUG : La consulta no est? activa : No se ha ejecutado exec() o la sentencia SQL no es v?lida");
 
   qWarning("DEBUG : Nombre de la consulta :  " + d->name_);
   qWarning("DEBUG : Niveles de agrupamiento : ");
@@ -345,7 +336,7 @@ void FLSqlQuery::showDebug()
   } else
     qWarning("**No hay niveles de agrupamiento");
 
-  qWarning("DEBUG : Parámetros : ");
+  qWarning("DEBUG : Par?metros : ");
   if (d->parameterDict_) {
     QDictIterator < FLParameterQuery > it2(*d->parameterDict_);
     for (; it2.current(); ++it2) {

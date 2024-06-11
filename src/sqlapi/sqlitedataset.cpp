@@ -998,6 +998,8 @@ bool SqliteDataset::fetch_rows(int pos) {
           } else {
             v.set_asString(valor); // entra siempre como string ...
           }
+          qWarning("VALOR: "+  QString(valor) + ", type:" + v.gft());
+
         }
        rec[i] = v;
  
