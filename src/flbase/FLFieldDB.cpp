@@ -1402,6 +1402,8 @@ void FLFieldDB::openFormRecordRelation()
     a = mng->action(actionName_);
 
   c->setAction(a);
+  
+  c->activateDelegateCommit();
 
   int modeAccess = cursor_->modeAccess();
   if (modeAccess == FLSqlCursor::INSERT || modeAccess == FLSqlCursor::DEL)
@@ -1481,6 +1483,8 @@ void FLFieldDB::searchValue()
     c = new FLSqlCursor(a->table(), true, cursor_->db()->connectionName());
     f = new FLFormSearchDB(c, a->name(), topWidget_);
   }
+
+  c->activateDelegateCommit();
 
   f->setMainWidget();
 
