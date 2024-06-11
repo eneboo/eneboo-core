@@ -247,15 +247,24 @@ QVariant FLSqlQuery::value(int i, bool raw) const
   if (!isValid() && i >= 0)
     return QVariant();
   QVariant v(QSqlQuery_value(i));
+  qWarning("VALOR!" + v.toString());
   QVariant::Type type = v.type();
   if (!raw  && type == QVariant::String) {
+    qWarning("String!");
     if (!v.isNull()) {
       QVariant vLarge(d->db_->manager()->fetchLargeValue(v.toString()));
       if (vLarge.isValid())
         return vLarge;
     }
-  } else if (type == QVariant::ULongLong || type == QVariant::LongLong)
+  } else if (type == QVariant::ULongLong || type == QVariant::LongLong) {
+    qWarning("Double!");
     return v.toDouble();
+    
+  } else if  (type == QVariant::Bool) {
+    qWarning("Bool!");
+    return v.toBool();
+    
+  }
   return v;
 }
 
