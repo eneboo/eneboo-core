@@ -993,7 +993,11 @@ bool SqliteDataset::fetch_rows(int pos) {
           if (valor == "|^V^|") {
             valor = "";
           }
-          v.set_asString(valor); // entra siempre como string ...
+          if (valor == "True" || valor == "False") {
+            v.set_asBool(valor == "True");
+          } else {
+            v.set_asString(valor); // entra siempre como string ...
+          }
         }
        rec[i] = v;
  
