@@ -1108,7 +1108,17 @@ QVariant SqliteResult::data(int i)
     return vv;
   } else
     if (type == ft_Boolean) {
-        v = QVariant(v.toBool());
+        v.cast(QVariant::Bool);
+    } else if (type == ft_Double) {
+        v.cast(QVariant::Double);
+    } else if (type == ft_Long) {
+        v.cast(QVariant::Int);
+    } else if (type == ft_ULong) {
+        v.cast(QVariant::Int);
+    } else if (type == ft_String) {
+      // No hacemos nada
+    } else {
+      qWarning("FIXME2. tipo no convertido " + QString::number(type));
     }
 
     return v;
