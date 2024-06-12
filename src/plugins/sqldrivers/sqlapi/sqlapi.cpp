@@ -1109,7 +1109,7 @@ QVariant SqliteResult::data(int i)
   } else
     if (type == ft_Boolean) {
         v.cast(QVariant::Bool);
-    } else if (type == ft_Double) {
+    } else if (type == ft_Double || type == ft_Float) {
         v.cast(QVariant::Double);
     } else if (type == ft_Long) {
         v.cast(QVariant::Int);

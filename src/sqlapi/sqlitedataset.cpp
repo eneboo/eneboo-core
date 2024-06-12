@@ -933,7 +933,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACI?N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -1010,8 +1010,14 @@ bool SqliteDataset::fetch_rows(int pos) {
             v.set_asInteger(atoi(valor.c_str()));
           } else if (tipos_columnas[i] == "<class 'float'>") {
             v.set_asFloat(atof(valor.c_str()));
+          } else if (tipos_columnas[i] == "<class 'datetime.date'>") {
+            v.set_asString(valor);
+          } else if (tipos_columnas[i] == "<class 'datetime.time'>") {
+            v.set_asString(valor);
           } else if (tipos_columnas[i] == "<class 'bool'>") {
             v.set_asBool(valor == "True");
+          } else if (tipos_columnas[i] == "<class 'NoneType'>") {
+            v.set_asString(valor);
           } else {
             qWarning("TOFIX TYPO:" + QString(tipos_columnas[i]));
             v.set_asString(valor); // entra siempre como string ...
@@ -1028,7 +1034,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACI?N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
