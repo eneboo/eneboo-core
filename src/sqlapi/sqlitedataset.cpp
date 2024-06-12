@@ -941,6 +941,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   QString salida_datos = salida.right(salida.length() - (salida.find(separador_total) + 1));
   QStringList lista_registros(QStringList::split(separador_lineas, salida_datos));
+  QStringList tipos_columnas;
   
   bool first = true;
   int posicion_idx = offset;
@@ -960,7 +961,11 @@ bool SqliteDataset::fetch_rows(int pos) {
         const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);
         for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
-          QString nombre_columna = *it3;
+          QString cabecera_columna = *it3;
+          QStringList cabecera_columna_sl = QStringList::split(":", cabecera_columna);
+          QString nombre_columna = cabecera_columna_sl[0];
+          QString tipo_columna = cabecera_columna_sl[1];
+          tipos_columnas.append(tipo_columna);
           //qWarning("Especificando nombre col : %d", col_numero);
           //qWarning(nombre_columna);
           if (nombre_columna.endsWith(" ")) {
@@ -993,12 +998,24 @@ bool SqliteDataset::fetch_rows(int pos) {
           if (valor == "|^V^|") {
             valor = "";
           }
-          if (valor == "True" || valor == "False") {
+          /* if (valor == "True" || valor == "False") {
             v.set_asBool(valor == "True");
           } else {
             v.set_asString(valor); // entra siempre como string ...
-          }
+          } */
           //qWarning("VALOR: "+  QString(valor) + ", type:" + v.gft());
+          if (tipos_columnas[i] == "<class 'str'>") {
+            v.set_asString(valor);
+          } else if (tipos_columnas[i] == "<class 'int'>") {
+            v.set_asInteger(atoi(valor.c_str()));
+          } else if (tipos_columnas[i] == "<class 'float'>") {
+            v.set_asFloat(atof(valor.c_str()));
+          } else if (tipos_columnas[i] == "<class 'bool'>") {
+            v.set_asBool(valor == "True");
+          } else {
+            qWarning("TOFIX TYPO:" + QString(tipos_columnas[i]));
+            v.set_asString(valor); // entra siempre como string ...
+          }
 
         }
        rec[i] = v;
