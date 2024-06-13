@@ -738,20 +738,17 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
         *shaKey = key; */
     }
   } else {
-    //qWarning("FLManagerModules::contentCached('" + n + "') notsystable");
     return content(n, true);
   }
     
 
   if (key.isEmpty()) {
-    //qWarning("FLManagerModules::contentCached('" + n + "') content");
-    str_ret = content(n, true);
+    str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
-    //qWarning("FLManagerModules::contentCached('" + n + "') AQ_DISKCACHE_FIND");
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
