@@ -871,7 +871,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
-    cadena += "\"codificacion\": \"UTF-8\",\n";
+    // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
     cadena += "\"enable_debug\":true,\n";
