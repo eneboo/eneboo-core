@@ -3168,18 +3168,18 @@ void FLSqlCursor::restorePersistentFilterBeforeDelegate()
 void FLSqlCursor::setPersistentFilterDelegate(const QString &filter)
 {
 
-  if (!d->persistentFilter_.contains(filter)) // Si no estamos en el persistentFilter_ nos metemos...
-  {
-    d->persistentFilter_ = d->persistentFilter_.isEmpty() ? filter : d->persistentFilter_ + QString::fromLatin1(" OR ") + filter;
-    qWarning("Nuevo persistent filter = " + d->persistentFilter_);
-    setFilter("");
-  }
-
   if (persistentFilterBeforeDelegate_.isEmpty()) //  Si no hay copia, creamos copia.
-  {
-    qWarning("FLSqlCursor::setPersistentFilterDelegate = " + filter);
-    persistentFilterBeforeDelegate_ = d->persistentFilter_;
-  }
+    {
+      qWarning("FLSqlCursor::setPersistentFilterDelegate = " + filter);
+      persistentFilterBeforeDelegate_ = d->persistentFilter_;
+    }
+
+  if (!d->persistentFilter_.contains(filter)) // Si no estamos en el persistentFilter_ nos metemos...
+    {
+      d->persistentFilter_ = d->persistentFilter_.isEmpty() ? filter : d->persistentFilter_ + QString::fromLatin1(" OR ") + filter;
+      qWarning("Nuevo persistent filter = " + d->persistentFilter_);
+      setFilter("");
+    }
 
 }
 
