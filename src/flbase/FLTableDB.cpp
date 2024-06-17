@@ -279,10 +279,8 @@ void FLTableDB::moveCol(int from, int to, bool firstSearch)
     }
     seekCursor();
     QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-  } else {
-    qWarning("RD desde movelcol!");
+  } else
     refreshDelayed();
-  }
   if (!sender())
     lineEditSearch->setFocus();
 }
@@ -355,7 +353,6 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
   if (cursor_->modeAccess() != FLSqlCursor::BROWSE)
     return;
   if (refreshData) {
-    qWarning("DESDE RD!!");
     refresh(false, true);
   }
   seekCursor();
@@ -365,7 +362,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
 {
   if (!lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_ || (topWidget && !topWidget->isShown()))
     return;
-  qWarning("VAMOS AL REFRESH!!");
+
   FLTableMetaData *tMD = cursor_->metadata();
   if (!tMD)
     return;
@@ -671,7 +668,7 @@ void FLTableDB::filterRecords(const QString &p)
   } else {
     qDebug("functionQSA: (empty)");
   }
-  qWarning("RD desde filterRecords");
+
   refreshDelayed(msec_refresh, !bfilter.isEmpty() || refreshData);
   filter_ = bfilter;
 }
@@ -784,15 +781,13 @@ void FLTableDB::copyRecord()
 
 void FLTableDB::initCursor(bool withRefresh)
 {
-  qWarning("inicializando cursor FLTABLEDB!!");
   useFirstRefresh_ = withRefresh;
-  qWarning(useFirstRefresh_ ? "Usando primer refresh" : "No se usa primer refresh");
   if (!topWidget || !cursor_)
     return;
 
   if (!cursor_->metadata())
     return;
-  qWarning("PASO1");
+
   FLTableMetaData *tMD = 0;
 
   if (!sortField_) {
@@ -840,7 +835,7 @@ void FLTableDB::initCursor(bool withRefresh)
       }
     }
   }
-  qWarning("PASO2");
+
   if (tableName_.isEmpty() || foreignField_.isEmpty()
       || fieldRelation_.isEmpty() || cursorAux) {
     if (ownTMD && tMD && !tMD->inCache()) {
@@ -881,7 +876,7 @@ void FLTableDB::initCursor(bool withRefresh)
     }
 #endif
   }
-  qWarning("PASO3");
+
   rMD = testM1;
   if (!rMD) {
     FLFieldMetaData *fMD = tMD->field(fieldRelation_);
@@ -900,7 +895,7 @@ void FLTableDB::initCursor(bool withRefresh)
     }
 #endif
   }
-  qWarning("PASO4");
+
   cursor_ = new FLSqlCursor(tableName_, true, cursor_->db()->connectionName(), cursorAux, rMD, this);
 
   if (!cursor_) {
@@ -912,7 +907,7 @@ void FLTableDB::initCursor(bool withRefresh)
       disconnect(cursorAux, SIGNAL(newBuffer()), this, SLOT(refresh()));
     connect(cursorAux, SIGNAL(newBuffer()), this, SLOT(refresh()));
   }
-  qWarning("PASO5");
+
   if (cursorAux && topWidget->isA("FLFormSearchDB")) {
     topWidget->setCaption(cursor_->metadata()->alias());
     ::qt_cast<FLFormSearchDB *>(topWidget)->setCursor(cursor_);
@@ -921,7 +916,6 @@ void FLTableDB::initCursor(bool withRefresh)
   if (ownTMD && tMD && !tMD->inCache()) {
     delete tMD;
   }
-  qWarning("FIN inicializando cursor FLTABLEDB!!");
 }
 
 void FLTableDB::showEvent(QShowEvent *e)
@@ -945,8 +939,6 @@ void FLTableDB::showWidget()
     return;
 
   showed = true;
-  qWarning("FLTableDB::showWidget() con useFirstRefresh");
-  qWarning(useFirstRefresh_ ? "true" : "false");  
 
   FLTableMetaData *tMD = 0;
   bool ownTMD = false;
@@ -998,7 +990,6 @@ void FLTableDB::showWidget()
         else
           refreshDelayed();
       }
-    }
   } else if (topWidget->isA("FLFormRecordDB")
              && cursor_->modeAccess() == FLSqlCursor::BROWSE &&
              (tMD && !tMD->isQuery())) {
@@ -1087,11 +1078,8 @@ void FLTableDB::setOrderCols(QStringList &fields)
     lineEditSearch->selectAll();
     seekCursor();
     QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-  } else{
-    qWarning("RD desde setOrderCol!");
+  } else
     refreshDelayed();
-  }
-    
 }
 
 QStringList FLTableDB::orderCols()
