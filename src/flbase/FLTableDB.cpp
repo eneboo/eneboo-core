@@ -954,9 +954,14 @@ void FLTableDB::showWidget()
     if (!tMD)
       return;
 
+  }
+
+  tableRecords();
+
+
     //Sacamos si usamos firstRefresh o no ...
-    QString idMod(cursor_->db()->managerModules()->idModuleOfFile(tMD->name() + QString::fromLatin1(".mtd")));
-    QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + tMD->name() + "_" + this->name();
+    QString idMod(cursor_->db()->managerModules()->idModuleOfFile(cursor_->metadata()->name() + QString::fromLatin1(".mtd")));
+    QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + cursor_->metadata()->name() + "_" + this->name();
     qWarning("Realizando llamada a " + funcName);
     QVariant v = aqApp->call(funcName, QSArgumentList(), 0).variant();
     if (v.isValid() && v.type() == QVariant::Bool) {
@@ -964,10 +969,6 @@ void FLTableDB::showWidget()
       qWarning(v.toBool() ? "Es true": "Es false");
       useFirstRefresh_ = v.toBool();
     }
-
-  }
-
-  tableRecords();
 
   
   
