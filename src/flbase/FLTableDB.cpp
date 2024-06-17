@@ -783,12 +783,13 @@ void FLTableDB::initCursor(bool withRefresh)
 {
   qWarning("inicializando cursor FLTABLEDB!!");
   useFirstRefresh_ = withRefresh;
+  qWarning(useFirstRefresh_ ? "Usando primer refresh" : "No se usa primer refresh");
   if (!topWidget || !cursor_)
     return;
 
   if (!cursor_->metadata())
     return;
-
+  qWarning("PASO1");
   FLTableMetaData *tMD = 0;
 
   if (!sortField_) {
@@ -836,7 +837,7 @@ void FLTableDB::initCursor(bool withRefresh)
       }
     }
   }
-
+  qWarning("PASO2");
   if (tableName_.isEmpty() || foreignField_.isEmpty()
       || fieldRelation_.isEmpty() || cursorAux) {
     if (ownTMD && tMD && !tMD->inCache()) {
@@ -877,7 +878,7 @@ void FLTableDB::initCursor(bool withRefresh)
     }
 #endif
   }
-
+  qWarning("PASO3");
   rMD = testM1;
   if (!rMD) {
     FLFieldMetaData *fMD = tMD->field(fieldRelation_);
@@ -896,7 +897,7 @@ void FLTableDB::initCursor(bool withRefresh)
     }
 #endif
   }
-
+  qWarning("PASO4");
   cursor_ = new FLSqlCursor(tableName_, true, cursor_->db()->connectionName(), cursorAux, rMD, this);
 
   if (!cursor_) {
@@ -908,7 +909,7 @@ void FLTableDB::initCursor(bool withRefresh)
       disconnect(cursorAux, SIGNAL(newBuffer()), this, SLOT(refresh()));
     connect(cursorAux, SIGNAL(newBuffer()), this, SLOT(refresh()));
   }
-
+  qWarning("PASO5");
   if (cursorAux && topWidget->isA("FLFormSearchDB")) {
     topWidget->setCaption(cursor_->metadata()->alias());
     ::qt_cast<FLFormSearchDB *>(topWidget)->setCursor(cursor_);
