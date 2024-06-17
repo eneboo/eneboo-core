@@ -940,6 +940,7 @@ void FLTableDB::showWidget()
 
   showed = true;
 
+
   FLTableMetaData *tMD = 0;
   bool ownTMD = false;
   if (!tableName_.isEmpty()) {
@@ -952,9 +953,24 @@ void FLTableDB::showWidget()
     }
     if (!tMD)
       return;
+
+    //Sacamos si usamos firstRefresh o no ...
+    QString idMod(cursor_->db()->managerModules()->idModuleOfFile(tMD->name() + QString::fromLatin1(".mtd")));
+    QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + tMD->name() + "_" + this->name();
+    QVariant v = aqApp->call(funcName, QSArgumentList(), 0).variant();
+    if (v.isValid() && v.type() == QVariant::Bool) {
+      qWarning("Encontrado " + funcName);
+      qWarning(v.toBool() ? "Es true": "Es false");
+      useFirstRefresh_ = v.toBool();
+    }
+
   }
 
   tableRecords();
+
+  
+  
+
 
   if (!cursorAux) {
     if (useFirstRefresh_) {
