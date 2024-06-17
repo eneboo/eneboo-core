@@ -957,6 +957,7 @@ void FLTableDB::showWidget()
     //Sacamos si usamos firstRefresh o no ...
     QString idMod(cursor_->db()->managerModules()->idModuleOfFile(tMD->name() + QString::fromLatin1(".mtd")));
     QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + tMD->name() + "_" + this->name();
+    qWarning("Realizando llamada a " + funcName);
     QVariant v = aqApp->call(funcName, QSArgumentList(), 0).variant();
     if (v.isValid() && v.type() == QVariant::Bool) {
       qWarning("Encontrado " + funcName);
