@@ -279,8 +279,10 @@ void FLTableDB::moveCol(int from, int to, bool firstSearch)
     }
     seekCursor();
     QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-  } else
+  } else {
+    qWarning("RD desde movelcol!");
     refreshDelayed();
+  }
   if (!sender())
     lineEditSearch->setFocus();
 }
@@ -668,7 +670,7 @@ void FLTableDB::filterRecords(const QString &p)
   } else {
     qDebug("functionQSA: (empty)");
   }
-
+  qWarning("RD desde filterRecords");
   refreshDelayed(msec_refresh, !bfilter.isEmpty() || refreshData);
   filter_ = bfilter;
 }
@@ -1084,8 +1086,11 @@ void FLTableDB::setOrderCols(QStringList &fields)
     lineEditSearch->selectAll();
     seekCursor();
     QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-  } else
+  } else{
+    qWarning("RD desde setOrderCol!");
     refreshDelayed();
+  }
+    
 }
 
 QStringList FLTableDB::orderCols()
