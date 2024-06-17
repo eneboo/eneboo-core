@@ -355,6 +355,7 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
   if (cursor_->modeAccess() != FLSqlCursor::BROWSE)
     return;
   if (refreshData) {
+    qWarning("DESDE RD!!");
     refresh(false, true);
   }
   seekCursor();
@@ -364,7 +365,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
 {
   if (!lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_ || (topWidget && !topWidget->isShown()))
     return;
-
+  qWarning("VAMOS AL REFRESH!!");
   FLTableMetaData *tMD = cursor_->metadata();
   if (!tMD)
     return;
