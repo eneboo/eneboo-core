@@ -829,8 +829,10 @@ void FLTableDB::initCursor()
       }
     } else {
       FLSqlCursor *cursorTopWidget = ::qt_cast<FLFormDB *>(topWidget)->cursor();
-      if (cursorTopWidget && cursorTopWidget->metadata()->name() != tableName_)
+      if (cursorTopWidget && cursorTopWidget->metadata()->name() != tableName_) {
+        qWarning(tr("FLTableDB : RECOGE CURSOR FLFormDB"));
         cursor_ = cursorTopWidget;
+      }
     }
   }
 

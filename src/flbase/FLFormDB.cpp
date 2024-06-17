@@ -130,8 +130,10 @@ void FLFormDB::setMainWidget(QWidget *w)
 
   if (showed)
   {
-    if (mainWidget_ && mainWidget_ != w)
+    if (mainWidget_ && mainWidget_ != w) {
+      qWarning("FLFormDB::setMainWidget: Init main widget desde setMainWidget");
       initMainWidget(w);
+    }
   }
   else
     w->hide();
@@ -296,10 +298,14 @@ void FLFormDB::showEvent(QShowEvent *e)
     showed = true;
     if (cursor_ && iface)
     {
+      qWarning("LLamando a PRELOAD!")
       QVariant v(aqApp->call("preloadMainFilter", QSArgumentList(), iface).variant());
-      if (v.isValid() && v.type() == QVariant::String)
+      if (v.isValid() && v.type() == QVariant::String) {
         cursor_->setMainFilter(v.toString(), false);
+      }
+      qWarning("LLamando a PRELOAD OK!")
     }
+    qWarning("InitMainWidget desde showEvent");
     initMainWidget();
     callInitScript();
   }
@@ -318,6 +324,7 @@ void FLFormDB::callInitScript()
 void FLFormDB::initMainWidget(QWidget *w)
 {
   QWidget *mWidget = w ? w : mainWidget_;
+  qWarning("INIT MAIN WIDGET");
   if (mWidget)
   {
     QObjectList *l = static_cast<QObject *>(mWidget)->queryList("FLTableDB");
@@ -442,6 +449,7 @@ void FLFormDB::initMainWidget(QWidget *w)
     else
       setFocus();
   }
+  qWarning("INIT MAIN WIDGET OK");
 }
 
 void FLFormDB::setCursor(FLSqlCursor *c)
