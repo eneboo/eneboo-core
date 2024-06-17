@@ -941,7 +941,8 @@ void FLTableDB::showWidget()
     return;
 
   showed = true;
-  qWarning("FLTableDB::showWidget() con useFirstRefresh a " + useFirstRefresh_ ? "true" : "false");
+  qWarning("FLTableDB::showWidget() con useFirstRefresh");
+  qWarning(useFirstRefresh_ ? "true" : "false");  
 
   FLTableMetaData *tMD = 0;
   bool ownTMD = false;
