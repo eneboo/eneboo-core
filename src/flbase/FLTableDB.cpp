@@ -990,6 +990,7 @@ void FLTableDB::showWidget()
         else
           refreshDelayed();
       }
+    }
   } else if (topWidget->isA("FLFormRecordDB")
              && cursor_->modeAccess() == FLSqlCursor::BROWSE &&
              (tMD && !tMD->isQuery())) {
