@@ -48,7 +48,7 @@ FLTableDB::FLTableDB(QWidget *parent, const char *name) : FLWidgetTableDB(parent
   checkColumnVisible_(false), sortColumn_(0), orderAsc_(true), sortColumn2_(1),
   orderAsc2_(true), sortColumn3_(2), orderAsc3_(true), tdbFilterLastWhere_(QString::null),
   findHidden_(false), filterHidden_(false), showAllPixmaps_(false), fakeEditor_(0),
-  reqOnlyTable_(false), onlyTable_(false), autoSortColumn_(true)
+  reqOnlyTable_(false), onlyTable_(false), autoSortColumn_(true), useFirstRefresh_(true)
 {
   topWidget = topLevelWidget();
 
@@ -779,8 +779,10 @@ void FLTableDB::copyRecord()
     cursor_->copyRecord();
 }
 
-void FLTableDB::initCursor()
+void FLTableDB::initCursor(bool withRefresh)
 {
+  qWarning("inicializando cursor FLTABLEDB!!");
+  useFirstRefresh_ = withRefresh;
   if (!topWidget || !cursor_)
     return;
 
@@ -830,7 +832,6 @@ void FLTableDB::initCursor()
     } else {
       FLSqlCursor *cursorTopWidget = ::qt_cast<FLFormDB *>(topWidget)->cursor();
       if (cursorTopWidget && cursorTopWidget->metadata()->name() != tableName_) {
-        qWarning(tr("FLTableDB : RECOGE CURSOR FLFormDB"));
         cursor_ = cursorTopWidget;
       }
     }
@@ -939,6 +940,7 @@ void FLTableDB::showWidget()
     return;
 
   showed = true;
+  qWarning("FLTableDB::showWidget() con useFirstRefresh a " + useFirstRefresh_ ? "true" : "false");
 
   FLTableMetaData *tMD = 0;
   bool ownTMD = false;
@@ -957,35 +959,39 @@ void FLTableDB::showWidget()
   tableRecords();
 
   if (!cursorAux) {
-    if (!initSearch_.isEmpty()) {
-      refresh(true, true);
-      QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-    } else {
-      refresh(true);
-      if (tableRecords_->numRows() <= 0)
-        refresh(false, true);
-      else
-        refreshDelayed();
+    if (useFirstRefresh_) {
+      if (!initSearch_.isEmpty()) {
+        refresh(true, true);
+        QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
+      } else {
+        refresh(true);
+        if (tableRecords_->numRows() <= 0)
+          refresh(false, true);
+        else
+          refreshDelayed();
+      }
+      if (!topWidget->isA("FLFormRecordDB"))
+        lineEditSearch->setFocus();
     }
-    if (!topWidget->isA("FLFormRecordDB"))
-      lineEditSearch->setFocus();
   }
 
   if (cursorAux) {
-    if (topWidget->isA("FLFormRecordDB")
-        && cursorAux->modeAccess() == FLSqlCursor::BROWSE) {
-      cursor_->setEdition(false);
-      setReadOnly(true);
-    }
-    if (!initSearch_.isEmpty()) {
-      refresh(true, true);
-      QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-    } else {
-      refresh(true);
-      if (tableRecords_->numRows() <= 0)
-        refresh(false, true);
-      else
-        refreshDelayed();
+    if (useFirstRefresh_) {
+      if (topWidget->isA("FLFormRecordDB")
+          && cursorAux->modeAccess() == FLSqlCursor::BROWSE) {
+        cursor_->setEdition(false);
+        setReadOnly(true);
+      }
+      if (!initSearch_.isEmpty()) {
+        refresh(true, true);
+        QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
+      } else {
+        refresh(true);
+        if (tableRecords_->numRows() <= 0)
+          refresh(false, true);
+        else
+          refreshDelayed();
+      }
     }
   } else if (topWidget->isA("FLFormRecordDB")
              && cursor_->modeAccess() == FLSqlCursor::BROWSE &&

@@ -245,6 +245,8 @@ public slots:
   */
   virtual QSScript *script() const;
 
+
+
 private slots:
 
   void callInitScript();
@@ -388,6 +390,11 @@ protected:
   Almacena que se aceptado, es decir NO se ha pulsado, botón cancelar
   */
   bool accepted_;
+
+  /**
+  Almacena si se ha de realizar el primer refresh al mostrar el formulario 
+  */
+  bool useFirstRefresh_;
 
   /**
   Interface para scripts

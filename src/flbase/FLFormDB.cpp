@@ -32,14 +32,14 @@
 FLFormDB::FLFormDB(QWidget *parent, const char *name, WFlags f) : QWidget(parent ? parent : aqApp->mainWidget(), name, f),
                                                                   cursor_(0), layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0), showed(false),
                                                                   iface(0), oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0), oldFormObj(0),
-                                                                  accepted_(false)
+                                                                  accepted_(false), useFirstRefresh_(true)
 {
 }
 
 FLFormDB::FLFormDB(const QString &actionName, QWidget *parent, WFlags f) : QWidget(parent ? parent : aqApp->mainWidget(), actionName, f),
                                                                            layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0), showed(false), iface(0),
                                                                            oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0), oldFormObj(0),
-                                                                           accepted_(false)
+                                                                           accepted_(false), useFirstRefresh_(true)
 {
 
   setFocusPolicy(QWidget::NoFocus);
@@ -70,7 +70,7 @@ FLFormDB::FLFormDB(const QString &actionName, QWidget *parent, WFlags f) : QWidg
 FLFormDB::FLFormDB(FLSqlCursor *cursor, const QString &actionName, QWidget *parent, WFlags f) : QWidget(parent ? parent : aqApp->mainWidget(), actionName, f),
                                                                                                 cursor_(cursor), layout(0), mainWidget_(0), layoutButtons(0), pushButtonCancel(0),
                                                                                                 showed(false), iface(0), oldCursorCtxt(0), isClosing_(false), initFocusWidget_(0),
-                                                                                                oldFormObj(0), accepted_(false)
+                                                                                                oldFormObj(0), accepted_(false), useFirstRefresh_(true)
 {
   setFocusPolicy(QWidget::NoFocus);
 
@@ -130,10 +130,8 @@ void FLFormDB::setMainWidget(QWidget *w)
 
   if (showed)
   {
-    if (mainWidget_ && mainWidget_ != w) {
-      qWarning("FLFormDB::setMainWidget: Init main widget desde setMainWidget");
+    if (mainWidget_ && mainWidget_ != w)
       initMainWidget(w);
-    }
   }
   else
     w->hide();
@@ -298,14 +296,19 @@ void FLFormDB::showEvent(QShowEvent *e)
     showed = true;
     if (cursor_ && iface)
     {
-      qWarning("LLamando a PRELOAD!");
+      QVariant fR(aqApp->call("firstRefresh", QSArgumentList(), iface).variant());
+      if (fR.isValid() && fR.type() == QVariant::Bool) {
+        qWarning("FLFormDB::showEvent: Especificado firstRefresh como " + (fR.toString()));
+        useFirstRefresh_ = fR.toBool();
+      }
+
+
+
       QVariant v(aqApp->call("preloadMainFilter", QSArgumentList(), iface).variant());
       if (v.isValid() && v.type() == QVariant::String) {
         cursor_->setMainFilter(v.toString(), false);
       }
-      qWarning("LLamando a PRELOAD OK!");
     }
-    qWarning("InitMainWidget desde showEvent");
     initMainWidget();
     callInitScript();
   }
@@ -324,7 +327,6 @@ void FLFormDB::callInitScript()
 void FLFormDB::initMainWidget(QWidget *w)
 {
   QWidget *mWidget = w ? w : mainWidget_;
-  qWarning("INIT MAIN WIDGET");
   if (mWidget)
   {
     QObjectList *l = static_cast<QObject *>(mWidget)->queryList("FLTableDB");
@@ -333,7 +335,7 @@ void FLFormDB::initMainWidget(QWidget *w)
     while ((tdb = static_cast<FLTableDB *>(itt.current())) != 0)
     {
       ++itt;
-      tdb->initCursor();
+      tdb->initCursor(useFirstRefresh_);
     }
     delete l;
 
@@ -449,7 +451,6 @@ void FLFormDB::initMainWidget(QWidget *w)
     else
       setFocus();
   }
-  qWarning("INIT MAIN WIDGET OK");
 }
 
 void FLFormDB::setCursor(FLSqlCursor *c)

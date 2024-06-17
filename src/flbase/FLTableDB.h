@@ -596,6 +596,8 @@ private:
   
   QString tableDB_filterRecords_functionName_;
 
+  bool useFirstRefresh_;
+
 public slots:
 
   /**
@@ -675,7 +677,7 @@ public slots:
   Inicia el cursor segun este campo sea de la tabla origen o de
   una tabla relacionada
   */
-  void initCursor();
+  void initCursor(bool withRefresh = false);
 
   /**
   Posiciona el cursor en un registro valido
