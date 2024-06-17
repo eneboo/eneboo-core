@@ -917,6 +917,7 @@ void FLTableDB::initCursor(bool withRefresh)
   if (ownTMD && tMD && !tMD->inCache()) {
     delete tMD;
   }
+  qWarning("FIN inicializando cursor FLTABLEDB!!");
 }
 
 void FLTableDB::showEvent(QShowEvent *e)
