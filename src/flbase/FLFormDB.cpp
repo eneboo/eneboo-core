@@ -298,12 +298,12 @@ void FLFormDB::showEvent(QShowEvent *e)
     showed = true;
     if (cursor_ && iface)
     {
-      qWarning("LLamando a PRELOAD!")
+      qWarning("LLamando a PRELOAD!");
       QVariant v(aqApp->call("preloadMainFilter", QSArgumentList(), iface).variant());
       if (v.isValid() && v.type() == QVariant::String) {
         cursor_->setMainFilter(v.toString(), false);
       }
-      qWarning("LLamando a PRELOAD OK!")
+      qWarning("LLamando a PRELOAD OK!");
     }
     qWarning("InitMainWidget desde showEvent");
     initMainWidget();
