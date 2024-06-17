@@ -677,7 +677,7 @@ public slots:
   Inicia el cursor segun este campo sea de la tabla origen o de
   una tabla relacionada
   */
-  void initCursor(bool withRefresh = false);
+  void initCursor();
 
   /**
   Posiciona el cursor en un registro valido

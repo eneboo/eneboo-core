@@ -779,9 +779,8 @@ void FLTableDB::copyRecord()
     cursor_->copyRecord();
 }
 
-void FLTableDB::initCursor(bool withRefresh)
+void FLTableDB::initCursor()
 {
-  useFirstRefresh_ = withRefresh;
   if (!topWidget || !cursor_)
     return;
 
