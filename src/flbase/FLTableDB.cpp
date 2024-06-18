@@ -48,7 +48,7 @@ FLTableDB::FLTableDB(QWidget *parent, const char *name) : FLWidgetTableDB(parent
   checkColumnVisible_(false), sortColumn_(0), orderAsc_(true), sortColumn2_(1),
   orderAsc2_(true), sortColumn3_(2), orderAsc3_(true), tdbFilterLastWhere_(QString::null),
   findHidden_(false), filterHidden_(false), showAllPixmaps_(false), fakeEditor_(0),
-  reqOnlyTable_(false), onlyTable_(false), autoSortColumn_(true)
+  reqOnlyTable_(false), onlyTable_(false), autoSortColumn_(true), useFirstRefresh_(true)
 {
   topWidget = topLevelWidget();
 
