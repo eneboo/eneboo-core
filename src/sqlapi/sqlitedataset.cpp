@@ -537,6 +537,7 @@ namespace dbiplus
 
   if (fi_salida.open(IO_ReadOnly)) {
     QTextStream t(&fi_salida);
+    t.setEncoding(QTextStream::Latin1);
     salida = t.read();
     fi_salida.close();
   } else {
