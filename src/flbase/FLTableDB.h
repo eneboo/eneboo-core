@@ -589,6 +589,8 @@ private:
   bool onlyTable_;
   bool reqOnlyTable_;
 
+  bool useFirstRefresh_;
+
   /**
   Editor falso
   */

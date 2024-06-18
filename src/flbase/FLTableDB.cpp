@@ -938,6 +938,7 @@ void FLTableDB::showWidget()
 
   showed = true;
 
+
   FLTableMetaData *tMD = 0;
   bool ownTMD = false;
   if (!tableName_.isEmpty()) {
@@ -950,40 +951,61 @@ void FLTableDB::showWidget()
     }
     if (!tMD)
       return;
+
   }
 
   tableRecords();
 
-  if (!cursorAux) {
-    if (!initSearch_.isEmpty()) {
-      refresh(true, true);
-      QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-    } else {
-      refresh(true);
-      if (tableRecords_->numRows() <= 0)
-        refresh(false, true);
-      else
-        refreshDelayed();
+
+    //Sacamos si usamos firstRefresh o no ...
+    QString idMod(cursor_->db()->managerModules()->idModuleOfFile(cursor_->metadata()->name() + QString::fromLatin1(".mtd")));
+    QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + cursor_->metadata()->name() + "_" + topWidget->name();
+    qWarning("Realizando llamada a " + funcName);
+    QVariant v = aqApp->call(funcName, QSArgumentList(), 0).variant();
+    if (v.isValid() && v.type() == QVariant::Bool) {
+      qWarning("Encontrado " + funcName);
+      qWarning(v.toBool() ? "Es true": "Es false");
+      useFirstRefresh_ = v.toBool();
     }
-    if (!topWidget->isA("FLFormRecordDB"))
-      lineEditSearch->setFocus();
+
+  
+  
+
+
+  if (!cursorAux) {
+    if (useFirstRefresh_) {
+      if (!initSearch_.isEmpty()) {
+        refresh(true, true);
+        QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
+      } else {
+        refresh(true);
+        if (tableRecords_->numRows() <= 0)
+          refresh(false, true);
+        else
+          refreshDelayed();
+      }
+      if (!topWidget->isA("FLFormRecordDB"))
+        lineEditSearch->setFocus();
+    }
   }
 
   if (cursorAux) {
-    if (topWidget->isA("FLFormRecordDB")
-        && cursorAux->modeAccess() == FLSqlCursor::BROWSE) {
-      cursor_->setEdition(false);
-      setReadOnly(true);
-    }
-    if (!initSearch_.isEmpty()) {
-      refresh(true, true);
-      QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
-    } else {
-      refresh(true);
-      if (tableRecords_->numRows() <= 0)
-        refresh(false, true);
-      else
-        refreshDelayed();
+    if (useFirstRefresh_) {
+      if (topWidget->isA("FLFormRecordDB")
+          && cursorAux->modeAccess() == FLSqlCursor::BROWSE) {
+        cursor_->setEdition(false);
+        setReadOnly(true);
+      }
+      if (!initSearch_.isEmpty()) {
+        refresh(true, true);
+        QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
+      } else {
+        refresh(true);
+        if (tableRecords_->numRows() <= 0)
+          refresh(false, true);
+        else
+          refreshDelayed();
+      }
     }
   } else if (topWidget->isA("FLFormRecordDB")
              && cursor_->modeAccess() == FLSqlCursor::BROWSE &&
