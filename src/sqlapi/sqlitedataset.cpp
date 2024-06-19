@@ -983,7 +983,12 @@ bool SqliteDataset::fetch_rows(int pos) {
       continue;
     } else { // valores ...
 
+    if (lista_valores.size() != result.record_header.size()) {
+      qWarning("Error de integridad de datos. El número de columnas no coincide. Fichero salida:" + QString(fichero_salida));
+      return false;
+    }
 
+    //qWarning("PROCESANDO VALORES LINEA N? %d", sz);
 
     //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
     // Creamos listado con valores
