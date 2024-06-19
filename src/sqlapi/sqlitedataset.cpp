@@ -983,8 +983,10 @@ bool SqliteDataset::fetch_rows(int pos) {
       continue;
     } else { // valores ...
 
-    if (lista_valores.size() != result.record_header.size()) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. Fichero salida:" + QString(fichero_salida));
+    int lista_size = lista_valores.size();
+
+    if (lista_size > 0 && lista_size != result.record_header.size()) {
+      qWarning("Error de integridad de datos. El número de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       return false;
     }
 
@@ -993,7 +995,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
     // Creamos listado con valores
     sql_record rec;
-    for (int i = 0; i < lista_valores.size(); i++) {  
+    for (int i = 0; i < lista_size; i++) {  
       std::string valor = lista_valores[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
