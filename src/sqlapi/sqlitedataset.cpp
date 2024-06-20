@@ -948,11 +948,12 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
+  int cabecera_size = 0;
 
   if (posicion_idx == 0) {
     result.record_header.clear();
   }
-  qWarning("CABECERA!" + QString::number(result.record_header.size()));
+
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
@@ -963,16 +964,14 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     if (first == true) { //cabecera ...
       first = false;
-      if (result.record_header.size() != 0) { // Solo cargamos cabecera de la primera paginación
-        continue;
-      }
-
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);
+        result.record_header.clear();
         for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
+          cabecera_size += 1;
           QString cabecera_columna = *it3;
           QStringList cabecera_columna_sl = QStringList::split(":", cabecera_columna);
           QString nombre_columna = cabecera_columna_sl[0];
@@ -989,13 +988,13 @@ bool SqliteDataset::fetch_rows(int pos) {
         }
         
       }
-      qWarning("CABECERA CARGADA" + QString::number(result.record_header.size()));
+      qWarning("CABECERA CARGADA" + QString::number(cabecera_size));
       continue;
     } else { // valores ...
 
     int lista_size = lista_valores.size();
 
-    if (lista_size > 0 && lista_size != result.record_header.size()) {
+    if (lista_size > 0 && lista_size != cabecera_size) {
       qWarning("Error de integridad de datos. El número de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       return false;
     }
