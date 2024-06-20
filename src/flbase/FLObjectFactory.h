@@ -500,6 +500,7 @@ public slots:
    @return TRUE si se pudo realizar la conexión, FALSE en caso contrario
    */
   bool addDatabase(const QString &newConnName, const QString &sourceConnName = "default") {
+    qWarning("AQUÍ ***********" + QString(newConnName) + ",  " + QString(sourceConnName));
     FLSqlDatabase *srcDb = FLSqlConnections::database(sourceConnName);
     if (!srcDb)
       return false;

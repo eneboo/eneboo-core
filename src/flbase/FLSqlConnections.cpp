@@ -78,11 +78,8 @@ FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
     qWarning(QString("FLSqlConnections::database : No existe la conexión '%1',"
                      " se devuelve la conexión por defecto 'default'").arg(connectionName));
 #endif
-    if (!d->defaultDB) {
-      qWarning("FLSqlConnections::database : * No existe la conexión por defecto 'default'");
+    if (!d->defaultDB)
       addDatabase(new FLSqlDatabase());
-    }
-    qWarning("FLSqlConnections::database : ** Se devuelve la conexión por defecto 'default'");
     ret = d->defaultDB;
   }
   return ret;
@@ -101,7 +98,7 @@ bool FLSqlConnections::addDatabase(const QString &driverAlias, const QString &na
                                    const QString &user, const QString &password, const QString &host,
                                    int port, const QString &connectionName, const QString &connectOptions)
 {
-  qWarning("FLSqlConnections::addDatabase : driverAlias = " + QString(driverAlias) + ", conn_name:" + QString(connectionName));
+    qWarning("FLSqlConnections::addDatabase : driverAlias = " + QString(driverAlias) + ", conn_name:" + QString(connectionName));
 
   FLSqlDatabase *db = new FLSqlDatabase();
   if (!db->loadDriver(FLSqlDatabase::driverAliasToDriverName(driverAlias), connectionName)) {

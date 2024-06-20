@@ -336,7 +336,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = true;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -352,7 +352,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = true;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -989,7 +989,7 @@ bool SqliteDataset::fetch_rows(int pos) {
         }
         
       }
-      //qWarning("CABECERA CARGADA");
+      qWarning("CABECERA CARGADA" + QString::number(result.record_header.size()));
       continue;
     } else { // valores ...
 
@@ -1054,6 +1054,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   if (debug_sql) {
     qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
+
   return true;
   }
 
