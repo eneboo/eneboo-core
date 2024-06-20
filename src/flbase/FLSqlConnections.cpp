@@ -61,19 +61,19 @@ bool FLSqlConnections::addDatabase(FLSqlDatabase *db, const QString &connectionN
 
 FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
 {
-  qWarning("FLSqlConnections::database : conn_name:" + QString(connectionName));
+  //qWarning("FLSqlConnections::database : conn_name:" + QString(connectionName));
   if (!d) {
-    qWarning("FLSqlConnections::database : d == 0");
+    //qWarning("FLSqlConnections::database : d == 0");
     d = new FLSqlConnectionsPrivate();
   }
 
   if (connectionName != "default") { //Comprueba conexiones no default cuando usamos driver FLsqlapi
     FLSqlDatabase *ret1 = d->dictDB->find("default");
     if (ret1) {
-      qWarning("FLSqlConnections::Existe default");
-      qWarning("El driver default es " + ret1->driverName());
+      //qWarning("FLSqlConnections::Existe default");
+      //qWarning("El driver default es " + ret1->driverName());
       if (ret1->driverName() == "FLsqlapi") {
-        qWarning("retorna default");
+        //qWarning("retorna default");
         return ret1;
       }
     }
@@ -116,7 +116,7 @@ bool FLSqlConnections::addDatabase(const QString &driverAlias, const QString &na
                                    const QString &user, const QString &password, const QString &host,
                                    int port, const QString &connectionName, const QString &connectOptions)
 {
-    qWarning("FLSqlConnections::addDatabase : driverAlias = " + QString(driverAlias) + ", conn_name:" + QString(connectionName));
+    //qWarning("FLSqlConnections::addDatabase : driverAlias = " + QString(driverAlias) + ", conn_name:" + QString(connectionName));
 
   FLSqlDatabase *db = new FLSqlDatabase();
   if (!db->loadDriver(FLSqlDatabase::driverAliasToDriverName(driverAlias), connectionName)) {
