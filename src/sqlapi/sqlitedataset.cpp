@@ -946,6 +946,10 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
+  
+  if (posicion_idx == 0) {
+    result.record_header.clear();
+  }
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
@@ -957,7 +961,11 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (first == true) { //cabecera ...
       // Cargamos registro de cabecera:
       //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
+      first = false;
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
+        if (posicion_idx != 0) { // Solo cargamos cabecera de la primera paginación
+          continue;
+        }
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);
@@ -979,7 +987,6 @@ bool SqliteDataset::fetch_rows(int pos) {
         
       }
       //qWarning("CABECERA CARGADA");
-      first = false;
       continue;
     } else { // valores ...
 
