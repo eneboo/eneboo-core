@@ -73,6 +73,7 @@ FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
       qWarning("FLSqlConnections::Existe default");
       qWarning("El driver default es " + ret1->driverName());
       if (ret1->driverName() == "FLsqlapi") {
+        qWarning("retorna default");
         return ret1;
       }
     }

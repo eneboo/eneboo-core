@@ -503,6 +503,12 @@ public slots:
     FLSqlDatabase *srcDb = FLSqlConnections::database(sourceConnName);
     if (!srcDb)
       return false;
+
+    if (srcDb->driverName() == "FLsqlapi" && newConnName != "default") {
+      qWarning("addDatabase: No se puede crear una conexion con nombre distinto a 'default' cuando se usa la API FLsqlapi");
+      return true;
+    }
+
     return FLSqlConnections::addDatabase(srcDb->driverName(), srcDb->database2(),
                                          srcDb->user2(), srcDb->password(), srcDb->host(),
                                          srcDb->port(), newConnName);
