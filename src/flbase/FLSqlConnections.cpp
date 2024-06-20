@@ -101,6 +101,8 @@ bool FLSqlConnections::addDatabase(const QString &driverAlias, const QString &na
                                    const QString &user, const QString &password, const QString &host,
                                    int port, const QString &connectionName, const QString &connectOptions)
 {
+  qWarning("FLSqlConnections::addDatabase : driverAlias = " + QString(driverAlias) + ", conn_name:" + QString(connectionName));
+
   FLSqlDatabase *db = new FLSqlDatabase();
   if (!db->loadDriver(FLSqlDatabase::driverAliasToDriverName(driverAlias), connectionName)) {
     delete db;

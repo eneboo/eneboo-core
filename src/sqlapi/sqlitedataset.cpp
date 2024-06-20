@@ -885,7 +885,9 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::gestionar_consulta_paginada(const int offset)
   {
-    qWarning("OFFSET " + QString::number(offset));
+    if (debug_paginacion) {
+      qWarning("OFFSET " + QString::number(offset));
+    }
     QString current_sql = sql;
     
     if (((SqliteDatabase *)db)->tokenApi.isEmpty()) {
@@ -950,6 +952,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   if (posicion_idx == 0) {
     result.record_header.clear();
   }
+  qWarning("CABECERA!" + QString::number(result.record_header.size()));
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
@@ -959,12 +962,11 @@ bool SqliteDataset::fetch_rows(int pos) {
     QStringList lista_valores(QStringList::split(separador_campos, registro));
 
     if (first == true) { //cabecera ...
-      // Cargamos registro de cabecera:
-      //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       first = false;
-      if (posicion_idx != 0) { // Solo cargamos cabecera de la primera paginación
+      if (result.record_header.size() != 0) { // Solo cargamos cabecera de la primera paginación
         continue;
       }
+
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
         
         const int col_numero = result.record_header.size() + 1;
