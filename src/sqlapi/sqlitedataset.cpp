@@ -336,7 +336,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = true;
-    debug_aqextension = false;
+    debug_aqextension = true;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -352,7 +352,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = true;
-    debug_aqextension = false;
+    debug_aqextension = true;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -946,7 +946,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
-  
+
   if (posicion_idx == 0) {
     result.record_header.clear();
   }
