@@ -79,9 +79,10 @@ FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
                      " se devuelve la conexión por defecto 'default'").arg(connectionName));
 #endif
     if (!d->defaultDB) {
-      qWarning("FLSqlConnections::database : No existe la conexión por defecto 'default'");
+      qWarning("FLSqlConnections::database : * No existe la conexión por defecto 'default'");
       addDatabase(new FLSqlDatabase());
     }
+    qWarning("FLSqlConnections::database : ** Se devuelve la conexión por defecto 'default'");
     ret = d->defaultDB;
   }
   return ret;

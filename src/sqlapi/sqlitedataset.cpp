@@ -885,7 +885,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::gestionar_consulta_paginada(const int offset)
   {
-    
+    qWarning("OFFSET " + QString::number(offset));
     QString current_sql = sql;
     
     if (((SqliteDatabase *)db)->tokenApi.isEmpty()) {
@@ -962,10 +962,11 @@ bool SqliteDataset::fetch_rows(int pos) {
       // Cargamos registro de cabecera:
       //qWarning("PROCESANDO CABECERA. columnas %d", lista_valores.count()); 
       first = false;
+      if (posicion_idx != 0) { // Solo cargamos cabecera de la primera paginación
+        continue;
+      }
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
-        if (posicion_idx != 0) { // Solo cargamos cabecera de la primera paginación
-          continue;
-        }
+        
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);

@@ -59,7 +59,7 @@ void test_sha256(const string name, const string str)
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     if (ss.str() == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacío.");
+    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacï¿½o.");
     else
     	{
     ss << "  " << name;
@@ -157,7 +157,7 @@ void FLManagerModules::loadAllIdModules()
     FLInfoMod *infoMod = new FLInfoMod();
     infoMod->idModulo = QString("sys");
     infoMod->idArea = QString("sys");
-    infoMod->descripcion = QString("Administración");
+    infoMod->descripcion = QString("Administraciï¿½n");
     infoMod->version = QString("0.0");
     infoMod->icono = contentFS(AQ_DATA + "/sys.xpm");
     infoMod->areaDescripcion = QString("Sistema");
@@ -328,10 +328,10 @@ void FLManagerModules::init()
   tmpTMD = db_->manager()->createSystemTable("flsettings");
   tmpTMD = db_->manager()->createSystemTable("flserial");
   tmpTMD = db_->manager()->createSystemTable("flvar");
-//-->FLLarge único   
+//-->FLLarge ï¿½nico   
   if (aqApp->singleFLLarge())
     tmpTMD = db_->manager()->createSystemTable("fllarge");
-//<--FLarge único
+//<--FLarge ï¿½nico
 
   tmpTMD = db_->manager()->createSystemTable("flupdates");
 
@@ -374,6 +374,7 @@ void FLManagerModules::init()
   }
 
   if (modVer.isEmpty()) {
+    qWarning("Borrando caché");
     AQ_DISKCACHE_CLR();
     QSqlQuery qry(QString::null, db_->dbAux());
     qry.exec("DROP TABLE flserial CASCADE");
@@ -412,7 +413,7 @@ void FLManagerModules::init()
     cursor.refreshBuffer();
     cursor.setValueBuffer("idmodulo", "sys");
     cursor.setValueBuffer("idarea", "sys");
-    cursor.setValueBuffer("descripcion", QApplication::tr("Administración"));
+    cursor.setValueBuffer("descripcion", QApplication::tr("Administraciï¿½n"));
     cursor.setValueBuffer("icono", contentFS(AQ_DATA + "/sys.xpm"));
     cursor.setValueBuffer("bloqueo", QVariant(false, 0));
     cursor.commitBuffer();
@@ -860,7 +861,7 @@ void FLManagerModules::setActiveIdModule(const QString &id)
     activeIdModule_ = id;
   } else {
 #ifdef FL_DEBUG
-    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un módulo inexistente"));
+    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un mï¿½dulo inexistente"));
 #endif
     activeIdArea_ = QString::null;
     activeIdModule_ = QString::null;

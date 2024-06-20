@@ -172,6 +172,7 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
                               int port, const QString &connName,
                               const QString &connectOptions)
 {
+  qWarning("ConnectBD (1)");
   if (driverName_.isEmpty())
     return false;
 
@@ -214,14 +215,16 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
 
     connectionName_ = connName;
     initInternal();
+    qWarning("FIN ConnectBD (1)");
     return true;
   }
-
+  
   return false;
 }
 
 bool FLSqlDatabase::connectDB()
 {
+  qWarning("ConnectBD (2)");
   if (driverName_.isEmpty())
     return false;
 
@@ -247,6 +250,7 @@ bool FLSqlDatabase::connectDB()
       return false;
 
     initInternal();
+    qWarning("FIN ConnectBD (2)");
     return true;
   }
 
