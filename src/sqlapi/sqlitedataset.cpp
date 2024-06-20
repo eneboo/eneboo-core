@@ -969,7 +969,10 @@ bool SqliteDataset::fetch_rows(int pos) {
         const int col_numero = result.record_header.size() + 1;
         const QString datos_columna = *it2;
         QStringList columna = QStringList::split("|", datos_columna);
-        result.record_header.clear();
+        if (offset != 0) {
+          continue;
+        }
+
         for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
           cabecera_size += 1;
           QString cabecera_columna = *it3;
