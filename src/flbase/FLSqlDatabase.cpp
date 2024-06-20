@@ -127,6 +127,7 @@ QString FLSqlDatabase::defaultPort(const QString &alias)
 
 bool FLSqlDatabase::loadDriver(const QString &driverName, const QString &connName)
 {
+  qWarning("LOADDRIVER " + QString(driverName) + " " + QString(connName));
   db_ = QSqlDatabase::addDatabase(driverName, connName + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz"));
   if (!db_->lastError().driverText().isEmpty())
     return false;
