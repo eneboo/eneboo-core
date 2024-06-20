@@ -67,12 +67,14 @@ FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
     d = new FLSqlConnectionsPrivate();
   }
 
-  FLSqlDatabase *ret1 = d->dictDB->find("default");
-  if (ret1) {
-    qWarning("FLSqlConnections::Existe default");
-    qWarning("El driver default es " + ret1->driverName());
-    if (ret1->driverName() == "FLsqlapi") {
-      return ret1;
+  if (connectionName != "default") { //Comprueba conexiones no default cuando usamos driver FLsqlapi
+    FLSqlDatabase *ret1 = d->dictDB->find("default");
+    if (ret1) {
+      qWarning("FLSqlConnections::Existe default");
+      qWarning("El driver default es " + ret1->driverName());
+      if (ret1->driverName() == "FLsqlapi") {
+        return ret1;
+      }
     }
   }
 

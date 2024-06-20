@@ -988,7 +988,7 @@ bool SqliteDataset::fetch_rows(int pos) {
         }
         
       }
-      qWarning("CABECERA CARGADA" + QString::number(cabecera_size));
+      //qWarning("CABECERA CARGADA" + QString::number(cabecera_size));
       continue;
     } else { // valores ...
 
