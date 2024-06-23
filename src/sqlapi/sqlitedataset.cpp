@@ -489,6 +489,7 @@ namespace dbiplus
 
 
       if (!AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0) {
+        qWarning("No está iniciado AQProc");
         nuevo_proceso_need = true;
       } else {
         QString salida = "";
@@ -497,7 +498,7 @@ namespace dbiplus
         AQProc->writeToStdin("saluda_aqextension\n");
         // si no devuelve saludo , nuevo.
         if (AQProc->isRunning() && !AQProc->exitStatus()) {
-          while (paso > 100000) {
+          while (paso < 100000) {
             paso += 1;
             qApp->processEvents();
             salida = AQProc->readLineStdout();
