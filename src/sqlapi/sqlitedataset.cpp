@@ -502,20 +502,25 @@ namespace dbiplus
     } else {
       // Solo pasarle argumento ...
       if (debug_aqextension) {
-        qWarning("PROCESO EN EJECUCION! :), PID: " + QString::number(AQProc->processIdentifier()));
+        qWarning("PROCESO EN EJECUCION! :)");
       }
       AQProc->writeToStdin(fichero_datos + "\n");
     }
 
     if (debug_aqextension) {
-      qWarning("Esperando a que se procese la llamada");
+      qWarning("AQExtension pid " + QString::number(AQProc->processIdentifier()));
+    }
+
+    if (debug_aqextension) {
+      qWarning("Esperando a que se procese la llamada. Fichero salida:" + fichero_salida);
     }
     int contador_vueltas = 0;
     while (AQProc->isRunning() && !AQProc->exitStatus()) {
       //Esperamos a que termine
       contador_vueltas++;
       if (contador_vueltas > 100000) {
-        qWarning("Estoy vivo");
+        qWarning("Estoy vivo esperando.Vuelvo a escribir");
+        AQProc->writeToStdin(fichero_datos + "\n");
         contador_vueltas = 1;
       }
 
@@ -533,7 +538,7 @@ namespace dbiplus
         }
       } */
       if(QFile::exists(fichero_salida)) {
-        //qWarning("Fichero salida encontrado");
+        qWarning("Fichero salida encontrado");
         break;
       }
     }
