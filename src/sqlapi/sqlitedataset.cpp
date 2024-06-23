@@ -106,7 +106,7 @@ namespace dbiplus
     db = "sqlite.db";
     login = "root";
     passwd, "";
-    AQProc = new QProcess(0);
+    AQProc = new QProcess(0, "aqextension");
   }
 
   SqliteDatabase::~SqliteDatabase()
@@ -465,6 +465,8 @@ namespace dbiplus
     bool usar_py = true;
     bool reset_allways = false;
 
+    qApp->processEvents();
+
     QString path_exec = "";
     QString comando_txt = "";
     if (usar_py) {
@@ -510,8 +512,7 @@ namespace dbiplus
         qWarning("Haciendo flush");
         AQProc->flushStdin();
       }
-
-      AQProc->writeToStdin(fichero_datos + "\n");
+      AQProc->writeToStdin(fichero_datos);
     }
 
     
@@ -523,20 +524,10 @@ namespace dbiplus
     if (debug_aqextension) {
       qWarning("Esperando a que se procese la llamada. Fichero salida:" + fichero_salida);
     }
-    int contador_vueltas = 0;
-    while (AQProc->isRunning() && !AQProc->exitStatus()) {
-      //Esperamos a que termine
-      contador_vueltas++;
-      if (contador_vueltas > 100000) {
-        qWarning("Estoy vivo esperando.Vuelvo a escribir");
-        qWarning("Lectura stdout" + QString(AQProc->readStdout().data())); 
-        qWarning("Lectura stderr" + QString(AQProc->readStderr().data())); 
-        AQProc->writeToStdin(fichero_datos + "\n");
-        contador_vueltas = 1;
-      }
 
-      sleep(0.01);
-      //qApp->processEvents();
+    while (AQProc->isRunning() && !AQProc->exitStatus()) {
+
+      qApp->processEvents();
 
       if(QFile::exists(fichero_salida)) {
         qWarning("Fichero salida encontrado");
@@ -561,7 +552,7 @@ namespace dbiplus
 
 
   if (reset_allways) {
-        qWarning("Reiniciando proceso");
+    qWarning("Reiniciando proceso");
     AQProc->tryTerminate();
     ((SqliteDatabase *)db)->AQProc = new QProcess();
   }
