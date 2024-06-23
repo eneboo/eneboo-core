@@ -464,8 +464,7 @@ namespace dbiplus
   {
     bool usar_py = true;
     bool reset_allways = false;
-
-    qApp->processEvents();
+    bool nuevo_proceso_need = false;
 
     QString path_exec = "";
     QString comando_txt = "";
@@ -487,7 +486,39 @@ namespace dbiplus
     if (debug_aqextension) {
       qWarning("Comando: " + comando_txt);
     }
-    if (!AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0) {
+
+
+      if (!AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0) {
+        nuevo_proceso_need = true;
+      } else {
+        QString salida = "";
+        int paso = 0;
+        nuevo_proceso_need = true;
+        AQProc->writeToStdin("saluda_aqextension\n");
+        // si no devuelve saludo , nuevo.
+        if (AQProc->isRunning() && !AQProc->exitStatus()) {
+          while (paso > 100000) {
+            paso += 1;
+            qApp->processEvents();
+            salida = AQProc->readLineStdout();
+            if (salida && debug_aqextension) {
+              qWarning("Salida: " + salida);
+              nuevo_proceso_need = false;
+              break;
+              }
+          }      
+       }
+       if (nuevo_proceso_need) {
+        qWarning("aqExtension no ha respondido . reiniciando");
+        }
+      }
+
+
+
+
+
+
+    if (nuevo_proceso_need) {
       if (debug_aqextension) {
         qWarning("PROCESO PARADO! :(. Exit status: " + QString::number(AQProc->exitStatus()));
       }
@@ -503,15 +534,6 @@ namespace dbiplus
         return "error";
       }
     } else {
-      // Solo pasarle argumento ...
-      if (debug_aqextension) {
-        qWarning("PROCESO EN EJECUCION! :)");
-      }
-
-      if (debug_aqextension) {
-        qWarning("Haciendo flush");
-        AQProc->flushStdin();
-      }
       AQProc->writeToStdin(fichero_datos);
     }
 
