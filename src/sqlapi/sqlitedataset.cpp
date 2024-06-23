@@ -510,10 +510,26 @@ namespace dbiplus
     if (debug_aqextension) {
       qWarning("Esperando a que se procese la llamada");
     }
-    
+    int contador_vueltas = 0;
     while (AQProc->isRunning() && !AQProc->exitStatus()) {
       //Esperamos a que termine
-      qApp->processEvents();
+      contador_vueltas++;
+      if (contador_vueltas > 1000) {
+        qWarning("Esperando demasiado, forzamos la salida");
+        contador_vueltas = 1;
+      }
+
+      if (contador_vueltas == 1) {
+        if (debug_aqextension) {
+          qWarning("Esperando a que se procese la llamada 1");
+        }
+      }
+      //qApp->processEvents();
+      if (contador_vueltas == 1) {
+        if (debug_aqextension) {
+          qWarning("Esperando a que se procese la llamada 2");
+        }
+      }
       if(QFile::exists(fichero_salida)) {
         //qWarning("Fichero salida encontrado");
         break;
