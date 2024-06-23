@@ -433,8 +433,8 @@ namespace dbiplus
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
     cadena += "\"prefix_pipe\":\"aqextension_pipe\",\n";
     //cadena += "\"only_key\":\"token\",\n";
-    cadena += "\"close_when_finish\":false\n";
-    cadena += "\"enable_debug\":true,\n";
+    cadena += "\"close_when_finish\":false,\n";
+    cadena += "\"enable_debug\":true\n";
     cadena += "}";
     qWarning("Fichero salida token : " + fichero_salida);
     QString fichero_datos = generar_fichero_aqextension(cadena);
