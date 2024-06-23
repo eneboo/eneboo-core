@@ -463,7 +463,7 @@ namespace dbiplus
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
     bool usar_py = true;
-    bool reset_allways = true;
+    bool reset_allways = false;
 
     QString path_exec = "";
     QString comando_txt = "";
@@ -529,23 +529,15 @@ namespace dbiplus
       contador_vueltas++;
       if (contador_vueltas > 100000) {
         qWarning("Estoy vivo esperando.Vuelvo a escribir");
+        qWarning("Lectura stdout" + QString(AQProc->readStdout().data())); 
+        qWarning("Lectura stderr" + QString(AQProc->readStderr().data())); 
         AQProc->writeToStdin(fichero_datos + "\n");
         contador_vueltas = 1;
       }
 
       sleep(0.01);
-
-/*       if (contador_vueltas == 1) {
-        if (debug_aqextension) {
-          qWarning("Esperando a que se procese la llamada 1");
-        }
-      }
       //qApp->processEvents();
-      if (contador_vueltas == 1) {
-        if (debug_aqextension) {
-          qWarning("Esperando a que se procese la llamada 2");
-        }
-      } */
+
       if(QFile::exists(fichero_salida)) {
         qWarning("Fichero salida encontrado");
         break;
