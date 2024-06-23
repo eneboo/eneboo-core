@@ -498,7 +498,7 @@ namespace dbiplus
         AQProc->writeToStdin("saluda_aqextension\n");
         // si no devuelve saludo , nuevo.
         if (AQProc->isRunning() && !AQProc->exitStatus()) {
-          while (paso < 100000) {
+          while (paso < 100000000) {
             paso += 1;
             qApp->processEvents();
             salida = AQProc->readLineStdout();
