@@ -434,7 +434,7 @@ namespace dbiplus
     cadena += "\"prefix_pipe\":\"aqextension_pipe\",\n";
     //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false,\n";
-    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + "\n";
+    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + ",\n";
     cadena += "}";
     qWarning("Fichero salida token : " + fichero_salida);
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -920,7 +920,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + "\n";
+    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + ",\n";
     cadena += "\"only_key\":\"data\",\n";
     cadena += "\"close_when_finish\":false\n";
     cadena += "}";
