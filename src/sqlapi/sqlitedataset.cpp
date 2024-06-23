@@ -488,7 +488,7 @@ namespace dbiplus
       qWarning("Comando: " + comando_txt);
     }
 
-    bool nuevo_proceso_need = !AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0;
+    bool nuevo_proceso_need = !AQProc->isRunning() || AQProc->exitStatus() != 0;
 
     if (nuevo_proceso_need) {
       if (debug_aqextension) {
@@ -506,6 +506,7 @@ namespace dbiplus
         return "error";
       }
     } else {
+      qWarning("PROCESO EXISTENTE! :)");
       //escribimos el fichero de intercambio.
       QString folder = getenv("TPM");
       if (folder.isEmpty()) {
@@ -525,7 +526,7 @@ namespace dbiplus
           t << fichero_datos;
           fi.close();
         } else {
-          qWarning("no se ha podido escribir en el fichero " +  fichero);
+          qWarning("no se ha podido escribir en el fichero intercambio " +  fichero);
           return "";
         }
       }
@@ -536,9 +537,6 @@ namespace dbiplus
 
     if (debug_aqextension) {
       qWarning("AQExtension pid " + QString::number(AQProc->processIdentifier()));
-    }
-
-    if (debug_aqextension) {
       qWarning("Esperando a que se procese la llamada. Fichero salida:" + fichero_salida);
     }
 
