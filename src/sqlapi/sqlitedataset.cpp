@@ -463,6 +463,7 @@ namespace dbiplus
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
     bool usar_py = true;
+    bool reset_allways = true;
 
     QString path_exec = "";
     QString comando_txt = "";
@@ -555,18 +556,29 @@ namespace dbiplus
     if (debug_aqextension) {
       qWarning("Fin de la espera");
     }
-  
+
+  QString salida = "";
+
   if (!QFile::exists(fichero_salida)) {
     qWarning("No existe fichero salida " + fichero_salida + ", fichero datos: " + fichero_datos);
     QString error_str = AQProc->readStderr().data();
     qWarning("Error devuelto: " + error_str);
-    qWarning("Reiniciando proceso");
-    AQProc->tryTerminate();
-    ((SqliteDatabase *)db)->AQProc = new QProcess();
-    return "error";
+    salida = "error";
+    reset_allways = true;
   }
 
-  QString salida = "";
+
+  if (reset_allways) {
+        qWarning("Reiniciando proceso");
+    AQProc->tryTerminate();
+    ((SqliteDatabase *)db)->AQProc = new QProcess();
+  }
+
+  if (salida != "") {
+    return salida;
+  }
+
+
   QFile fi_salida(fichero_salida);
 
   if (fi_salida.open(IO_ReadOnly)) {
@@ -584,10 +596,6 @@ namespace dbiplus
     //QFile::remove(fichero_datos);
   }
   //QFile::remove(fichero_salida);
-
-  AQProc->tryTerminate();
-  AQProc->kill();
-
   return salida;
 }
 
