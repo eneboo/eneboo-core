@@ -504,8 +504,16 @@ namespace dbiplus
       if (debug_aqextension) {
         qWarning("PROCESO EN EJECUCION! :)");
       }
+
+      if (debug_aqextension) {
+        qWarning("Haciendo flush");
+        AQProc->flushStdin();
+      }
+
       AQProc->writeToStdin(fichero_datos + "\n");
     }
+
+    
 
     if (debug_aqextension) {
       qWarning("AQExtension pid " + QString::number(AQProc->processIdentifier()));
@@ -576,6 +584,9 @@ namespace dbiplus
     //QFile::remove(fichero_datos);
   }
   //QFile::remove(fichero_salida);
+
+  AQProc->tryTerminate();
+  AQProc->kill();
 
   return salida;
 }
