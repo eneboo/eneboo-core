@@ -336,7 +336,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = false;
+    debug_aqextension = true;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -352,7 +352,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = false;
+    debug_aqextension = true;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -434,6 +434,7 @@ namespace dbiplus
     cadena += "\"prefix_pipe\":\"aqextension_pipe\",\n";
     //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false\n";
+    cadena += "\"enable_debug\":true,\n";
     cadena += "}";
     qWarning("Fichero salida token : " + fichero_salida);
     QString fichero_datos = generar_fichero_aqextension(cadena);
