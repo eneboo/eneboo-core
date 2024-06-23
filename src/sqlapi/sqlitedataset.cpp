@@ -464,7 +464,6 @@ namespace dbiplus
   {
     bool usar_py = true;
     bool reset_allways = false;
-    bool nuevo_proceso_need = false;
 
     QString path_exec = "";
     QString comando_txt = "";
@@ -487,37 +486,7 @@ namespace dbiplus
       qWarning("Comando: " + comando_txt);
     }
 
-
-      if (!AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0) {
-        qWarning("No está iniciado AQProc");
-        nuevo_proceso_need = true;
-      } else {
-        QString salida = "";
-        int paso = 0;
-        nuevo_proceso_need = true;
-        AQProc->writeToStdin("saluda_aqextension\n");
-        // si no devuelve saludo , nuevo.
-        if (AQProc->isRunning() && !AQProc->exitStatus()) {
-          while (paso < 100000000) {
-            paso += 1;
-            qApp->processEvents();
-            salida = AQProc->readLineStdout();
-            if (salida && debug_aqextension) {
-              qWarning("Salida: " + salida);
-              nuevo_proceso_need = false;
-              break;
-              }
-          }      
-       }
-       if (nuevo_proceso_need) {
-        qWarning("aqExtension no ha respondido . reiniciando");
-        }
-      }
-
-
-
-
-
+    bool nuevo_proceso_need = !AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0;
 
     if (nuevo_proceso_need) {
       if (debug_aqextension) {
@@ -535,7 +504,30 @@ namespace dbiplus
         return "error";
       }
     } else {
-      AQProc->writeToStdin(fichero_datos);
+      //escribimos el fichero de intercambio.
+      QString folder = getenv("TPM");
+      if (folder.isEmpty()) {
+        folder = getenv("TMPDIR");
+        if (folder.isEmpty()) {
+          folder = "/tmp/";
+        }
+
+        QString fichero = folder + "aqextension_pipe." + QString::number(AQProc->processIdentifier());
+        if (debug_aqextension) {
+          qWarning("Fichero intercambio: " + fichero);
+        }
+        QFile fi(fichero);
+        if (fi.open(IO_WriteOnly)) {
+          QTextStream t(&fi);
+          t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
+          t << fichero_datos;
+          fi.close();
+        } else {
+          qWarning("no se ha podido escribir en el fichero " +  fichero);
+          return "";
+        }
+      }
+      
     }
 
     
@@ -923,6 +915,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
+    cadena += "\"prefix_pipe\":\"aqextension_pipe\",\n"; 
     // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
