@@ -484,9 +484,9 @@ namespace dbiplus
     if (debug_aqextension) {
       qWarning("Comando: " + comando_txt);
     }
-    if (!AQProc->isRunning()) {
+    if (!AQProc->isRunning() || AQProc->normalExit() || AQProc->exitStatus() != 0) {
       if (debug_aqextension) {
-        qWarning("PROCESO PARADO! :(");
+        qWarning("PROCESO PARADO! :(. Exit status: " + QString::number(AQProc->exitStatus()));
       }
       AQProc->clearArguments();
       if (usar_py) {
@@ -502,7 +502,7 @@ namespace dbiplus
     } else {
       // Solo pasarle argumento ...
       if (debug_aqextension) {
-        qWarning("PROCESO EN EJECUCION! :)");
+        qWarning("PROCESO EN EJECUCION! :), PID: " + QString::number(AQProc->processIdentifier()));
       }
       AQProc->writeToStdin(fichero_datos + "\n");
     }
@@ -510,7 +510,8 @@ namespace dbiplus
     if (debug_aqextension) {
       qWarning("Esperando a que se procese la llamada");
     }
-    while (AQProc->isRunning()) {
+    
+    while (AQProc->isRunning() && !AQProc->exitStatus()) {
       //Esperamos a que termine
       qApp->processEvents();
       if(QFile::exists(fichero_salida)) {
@@ -518,6 +519,8 @@ namespace dbiplus
         break;
       }
     }
+
+
     if (debug_aqextension) {
       qWarning("Fin de la espera");
     }
