@@ -336,7 +336,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -352,7 +352,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -463,7 +463,7 @@ namespace dbiplus
 
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
-    bool usar_py = true;
+    bool usar_py = false;
     bool reset_allways = false;
 
     QString path_exec = "";
