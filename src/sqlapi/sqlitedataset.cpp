@@ -462,7 +462,7 @@ namespace dbiplus
 
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
-    bool usar_py = false;
+    bool usar_py = true;
 
     QString path_exec = "";
     QString comando_txt = "";
