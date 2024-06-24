@@ -346,6 +346,7 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     {
       pushButtonAccept = new QPushButton(this, "pushButtonAccept");
       connect(pushButtonAccept, SIGNAL(clicked()), this, SLOT(accept()));
+      connect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtons()));
     }
     pushButtonAccept->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0,
                                                 (QSizePolicy::SizeType)0, 0, 0,
@@ -899,6 +900,20 @@ void FLFormRecordDB::disablePushButtonCancel()
 {
   if (pushButtonCancel)
     pushButtonCancel->setDisabled(true);
+}
+
+void FLFormRecordDB::checkPushButtonsAccept()
+{
+  bool enable = !(cursor_->useDelegateCommit() && cursor_->isModifiedBuffer());
+
+  if (pushButtonAccept) {
+    pushButtonAccept->setEnabled(enable);
+  }
+
+  if (pushButtonAcceptContinue) {
+    pushButtonAcceptContinue->setEnabled(enable);
+  }
+  
 }
 
 QSScript *FLFormRecordDB::script() const
