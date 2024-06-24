@@ -904,15 +904,25 @@ void FLFormRecordDB::disablePushButtonCancel()
 
 void FLFormRecordDB::checkPushButtonsAccept()
 {
-  bool enable = !(cursor_->useDelegateCommit() && cursor_->isModifiedBuffer());
+  qWarning("** checkPushButtonsAccept");
+  if (!cursor_)
+    return;
 
-  if (pushButtonAccept) {
-    pushButtonAccept->setEnabled(enable);
+
+  // Si no se ha modificado el buffer, no se habilita el botón de aceptar
+  if (cursor_->useDelegateCommit()) {
+
+      bool enable = cursor_->isModifiedBuffer();
+
+      if (pushButtonAccept) {
+        pushButtonAccept->setEnabled(enable);
+      }
+
+      if (pushButtonAcceptContinue) {
+        pushButtonAcceptContinue->setEnabled(enable);
+      }
   }
 
-  if (pushButtonAcceptContinue) {
-    pushButtonAcceptContinue->setEnabled(enable);
-  }
   
 }
 
