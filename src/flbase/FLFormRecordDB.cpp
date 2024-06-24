@@ -920,10 +920,10 @@ void FLFormRecordDB::checkPushButtonsAccept(const QString &fN)
 
 
       if (cursor_->isModifiedBuffer()) {
-        qWarning("Modified buffer");
+        qWarning("** Modified buffer");
         enable = true;
       } else if (cursor_->modeAccess() == cursor_->Insert) {
-        qWarning("Insert mode");
+        qWarning("** Insert mode");
         enable = true;
       }
 
