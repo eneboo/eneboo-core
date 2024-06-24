@@ -442,8 +442,8 @@ bool FLFormRecordDB::initScript()
   {
     aqApp->call("init", QSArgumentList(), iface);
     qWarning("******************** ACTIVANDO *******************");
-    disconnect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
-    connect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
+    disconnect(cursor_, SIGNAL(bufferChanged(const QString &)), this, SLOT(checkPushButtonsAccept(const QString &)));
+    connect(cursor_, SIGNAL(bufferChanged(const QString &)), this, SLOT(checkPushButtonsAccept(const QString &)));
     checkPushButtonsAccept();
     return true;
   }
@@ -906,9 +906,9 @@ void FLFormRecordDB::disablePushButtonCancel()
     pushButtonCancel->setDisabled(true);
 }
 
-void FLFormRecordDB::checkPushButtonsAccept()
+void FLFormRecordDB::checkPushButtonsAccept(const QString &fN)
 {
-  qWarning("** checkPushButtonsAccept");
+  qWarning("** checkPushButtonsAccept **");
   if (!cursor_)
     return;
 
@@ -916,7 +916,16 @@ void FLFormRecordDB::checkPushButtonsAccept()
   // Si no se ha modificado el buffer, no se habilita el botón de aceptar
   if (cursor_->useDelegateCommit()) {
 
-      bool enable = cursor_->isModifiedBuffer() || cursor_->modeAccess() == cursor_->Insert;
+      bool enable = false;
+
+
+      if (cursor_->isModifiedBuffer()) {
+        qWarning("Modified buffer");
+        enable = true;
+      } else if (cursor_->modeAccess() == cursor_->Insert) {
+        qWarning("Insert mode");
+        enable = true;
+      }
 
       if (pushButtonAccept) {
         pushButtonAccept->setEnabled(enable);
