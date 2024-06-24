@@ -556,6 +556,7 @@ void FLFormRecordDB::accept()
   }
 
   if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+    qWarning("Omitiendo doCommitBuffer (accept)");
     close(); 
     accepting = false;
     return;
@@ -608,6 +609,7 @@ void FLFormRecordDB::acceptContinue()
   
 
   if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+    qWarning("Omitiendo doCommitBuffer (acceptContinue)");
     acceptedForm();
     cursor_->setModeAccess(FLSqlCursor::INSERT);
     accepted_ = false;
@@ -729,6 +731,7 @@ void FLFormRecordDB::firstRecord()
   if (cursor_ && cursor_->at() != 0)
   {
     if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        qWarning("Omitiendo doCommitBuffer (firstRecord)");
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         cursor_->first();
@@ -773,6 +776,7 @@ void FLFormRecordDB::nextRecord()
     }
 
     if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        qWarning("Omitiendo doCommitBuffer (nextRecord)");
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         cursor_->next();
@@ -818,6 +822,7 @@ void FLFormRecordDB::previousRecord()
 
 
     if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        qWarning("Omitiendo doCommitBuffer (previousRecord)");
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         cursor_->prev();
@@ -859,6 +864,7 @@ void FLFormRecordDB::lastRecord()
 
 
     if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        qWarning("Omitiendo doCommitBuffer (lastRecord)");
         cursor_->setModeAccess(initialModeAccess);
         accepted_ = false;
         cursor_->last();
