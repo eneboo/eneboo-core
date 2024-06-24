@@ -346,8 +346,13 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     {
       pushButtonAccept = new QPushButton(this, "pushButtonAccept");
       connect(pushButtonAccept, SIGNAL(clicked()), this, SLOT(accept()));
-      connect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
     }
+
+    qWarning("******************** ACTIVANDO *******************");
+    disconnect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
+    connect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
+
+
     pushButtonAccept->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0,
                                                 (QSizePolicy::SizeType)0, 0, 0,
                                                 pushButtonAccept->sizePolicy().hasHeightForWidth()));
