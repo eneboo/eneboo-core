@@ -261,7 +261,7 @@ protected slots:
   /**
   Comprueba botones accept y acceptContinue
   */
-  void checkPushButtonsAccept();
+  void checkPushButtonsAccept(const QString &fN = QString::null);
 
 private:
   /**
