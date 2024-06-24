@@ -916,7 +916,7 @@ void FLFormRecordDB::checkPushButtonsAccept()
   // Si no se ha modificado el buffer, no se habilita el botón de aceptar
   if (cursor_->useDelegateCommit()) {
 
-      bool enable = cursor_->isModifiedBuffer();
+      bool enable = cursor_->isModifiedBuffer() || cursor_->modeAccess() == cursor_->Insert;
 
       if (pushButtonAccept) {
         pushButtonAccept->setEnabled(enable);
