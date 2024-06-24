@@ -506,7 +506,10 @@ namespace dbiplus
         return "error";
       }
     } else {
-      qWarning("PROCESO EXISTENTE! :)");
+      if (debug_aqextension) {
+        qWarning("PROCESO EXISTENTE! :)");
+      }
+
       //escribimos el fichero de intercambio.
       QString folder = getenv("TPM");
       if (folder.isEmpty()) {
