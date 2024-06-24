@@ -336,6 +336,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
           tr("Aceptar los cambios y continuar con la edición de un nuevo registro (F9)"));
       layoutButtons->addWidget(pushButtonAcceptContinue);
       pushButtonAcceptContinue->show();
+      if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // Si use_delegate_commit y no hay cambios
+        qWarning("Ocultando pushButtonAcceptContinue");
+        pushButtonAcceptContinue->setEnabled(false); // botón desactivado
+      }
     }
 
     if (!pushButtonAccept)
@@ -356,6 +360,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     QWhatsThis::add(pushButtonAccept, tr("Aceptar los cambios y cerrar formulario (F10)"));
     layoutButtons->addWidget(pushButtonAccept);
     pushButtonAccept->show();
+    if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // Si use_delegate_commit y no hay cambios
+        qWarning("Ocultando pushButtonAccept");
+        pushButtonAccept->setEnabled(false); // botón desactivado
+      }
   }
 
   if (!pushButtonCancel)
@@ -547,11 +555,17 @@ void FLFormRecordDB::accept()
     return;
   }
 
+  if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+    close(); 
+    accepting = false;
+    return;
+  } 
+
   if (cursor_->checkIntegrity())
   {
     acceptedForm();
     cursor_->setActivatedCheckIntegrity(false);
-
+  
     if (!cursor_->doCommitBuffer())
     {
       accepting = false;
@@ -591,6 +605,27 @@ void FLFormRecordDB::acceptContinue()
     accepting = false;
     return;
   }
+  
+
+  if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+    acceptedForm();
+    cursor_->setModeAccess(FLSqlCursor::INSERT);
+    accepted_ = false;
+    QString caption;
+    if (action_) {
+      caption = action_->caption();
+    }
+    if (caption.isEmpty()) {
+      caption = cursor_->metadata()->alias();
+    }
+    setCaption(tr("Insertar ") + caption);
+    if (initFocusWidget_) {
+      initFocusWidget_->setFocus();
+    }
+    cursor_->refreshBuffer();
+    initScript();
+    return;
+  } 
 
   if (cursor_->checkIntegrity())
   {
@@ -693,6 +728,15 @@ void FLFormRecordDB::firstRecord()
 {
   if (cursor_ && cursor_->at() != 0)
   {
+    if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        cursor_->setModeAccess(initialModeAccess);
+        accepted_ = false;
+        cursor_->first();
+        initScript();
+        return;
+    }
+
+
     if (!validateForm())
       return;
     if (cursor_->checkIntegrity())
@@ -727,6 +771,16 @@ void FLFormRecordDB::nextRecord()
       firstRecord();
       return;
     }
+
+    if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        cursor_->setModeAccess(initialModeAccess);
+        accepted_ = false;
+        cursor_->next();
+        initScript();
+        return;
+    }
+
+
     if (!validateForm())
       return;
     if (cursor_->checkIntegrity())
@@ -761,6 +815,16 @@ void FLFormRecordDB::previousRecord()
       lastRecord();
       return;
     }
+
+
+    if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        cursor_->setModeAccess(initialModeAccess);
+        accepted_ = false;
+        cursor_->prev();
+        initScript();
+        return;
+    }
+
     if (!validateForm())
       return;
     if (cursor_->checkIntegrity())
@@ -792,6 +856,16 @@ void FLFormRecordDB::lastRecord()
   {
     if (!validateForm())
       return;
+
+
+    if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // No se hace doCommitbuffer
+        cursor_->setModeAccess(initialModeAccess);
+        accepted_ = false;
+        cursor_->last();
+        initScript();
+        return;
+    }
+
     if (cursor_->checkIntegrity())
     {
 
