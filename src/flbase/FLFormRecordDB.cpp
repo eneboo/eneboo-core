@@ -348,11 +348,6 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
       connect(pushButtonAccept, SIGNAL(clicked()), this, SLOT(accept()));
     }
 
-    qWarning("******************** ACTIVANDO *******************");
-    disconnect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
-    connect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
-
-
     pushButtonAccept->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0,
                                                 (QSizePolicy::SizeType)0, 0, 0,
                                                 pushButtonAccept->sizePolicy().hasHeightForWidth()));
@@ -446,6 +441,10 @@ bool FLFormRecordDB::initScript()
   if (iface && cursor_)
   {
     aqApp->call("init", QSArgumentList(), iface);
+    qWarning("******************** ACTIVANDO *******************");
+    disconnect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
+    connect(cursor_, SIGNAL(bufferChanged()), this, SLOT(checkPushButtonsAccept()));
+    checkPushButtonsAccept();
     return true;
   }
   return false;
