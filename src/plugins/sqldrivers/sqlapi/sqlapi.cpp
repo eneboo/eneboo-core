@@ -61,7 +61,7 @@ static QVariant::Type qDecodeSqliteType(fType t)
 }
 
 SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
-  FLSqlDriver(parent, name), dataBase_(0)
+  FLSqlDriver(parent, name), dataBase_(0), disabled_transaction_(0)
   {
     //qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
     //recogemos url hosts para hacer llamadas.
@@ -699,8 +699,10 @@ bool SqlApiDriver::beginTransaction()
 {
   qWarning("FIXME: start_transaction");
   msgBoxCritical(tr("Transacción"), tr("beginTransaction no está permitido"));
-  exit(1);
-  return false;
+  if (disabled_transaction_) {
+    exit(1);
+    return false;
+  }
 
   if (!isOpen() || !dataBase_)
     return false;
@@ -715,8 +717,10 @@ bool SqlApiDriver::commitTransaction()
 {
   qWarning("FIXME: commit_transaction");
   msgBoxCritical(tr("Transacción"), tr("commitTransaction no está permitido"));
-  exit(1);
-  return false;
+  if (disabled_transaction_) {
+    exit(1);
+    return false;
+  }
 
   if (!isOpen() || !dataBase_)
     return false;
@@ -729,8 +733,10 @@ bool SqlApiDriver::rollbackTransaction()
 {
   qWarning("FIXME: rollback_transaction");
   msgBoxCritical(tr("Transacción"), tr("rollbackTransaction no está permitido"));
-  exit(1);
-  return false;
+  if (disabled_transaction_) {
+    exit(1);
+    return false;
+  }
 
   if (!isOpen() || !dataBase_)
     return false;

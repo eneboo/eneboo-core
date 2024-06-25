@@ -84,6 +84,7 @@ public:
   void Mr_Proper();
 
   bool existsTable(const QString &n) const;
+  bool disabled_transaction_;
 
 
 private:
