@@ -312,9 +312,9 @@ QString SqlApiDriver::formatValue(int t, const QVariant &v, const bool upper)
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
       if (s == QApplication::tr("Sí").left(1).upper() || s == "1")
-        res = "'t'";
+        res = "true";
       else if (s == QApplication::tr("No").left(1).upper() || s == "0")
-        res = "'f'";
+        res = "false";
       else
         res = nullText();
     }
