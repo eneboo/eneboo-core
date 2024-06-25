@@ -1183,10 +1183,13 @@ QVariant SqliteResult::data(int i)
       vv.cast(QVariant::String);
     } else if (type == ft_Boolean) {
       vv.cast(QVariant::Bool);
+    } else if (type == ft_Long) {
+      vv = QVariant(QString("0"));
+      vv.cast(QVariant::Int);
     } else {
+      vv = QVariant(QString("0.00"));
       vv.cast(QVariant::Double);
     }
-    qWarning("retornal " + vv.toString());
     return vv;
   } else
     if (type == ft_Boolean) {
