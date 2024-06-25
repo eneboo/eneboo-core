@@ -1060,8 +1060,13 @@ bool SqliteDataset::fetch_rows(int pos) {
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
           //Autom?ticamente marcaremos campo como null
-          v.set_asString("");
-          v.set_isNull(); 
+          if (tipos_columnas[i] == "<class 'int'>") {
+            v.set_asInteger(0);
+          } else {
+            v.set_asString("");
+            v.set_isNull(); 
+          }
+
         } else {
           if (valor == "|^V^|") {
             valor = "";
@@ -1075,7 +1080,7 @@ bool SqliteDataset::fetch_rows(int pos) {
           if (tipos_columnas[i] == "<class 'str'>") {
             v.set_asString(valor);
           } else if (tipos_columnas[i] == "<class 'int'>") {
-            v.set_asInteger(atoi(valor.c_str()));
+            v.set_asInteger(valor == "" ? 0 : atoi(valor.c_str()));
           } else if (tipos_columnas[i] == "<class 'float'>") {
             v.set_asFloat(atof(valor.c_str()));
           } else if (tipos_columnas[i] == "<class 'datetime.date'>") {
