@@ -1179,13 +1179,14 @@ QVariant SqliteResult::data(int i)
   fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
   if (v.toString().isEmpty()) {
     QVariant vv;
-    if (!type)
+    if (!type) {
       vv.cast(QVariant::String);
-    else if (type == ft_Boolean) {
+    } else if (type == ft_Boolean) {
       vv.cast(QVariant::Bool);
     } else {
       vv.cast(QVariant::Double);
     }
+    qWarning("retornal " + vv.toString());
     return vv;
   } else
     if (type == ft_Boolean) {
