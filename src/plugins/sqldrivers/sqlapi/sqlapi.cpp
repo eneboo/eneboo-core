@@ -1177,6 +1177,9 @@ QVariant SqliteResult::data(int i)
 
   QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
   fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
+
+  qWarning("**** SACANDO ****" + dataSet->fieldName(i) + ", type: " + QString::number(type) + " = " + v.toString());
+
   if (v.toString().isEmpty()) {
     QVariant vv;
     if (!type)
@@ -1191,9 +1194,6 @@ QVariant SqliteResult::data(int i)
     if (type == ft_Boolean) {
         v.cast(QVariant::Bool);
     } else if (type == ft_Double || type == ft_Float) {
-        if (v.toString() == "NaN") {
-          v = QVariant(0);
-        }
         v.cast(QVariant::Double);
     } else if (type == ft_Long) {
         v.cast(QVariant::Int);
