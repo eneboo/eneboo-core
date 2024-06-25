@@ -194,7 +194,6 @@ void QSqlField::setValue( const QVariant& value )
 	     qWarning("QSqlField::setValue: %s cannot cast from %s to %s",
 		      nm.local8Bit().data(), value.typeName(), QVariant::typeToName( d->type ) );
     }
-    qWarning("*******" + value.toString() + "*******");
     val = value;
 
     if ( value.isNull() )

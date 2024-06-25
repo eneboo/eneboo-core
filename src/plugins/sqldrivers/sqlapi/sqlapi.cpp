@@ -304,6 +304,81 @@ QString SqlApiDriver::formatValueLike(int t, const QVariant &v, const bool upper
   return res;
 }
 
+QString SqlApiDriver::formatValue( const QSqlField* field, bool trimStrings ) const
+{
+    QString r;
+    if ( field->isNull() )
+	r = nullText();
+    else {
+	switch ( field->type() ) {
+	case QVariant::Int:
+	case QVariant::UInt:
+	    if ( field->value().type() == QVariant::Bool )
+		r = field->value().toBool() ? "1" : "0";
+	    else
+		r = field->value().toString();
+	    break;
+	case QVariant::Date:
+	    if ( field->value().toDate().isValid() )
+		r = "'" + field->value().toDate().toString( Qt::ISODate ) + "'";
+	    else
+		r = nullText();
+	    break;
+	case QVariant::Time:
+	    if ( field->value().toTime().isValid() )
+		r = "'" + field->value().toTime().toString( Qt::ISODate ) + "'";
+	    else
+		r = nullText();
+	    break;
+	case QVariant::DateTime:
+	    if ( field->value().toDateTime().isValid() )
+		r = "'" +
+		    field->value().toDateTime().toString( Qt::ISODate ) + "'";
+	    else
+		r = nullText();
+	    break;
+	case QVariant::String:
+	case QVariant::CString: {
+	    QString result = field->value().toString();
+	    if ( trimStrings ) {
+		int end = result.length() - 1;
+		while ( end && result[end].isSpace() ) /* skip white space from end */
+		    end--;
+		result.truncate( end );
+	    }
+	    /* escape the "'" character */
+	    result.replace( QChar( '\'' ), "''" );
+	    r = "'" + result + "'";
+	    break;
+	}
+	case QVariant::Bool:
+	    if ( field->value().toBool() )
+		r = "true";
+	    else
+		r = "false";
+	    break;
+	case QVariant::ByteArray : {
+	    if ( hasFeature( BLOB ) ) {
+		QByteArray ba = field->value().toByteArray();
+		QString res;
+		static const char hexchars[] = "0123456789abcdef";
+		for ( uint i = 0; i < ba.size(); ++i ) {
+		    uchar s = (uchar) ba[(int)i];
+		    res += hexchars[s >> 4];
+		    res += hexchars[s & 0x0f];
+		}
+		r = "'" + res + "'";
+		break;
+	    }
+	}
+	default:
+	    r = field->value().toString();
+	    break;
+	}
+    }
+    return r;
+}
+
 QString SqlApiDriver::formatValue(int t, const QVariant &v, const bool upper)
 {
   QString res;

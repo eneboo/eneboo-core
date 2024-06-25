@@ -79,6 +79,7 @@ public:
   QString sqlCreateTable(const FLTableMetaData *tmd);
   QString formatValueLike(int t, const QVariant &v, const bool upper = false);
   QString formatValue(int t, const QVariant &v, const bool upper = false);
+  virtual QString	formatValue( const QSqlField* field, bool trimStrings = FALSE ) const;
   QVariant nextSerialVal(const QString &table, const QString &field);
   bool alterTable(const QString &mtd1, const QString &mtd2, const QString &key = QString::null);
   void Mr_Proper();
