@@ -393,16 +393,18 @@ bool QSqlQuery::exec ( const QString& query )
 
 QVariant QSqlQuery::value( int i ) const
 {
+    QVariant result = QVariant();
     if ( !d->sqlResult )
-	return QVariant();
+	return result;
     if ( isActive() && isValid() && ( i > QSql::BeforeFirst ) ) {
-	return d->sqlResult->data( i );
+	result = d->sqlResult->data( i );
+    qWarning("Tipo " + QString(result.typeName())  +", valor: " + result.toString());
     } else {
 //#ifdef QT_CHECK_RANGE
 	qWarning( "QSqlQuery::value: not positioned on a valid record" );
 //#endif
     }
-    return QVariant();
+    return result;
 }
 
 /*!

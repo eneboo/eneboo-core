@@ -1060,11 +1060,6 @@ bool SqliteDataset::fetch_rows(int pos) {
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
           //Autom?ticamente marcaremos campo como null
-          if (tipos_columnas[i] == "<class 'int'>") {
-            
-            v.set_asInteger(0);
-            qWarning("INT VACIO!!!" + QString(v.get_asString()));
-          } else {
             v.set_asString("");
             v.set_isNull(); 
           }
