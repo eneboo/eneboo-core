@@ -441,6 +441,7 @@ void FLFieldDB::updateValue(bool b)
   if (!cursor_->bufferIsNull(fieldName_))
     if (b == cursor_->valueBuffer(fieldName_).toBool())
       return;
+  qWarning("***" + QString::number(cursor_->valueBuffer(fieldName_).type()) + "->" + cursor_->valueBuffer(fieldName_).toString())
   cursor_->setValueBuffer(fieldName_, QVariant(b, 0));
 }
 
