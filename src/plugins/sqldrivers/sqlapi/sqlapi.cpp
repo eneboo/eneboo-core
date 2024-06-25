@@ -311,9 +311,9 @@ QString SqlApiDriver::formatValue(int t, const QVariant &v, const bool upper)
   switch (FLFieldMetaData::flDecodeType(t)) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
+      if (s == QApplication::tr("Sí").left(1).upper() || s == "1")
         res = "'t'";
-      else if (s == QApplication::tr("No").left(1).upper())
+      else if (s == QApplication::tr("No").left(1).upper() || s == "0")
         res = "'f'";
       else
         res = nullText();

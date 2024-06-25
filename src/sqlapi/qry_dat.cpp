@@ -220,7 +220,7 @@ bool field_value::get_asBool() const {
       return str_value.c_str() == "True";
     }
     case ft_Boolean:{
-      return (bool)bool_value;
+      return bool_value;
       }
     case ft_Char: {
       return char_value == 'T';
