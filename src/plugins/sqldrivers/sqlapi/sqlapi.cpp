@@ -1179,15 +1179,11 @@ QVariant SqliteResult::data(int i)
   fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
   if (v.toString().isEmpty()) {
     QVariant vv;
-    if (!type) {
+    if (!type)
       vv.cast(QVariant::String);
-    } else if (type == ft_Boolean) {
+    else if (type == ft_Boolean) {
       vv.cast(QVariant::Bool);
-    } else if (type == ft_Long) {
-      vv = QVariant(QString("0"));
-      vv.cast(QVariant::Int);
     } else {
-      vv = QVariant(QString("0.00"));
       vv.cast(QVariant::Double);
     }
     return vv;
@@ -1195,6 +1191,9 @@ QVariant SqliteResult::data(int i)
     if (type == ft_Boolean) {
         v.cast(QVariant::Bool);
     } else if (type == ft_Double || type == ft_Float) {
+        if (v.toString() == "NaN") {
+          v = QVariant(0);
+        }
         v.cast(QVariant::Double);
     } else if (type == ft_Long) {
         v.cast(QVariant::Int);
