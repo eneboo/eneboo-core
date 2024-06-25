@@ -1178,7 +1178,7 @@ QVariant SqliteResult::data(int i)
   QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
   fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
 
-  qWarning("**** SACANDO ****" + dataSet->fieldName(i) + ", type: " + QString::number(type) + " = " + v.toString());
+  qWarning("**** SACANDO ****" + QString(dataSet->fieldName(i)) + ", type: " + QString::number(type) + " = " + v.toString());
 
   if (v.toString().isEmpty()) {
     QVariant vv;
