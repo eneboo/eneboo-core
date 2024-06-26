@@ -244,10 +244,14 @@ bool FLSqlQuery::isNull(const QString &n) const
 
 QVariant FLSqlQuery::value(int i, bool raw) const
 {
+  qWarning("VALUE DE " + QString::number(i));
   if (!isValid() && i >= 0)
     return QVariant();
   QVariant v(QSqlQuery_value(i));
   QVariant::Type type = v.type();
+  qWarning("TYPE " + QString::number(type));
+  qWarning("value" + v.toString());
+
   if (!raw  && type == QVariant::String) {
     if (!v.isNull()) {
       QVariant vLarge(d->db_->manager()->fetchLargeValue(v.toString()));
