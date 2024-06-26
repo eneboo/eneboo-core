@@ -233,7 +233,7 @@ namespace dbiplus
       ds->first();
       QString field_name = ds->fieldName(0);
       qWarning("fn: " + field_name + ", num_rows:" + QString::number(ds->num_rows()));
-      databaseApi = ds->fv("db_name").get_asString();
+      databaseApi = ds->fv(field_name).get_asString();
       qWarning("Connected to " + databaseApi);
 
     }
