@@ -231,7 +231,8 @@ namespace dbiplus
         return DB_CONNECTION_NONE;
       }
       ds->first();
-      qWarning("fn: db_name");
+      QString field_name = ds->fieldName(0);
+      qWarning("fn: " + field_name + ", num_rows:" + QString::number(ds->num_rows()));
       databaseApi = ds->fv("db_name").get_asString();
       qWarning("Connected to " + databaseApi);
 
@@ -1113,7 +1114,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIï¿½N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
 
   return true;
