@@ -94,6 +94,8 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   close();
   dataBase_ = new SqliteDatabase(urlApi, userApi, passwordApi);
   dataBase_->tokenApi = tokenApi;
+  dataBase_->userIdApi = userIdApi;
+  dataBase_->databaseApi = databaseApi;
   dataBase_->AQProc = AQProc;
   dataBase_->setDatabase(db);
 
