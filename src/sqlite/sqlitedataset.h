@@ -89,6 +89,11 @@ public:
       return _in_transaction;
     };
 
+  QProcess *AQProc;
+  QString urlApi;
+  QString userApi;
+  QString passwordApi;
+  QString tokenApi;
   QString userIdApi;
   QString databaseApi;
 
