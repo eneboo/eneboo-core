@@ -93,7 +93,6 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
 
   close();
   dataBase_ = new SqliteDatabase(urlApi, userApi, passwordApi);
-  qWarning(tr("SqlApiDriver::open(1) : URL: %1, USER: %2, PASS: %3, TOKEN: %4").arg(urlApi).arg(userApi).arg(passwordApi).arg(tokenApi));
   dataBase_->tokenApi = tokenApi;
   dataBase_->AQProc = AQProc;
   dataBase_->setDatabase(db);
