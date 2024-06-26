@@ -231,9 +231,8 @@ namespace dbiplus
         return DB_CONNECTION_NONE;
       }
       ds->first();
-      QString field_name = ds->fieldName(0);
-      qWarning("fn: " + field_name);
-      databaseApi = ds->fv(field_name).get_asString();
+      qWarning("fn: db_name");
+      databaseApi = ds->fv("db_name").get_asString();
       qWarning("Connected to " + databaseApi);
 
     }
