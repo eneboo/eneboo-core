@@ -225,8 +225,7 @@ namespace dbiplus
       SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
       QString texto = "check connection to remote database";
       qWarning(texto);
-      ds->sql = "select current_database() as db_name";
-      if (!ds->gestionar_consulta_paginada(0)) {
+      if (!ds->query("select current_database() as db_name")) {
         qWarning("Connection failure");
         return DB_CONNECTION_NONE;
       }
