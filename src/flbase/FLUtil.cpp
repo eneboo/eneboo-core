@@ -687,6 +687,7 @@ QVariant FLUtil::sqlSelect(const QString &f, const QString &s,
                            const QString &w, const QString &tL,
                            int *size, const QString &connName)
 {
+  qWarning("PREV");
   FLSqlQuery q_(0, connName);
   q_.setTablesList(tL.isEmpty() ? f : tL);
   q_.setSelect(s);
@@ -694,6 +695,7 @@ QVariant FLUtil::sqlSelect(const QString &f, const QString &s,
   q_.setWhere(w);
   q_.setForwardOnly(true);
   if (!q_.exec()) {
+    qWarning("NO 1");
     if (size)
       *size = -1;
     return QVariant(false, 0);
@@ -705,6 +707,7 @@ QVariant FLUtil::sqlSelect(const QString &f, const QString &s,
   }
   if (size)
     *size = 0;
+  qWarning("NO 2");
   return QVariant(false, 0);
 }
 
