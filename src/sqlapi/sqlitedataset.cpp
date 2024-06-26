@@ -106,17 +106,13 @@ namespace dbiplus
     db = "sqlite.db";
     login = "root";
     passwd, "";
-    AQProc = new QProcess(0, "aqextension");
+
   }
 
   SqliteDatabase::~SqliteDatabase()
   {
     disconnect();
-    if ( AQProc && AQProc->isRunning() ) {
-      qWarning("AQProc->kill()!!");
-      AQProc->tryTerminate();
-      AQProc->kill();
-    }
+
   }
 
 

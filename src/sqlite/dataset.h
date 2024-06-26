@@ -36,6 +36,7 @@
 #include <list>
 #include <qry_dat.h>
 #include <stdarg.h>
+#include <qprocess.h>
 
 #include "aqsqliteglobal.h"
 
@@ -74,6 +75,15 @@ namespace dbiplus
            sequence_table; //Sequence table for nextid
 
   public:
+
+    QProcess *AQProc;
+    QString urlApi;
+    QString userApi;
+    QString passwordApi;
+    QString tokenApi;
+    QString userIdApi;
+    QString databaseApi;
+
     /* constructor */
     Database();
     /* destructor */

@@ -136,6 +136,7 @@ public:
 
   QString userIdApi;
   QString databaseApi;
+  QString tokenApi;
   QString urlApi;
   QString userApi;
   QString passwordApi;

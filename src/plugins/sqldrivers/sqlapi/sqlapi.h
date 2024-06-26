@@ -33,6 +33,7 @@
 #include <FLSqlDriver.h>
 #include <FLSqlConnections.h>
 #include <FLDiskCache.h>
+#include <qprocess.h>
 
 #if (QT_VERSION-0 >= 0x030000)
 typedef QVariant QSqlVariant;
@@ -86,6 +87,7 @@ public:
 
   bool existsTable(const QString &n) const;
   bool disabled_transaction_;
+  QProcess *AQProc;
 
 
 private:

@@ -63,11 +63,18 @@ static QVariant::Type qDecodeSqliteType(fType t)
 SqlApiDriver::SqlApiDriver(QObject *parent, const char *name) :
   FLSqlDriver(parent, name), dataBase_(0), disabled_transaction_(0)
   {
+    AQProc = new QProcess(0, "aqextension");
     //qWarning("SqlApiDriver::__init__() : Inicializando driver sqlapi %s", name);
     //recogemos url hosts para hacer llamadas.
   }
 
-SqlApiDriver::~SqlApiDriver() {}
+SqlApiDriver::~SqlApiDriver() {
+  if ( AQProc && AQProc->isRunning() ) {
+      qWarning("AQProc->kill()!!");
+      AQProc->tryTerminate();
+      AQProc->kill();
+    }
+}
 
 SqliteDatabase *SqlApiDriver::dataBase()
 {
@@ -86,6 +93,9 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
 
   close();
   dataBase_ = new SqliteDatabase(urlApi, userApi, passwordApi);
+  qWarning(tr("SqlApiDriver::open(1) : URL: %1, USER: %2, PASS: %3, TOKEN: %4").arg(urlApi).arg(userApi).arg(passwordApi).arg(tokenApi));
+  dataBase_->tokenApi = tokenApi;
+  dataBase_->AQProc = AQProc;
   dataBase_->setDatabase(db);
 
   if (dataBase_->connect() != DB_CONNECTION_OK) {
@@ -102,7 +112,7 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
     setOpenError(false);
     
 
-
+    tokenApi = dataBase_->tokenApi;
     userIdApi = dataBase_->userIdApi;
     databaseApi = dataBase_->databaseApi;
     return true;

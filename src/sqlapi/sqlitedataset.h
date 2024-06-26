@@ -33,7 +33,6 @@
 #include <dataset.h>
 #include <sqlite3.h>
 #include <qstringlist.h>
-#include <qprocess.h>
 #include "aqsqliteglobal.h"
 #include <qapplication.h>
 
@@ -90,14 +89,6 @@ public:
     bool in_transaction() {
       return _in_transaction;
     };
-
-  QString urlApi;
-  QString userApi;
-  QString passwordApi;
-  QString tokenApi;
-  QString userIdApi;
-  QString databaseApi;
-  QProcess *AQProc;
 };
 
 
