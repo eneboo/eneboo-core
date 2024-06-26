@@ -249,7 +249,7 @@ QVariant FLSqlQuery::value(int i, bool raw) const
     return QVariant();
   QVariant v(QSqlQuery_value(i));
   QVariant::Type type = v.type();
-  qWarning("TYPE " + QString::number(type));
+  qWarning("TYPE " + QString::number(type) + ", type string =" + QString::number(QVariant::String));
   qWarning("value" + v.toString());
 
   if (!raw  && type == QVariant::String) {
