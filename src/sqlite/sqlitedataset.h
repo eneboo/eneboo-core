@@ -34,6 +34,7 @@
 #include <sqlite3.h>
 #include <qstring.h>
 #include "aqsqliteglobal.h"
+#include <qprocess.h>
 
 namespace dbiplus
 {
