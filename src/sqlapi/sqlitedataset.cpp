@@ -485,7 +485,7 @@ namespace dbiplus
     }
 
     bool nuevo_proceso_need = !AQProc->isRunning() || AQProc->exitStatus() != 0;
-
+    int pid_aqextension = AQProc->processIdentifier();
     if (nuevo_proceso_need) {
       if (debug_aqextension) {
         qWarning("PROCESO PARADO! :(. Exit status: " + QString::number(AQProc->exitStatus()));
@@ -516,15 +516,31 @@ namespace dbiplus
 
         //QString fichero = folder + "aqextension_pipe." + QString::number(AQProc->processIdentifier());
         QString fichero = folder + "aqextension_pipe";
+        QString fichero_tmp = folder + "aqextension_pipe.tmp." + QString::number(pid_aqextension);
         if (debug_aqextension) {
           qWarning("Fichero intercambio: " + fichero);
         }
-        QFile fi(fichero);
+
+      while (QFile::exists(fichero_tmp)) {
+        if (debug_aqextension) {
+          qWarning("Esperando a que se libere el fichero intercambio " +  fichero_tmp);
+        }
+        qApp->processEvents();
+      }
+
+        QFile fi(fichero_tmp);
         if (fi.open(IO_WriteOnly)) {
           QTextStream t(&fi);
           t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
           t << fichero_datos;
           fi.close();
+        
+        if (QFile::exists(fichero)) {
+          QFile::remove(fichero);
+        }
+
+        rename(fichero_tmp, fichero);
+
         } else {
           qWarning("no se ha podido escribir en el fichero intercambio " +  fichero);
           return "";
@@ -536,7 +552,7 @@ namespace dbiplus
     
 
     if (debug_aqextension) {
-      qWarning("AQExtension pid " + QString::number(AQProc->processIdentifier()));
+      qWarning("AQExtension pid " + QString::number(pid_aqextension));
       qWarning("Esperando a que se procese la llamada. Fichero salida:" + fichero_salida);
     }
 
@@ -980,7 +996,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = QString(*it).toInt();
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIï¿½N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -1042,7 +1058,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     int lista_size = lista_valores.size();
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
+      qWarning("Error de integridad de datos. El nï¿½mero de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       return false;
     }
 
@@ -1098,7 +1114,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIï¿½N: CURRENT:" + QString::number(result.records.size()));
   }
 
   return true;
