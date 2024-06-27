@@ -426,7 +426,7 @@ namespace dbiplus
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"prefix_pipe\":\"aqextension_pipe\",\n";
+    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api\",\n";
     //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false,\n";
     cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + "\n";
@@ -461,7 +461,7 @@ namespace dbiplus
   {
     bool usar_py = false;
     bool reset_allways = false;
-
+    int pid_aqextension = 0;
     QString path_exec = "";
     QString comando_txt = "";
     if (usar_py) {
@@ -484,7 +484,6 @@ namespace dbiplus
     }
 
     bool nuevo_proceso_need = !AQProc->isRunning() || AQProc->exitStatus() != 0;
-    int pid_aqextension = AQProc->processIdentifier();
     if (nuevo_proceso_need) {
       if (debug_aqextension) {
         qWarning("PROCESO PARADO! :(. Exit status: " + QString::number(AQProc->exitStatus()));
@@ -504,7 +503,7 @@ namespace dbiplus
       if (debug_aqextension) {
         qWarning("PROCESO EXISTENTE! :)");
       }
-
+      pid_aqextension = AQProc->processIdentifier();
       //escribimos el fichero de intercambio.
       QString folder = getenv("TPM");
       if (folder.isEmpty()) {
@@ -513,9 +512,8 @@ namespace dbiplus
           folder = "/tmp/";
         }
 
-        //QString fichero = folder + "aqextension_pipe." + QString::number(AQProc->processIdentifier());
-        QString fichero = folder + "aqextension_pipe." + QString::number(pid_aqextension);
-        QString fichero_tmp = folder + "aqextension_pipe.tmp." + QString::number(pid_aqextension);
+        QString fichero = folder + "aqextension_pipe_sql_api";
+        QString fichero_tmp = folder + "aqextension_pipe_sql_api.tmp";
         if (debug_aqextension) {
           qWarning("Fichero intercambio: " + fichero);
         }
@@ -584,7 +582,8 @@ namespace dbiplus
   if (reset_allways) {
     qWarning("Reiniciando proceso");
     AQProc->tryTerminate();
-    ((SqliteDatabase *)db)->AQProc = new QProcess();
+    AQProc = new QProcess();
+    ((SqliteDatabase *)db)->AQProc = AQProc;
   }
 
   if (salida != "") {
@@ -930,7 +929,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
-    cadena += "\"prefix_pipe\":\"aqextension_pipe\",\n"; 
+    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api\",\n"; 
     // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
