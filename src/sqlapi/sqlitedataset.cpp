@@ -514,7 +514,7 @@ namespace dbiplus
         }
 
         //QString fichero = folder + "aqextension_pipe." + QString::number(AQProc->processIdentifier());
-        QString fichero = folder + "aqextension_pipe";
+        QString fichero = folder + "aqextension_pipe." + QString::number(pid_aqextension);
         QString fichero_tmp = folder + "aqextension_pipe.tmp." + QString::number(pid_aqextension);
         if (debug_aqextension) {
           qWarning("Fichero intercambio: " + fichero);
