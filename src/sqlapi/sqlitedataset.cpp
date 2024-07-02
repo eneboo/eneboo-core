@@ -988,19 +988,28 @@ bool SqliteDataset::fetch_rows(int pos) {
     qWarning("Procesando respuesta");
   }
   
+  QString salida_datos = salida.right(salida.length() - (salida.find(separador_total) + 1));
+
   if (result.total_records == 0) {
     QStringList lista_arrobas = QStringList::split(separador_total, salida);
     for (QStringList::Iterator it = lista_arrobas.begin(); it != lista_arrobas.end(); ++it) {
-      result.total_records = QString(*it).toInt();
+
+      int total_records = QString(*it).toInt();
+      if (total_records == -2) {
+        qWarning("Error SQL: " + salida_datos);
+        db->setErr(SQLITE_ERROR, salida_datos);
+        return false;
+      }
+
+      result.total_records = total_records;
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIï¿½N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
   }
 
-  QString salida_datos = salida.right(salida.length() - (salida.find(separador_total) + 1));
   QStringList lista_registros(QStringList::split(separador_lineas, salida_datos));
   QStringList tipos_columnas;
   
