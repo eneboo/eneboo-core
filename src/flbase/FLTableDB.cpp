@@ -730,6 +730,10 @@ void FLTableDB::deleteRecord()
     return;
   }
   cursor_->deleteRecord();
+  if (cursor_->useDelegateCommit() && cursor_->modeAccess() == cursor_->BROWSE) {
+    qWarning("Refresh despues de borrar registro con delegateCommit");
+    refresh(false, true);
+  }
 }
 
 void FLTableDB::browseRecord()
