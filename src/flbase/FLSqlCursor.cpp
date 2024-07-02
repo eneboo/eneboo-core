@@ -3109,19 +3109,25 @@ bool FLSqlCursor::doCommitBuffer()
       {
         if (!isModifiedBuffer())
         {
-          qWarning("emit cursor updated a false");
+          
           emit_cursor_updated = false;
         }
         else
         {
           setNotGenerateds();
         }
+      } else if (d->modeAccess_ == DEL) { //Si es modo Delete
+        qWarning("doCommitbuffer::useDelegateCommit Refresh despues de delete");
+        refresh();
       }
 
       if (emit_cursor_updated)
       {
         emit cursorUpdated();
+      } else {
+        qWarning("emit cursor updated a false");
       }
+
       emit bufferCommited();
     }
   }
