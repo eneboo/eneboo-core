@@ -1501,11 +1501,7 @@ void FLFieldDB::searchValue()
       objTdb->setReadOnly(true);
   }
 
-  f->setFilter(filter_);
-
-
-
-  //Sacamos si usamos firstRefresh o no ...
+    //Sacamos si usamos firstRefresh o no ...
     bool useFirstRefresh_ = true;
     QString idMod = c->db()->managerModules()->idModuleOfFile(c->metadata()->name() + QString::fromLatin1(".mtd"));
     QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + c->metadata()->name() + "_" + f->name();
@@ -1516,16 +1512,22 @@ void FLFieldDB::searchValue()
       qWarning(v2.toBool() ? "Es true": "Es false");
       useFirstRefresh_ = v2.toBool();
     }
-  qWarning("P1");
+
+if (useFirstRefresh_) {
+  f->setFilter(filter_);
+}
+  
+
+
+
+
+
   if (f->mainWidget()) {
     if (objTdb) {
       QVariant curValue(value());
       if (field->type() == QVariant::String && !curValue.toString().isEmpty()) {
-        qWarning("P2");
         objTdb->setInitSearch(curValue.toString());
-        qWarning("P3");
         objTdb->putFirstCol(field->relationM1()->foreignField());
-        qWarning("P4");
       }
       QTimer::singleShot(0, objTdb->lineEditSearch, SLOT(setFocus()));
     }
