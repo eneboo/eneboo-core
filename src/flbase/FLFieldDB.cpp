@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <math.h>
@@ -842,9 +842,9 @@ void FLFieldDB::initCursor()
                                      false, false, checkIntegrity);
         fMD->addRelationMD(rMD);
 #ifdef FL_DEBUG
-        qWarning(tr("FLFieldDB : La relación entre la tabla del formulario ( %1 ) y la tabla ( %2 ) de este campo ( %3 ) no existe, pero sin embargo se han indicado los campos de relación( %4, %5 )")
+        qWarning(tr("FLFieldDB : La relaciï¿½n entre la tabla del formulario ( %1 ) y la tabla ( %2 ) de este campo ( %3 ) no existe, pero sin embargo se han indicado los campos de relaciï¿½n( %4, %5 )")
                  .arg(curName).arg(tableName_).arg(fieldName_).arg(fieldRelation_).arg(foreignField_));
-        qWarning(tr("FLFieldDB : Creando automáticamente %1.%2 --1M--> %3.%4")
+        qWarning(tr("FLFieldDB : Creando automï¿½ticamente %1.%2 --1M--> %3.%4")
                  .arg(tableName_).arg(fieldRelation_).arg(curName).arg(foreignField_));
 #endif
       }
@@ -1023,14 +1023,14 @@ void FLFieldDB::initEditor()
 
             connect(this, SIGNAL(keyF4Pressed()), this, SLOT(toggleAutoCompletion()));
             if (autoCompMode_ == OnDemandF4) {
-              QToolTip::add(editor_, tr("Para completado automático pulsar F4"));
-              QWhatsThis::add(editor_, tr("Para completado automático pulsar F4"));
+              QToolTip::add(editor_, tr("Para completado automï¿½tico pulsar F4"));
+              QWhatsThis::add(editor_, tr("Para completado automï¿½tico pulsar F4"));
             } else if (autoCompMode_ == AlwaysAuto) {
-              QToolTip::add(editor_, tr("Completado automático permanente activado"));
-              QWhatsThis::add(editor_, tr("Completado automático permanente activado"));
+              QToolTip::add(editor_, tr("Completado automï¿½tico permanente activado"));
+              QWhatsThis::add(editor_, tr("Completado automï¿½tico permanente activado"));
             } else {
-              QToolTip::add(editor_, tr("Completado automático desactivado"));
-              QWhatsThis::add(editor_, tr("Completado automático desactivado"));
+              QToolTip::add(editor_, tr("Completado automï¿½tico desactivado"));
+              QWhatsThis::add(editor_, tr("Completado automï¿½tico desactivado"));
             }
           }
         }
@@ -1288,14 +1288,14 @@ void FLFieldDB::initEditor()
 
       connect(this, SIGNAL(keyF4Pressed()), this, SLOT(toggleAutoCompletion()));
       if (autoCompMode_ == OnDemandF4) {
-        QToolTip::add(editor_, tr("Para completado automático pulsar F4"));
-        QWhatsThis::add(editor_, tr("Para completado automático pulsar F4"));
+        QToolTip::add(editor_, tr("Para completado automï¿½tico pulsar F4"));
+        QWhatsThis::add(editor_, tr("Para completado automï¿½tico pulsar F4"));
       } else if (autoCompMode_ == AlwaysAuto) {
-        QToolTip::add(editor_, tr("Completado automático permanente activado"));
-        QWhatsThis::add(editor_, tr("Completado automático permanente activado"));
+        QToolTip::add(editor_, tr("Completado automï¿½tico permanente activado"));
+        QWhatsThis::add(editor_, tr("Completado automï¿½tico permanente activado"));
       } else {
-        QToolTip::add(editor_, tr("Completado automático desactivado"));
-        QWhatsThis::add(editor_, tr("Completado automático desactivado"));
+        QToolTip::add(editor_, tr("Completado automï¿½tico desactivado"));
+        QWhatsThis::add(editor_, tr("Completado automï¿½tico desactivado"));
       }
     }
     break;
@@ -1372,7 +1372,7 @@ void FLFieldDB::openFormRecordRelation()
 
   if (!field->relationM1()) {
 #ifdef FL_DEBUG
-    qWarning("FLFieldDB : " + tr("El campo de búsqueda debe tener una relación M1"));
+    qWarning("FLFieldDB : " + tr("El campo de bï¿½squeda debe tener una relaciï¿½n M1"));
 #endif
     return;
   }
@@ -1427,7 +1427,7 @@ void FLFieldDB::searchValue()
 
   if (!field->relationM1()) {
 #ifdef FL_DEBUG
-    qWarning("FLFieldDB : " + tr("El campo de búsqueda debe tener una relación M1"));
+    qWarning("FLFieldDB : " + tr("El campo de bï¿½squeda debe tener una relaciï¿½n M1"));
 #endif
     return;
   }
@@ -1440,7 +1440,7 @@ void FLFieldDB::searchValue()
   if (fMD) {
     if (!fMD->relationM1()) {
 #ifdef FL_DEBUG
-      qWarning("FLFieldDB : " + tr("El campo asociado debe tener una relación M1"));
+      qWarning("FLFieldDB : " + tr("El campo asociado debe tener una relaciï¿½n M1"));
 #endif
       return;
     }
@@ -1454,16 +1454,33 @@ void FLFieldDB::searchValue()
     }
     FLManager *mng = cursor_->db()->manager();
     c = new FLSqlCursor(fMD->relationM1()->foreignTable(), true, cursor_->db()->connectionName());
-    c->select(mng->formatAssignValue(fMD->relationM1()->foreignField(), fMD,
-                                     v, true));
-    if (c->size() > 0)
-      c->next();
 
     if (actionName_.isEmpty())
       a = mng->action(field->relationM1()->foreignTable());
     else {
       a = mng->action(actionName_);
       a->setTable(field->relationM1()->foreignTable());
+    }
+
+    //Comprobar si firstRefresh ... 
+
+
+    //Sacamos si usamos firstRefresh o no ...
+    bool useFirstRefresh_ = false;
+    QString idMod = c->db()->managerModules()->idModuleOfFile(c->metadata()->name() + QString::fromLatin1(".mtd"));
+    QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + c->metadata()->name() + "_" + a->name();
+    qWarning("Realizando llamada a " + funcName);
+    QVariant v = aqApp->call(funcName, QSArgumentList(), 0).variant();
+    if (v.isValid() && v.type() == QVariant::Bool) {
+      qWarning("Encontrado " + funcName);
+      qWarning(v.toBool() ? "Es true": "Es false");
+      useFirstRefresh_ = v.toBool();
+    }
+
+    if (useFirstRefresh_) {
+      c->select(mng->formatAssignValue(fMD->relationM1()->foreignField(), fMD, v, true));
+      if (c->size() > 0)
+        c->next();
     }
 
     f = new FLFormSearchDB(c, a->name(), topWidget_);
@@ -1988,7 +2005,7 @@ void FLFieldDB::refresh(const QString &fN)
 
       if (!field->relationM1()) {
 #ifdef FL_DEBUG
-        qWarning("FLFieldDB : " + tr("El campo de la relación debe estar relacionado en M1"));
+        qWarning("FLFieldDB : " + tr("El campo de la relaciï¿½n debe estar relacionado en M1"));
 #endif
         if (tmd && !tmd->inCache())
           delete tmd;
