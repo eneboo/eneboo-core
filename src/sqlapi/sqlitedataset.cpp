@@ -558,7 +558,7 @@ namespace dbiplus
       qApp->processEvents();
 
       if(QFile::exists(fichero_salida)) {
-        qWarning("Fichero salida encontrado");
+        qWarning("Fichero salida " + fichero_salida + " encontrado");
         break;
       }
     }
