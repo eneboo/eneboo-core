@@ -41,6 +41,7 @@
 #include "FLSqlConnections.h"
 #include "vdatepopup.h"
 #include "FLSettings.h"
+#include "FLManagerModules.h"
 
 FLLineEdit::FLLineEdit(QWidget *parent, const char *name) :
   QLineEdit(parent, name),
