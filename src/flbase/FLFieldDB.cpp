@@ -1467,10 +1467,10 @@ void FLFieldDB::searchValue()
 
 
     //Sacamos si usamos firstRefresh o no ...
-    bool useFirstRefresh_ = false;
+    bool useFirstRefresh_ = true;
     QString idMod = c->db()->managerModules()->idModuleOfFile(c->metadata()->name() + QString::fromLatin1(".mtd"));
     QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + c->metadata()->name() + "_" + a->name();
-    qWarning("Realizando llamada a " + funcName);
+    qWarning("(FLFIELDBD) Realizando llamada a " + funcName);
     QVariant v2 = aqApp->call(funcName, QSArgumentList(), 0).variant();
     if (v2.isValid() && v2.type() == QVariant::Bool) {
       qWarning("Encontrado " + funcName);
@@ -1498,7 +1498,20 @@ void FLFieldDB::searchValue()
       a->setTable(field->relationM1()->foreignTable());
     }
 
-    c = new FLSqlCursor(a->table(), true, cursor_->db()->connectionName());
+
+    //Sacamos si usamos firstRefresh o no ...
+    bool useFirstRefresh2_ = false;
+    QString idMod2 = aqApp->db()->managerModules()->idModuleOfFile(a->table() + QString::fromLatin1(".mtd"));
+    QString funcName2 = idMod2 + QString::fromLatin1(".firstRefresh_") + a->table() + "_" + a->name();
+    qWarning("(FLFIELDBD 2) Realizando llamada a " + funcName2);
+    QVariant v2 = aqApp->call(funcName2, QSArgumentList(), 0).variant();
+    if (v2.isValid() && v2.type() == QVariant::Bool) {
+      qWarning("Encontrado " + funcName2);
+      qWarning(v2.toBool() ? "Es true": "Es false");
+      useFirstRefresh2_ = v2.toBool();
+    }
+
+    c = new FLSqlCursor(a->table(), useFirstRefresh2_, cursor_->db()->connectionName());
     f = new FLFormSearchDB(c, a->name(), topWidget_);
   }
 
