@@ -1470,8 +1470,8 @@ void FLFieldDB::searchValue()
     QString idMod = c->db()->managerModules()->idModuleOfFile(c->metadata()->name() + QString::fromLatin1(".mtd"));
     QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + c->metadata()->name() + "_" + a->name();
     qWarning("Realizando llamada a " + funcName);
-    QVariant v = aqApp->call(funcName, QSArgumentList(), 0).variant();
-    if (v.isValid() && v.type() == QVariant::Bool) {
+    QVariant v2 = aqApp->call(funcName, QSArgumentList(), 0).variant();
+    if (v2.isValid() && v2.type() == QVariant::Bool) {
       qWarning("Encontrado " + funcName);
       qWarning(v.toBool() ? "Es true": "Es false");
       useFirstRefresh_ = v.toBool();
