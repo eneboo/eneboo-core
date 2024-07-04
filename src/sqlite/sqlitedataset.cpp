@@ -63,7 +63,7 @@ namespace dbiplus
         //printf("\nA) reslt[%d] = %s. field_value.value =%s, is_null: %s\n", i, reslt[i], v.get_asString().c_str(), v.get_isNull() ? "SI": "NO");
 
         if (reslt[i] == NULL) {
-          //Automáticamente marcaremos campo como null
+          //Automï¿½ticamente marcaremos campo como null
           v.set_asString("");
           v.set_isNull(); 
         } else {
@@ -204,6 +204,9 @@ namespace dbiplus
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
     }
+    int thread_safe = sqlite3_threadsafe();
+    qWarning("threadsafe es " + QString::number(thread_safe));
+    sqlite3_config(SQLITE_CONFIG_SINGLETHREAD);
     if (sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,NULL) != SQLITE_OK) {
         return DB_CONNECTION_NONE;
       }

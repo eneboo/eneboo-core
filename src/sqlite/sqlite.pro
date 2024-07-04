@@ -11,7 +11,6 @@ TEMPLATE = lib
 
 CONFIG += warn_off create_prl link_prl
 !mac:CONFIG += plugin
-DEFINES += SQLITE_MUTEX_NOOP
 
 win32 {
 	CONFIG += dll exceptions shared
