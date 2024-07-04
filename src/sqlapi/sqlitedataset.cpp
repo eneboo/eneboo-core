@@ -96,6 +96,7 @@ namespace dbiplus
     passwordApi = password;
     tokenApi = "";
     userIdApi="";
+    counter_qry = 0;
     
     active = false;
     _in_transaction = false;    // for transaction
@@ -373,7 +374,8 @@ namespace dbiplus
         folder = "/tmp/";
       }
     }
-    QString fichero_datos = folder + "data_api" + "_" + timestamp + ".json";
+
+    QString fichero_datos = folder + "data_api" + "_" + timestamp + "_" + QString::number(((SqliteDatabase *)db)->counter_qry++) + ".json";
 
     // Guardar cadena en fichero data.
     //qWarning("GUARDANDO QUERY VIA API " + fichero_datos + ", cadena:" + cadena);
