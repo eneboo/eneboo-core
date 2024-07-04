@@ -204,13 +204,9 @@ namespace dbiplus
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
     }
-
-    qWarning("threadsafe test1 es " + QString::number(sqlite3_threadsafe()));
-    sqlite3_config(SQLITE_CONFIG_SINGLETHREAD);
     if (sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,NULL) != SQLITE_OK) {
         return DB_CONNECTION_NONE;
       }
-    qWarning("threadsafe test2 es " + QString::number(sqlite3_threadsafe()));
     active = true;
     return DB_CONNECTION_OK;
 

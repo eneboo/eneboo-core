@@ -210,8 +210,7 @@ namespace dbiplus
   int SqliteDatabase::connect()
   {
     disconnect();
-    int result;
-    result = sqlite3_open(db.c_str(), &conn);
+    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_CONFIG_SINGLETHREAD, NULL);
     //char* err=NULL;
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
@@ -220,7 +219,7 @@ namespace dbiplus
         return DB_CONNECTION_NONE;
     }
 
-
+    qWarning("threadsafe test3 es " + QString::number(sqlite3_threadsafe()));
     if (tokenApi == "") {
       SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
       QString texto = "check connection to remote database";
@@ -1004,7 +1003,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = total_records;
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIï¿½N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -1121,7 +1120,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIï¿½N: CURRENT:" + QString::number(result.records.size()));
   }
 
   return true;
