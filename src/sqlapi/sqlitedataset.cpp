@@ -375,7 +375,7 @@ namespace dbiplus
       }
     }
 
-    QString fichero_datos = folder + "data_api" + "_" + timestamp + "_" + QString::number(((SqliteDatabase *)db)->counter_qry) + ".json";
+    QString fichero_datos = folder + "data_api" + "_" + timestamp + "_" + QString::number(consulta_id) + ".json";
 
     // Guardar cadena en fichero data.
     //qWarning("GUARDANDO QUERY VIA API " + fichero_datos + ", cadena:" + cadena);
@@ -425,7 +425,7 @@ namespace dbiplus
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api\",\n";
+    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "\",\n";
     //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false,\n";
     cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + "\n";
@@ -515,8 +515,8 @@ namespace dbiplus
           folder = "/tmp/";
         }
 
-        QString fichero = folder + "aqextension_pipe_sql_api";
-        QString fichero_tmp = folder + "aqextension_pipe_sql_api.tmp";
+        QString fichero = folder + "aqextension_pipe_sql_api_" +  QString::number(getpid());
+        QString fichero_tmp = folder + "aqextension_pipe_sql_api_" + QString::number(getpid()) + ".tmp" ;
         if (debug_aqextension) {
           qWarning("Fichero intercambio: " + fichero);
         }
@@ -545,9 +545,6 @@ namespace dbiplus
             qWarning("Esperando a que se libere el fichero intercambio " +  fichero);
           }
           qApp->processEvents();
-        }
-
-          
         }
 
         rename(fichero_tmp, fichero);
@@ -945,7 +942,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
-    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api\",\n"; 
+    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "\",\n"; 
     // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
@@ -959,6 +956,8 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::gestionar_consulta_paginada(const int offset)
   {
+    consulta_id = ((SqliteDatabase *)db)->counter_qry++;
+
     if (debug_paginacion) {
       qWarning("OFFSET " + QString::number(offset));
     }
@@ -991,7 +990,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
 
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
-    QString fichero_salida =  folder + "delegate_qry_" + timestamp +  "_" + QString::number(++((SqliteDatabase *)db)->counter_qry) + ".txt";
+    QString fichero_salida =  folder + "delegate_qry_" + timestamp +  "_" + QString::number(consulta_id) + ".txt";
     QString cadena = generarJsonQuery(current_sql, fichero_salida, offset);    
     QString fichero_datos = generar_fichero_aqextension(cadena);
     QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);

@@ -167,6 +167,7 @@ or insert() operations default = false) */
   int last_invalid_pos;
   int bloque_pos;
   int bloque_last;
+  int consulta_id;
 
 
 
