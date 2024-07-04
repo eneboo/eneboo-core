@@ -537,7 +537,9 @@ namespace dbiplus
         }
 
         rename(fichero_tmp, fichero);
-
+        if (debug_aqextension) {
+          qWarning("fichero " + fichero + " generado");
+        }
         } else {
           qWarning("no se ha podido escribir en el fichero intercambio " +  fichero);
           return "";
@@ -975,7 +977,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
 
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
-    QString fichero_salida =  folder + "delegate_qry_" + timestamp +  "_" + QString::number(((SqliteDatabase *)db)->counter_qry++) + ".txt";
+    QString fichero_salida =  folder + "delegate_qry_" + timestamp +  "_" + QString::number(++((SqliteDatabase *)db)->counter_qry) + ".txt";
     QString cadena = generarJsonQuery(current_sql, fichero_salida, offset);    
     QString fichero_datos = generar_fichero_aqextension(cadena);
     QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
