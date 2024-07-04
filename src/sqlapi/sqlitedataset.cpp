@@ -459,6 +459,7 @@ namespace dbiplus
     bool usar_py = false;
     bool reset_allways = false;
     int pid_aqextension = 0;
+    int pid_current = getpid();
     QString path_exec = "";
     QString comando_txt = "";
     if (usar_py) {
@@ -546,7 +547,7 @@ namespace dbiplus
     
 
     if (debug_aqextension) {
-      qWarning("AQExtension pid " + QString::number(pid_aqextension));
+      qWarning("AQExtension pid: " + QString::number(pid_aqextension) + ", current_pid: " + QString::number(pid_current));
       qWarning("Esperando a que se procese la llamada. Fichero salida:" + fichero_salida);
     }
 
@@ -1001,7 +1002,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = total_records;
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIï¿½N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -1062,7 +1063,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     int lista_size = lista_valores.size();
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El nï¿½mero de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
+      qWarning("Error de integridad de datos. El número de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       return false;
     }
 
@@ -1118,7 +1119,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIï¿½N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
 
   return true;
