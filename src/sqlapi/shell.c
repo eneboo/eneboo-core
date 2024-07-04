@@ -27203,6 +27203,7 @@ static void verify_uninitialized(void){
 ** Initialize the state information in data
 */
 static void main_init(ShellState *data) {
+  printf("INIT!! SQLITE API");
   memset(data, 0, sizeof(*data));
   data->normalMode = data->cMode = data->mode = MODE_List;
   data->autoExplain = 1;
@@ -27215,8 +27216,8 @@ static void main_init(ShellState *data) {
 #if !defined(SQLITE_SHELL_FIDDLE)
   verify_uninitialized();
 #endif
-  printf("SINGLETHREAD!\n");
   sqlite3_config(SQLITE_CONFIG_URI, 1);
+  printf("Singlethread!!\n");
   sqlite3_config(SQLITE_CONFIG_SINGLETHREAD);
   sqlite3_snprintf(sizeof(mainPrompt), mainPrompt,"sqlite> ");
   sqlite3_snprintf(sizeof(continuePrompt), continuePrompt,"   ...> ");
