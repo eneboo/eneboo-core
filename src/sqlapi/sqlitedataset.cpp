@@ -462,6 +462,7 @@ namespace dbiplus
     bool reset_allways = false;
     int pid_aqextension = 0;
     int pid_current = getpid();
+    bool nuevo = true;
     QString path_exec = "";
     QString comando_txt = "";
     if (usar_py) {
@@ -499,10 +500,12 @@ namespace dbiplus
       if ( !AQProc->start() ) {
         return "error";
       }
+
     } else {
       if (debug_aqextension) {
         qWarning("PROCESO EXISTENTE! :)");
       }
+      nuevo = false;
       pid_aqextension = AQProc->processIdentifier();
       //escribimos el fichero de intercambio.
       QString folder = getenv("TPM");
@@ -532,8 +535,19 @@ namespace dbiplus
           t << fichero_datos;
           fi.close();
         
-        if (QFile::exists(fichero)) {
-          QFile::remove(fichero);
+
+        while (QFile::exists(fichero)) {
+          if (nuevo) {
+            QFile::remove(fichero);
+          }
+
+          if (debug_aqextension) {
+            qWarning("Esperando a que se libere el fichero intercambio " +  fichero);
+          }
+          qApp->processEvents();
+        }
+
+          
         }
 
         rename(fichero_tmp, fichero);
