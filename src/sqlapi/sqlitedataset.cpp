@@ -548,6 +548,7 @@ namespace dbiplus
         }
 
         rename(fichero_tmp, fichero);
+
         if (debug_aqextension) {
           qWarning("fichero " + fichero + " generado");
         }
