@@ -210,7 +210,7 @@ namespace dbiplus
   int SqliteDatabase::connect()
   {
     disconnect();
-    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_CONFIG_SINGLETHREAD, NULL);
+    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_CONFIG_MULTITHREAD, NULL);
     //char* err=NULL;
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
@@ -218,8 +218,6 @@ namespace dbiplus
     if (sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,NULL) != SQLITE_OK) {
         return DB_CONNECTION_NONE;
     }
-
-    qWarning("threadsafe test3 es " + QString::number(sqlite3_threadsafe()));
     if (tokenApi == "") {
       SqliteDataset *ds = new SqliteDataset((SqliteDatabase *)this);
       QString texto = "check connection to remote database";
