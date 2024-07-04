@@ -425,7 +425,7 @@ namespace dbiplus
     cadena += "\"password\": \"" + passwd + "\"\n";
     cadena += "},\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "\",\n";
+    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "_" + QString::number(consulta_id) + "\",\n";
     //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false,\n";
     cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + "\n";
@@ -515,8 +515,8 @@ namespace dbiplus
           folder = "/tmp/";
         }
 
-        QString fichero = folder + "aqextension_pipe_sql_api_" +  QString::number(getpid());
-        QString fichero_tmp = folder + "aqextension_pipe_sql_api_" + QString::number(getpid()) + ".tmp" ;
+        QString fichero = folder + "aqextension_pipe_sql_api_" +  QString::number(getpid()) + "_" + QString::number(consulta_id);
+        QString fichero_tmp = fichero + ".tmp" ;
         if (debug_aqextension) {
           qWarning("Fichero intercambio: " + fichero);
         }
@@ -943,7 +943,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "\"limit\":" + QString::number(LIMIT_RESULT) + "\n";
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
-    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "\",\n"; 
+    cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "_" + QString::number(consulta_id) + "\",\n"; 
     // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
