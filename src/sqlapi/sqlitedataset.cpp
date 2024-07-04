@@ -462,6 +462,7 @@ namespace dbiplus
     bool reset_allways = false;
     int pid_aqextension = 0;
     int pid_current = getpid();
+    int current_consulta_id = consulta_id;
     bool nuevo = true;
     QString path_exec = "";
     QString comando_txt = "";
@@ -521,11 +522,22 @@ namespace dbiplus
           qWarning("Fichero intercambio: " + fichero);
         }
 
+      int i = 0;
+      int x = 0;
       while (QFile::exists(fichero_tmp)) {
-        if (debug_aqextension) {
-          qWarning("Esperando a que se libere el fichero intercambio " +  fichero_tmp);
+        i++;
+        x++;
+        if (debug_aqextension && i > 1000) {
+          qWarning("Consulta id: " + QString::number(current_consulta_id) + ", Esperando a que se libere el fichero intercambio " +  fichero_tmp);
+          i = 0;
         }
         qApp->processEvents();
+
+        if (x > 1000000) {
+          qWarning("Demasiados intentos para que se libere el fichero intercambio " +  fichero_tmp);
+          break;
+        }
+
       }
 
         QFile fi(fichero_tmp);
