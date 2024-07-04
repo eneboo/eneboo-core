@@ -98,6 +98,7 @@ public:
   QString tokenApi;
   QString userIdApi;
   QString databaseApi;
+  int counter_qry;
 };
 
 
