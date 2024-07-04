@@ -375,7 +375,7 @@ namespace dbiplus
       }
     }
 
-    QString fichero_datos = folder + "data_api" + "_" + timestamp + "_" + QString::number(((SqliteDatabase *)db)->counter_qry++) + ".json";
+    QString fichero_datos = folder + "data_api" + "_" + timestamp + "_" + QString::number(((SqliteDatabase *)db)->counter_qry) + ".json";
 
     // Guardar cadena en fichero data.
     //qWarning("GUARDANDO QUERY VIA API " + fichero_datos + ", cadena:" + cadena);
@@ -975,7 +975,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
 
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
-    QString fichero_salida =  folder + "delegate_qry_" + timestamp + ".txt";
+    QString fichero_salida =  folder + "delegate_qry_" + timestamp +  "_" + QString::number(((SqliteDatabase *)db)->counter_qry++) + ".txt";
     QString cadena = generarJsonQuery(current_sql, fichero_salida, offset);    
     QString fichero_datos = generar_fichero_aqextension(cadena);
     QString salida = lanzar_llamada_aqextension(QString("cliente_web"), fichero_datos, fichero_salida);
