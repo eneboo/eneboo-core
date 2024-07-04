@@ -525,6 +525,11 @@ namespace dbiplus
       int i = 0;
       int x = 0;
       while (QFile::exists(fichero_tmp)) {
+          // Este espera a que el fichero tmp este libre.
+          if (nuevo) {
+            QFile::remove(fichero_tmp);
+          }
+
         i++;
         x++;
         if (debug_aqextension && i > 1000) {
@@ -549,11 +554,13 @@ namespace dbiplus
         
 
         while (QFile::exists(fichero)) {
+          //Este espera hasta que la consulta sea leida por aqextension ...
           if (nuevo) {
             QFile::remove(fichero);
           }
 
           if (debug_aqextension) {
+            
             qWarning("Esperando a que se libere el fichero intercambio " +  fichero);
           }
           qApp->processEvents();
