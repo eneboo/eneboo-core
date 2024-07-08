@@ -211,7 +211,7 @@ namespace dbiplus
   int SqliteDatabase::connect()
   {
     disconnect();
-    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_CONFIG_MULTITHREAD, NULL);
+    int result = sqlite3_open(db.c_str(), &conn);
     //char* err=NULL;
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
