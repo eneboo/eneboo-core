@@ -438,13 +438,16 @@ void FLFormRecordDB::setMainWidget()
 
 bool FLFormRecordDB::initScript()
 {
-  if (iface && cursor_)
-  {
-    aqApp->call("init", QSArgumentList(), iface);
+  if (cursor_) {
     qWarning("******************** ACTIVANDO *******************");
     disconnect(cursor_, SIGNAL(bufferChanged(const QString &)), this, SLOT(checkPushButtonsAccept(const QString &)));
     connect(cursor_, SIGNAL(bufferChanged(const QString &)), this, SLOT(checkPushButtonsAccept(const QString &)));
     checkPushButtonsAccept();
+  }
+
+  if (iface && cursor_)
+  {
+    aqApp->call("init", QSArgumentList(), iface);
     return true;
   }
   return false;
