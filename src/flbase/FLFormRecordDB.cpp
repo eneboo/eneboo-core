@@ -442,7 +442,6 @@ bool FLFormRecordDB::initScript()
     qWarning("******************** ACTIVANDO *******************");
     disconnect(cursor_, SIGNAL(bufferChanged(const QString &)), this, SLOT(checkPushButtonsAccept(const QString &)));
     connect(cursor_, SIGNAL(bufferChanged(const QString &)), this, SLOT(checkPushButtonsAccept(const QString &)));
-    checkPushButtonsAccept();
   }
 
   if (iface && cursor_)
