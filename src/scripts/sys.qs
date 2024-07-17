@@ -22,7 +22,7 @@ function init() {
   
   var settings = new AQSettings;
 
-  if (util.readBoolEntry("ebcomportamiento/keepAlive")) {
+  if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
     sys.keepAlive();
   }
   
