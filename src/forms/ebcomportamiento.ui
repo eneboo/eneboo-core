@@ -470,6 +470,44 @@
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
+                                <widget class="QGroupBox">
+                                    <property name="name">
+                                        <cstring>groupBox5</cstring>
+                                    </property>
+                                    <property name="title">
+                                        <string>Base de datos</string>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QCheckBox">
+                                            <property name="name">
+                                                <cstring>cbKeepAlive</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Mantener las conexiones activas</string>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer12</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>140</height>
+                                        </size>
+                                    </property>
+                                </spacer>
                             </vbox>
                         </widget>
                     </widget>
