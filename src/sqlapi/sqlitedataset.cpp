@@ -1058,7 +1058,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida_datos));
   
-  bool first = true;
+  bool primero_registro = true;
   int posicion_idx = offset;
   //int cabecera_size = 0;
 
@@ -1072,11 +1072,10 @@ bool SqliteDataset::fetch_rows(int pos) {
     //qWarning("PROCESANDO LINEA");
     QString registro = *it;
 
-    QStringList lista_valores(QStringList::split(separador_campos, registro));
+    QStringList lista_columnas(QStringList::split(separador_campos, registro));
 
-    if (first == true) { //cabecera ...
-      first = false;
-      for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
+    if (primero_registro == true) { //cabecera ...
+      for (QStringList::Iterator it2 = lista_columnas.begin(); it2 != lista_columnas.end(); ++it2) {
         if (posicion_idx != 0) { // Si el offset no es cero, ya tengo cabecera ....
             continue;
           }
@@ -1101,15 +1100,14 @@ bool SqliteDataset::fetch_rows(int pos) {
           }
           
           result.record_header[col_numero].name = nombre_columna.utf8();
-          break;
         //}
         
       }
       //qWarning("CABECERA CARGADA" + QString::number(cabecera_size));
-      continue;
+      primero_registro = false;
     } else { // valores ...
 
-    int lista_size = lista_valores.size();
+    int lista_size = lista_columnas.size();
     int cabecera_size = result.record_header.size();
 
     if (lista_size > 0 && lista_size != cabecera_size) {
@@ -1123,7 +1121,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_size; i++) {  
-      std::string valor = lista_valores[i];
+      std::string valor = lista_columnas[i];
       field_value v;
       if (valor == NULL || valor == "|^N^|") {
           //Autom?ticamente marcaremos campo como null
