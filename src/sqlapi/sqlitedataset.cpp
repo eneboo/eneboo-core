@@ -329,7 +329,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -345,7 +345,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -428,7 +428,7 @@ namespace dbiplus
     cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "\",\n";
     //cadena += "\"only_key\":\"token\",\n";
     cadena += "\"close_when_finish\":false,\n";
-    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + "\n";
+    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") +"\n";
     cadena += "}";
     qWarning("Fichero salida token : " + fichero_salida);
     QString fichero_datos = generar_fichero_aqextension(cadena);
@@ -517,7 +517,7 @@ namespace dbiplus
         }
 
         QString fichero = folder + "aqextension_pipe_sql_api_" +  QString::number(getpid());
-        QString fichero_tmp = folder + "aqextension_pipe_sql_api_" + QString::number(getpid()) + ".tmp" ;
+        QString fichero_tmp = folder + "aqextension_pipe_sql_api_" + QString::number(getpid()) + "_" + QString::number(current_consulta_id) + ".tmp" ;
         if (debug_aqextension) {
           qWarning("Fichero intercambio: " + fichero);
         }
@@ -526,7 +526,7 @@ namespace dbiplus
       int x = 0;
       while (QFile::exists(fichero_tmp)) {
           // Este espera a que el fichero tmp este libre.
-          if (nuevo) {
+          if (nuevo) { //Si es la primera vez sí intento borrar el fichero tmp.
             QFile::remove(fichero_tmp);
           }
 
@@ -555,7 +555,7 @@ namespace dbiplus
 
         while (QFile::exists(fichero)) {
           //Este espera hasta que la consulta sea leida por aqextension ...
-          if (nuevo) {
+          if (nuevo) { //Si es la primera llamada, sí tengo que borrarlo yo.
             QFile::remove(fichero);
           }
 
@@ -966,7 +966,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
-    cadena += "\"enable_debug\":" +  QString( debug_aqextension ? "true" : "false") + ",\n";
+    cadena += "\"enable_debug\":" + QString( debug_aqextension ? "true" : "false") +",\n";
     cadena += "\"only_key\":\"data\",\n";
     cadena += "\"close_when_finish\":false\n";
     cadena += "}";
