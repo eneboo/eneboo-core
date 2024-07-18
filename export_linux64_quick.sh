@@ -14,8 +14,8 @@ bzip2 -9 "$PVERSION-linux64.tar"
 
 mkdir "export/" 2>/dev/null
 mv "$PVERSION-linux64.tar.bz2" "export/"
-#unlink "$PVERSION-linux64.tar.bz2"
-#rm "$PVERSION" -Rf
+unlink "$PVERSION-linux64.tar.bz2"
+rm "$PVERSION" -Rf
 
 
 

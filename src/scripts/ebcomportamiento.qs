@@ -45,6 +45,7 @@ function cargarConfiguracion() {
 	w.child("cbFLLarge").checked = leerValorGlobal("FLLargeMode");
 	w.child("cbPosInfo").checked = leerValorGlobal("PosInfo");
 	w.child("cb_snapshot").checked = leerValorLocal("show_snapshot_button");
+	w.child("cbKeepAlive").checked = leerValorLocal("keepAlive");
 	w.child("leCO").hide();
 	if (leerValorLocal("colorObligatorio") == "")
 		w.child("leCO").paletteBackgroundColor = "#FFE9AD";
@@ -90,6 +91,7 @@ function leerValorLocal(valor_name):String {
 		case "FLTableShortCut":
 		case "FLTableExport2Calc":
 		case "show_snapshot_button":
+		case "keepAlive":
 			{
 			valor = settings.readBoolEntry("ebcomportamiento/" + valor_name );
 			break;
@@ -154,6 +156,7 @@ function guardar_clicked() {
 	grabarValorGlobal("FLLargeMode", w.child("cbFLLarge").checked);
 	grabarValorGlobal("PosInfo", w.child("cbPosInfo").checked);
 	grabarValorLocal("show_snapshot_button", w.child("cb_snapshot").checked);
+	grabarValorLocal("keepAlive", w.child("cbKeepAlive").checked);
 	cerrar_clicked();
 }
 

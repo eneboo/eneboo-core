@@ -467,6 +467,22 @@ public slots:
   }
 
   /**
+    Retorna una lista de las conexiones existentes
+  */
+  QStringList dictDatabases()
+  {
+    QStringList result;
+    QDict<FLSqlDatabase> *dictDb = FLSqlConnections::dictDatabases();
+    QDictIterator<FLSqlDatabase> it(*dictDb);
+    while (it.current())
+    {
+      result << it.current()->connectionName();
+      ++it;
+    }
+    return result;
+  }
+
+  /**
    Añade una base de datos a las conexiones disponibles.
 
    La base de datos será abierta. Si ya existiera una conexión con el mismo nombre

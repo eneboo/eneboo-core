@@ -2,11 +2,11 @@
 
 VERSION=$(git describe --tags)
 PROJECT="eneboo"
-PVERSION="${PROJECT}-${VERSION}"
+PVERSION="${PROJECT}-${VERSION}-dba"
 SRC="src/qt"
-test -e "$SRC" || { echo "No existe compilación para MacOSX ! (falta carpeta $SRC)"; exit 1; }
+test -e "$SRC" || { echo "No existe compilaciÃ³n para MacOSX ! (falta carpeta $SRC)"; exit 1; }
 
-echo "Exportando compilación MacOSX para $PVERSION . . . "
+echo "Exportando compilaciÃ³n MacOSX para $PVERSION . . . "
 
 mv "$SRC" "$PVERSION"
 
@@ -32,4 +32,4 @@ unlink "$PVERSION-macOSX.tar.bz2"
 rm -Rf "$PVERSION" 
 
 
-echo "Compilación exportada a: export/$PVERSION-macOSX.tar.bz2"
+echo "CompilaciÃ³n exportada a: export/$PVERSION-macOSX.tar.bz2"

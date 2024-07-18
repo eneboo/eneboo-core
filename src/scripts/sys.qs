@@ -18,6 +18,14 @@ var form = this;
  ***************************************************************************/
 
 function init() {
+
+  
+  var settings = new AQSettings;
+
+  if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
+    sys.keepAlive();
+  }
+  
   if (isLoadedModule("flfactppal")) {
     var util: FLUtil = new FLUtil();
     var codEjercicio: String = flfactppal.iface.pub_ejercicioActual();
@@ -37,7 +45,7 @@ function init() {
     	if (nombreEjercicio)
     		setCaptionMainWidget(nombreEjercicio);
     	}
-    var settings = new AQSettings;
+    
     var oldApi:Boolean = settings.readBoolEntry("application/oldApi");
  if (!oldApi)
  	{
@@ -3299,4 +3307,17 @@ function serverTime()
 
 function delegateCommit(cursor) {
 	return formHTTP.iface.saveCursor(cursor);
+}
+
+function keepAlive()
+{
+
+ const connections = sys.dictDatabases();
+ for (var i=0; i<connections.length; i++) {
+ 	const connName = connections[i];
+   debug("keep alive " + connName);
+ 	AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
+ }
+
+ sys.AQTimer.singleShot(60000, sys.keepAlive);
 }
