@@ -334,6 +334,7 @@ namespace dbiplus
     last_invalid_pos = 0;
     bloque_last = 0;
     bloque_pos = 0;
+    tipos_columnas.clear();
   }
 
 
@@ -350,6 +351,7 @@ namespace dbiplus
     last_invalid_pos = 0;
     bloque_last = 0;
     bloque_pos = 0;
+    tipos_columnas.clear();
   }
 
   SqliteDataset::~SqliteDataset()
@@ -591,7 +593,9 @@ namespace dbiplus
       qApp->processEvents();
 
       if(QFile::exists(fichero_salida)) {
-        qWarning("Fichero salida " + fichero_salida + " encontrado");
+        if (debug_aqextension) {
+          qWarning("Fichero salida " + fichero_salida + " encontrado");
+        }
         break;
       }
     }
@@ -736,6 +740,9 @@ void SqliteDataset::fill_fields()
 
   int SqliteDataset::exec(const string &sql)
   {
+    if (debug_sql) {
+      qWarning("EXEC ! --> %s", sql);
+    }
     if (!handle()) return DB_ERROR;
     int res;
     exec_res.record_header.clear();
@@ -760,6 +767,10 @@ void SqliteDataset::fill_fields()
 
   bool SqliteDataset::query(const char *query)
   {
+    if (debug_sql) {
+      qWarning("QUERY! --> %s", query);
+    }
+
     if (db == NULL)
       return false;
     if (((SqliteDatabase *)db)->getHandle() == NULL)
@@ -1046,7 +1057,6 @@ bool SqliteDataset::fetch_rows(int pos) {
   }
 
   QStringList lista_registros(QStringList::split(separador_lineas, salida_datos));
-  QStringList tipos_columnas;
   
   bool first = true;
   int posicion_idx = offset;
@@ -1067,17 +1077,17 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (first == true) { //cabecera ...
       first = false;
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
-        
-        const int col_numero = result.record_header.size() + 1;
-        const QString datos_columna = *it2;
-        QStringList columna = QStringList::split("|", datos_columna);
-
-        for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
-          cabecera_size += 1;
-          if (offset != 0) {
+        if (offset != 0) { // Si el offset no es cero, ya tengo cabecera ....
             continue;
           }
-          QString cabecera_columna = *it3;
+        const int col_numero = result.record_header.size() + 1;
+        const QString datos_columna = *it2;
+        //QStringList columna = QStringList::split("|", datos_columna);
+
+        //for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
+          cabecera_size += 1;
+          
+          QString cabecera_columna = *it2;
           QStringList cabecera_columna_sl = QStringList::split(":", cabecera_columna);
           QString nombre_columna = cabecera_columna_sl[0];
           QString tipo_columna = cabecera_columna_sl[1];
@@ -1090,7 +1100,7 @@ bool SqliteDataset::fetch_rows(int pos) {
           
           result.record_header[col_numero].name = nombre_columna.utf8();
           break;
-        }
+        //}
         
       }
       //qWarning("CABECERA CARGADA" + QString::number(cabecera_size));

@@ -1136,7 +1136,6 @@ bool SqliteResult::reset(const QString &q)
       }
       delete ds; */
     } else {
-      qWarning("EXEC ! --> %s", query.latin1());
       if (dataSet)
         delete dataSet;
       dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
@@ -1146,15 +1145,16 @@ bool SqliteResult::reset(const QString &q)
 
     return true;
   } else {
-    qWarning("QUERY! --> %s", query.latin1());
+
+    
   }
 
   
 
   if (dataSet)
     delete dataSet;
-
   dataSet = ((SqlApiDriver *) driver)->dataBase()->CreateDataset();
+  
   if (dataSet->query(query.latin1())) {
     setActive(true);
     return true;

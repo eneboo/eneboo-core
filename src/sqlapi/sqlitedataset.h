@@ -168,6 +168,7 @@ or insert() operations default = false) */
   int bloque_pos;
   int bloque_last;
   int consulta_id;
+  QStringList tipos_columnas;
 
 
 
