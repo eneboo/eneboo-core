@@ -369,7 +369,7 @@ namespace dbiplus
   {
 
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
-    QString folder = getenv("TPM");
+    QString folder = getenv("TMP");
     if (folder.isEmpty()) {
       folder = getenv("TMPDIR");
       if (folder.isEmpty()) {
@@ -399,7 +399,7 @@ namespace dbiplus
   {
     // Hacemos login con aqextension y guardamos el token devuelto ....
     qWarning("No hay token disponible. Solicitando ...");
-    QString folder = getenv("TPM");
+    QString folder = getenv("TMP");
     if (folder.isEmpty()) {
       folder = getenv("TMPDIR");
       if (folder.isEmpty()) {
@@ -511,7 +511,7 @@ namespace dbiplus
       nuevo = false;
       pid_aqextension = AQProc->processIdentifier();
       //escribimos el fichero de intercambio.
-      QString folder = getenv("TPM");
+      QString folder = getenv("TMP");
       if (folder.isEmpty()) {
         folder = getenv("TMPDIR");
         if (folder.isEmpty()) {
@@ -1007,7 +1007,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     
 
-    QString folder = getenv("TPM");
+    QString folder = getenv("TMP");
     if (folder.isEmpty()) {
       folder = getenv("TMPDIR");
       if (folder.isEmpty()) {
