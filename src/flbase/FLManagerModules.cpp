@@ -300,6 +300,7 @@ void FLManagerModules::loadKeyFiles()
     if (sha.isEmpty()) {
       continue;
     }
+    qWarning("Registrando" + name + " " + sha);
     dictKeyFiles->replace(name, new QString(sha));
     dictModFiles->replace(name.upper(), new QString(q.value(2).toString()));
   }
@@ -704,7 +705,7 @@ QString FLManagerModules::contentFS(const QString &pN)
 
 QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
 {
-  //qWarning("FLManagerModules::contentCached('" + n + "')");
+  qWarning("FLManagerModules::contentCached('" + n + "')");
   if (n.isEmpty() || n.length() <= 3)
     return QString::null;
 
@@ -744,12 +745,14 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
     
 
   if (key.isEmpty()) {
+    qWarning("FLManagerModules::contentCached key vacía");
     str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
+    qWarning("FLManagerModules::contentCached !AQ_DISKCACHE_FIND");
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
