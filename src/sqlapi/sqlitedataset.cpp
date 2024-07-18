@@ -1104,9 +1104,9 @@ bool SqliteDataset::fetch_rows(int pos) {
       return false;
     }
 
-    //qWarning("PROCESANDO VALORES LINEA N? %d", sz);
+    //qWarning("PROCESANDO VALORES LINEA Nº %d", sz);
 
-    //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_size; i++) {  
