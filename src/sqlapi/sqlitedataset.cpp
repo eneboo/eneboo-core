@@ -1060,7 +1060,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   
   bool first = true;
   int posicion_idx = offset;
-  int cabecera_size = 0;
+  //int cabecera_size = 0;
 
   if (posicion_idx == 0) {
     result.record_header.clear();
@@ -1077,20 +1077,22 @@ bool SqliteDataset::fetch_rows(int pos) {
     if (first == true) { //cabecera ...
       first = false;
       for (QStringList::Iterator it2 = lista_valores.begin(); it2 != lista_valores.end(); ++it2) {
-        if (offset != 0) { // Si el offset no es cero, ya tengo cabecera ....
+        if (posicion_idx != 0) { // Si el offset no es cero, ya tengo cabecera ....
             continue;
           }
         const int col_numero = result.record_header.size() + 1;
-        const QString datos_columna = *it2;
+        //const QString datos_columna = *it2;
         //QStringList columna = QStringList::split("|", datos_columna);
 
         //for (QStringList::Iterator it3 = columna.begin(); it3 != columna.end(); ++it3) {
-          cabecera_size += 1;
+        //  cabecera_size += 1;
           
           QString cabecera_columna = *it2;
           QStringList cabecera_columna_sl = QStringList::split(":", cabecera_columna);
           QString nombre_columna = cabecera_columna_sl[0];
           QString tipo_columna = cabecera_columna_sl[1];
+          qWarning("CC: " + cabecera_columna);
+          qWarning("CABECERA offset:" + QString::number(offset) + ", COL." + QString::number(col_numero) + " : " + nombre_columna + " : " + tipo_columna);
           tipos_columnas.append(tipo_columna);
           //qWarning("Especificando nombre col : %d", col_numero);
           //qWarning(nombre_columna);
@@ -1108,9 +1110,10 @@ bool SqliteDataset::fetch_rows(int pos) {
     } else { // valores ...
 
     int lista_size = lista_valores.size();
+    int cabecera_size = result.record_header.size();
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. Cabecera: " + QString::number(result.record_header.size()) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
+      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       return false;
     }
 
