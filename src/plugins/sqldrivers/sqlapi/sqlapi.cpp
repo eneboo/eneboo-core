@@ -123,7 +123,11 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
 bool SqlApiDriver::open(const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &connOpts)
 {
   //qWarning(tr("SqlApiDriver::open : DB: %1, USER: %2, PASS: %3, HOSTS: %4, PORT: %d").arg(db).arg(user).arg(password).arg(host), port);
-  urlApi = "http://" + host + ":" + QString::number(port) + "/api";
+  urlApi = host + ":" + QString::number(port) + "/api";
+  if (!host.startsWith("http")) {
+    qWarning("SqlApiDriver::open() : No es un host valido. Especifique http/https en el host");
+    return false;
+  }
   userApi = user;
   passwordApi = password;
   //qWarning(tr("SqlApiDriver::open(2) : URL: %1, USER: %2, PASS: %3").arg(urlApi).arg(userApi).arg(passwordApi));
