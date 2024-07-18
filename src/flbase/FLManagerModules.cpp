@@ -59,7 +59,7 @@ void test_sha256(const string name, const string str)
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     if (ss.str() == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacï¿½o.");
+    	qWarning("FLManagerModules : Fichero " + QString(name) + " vac?o.");
     else
     	{
     ss << "  " << name;
@@ -157,7 +157,7 @@ void FLManagerModules::loadAllIdModules()
     FLInfoMod *infoMod = new FLInfoMod();
     infoMod->idModulo = QString("sys");
     infoMod->idArea = QString("sys");
-    infoMod->descripcion = QString("Administraciï¿½n");
+    infoMod->descripcion = QString("Administraci?n");
     infoMod->version = QString("0.0");
     infoMod->icono = contentFS(AQ_DATA + "/sys.xpm");
     infoMod->areaDescripcion = QString("Sistema");
@@ -300,7 +300,6 @@ void FLManagerModules::loadKeyFiles()
     if (sha.isEmpty()) {
       continue;
     }
-    qWarning("Registrando" + name + " " + sha);
     dictKeyFiles->replace(name, new QString(sha));
     dictModFiles->replace(name.upper(), new QString(q.value(2).toString()));
   }
@@ -329,10 +328,10 @@ void FLManagerModules::init()
   tmpTMD = db_->manager()->createSystemTable("flsettings");
   tmpTMD = db_->manager()->createSystemTable("flserial");
   tmpTMD = db_->manager()->createSystemTable("flvar");
-//-->FLLarge ï¿½nico   
+//-->FLLarge ?nico   
   if (aqApp->singleFLLarge())
     tmpTMD = db_->manager()->createSystemTable("fllarge");
-//<--FLarge ï¿½nico
+//<--FLarge ?nico
 
   tmpTMD = db_->manager()->createSystemTable("flupdates");
 
@@ -375,7 +374,7 @@ void FLManagerModules::init()
   }
 
   if (modVer.isEmpty()) {
-    qWarning("Borrando caché");
+    qWarning("Borrando cach?");
     AQ_DISKCACHE_CLR();
     QSqlQuery qry(QString::null, db_->dbAux());
     qry.exec("DROP TABLE flserial CASCADE");
@@ -414,7 +413,7 @@ void FLManagerModules::init()
     cursor.refreshBuffer();
     cursor.setValueBuffer("idmodulo", "sys");
     cursor.setValueBuffer("idarea", "sys");
-    cursor.setValueBuffer("descripcion", QApplication::tr("Administraciï¿½n"));
+    cursor.setValueBuffer("descripcion", QApplication::tr("Administraci?n"));
     cursor.setValueBuffer("icono", contentFS(AQ_DATA + "/sys.xpm"));
     cursor.setValueBuffer("bloqueo", QVariant(false, 0));
     cursor.commitBuffer();
@@ -705,7 +704,7 @@ QString FLManagerModules::contentFS(const QString &pN)
 
 QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
 {
-  qWarning("FLManagerModules::contentCached('" + n + "')");
+  //qWarning("FLManagerModules::contentCached('" + n + "')");
   if (n.isEmpty() || n.length() <= 3)
     return QString::null;
 
@@ -745,14 +744,12 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
     
 
   if (key.isEmpty()) {
-    qWarning("FLManagerModules::contentCached key vacía");
     str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
-    qWarning("FLManagerModules::contentCached !AQ_DISKCACHE_FIND");
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
@@ -864,7 +861,7 @@ void FLManagerModules::setActiveIdModule(const QString &id)
     activeIdModule_ = id;
   } else {
 #ifdef FL_DEBUG
-    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un mï¿½dulo inexistente"));
+    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un m?dulo inexistente"));
 #endif
     activeIdArea_ = QString::null;
     activeIdModule_ = QString::null;

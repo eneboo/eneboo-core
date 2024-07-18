@@ -1112,6 +1112,9 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     if (lista_size > 0 && lista_size != cabecera_size) {
       qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
+      for (int x = 0; x < result.record_header.size(); x++) {
+        qWarning("Col : " + QString::number(x) + " : " + result.record_header[x].name);
+      }
       return false;
     }
 
