@@ -1090,8 +1090,8 @@ bool SqliteDataset::fetch_rows(int pos) {
           QStringList cabecera_columna_sl = QStringList::split(":", cabecera_columna);
           QString nombre_columna = cabecera_columna_sl[0];
           QString tipo_columna = cabecera_columna_sl[1];
-          qWarning("CC: " + cabecera_columna);
-          qWarning("CABECERA offset:" + QString::number(offset) + ", COL." + QString::number(col_numero) + " : " + nombre_columna + " : " + tipo_columna);
+          //qWarning("CC: " + cabecera_columna);
+          //qWarning("CABECERA offset:" + QString::number(offset) + ", COL." + QString::number(col_numero) + " : " + nombre_columna + " : " + tipo_columna);
           tipos_columnas.append(tipo_columna);
           //qWarning("Especificando nombre col : %d", col_numero);
           //qWarning(nombre_columna);
