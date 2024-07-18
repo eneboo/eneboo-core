@@ -375,7 +375,9 @@ namespace dbiplus
       if (folder.isEmpty()) {
         folder = "/tmp/";
       }
-    }
+    } else {
+        folder += "\\";
+      }
 
     QString fichero_datos = folder + "data_api" + "_" + timestamp + "_" + QString::number(consulta_id) + ".json";
 
@@ -405,7 +407,9 @@ namespace dbiplus
       if (folder.isEmpty()) {
         folder = "/tmp/";
       }
-    }
+    } else {
+        folder += "\\";
+      }
     //qWarning("folder:" + folder + ", user:" + user + ", passwd:" + passwd);
     //QString passwd_md5 = (QString(passwd).utf8());
     //QString fichero_salida_pass = folder + "datar.md5";
@@ -517,6 +521,10 @@ namespace dbiplus
         if (folder.isEmpty()) {
           folder = "/tmp/";
         }
+      } else {
+        folder += "\\";
+      }
+    
 
         QString fichero = folder + "aqextension_pipe_sql_api_" +  QString::number(getpid());
         QString fichero_tmp = folder + "aqextension_pipe_sql_api_" + QString::number(getpid()) + "_" + QString::number(current_consulta_id) + ".tmp" ;
@@ -578,8 +586,6 @@ namespace dbiplus
           return "";
         }
       }
-      
-    }
 
     
 
@@ -1005,15 +1011,15 @@ bool SqliteDataset::fetch_rows(int pos) {
       }
       }
 
-    
-
     QString folder = getenv("TMP");
     if (folder.isEmpty()) {
       folder = getenv("TMPDIR");
       if (folder.isEmpty()) {
         folder = "/tmp/";
       }
-    }
+    } else {
+        folder += "\\";
+      }
 
     QString separador_campos = "|^|";
     QString separador_lineas = "|^^|";
