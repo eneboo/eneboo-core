@@ -741,7 +741,7 @@ void SqliteDataset::fill_fields()
   int SqliteDataset::exec(const string &sql)
   {
     if (debug_sql) {
-      qWarning("EXEC ! --> " + sql);
+      qWarning("EXEC ! --> " + QString(sql));
     }
     if (!handle()) return DB_ERROR;
     int res;
