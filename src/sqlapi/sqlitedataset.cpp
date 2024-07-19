@@ -635,9 +635,10 @@ namespace dbiplus
 
   bool leido = false;
   int intentos = 0;
-  while (!leido && intentos < 10) {
-    QFile fi_salida(fichero_salida);
+  QFile fi_salida(fichero_salida);
 
+  while (!leido && intentos < 10) {
+    
     if (fi_salida.open(IO_ReadOnly)) {
       QTextStream t(&fi_salida);
       t.setEncoding(QTextStream::Latin1);
@@ -645,8 +646,9 @@ namespace dbiplus
       fi_salida.close();
       leido = true;
     } else {
-      qApp->processOneEvent();
       intentos++;
+      qWarning("Esperando " + fichero_salida + ", intento: " + QString::number(intentos) + "/10");
+      sleep(0.5);
     }
   }
 
