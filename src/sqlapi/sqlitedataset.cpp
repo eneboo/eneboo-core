@@ -535,7 +535,7 @@ namespace dbiplus
       int x = 0;
       while (QFile::exists(fichero_tmp)) {
           // Este espera a que el fichero tmp este libre.
-          if (nuevo) { //Si es la primera vez sï¿½ intento borrar el fichero tmp.
+          if (nuevo) { //Si es la primera vez sí intento borrar el fichero tmp.
             QFile::remove(fichero_tmp);
           }
 
@@ -564,7 +564,7 @@ namespace dbiplus
 
         while (QFile::exists(fichero)) {
           //Este espera hasta que la consulta sea leida por aqextension ...
-          if (nuevo) { //Si es la primera llamada, sï¿½ tengo que borrarlo yo.
+          if (nuevo) { //Si es la primera llamada, sí tengo que borrarlo yo.
             QFile::remove(fichero);
           }
 
@@ -633,14 +633,25 @@ namespace dbiplus
   }
 
 
-  QFile fi_salida(fichero_salida);
+  bool leido = false;
+  int intentos = 0;
+  while (!leido && intentos < 10) {
+    QFile fi_salida(fichero_salida);
 
-  if (fi_salida.open(IO_ReadOnly)) {
-    QTextStream t(&fi_salida);
-    t.setEncoding(QTextStream::Latin1);
-    salida = t.read();
-    fi_salida.close();
-  } else {
+    if (fi_salida.open(IO_ReadOnly)) {
+      QTextStream t(&fi_salida);
+      t.setEncoding(QTextStream::Latin1);
+      salida = t.read();
+      fi_salida.close();
+      leido = true;
+    } else {
+      qApp->processOneEvent();
+      intentos++;
+    }
+  }
+
+
+  if (!leido) {
     qWarning("No se ha podido leer el fichero " +  fichero_salida + ", aunque existe");
     salida = "error";
   }
@@ -1055,7 +1066,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       result.total_records = total_records;
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIï¿½N: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -1116,16 +1127,16 @@ bool SqliteDataset::fetch_rows(int pos) {
     int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El nï¿½mero de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
+      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       for (int x = 0; x < result.record_header.size(); x++) {
         qWarning("Col : " + QString::number(x) + " : " + result.record_header[x].name + x == 0 ? "(* Omitida)": "");
       }
       return false;
     }
 
-    //qWarning("PROCESANDO VALORES LINEA Nï¿½ %d", sz);
+    //qWarning("PROCESANDO VALORES LINEA Nº %d", sz);
 
-    //qWarning("PROCESANDO VALORES LINEA Nï¿½ %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_size; i++) {  
@@ -1175,7 +1186,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIï¿½N: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
 
   return true;
