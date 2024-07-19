@@ -329,7 +329,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -346,7 +346,7 @@ namespace dbiplus
     autorefresh = false;
     debug_sql = false;
     debug_paginacion = false;
-    debug_aqextension = true;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
