@@ -648,7 +648,7 @@ namespace dbiplus
     } else {
       intentos++;
       qWarning("Esperando " + fichero_salida + ", intento: " + QString::number(intentos) + "/10");
-      sleep(0);
+      sqlite3_sleep(100);
     }
   }
 
