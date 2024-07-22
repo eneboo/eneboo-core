@@ -81,8 +81,8 @@ public:
   QString version;
   QCString icono;
   QString areaDescripcion;
-  QDomDocument signatures;
-  QDomDocument certificates;
+  //QDomDocument signatures;
+  //QDomDocument certificates;
 };
 
 FLManagerModules::FLManagerModules(FLSqlDatabase *db) : db_(db)
@@ -132,24 +132,24 @@ void FLManagerModules::loadAllIdModules()
     infoMod->areaDescripcion = q.value(5).toString();
     dictInfoMods->replace(infoMod->idModulo.upper(), infoMod);
 
-    QString signatures = content(infoMod->idModulo + ".signatures");
-    QString certificates = content(infoMod->idModulo + ".certificates");
+    //QString signatures = contentCached(infoMod->idModulo + ".signatures");
+    //QString certificates = contentCached(infoMod->idModulo + ".certificates");
 
-    QDomDocument xmlDocSignatures;
-    xmlDocSignatures.setContent(signatures);
+    //QDomDocument xmlDocSignatures;
+    //xmlDocSignatures.setContent(signatures);
 
-    QDomDocument xmlDocCertificates;
-    xmlDocCertificates.setContent(certificates);
+    //QDomDocument xmlDocCertificates;
+    //xmlDocCertificates.setContent(certificates);
     
-    infoMod->signatures = xmlDocSignatures;
-    infoMod->certificates = xmlDocCertificates;
+    //infoMod->signatures = xmlDocSignatures;
+    //infoMod->certificates = xmlDocCertificates;
     
     if (infoMod->idModulo != "sys")
       listAllIdModules_->append(infoMod->idModulo);
     else
       sysModuleFound = true;
     
-    checkSignatures(infoMod);
+    //checkSignatures(infoMod);
         
     
   }
@@ -166,7 +166,7 @@ void FLManagerModules::loadAllIdModules()
 }
 
 
-void FLManagerModules::checkSignatures(FLInfoMod *mod)
+/* void FLManagerModules::checkSignatures(FLInfoMod *mod)
 {
     QDomDocument sig = mod->signatures;
     QDomDocument cert = mod->certificates;
@@ -255,7 +255,7 @@ void FLManagerModules::checkSignatures(FLInfoMod *mod)
     
     
 
-}
+} */
 
 void FLManagerModules::loadIdAreas()
 {
@@ -293,9 +293,14 @@ void FLManagerModules::loadKeyFiles()
   q.setForwardOnly(true);
   q.exec("SELECT nombre,sha,idmodulo FROM flfiles");
   QString name;
+  QString sha;
   while (q.next()) {
     name = q.value(0).toString();
-    dictKeyFiles->replace(name, new QString(q.value(1).toString()));
+    sha = q.value(1).toString();
+    if (sha.isEmpty()) {
+      continue;
+    }
+    dictKeyFiles->replace(name, new QString(sha));
     dictModFiles->replace(name.upper(), new QString(q.value(2).toString()));
   }
 }
@@ -342,6 +347,8 @@ void FLManagerModules::init()
       if (driverName == "FLsqlite") {
         if (!db_->dbAux()->recordInfo("flfiles").contains("binario"))
           modVer = QString::null;
+      } else if (driverName == "FLsqlapi") {
+         modVer = AQ_VERSION;
       } else {
         QSqlQuery qryFil("select * from flfiles limit 1", db_->dbAux());
         if (!db_->dbAux()->recordInfo(qryFil).contains("binario"))
@@ -474,7 +481,7 @@ QString FLManagerModules::contentStatic(const QString &n)
   return str_ret;
 }
 
-QString FLManagerModules::content(const QString &n)
+QString FLManagerModules::content(const QString &n, const bool only_fs)
 {
   if (n.isEmpty() || n.length() <= 3)
     return QString::null;
@@ -506,6 +513,10 @@ QString FLManagerModules::content(const QString &n)
 
   if (!retFS.isEmpty()) {
     return retFS;
+  }
+
+  if (only_fs) {
+    return QString::null;
   }
 
   if (notSysTable) {
@@ -724,12 +735,15 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
       s = FLMemCache::find(n);
       if (s)
         return *s;
-      key = shaOfFile(n);
+
+/*       key = shaOfFile(n);
       if (shaKey)
-        *shaKey = key;
+        *shaKey = key; */
     }
-  } else
-    return content(n);
+  } else {
+    return content(n, true);
+  }
+    
 
   if (key.isEmpty()) {
     str_ret = content(n);
@@ -778,6 +792,19 @@ void FLManagerModules::setContent(const QString &n, const QString &idM, const QS
 QString FLManagerModules::shaOfFile(const QString &n)
 {
   if (db_->dbAux() && n.left(3) != "sys" && !db_->manager()->isSystemTable(n)) {
+    
+    if (dictKeyFiles) {
+      QString *sha_cached = dictKeyFiles->find(n);
+      if (sha_cached) {
+        return *sha_cached;
+      }
+    } 
+  }
+
+    qWarning("FLManagerModules::shaOfFile('" + n + "') no encontrado");
+    return QString::null;
+    
+/*     
     QString formatVal(db_->manager()->formatAssignValue("nombre", QVariant::String, n, true));
     QSqlQuery q(QString::null, db_->dbAux());
     q.setForwardOnly(true);
@@ -786,7 +813,7 @@ QString FLManagerModules::shaOfFile(const QString &n)
       return q.value(0).toString();
     return QString::null;
   } else
-    return QString::null;
+    return QString::null; */
 }
 
 QWidget *FLManagerModules::createUI(const QString &n, QObject *connector,
@@ -869,7 +896,7 @@ void FLManagerModules::writeState()
 {
   QString idDB = "noDB";
   if (db_->dbAux())
-    idDB = db_->database() + db_->host() + db_->user() + db_->driverName() + QString::number(db_->port());
+    idDB = db_->database2() + db_->host() + db_->user2() + db_->driverName() + QString::number(db_->port());
 
   FLSettings::writeEntry("Modules/activeIdModule/" + idDB, activeIdModule_);
   FLSettings::writeEntry("Modules/activeIdArea/" + idDB, activeIdArea_);

@@ -1,3 +1,3 @@
 TEMPLATE = subdirs 
 CONFIG += warn_off 
-SUBDIRS += psql mysql sqlite
+SUBDIRS += psql mysql sqlite sqlapi

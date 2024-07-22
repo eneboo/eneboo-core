@@ -85,6 +85,9 @@ QString FLSqlDatabase::driverAliasToDriverName(const QString &alias)
     return "FLQMYSQL4";
   if (alias == "MySQL_NO_INNODB")
     return "FLQMYSQL4_NO_INNODB";
+  if (alias == "SQLApi") {
+    return "FLsqlapi";
+  }
   return alias;
 }
 
@@ -98,17 +101,16 @@ QString FLSqlDatabase::driverNameToDriverAlias(const QString &name)
     return "MySQL";
   if (name == "FLQMYSQL4_NO_INNODB")
     return "MySQL_NO_INNODB";
+  if (name == "FLsqlapi") {
+    return "SQLApi";
+  }
   return name;
 }
 
 bool FLSqlDatabase::needConnOption(const QString &alias, const int connOption)
 {
-  if (alias == "PostgreSQL")
-    return true;
   if (alias == "SQLite3")
     return false;
-  if (alias == "MySQL" || alias == "MySQL_NO_INNODB")
-    return true;
   return true;
 }
 
@@ -118,6 +120,8 @@ QString FLSqlDatabase::defaultPort(const QString &alias)
     return "5432";
   if (alias == "MySQL" || alias == "MySQL_NO_INNODB")
     return "3306";
+  if (alias == "SQLApi")
+    return "8005";
   return QString::null;
 }
 
@@ -176,6 +180,7 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
   FLSqlDriver *dr = ::qt_cast<FLSqlDriver *>(dbAux_->driver());
   database_ = dr->formatDatabaseName(database);
   user_ = user;
+  remote_user_ = "";
   password_ = password;
   host_ = host;
   port_ = port;
@@ -200,6 +205,12 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
     dbAux_->setPort(port_);
     if (!dbAux_->open())
       return false;
+
+    if (driverName_ == "FLsqlapi") {
+      setRemoteUser(dr->userIdApi);
+      setRemoteDatabase(dr->databaseApi);
+    }
+
 
     connectionName_ = connName;
     initInternal();

@@ -258,6 +258,11 @@ protected slots:
   */
   void disablePushButtonCancel();
 
+  /**
+  Comprueba botones accept y acceptContinue
+  */
+  void checkPushButtonsAccept(const QString &fN = QString::null);
+
 private:
   /**
   Indica si se debe mostrar el botón Aceptar y Continuar

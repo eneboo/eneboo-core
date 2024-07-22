@@ -32,8 +32,9 @@
 #include <stdio.h>
 #include <dataset.h>
 #include <sqlite3.h>
-
+#include <qstring.h>
 #include "aqsqliteglobal.h"
+#include <qprocess.h>
 
 namespace dbiplus
 {
@@ -88,6 +89,14 @@ public:
     bool in_transaction() {
       return _in_transaction;
     };
+
+  QProcess *AQProc;
+  QString urlApi;
+  QString userApi;
+  QString passwordApi;
+  QString tokenApi;
+  QString userIdApi;
+  QString databaseApi;
 
 };
 

@@ -106,7 +106,7 @@ void FLConnectDBDialog::tryConnect()
 {
   QString usuario = lineEditUser->text();
   usuario = usuario.replace(QRegExp("^[\\s\\t]+|[\\s\\t]+$"), "");
-  if (usuario.isEmpty() && comboBoxDB->currentText() != "SQLite3") {
+  if (usuario.isEmpty() && comboBoxDB->currentText() != "SQLite3" && comboBoxDB->currentText() != "SQLApi") {
 
     error_ = true;
     this->accept();
@@ -123,7 +123,7 @@ void FLConnectDBDialog::tryConnect()
   
   QString puerto = lineEditPort->text();
   puerto = puerto.replace(QRegExp("[^0-9]+"), "");
-  if (puerto.isEmpty() && comboBoxDB->currentText() != "SQLite3") {
+  if (puerto.isEmpty() && comboBoxDB->currentText() != "SQLite3" && comboBoxDB->currentText() != "SQLApi") {
 
     error_ = true;
     this->accept();
@@ -145,7 +145,7 @@ void FLConnectDBDialog::tryConnect()
   QString connOpts;
   if (db->driverName() == "FLQPSQL7")
     connOpts = "connect_timeout=30";
-  if (comboBoxDB->currentText() == "SQLite3") 
+  if (comboBoxDB->currentText() == "SQLite3" || comboBoxDB->currentText() == "SQLApi") 
   	DBName = DBName + ".s3db";
   if (!db->connectDB(DBName, usuario,
                      lineEditPassword->text(), host, puerto.toInt(), 
@@ -247,7 +247,7 @@ void FLConnectDBDialog::addMark()
     lineEditHost->setFocus();
     return;
   }
-  datConn += ":" + lineEditHost->text();
+  datConn += ":" + lineEditHost->text().replace(":","|");
 
   if (FLSqlDatabase::needConnOption(driverAlias, FLSqlDatabase::PORT) &&
       lineEditPort->text().isEmpty()) {
@@ -313,7 +313,7 @@ void FLConnectDBDialog::selectMark(const QString &mark)
         comboBoxDB->setCurrentText(*it);
         break;
       case 3:
-        lineEditHost->setText(*it);
+        lineEditHost->setText(QString(*it).replace("|",":"));
         break;
       case 4:
         lineEditPort->setText(*it);

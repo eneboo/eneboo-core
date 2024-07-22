@@ -245,6 +245,13 @@ public:
   @return Nombre de la base de datos actual
   */
   QString database() const {
+    return remote_database_ == "" ? database_ : remote_database_;
+  }
+
+    /**
+  @return Nombre de la base de datos actual
+  */
+  QString database2() const {
     return database_;
   }
 
@@ -252,6 +259,13 @@ public:
   @return Usuario utilizado para conectar a la base de datos actual
   */
   QString user() const {
+    return remote_user_ == "" ? user_ : remote_user_;
+  }
+
+  /**
+  @return Usuario utilizado para conectar a la base de datos actual
+  */
+  QString user2() const {
     return user_;
   }
 
@@ -474,7 +488,18 @@ public:
   
   QValueStack<int> cursorsOpened;
 
+  void setRemoteUser(const QString &user) {
+    remote_user_ = user;
+  }
+
+  void setRemoteDatabase(const QString &database) {
+    remote_database_ = database;
+  }
+
+
+
 private:
+
 
   /**
   Cierra la conexión actual de la base de datos
@@ -487,11 +512,13 @@ private:
   /** Usuario utilizado para conectar a la base de datos actual */
   QSqlDatabase *dbAux_;
 
-  /** Nombre de la base de datos actual */
-  QString database_;
-
   /** Usuario utilizado para conectar a la base de datos actual */
   QString user_;
+  QString remote_user_;
+
+  /** Nombre de la base de datos actual */
+  QString database_;
+  QString remote_database_;
 
   /** Contraseña utilizada para conectar a la base de datos actual */
   QString password_;

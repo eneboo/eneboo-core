@@ -134,6 +134,13 @@ public:
 
   FLSqlDatabase *db() const;
 
+  QString userIdApi;
+  QString databaseApi;
+  QString tokenApi;
+  QString urlApi;
+  QString userApi;
+  QString passwordApi;
+
 protected:
 
   void msgBoxCritical(const QString &title, const QString &msg);

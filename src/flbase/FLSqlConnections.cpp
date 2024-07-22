@@ -61,8 +61,24 @@ bool FLSqlConnections::addDatabase(FLSqlDatabase *db, const QString &connectionN
 
 FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
 {
-  if (!d)
+  if (!d) {
     d = new FLSqlConnectionsPrivate();
+  }
+
+  if (connectionName != "default") { //Comprueba conexiones no default cuando usamos driver FLsqlapi
+    FLSqlDatabase *ret1 = d->dictDB->find("default");
+    if (ret1) {
+      //qWarning("FLSqlConnections::Existe default");
+      //qWarning("El driver default es " + ret1->driverName());
+      if (ret1->driverName() == "FLsqlapi") {
+        //qWarning("retorna default");
+        return ret1;
+      }
+    }
+  }
+
+
+
   if (connectionName == "default") {
     if (!d->defaultDB)
       addDatabase(new FLSqlDatabase());

@@ -144,7 +144,7 @@ void FLDiskCache::init(FLApplication *app)
     if (!localEncode.isEmpty())
       aqSetAndCreateDirPath(AQ_DISKCACHE_DIRPATH + '/' + localEncode);
   } else {
-    if ( app->db()->driverName() != "FLsqlite")
+    if ( app->db()->driverName() != "FLsqlite" && app->db()->driverName() != "FLsqlapi")
     aqSetAndCreateDirPath(
       AQ_USRHOME + "/.eneboocache/" +
       app->db()->database()

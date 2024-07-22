@@ -93,7 +93,7 @@ public:
   @param n Nombre del fichero.
   @return QString con el contenido del fichero o vacía en caso de error.
   */
-  QString content(const QString &n);
+  QString content(const QString &n, const bool only_fs = false);
 
   /**
   Obtiene el contenido de un fichero de script, procesándolo para cambiar las conexiones que contenga,

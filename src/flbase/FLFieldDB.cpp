@@ -41,6 +41,7 @@
 #include "FLSqlConnections.h"
 #include "vdatepopup.h"
 #include "FLSettings.h"
+#include "FLManagerModules.h"
 
 FLLineEdit::FLLineEdit(QWidget *parent, const char *name) :
   QLineEdit(parent, name),
@@ -1402,6 +1403,8 @@ void FLFieldDB::openFormRecordRelation()
     a = mng->action(actionName_);
 
   c->setAction(a);
+  
+  c->activateDelegateCommit();
 
   int modeAccess = cursor_->modeAccess();
   if (modeAccess == FLSqlCursor::INSERT || modeAccess == FLSqlCursor::DEL)
@@ -1452,10 +1455,6 @@ void FLFieldDB::searchValue()
     }
     FLManager *mng = cursor_->db()->manager();
     c = new FLSqlCursor(fMD->relationM1()->foreignTable(), true, cursor_->db()->connectionName());
-    c->select(mng->formatAssignValue(fMD->relationM1()->foreignField(), fMD,
-                                     v, true));
-    if (c->size() > 0)
-      c->next();
 
     if (actionName_.isEmpty())
       a = mng->action(field->relationM1()->foreignTable());
@@ -1463,6 +1462,10 @@ void FLFieldDB::searchValue()
       a = mng->action(actionName_);
       a->setTable(field->relationM1()->foreignTable());
     }
+
+    c->select(mng->formatAssignValue(fMD->relationM1()->foreignField(), fMD, v, true));
+    if (c->size() > 0)
+      c->next();
 
     f = new FLFormSearchDB(c, a->name(), topWidget_);
   } else {
@@ -1482,6 +1485,8 @@ void FLFieldDB::searchValue()
     f = new FLFormSearchDB(c, a->name(), topWidget_);
   }
 
+  c->activateDelegateCommit();
+
   f->setMainWidget();
 
   QObjectList *lObjs = f->queryList("FLTableDB");
@@ -1496,7 +1501,26 @@ void FLFieldDB::searchValue()
       objTdb->setReadOnly(true);
   }
 
+    //Sacamos si usamos firstRefresh o no ...
+    bool useFirstRefresh_ = true;
+    QString idMod = c->db()->managerModules()->idModuleOfFile(c->metadata()->name() + QString::fromLatin1(".mtd"));
+    QString funcName = idMod + QString::fromLatin1(".firstRefresh_") + c->metadata()->name() + "_" + f->name();
+    qWarning("(FLFIELDBD) Realizando llamada a " + funcName);
+    QVariant v2 = aqApp->call(funcName, QSArgumentList(), 0).variant();
+    if (v2.isValid() && v2.type() == QVariant::Bool) {
+      qWarning("Encontrado " + funcName);
+      qWarning(v2.toBool() ? "Es true": "Es false");
+      useFirstRefresh_ = v2.toBool();
+    }
+
+if (useFirstRefresh_) {
   f->setFilter(filter_);
+}
+  
+
+
+
+
 
   if (f->mainWidget()) {
     if (objTdb) {

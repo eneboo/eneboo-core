@@ -370,6 +370,7 @@ void aq_main(int argc, char **argv)
   AbanQ->flushX();
   AbanQ->syncX();
   AbanQ->processEvents();
+  splash->message(QT_TR_NOOP("Aprovisionando..."), Qt::AlignRight, QColor(0, 0, 0));
   AbanQ->init(
     FLSettings::readEntry("application/formAlone", formAlone),
     FLSettings::readEntry("application/callFunction", callFunction),

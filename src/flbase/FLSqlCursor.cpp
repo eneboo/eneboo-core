@@ -2145,9 +2145,9 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
     return exec(d->query_);
   }
 
-  if (!sort.field(d->metadata_->primaryKey()) &&
-      !fieldsOrderBy.upper().contains(d->metadata_->primaryKey().upper()))
+  if (!sort.field(d->metadata_->primaryKey()) && !fieldsOrderBy.upper().contains(d->metadata_->primaryKey().upper())) {
     fields << d->metadata_->primaryKey();
+  }
 
   return QSqlCursor::select(finalFilter, QSqlIndex::fromStringList(fields, this));
 }
