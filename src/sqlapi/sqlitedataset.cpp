@@ -421,7 +421,7 @@ namespace dbiplus
     QString url = ((SqliteDatabase *)db)->urlApi; 
     QString cadena = "{\n";
 
-    url = url.replace("/api", "");
+    url = url.left(url.length() - 4);
 
     cadena += "\"metodo\": \"POST\",\n";
     cadena += "\"url\": \"" + url + "/login\",\n";
