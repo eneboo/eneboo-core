@@ -416,6 +416,22 @@ namespace dbiplus
     //QString passwd_md5 = lanzar_llamada_aqextension(QString("md5"), passwd, fichero_salida_pass);
     //passwd_md5 = passwd_md5.left(passwd_md5.length() - 1);
     //qWarning("El password "  + passwd + " pasa a ser " + passwd_md5);
+
+    // Vaciar carpeta temporal de ficheros
+    // data_token.txt
+    //qWarning("Limpiando carpeta " + folder + " de ficheros relacionados");
+    QDir dir(folder);
+    QStringList entries = dir.entryList();
+    for (int i = 0; i < entries.size(); i++) {
+      if (entries[i].startsWith("data_token")) {
+        QFile::remove(folder + entries[i]);
+      } else if (entries[i].startsWith("data_api")) {
+        QFile::remove(folder + entries[i]);
+      } else if (entries[i].startsWith("aqextension_pipe_sql_api")) {
+        QFile::remove(folder + entries[i]);
+      }
+    }
+
     
     QString fichero_salida = folder + "data_token.txt";
     QString url = ((SqliteDatabase *)db)->urlApi; 
