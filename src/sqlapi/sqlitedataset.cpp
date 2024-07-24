@@ -423,9 +423,11 @@ namespace dbiplus
     QDir dir(folder);
     QStringList entries = dir.entryList();
     for (int i = 0; i < entries.size(); i++) {
-      if (entries[i].startsWith("data_token")) {
+      if (entries[i].startsWith("data_token.txt")) {
         QFile::remove(folder + entries[i]);
-      } else if (entries[i].startsWith("data_api")) {
+      } else if (entries[i].startsWith("data_api_")) {
+        QFile::remove(folder + entries[i]);
+      } else if (entries[i].startsWith("delegate_qry_")) {
         QFile::remove(folder + entries[i]);
       } else if (entries[i].startsWith("aqextension_pipe_sql_api")) {
         QFile::remove(folder + entries[i]);
