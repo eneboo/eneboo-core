@@ -3306,10 +3306,7 @@ function serverTime()
 }
 
 function delegateCommit(cursor) {
-  if (isLoadedModule("fllibreria")) {
-    return fllibreria.iface.delegateCommit(cursor);
-  }
-	return formHTTP.iface.saveCursor(cursor);
+  return fllibreria.iface.delegateCommit(cursor);
 }
 
 function useDelegateCommit(cursor) {
