@@ -3306,7 +3306,17 @@ function serverTime()
 }
 
 function delegateCommit(cursor) {
+  if (isLoadedModule("fllibreria")) {
+    return fllibreria.iface.delegateCommit(cursor);
+  }
 	return formHTTP.iface.saveCursor(cursor);
+}
+
+function useDelegateCommit(cursor) {
+  if (isLoadedModule("fllibreria")) {
+    return fllibreria.iface.useDelegateCommit(cursor);
+  }
+  return false;
 }
 
 function keepAlive()

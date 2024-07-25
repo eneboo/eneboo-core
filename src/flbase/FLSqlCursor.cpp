@@ -3135,7 +3135,7 @@ bool FLSqlCursor::doCommitBuffer()
 
 bool FLSqlCursor::useDelegateCommit()
 {
-  return isDelegateCommit && !db()->manager()->isSystemTable(metadata()->name());
+  return isDelegateCommit;
 }
 
 bool FLSqlCursor::doCommit()
