@@ -204,6 +204,7 @@ class MainWindow
   function eventFilter(o, e)
   {
     switch (e.type) {
+      
       case AQS.ContextMenu: {
         if (o.isEqual(this.dckMod_.w_)) {
           return this.addMarkFromItem(this.dckMod_.lw_.currentItem(),
@@ -358,23 +359,18 @@ class MainWindow
       var openActions = settings.readListEntry(key + "openActions");
       for (var i = 0; i < tw.count; ++i)
         tw.page(i).close();
+
+      var idx = settings.readNumEntry(key + "currentPageIndex");
       for (var i = 0; i < openActions.length; ++i)
                 {
                  action = this.agMenu_.child(openActions[i], "QAction");
                  if (!action)
                  	continue;
-				 moduleName = aqApp.db().managerModules().idModuleOfFile(action.name + ".ui");
-                 if (moduleName != undefined && moduleName != "")
-                	{
-                	this.initModule(moduleName);
-               		this.addForm(openActions[i],action.iconSet().pixmap());
-               		}
-               	else
-               		{
-			this.addForm(openActions[i],action.iconSet().pixmap());
-               		}
+                                
+                this.addForm(openActions[i]);
+
                  }
-      var idx = settings.readNumEntry(key + "currentPageIndex");
+      
       if (idx >= 0 && idx < tw.count)
         tw.setCurrentPage(idx);
 
@@ -454,6 +450,7 @@ class MainWindow
     if (!(module in this.initializedMods_) || 
         this.initializedMods_[module] != true) {
       this.initializedMods_[module] = true;
+      debug("Inicializando módulo " + module);
       aqApp.call("init", module);
     }
     var mng = aqApp.db().managerModules();
@@ -462,11 +459,14 @@ class MainWindow
 
   function removeCurrentPage()
   {
+
     var page = this.tw_.currentPage();
     if (page == undefined)
       return;
-    if (page.rtti() == "FormDB")
+
+    if (page.rtti() == "FormDB") {
       page.close();
+    }
   }
 
   function removeAllPages()
@@ -489,6 +489,25 @@ class MainWindow
       this.twCorner_.hide();
   }
 
+  function tabChanged(actionName) {
+    var tw = this.tw_;
+    const current_idx = tw.currentPageIndex();
+    const current_action_name = tw.page(current_idx).idMDI();
+
+        action = this.agMenu_.child(current_action_name, "QAction");
+        if (action) {
+          moduleName = aqApp.db().managerModules().idModuleOfFile(action.name + ".ui");
+          if (moduleName != undefined && moduleName != "")
+            {
+              this.initModule(moduleName);
+            }
+            var fm = tw.page(current_idx);
+            fm.installEventFilter(this.w_);
+            fm.show();
+        }
+    return true;
+  }
+
   function addForm(actionName)
   {
     var tw = this.tw_;
@@ -500,17 +519,15 @@ class MainWindow
     }
 
     var fm = new AQFormDB(actionName, tw, 0);
-
-    fm.setMainWidget();
-    if (fm.mainWidget() == undefined)
-      return;
-
     tw.addTab(fm, this.agMenu_.child(actionName).iconSet(), fm.caption);
     fm.setIdMDI(actionName);
-    fm.show();
-    var idx = tw.indexOf(fm);
-    tw.setCurrentPage(idx);
-    fm.installEventFilter(this.w_);
+    fm.setMainWidget();
+    if (fm.mainWidget() == undefined) {
+      return;
+    }
+    
+    connect(tw, "selected(const QString&)", this, "tabChanged");
+  
     if (tw.count == 1 && this.twCorner_ != undefined)
       this.twCorner_.show();
   }
@@ -1016,7 +1033,7 @@ function triggerAction(signature)
 
     case "openDefaultForm()":
       if (ok) {
-        mw.addForm(ac.name,ac.iconSet().pixmap());
+        mw.addForm(ac.name);
         mw.addRecent(ac);
       }
       break;
@@ -1084,4 +1101,3 @@ function triggerAction(signature)
       break;
   }
 }
-
