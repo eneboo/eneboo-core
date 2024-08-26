@@ -481,7 +481,7 @@ namespace dbiplus
 
   QString SqliteDataset::lanzar_llamada_aqextension(const QString &accion, const QString &fichero_datos, const QString &fichero_salida)
   {
-    bool usar_py = false;
+    bool usar_py = true;
     bool reset_allways = false;
     int pid_aqextension = 0;
     int pid_current = getpid();
