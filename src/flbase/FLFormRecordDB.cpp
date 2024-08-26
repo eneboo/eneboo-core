@@ -360,6 +360,10 @@ void FLFormRecordDB::setMainWidget(QWidget *w)
     QWhatsThis::add(pushButtonAccept, tr("Aceptar los cambios y cerrar formulario (F10)"));
     layoutButtons->addWidget(pushButtonAccept);
     pushButtonAccept->show();
+    if (cursor_->useDelegateCommit() && !cursor_->isModifiedBuffer()) { // Si use_delegate_commit y no hay cambios
+        qWarning("Ocultando pushButtonAccept");
+        pushButtonAccept->setEnabled(false); // botón desactivado
+      }
   }
 
   if (!pushButtonCancel)
