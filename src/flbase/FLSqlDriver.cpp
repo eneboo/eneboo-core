@@ -146,7 +146,7 @@ bool FLSqlDriver::existsTable(const QString &n) const
   return tables("").contains(n);
 }
 
-bool FLSsqlDriver::canUnaccent() const
+bool FLSqlDriver::canUnaccent() const
 {
   return false;
 }

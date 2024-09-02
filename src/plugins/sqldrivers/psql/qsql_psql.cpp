@@ -3927,7 +3927,7 @@ int QPSQLDriver::backendId() const
   return d->idConn;
 }
 
-bool FLSsqlDriver::canUnaccent() const
+bool QPSQLDriver::canUnaccent() const
 {
   if (unaccent_checked == -1) {
     QSqlQuery qry(QString::null, db_->dbAux());
