@@ -1388,7 +1388,7 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
 
   if (upper && isText) {
 
-    FLSqlDatabase *fldb = ::qt_cast<FLSqlDatabase*>(db_->db());
+    FLSqlDatabase *fldb = db_->db();
 
     bool unaccent_enabled = fldb->canUnaccent();
 
