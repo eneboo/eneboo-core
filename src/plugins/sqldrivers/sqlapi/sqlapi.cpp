@@ -1275,7 +1275,7 @@ int SqliteResult::numRowsAffected()
   return dataSet->num_rows();
 }
 
-bool FLSsqlDriver::canUnaccent() const
+bool SqlApiDriver::canUnaccent() 
 {
   return true;
 }
