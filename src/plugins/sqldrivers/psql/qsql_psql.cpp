@@ -1171,7 +1171,7 @@ void QPSQLDriver::init()
 {
   qSqlDriverExtDict()->insert(this, new QPSQLDriverExtension(this));
   qSqlOpenExtDict()->insert(this, new QPSQLOpenExtension(this));
-
+  unaccent_checked = -1;
   d = new QPSQLPrivate();
   cInfo = new QPSQLCacheInfoPrivate();
 }
@@ -3925,4 +3925,16 @@ bool QPSQLDriver::mismatchedTable(const QString &table1,
 int QPSQLDriver::backendId() const
 {
   return d->idConn;
+}
+
+bool FLSsqlDriver::canUnaccent() const
+{
+  if (unaccent_checked == -1) {
+    QSqlQuery qry(QString::null, db_->dbAux());
+    qry.exec("select * FROM pg_available_extensions WHERE name='unaccent'");
+    unaccent_checked =  qry.next() ? 1 : 0;
+
+  }
+
+  return unaccent_checked == 1;
 }

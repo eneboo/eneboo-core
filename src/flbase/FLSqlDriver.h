@@ -127,6 +127,8 @@ public:
   /** Ver FLSqlDatabase::existsTable() */
   virtual bool existsTable(const QString &n) const;
 
+  /** Indica si se puede usar la extensión unnacent */
+  virtual bool canUnaccent() const;
   /**
   Informa al driver de la base de datos que lo utiliza
   */

@@ -153,6 +153,7 @@ public:
   bool mismatchedTable(const QString &table,
                        const FLTableMetaData *tmd) const;
   int backendId() const;
+  bool canUnaccent() const;
 
 private slots:
 
@@ -184,6 +185,7 @@ private:
   Protocol pro;
   QPSQLPrivate *d;
   QPSQLCacheInfoPrivate *cInfo;
+  int unaccent_checked;
 };
 
 class QPSQLResult : public FLSqlResult

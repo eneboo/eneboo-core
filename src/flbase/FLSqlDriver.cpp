@@ -146,6 +146,11 @@ bool FLSqlDriver::existsTable(const QString &n) const
   return tables("").contains(n);
 }
 
+bool FLSsqlDriver::canUnaccent() const
+{
+  return false;
+}
+
 void FLSqlDriver::msgBoxCritical(const QString &title, const QString &msg)
 {
   if (db_ && !db_->interactiveGUI()) {

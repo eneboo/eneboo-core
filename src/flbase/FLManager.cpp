@@ -1379,16 +1379,33 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
     return "1 = 1";
 
   bool isText = (t == QVariant::String || t == QVariant::StringList);
-  QString formatV(formatValueLike(t, v, upper));
+  QString formatV = formatValueLike(t, v, upper);
 
   if (formatV.isEmpty())
     return "1 = 1";
 
-  QString fName((upper && isText ? QString::fromLatin1("upper(") + fieldName +
-                 QString::fromLatin1(")") : fieldName));
+  QString fName = fieldName;
+
+  if (upper && isText) {
+
+    bool unaccent_enabled = db_->driver()->canUnaccent();
+
+    QString cadenaIniUpper = "upper(";
+    QString cadenaFinUpper = ")";
+    
+    //Repaso formatV
+    if (unnationalize_enabled) {
+      cadenaIniUpper = cadenaIniUpper + "unaccent(";
+      cadenaFinUpper = ")" + cadenaFinUpper;
+      formatV = cadenaIniUpper + formatV.right(6) + ")";
+    }
+
+    fName = cadenaIniUpper + fieldName + cadenaFinUpper;
+    qWarning("FLManager : " + "Prueba fName=" + fName + ", formatV=" +  formatV);
+  }
+
   return fName + " " + formatV;
 }
-
 QString FLManager::formatAssignValueLike(const QString &fieldName, FLFieldMetaData *fMD, const QVariant &v,
                                          const bool upper)
 {

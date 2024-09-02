@@ -1275,6 +1275,11 @@ int SqliteResult::numRowsAffected()
   return dataSet->num_rows();
 }
 
+bool FLSsqlDriver::canUnaccent() const
+{
+  return true;
+}
+
 void SqlApiDriver::Mr_Proper()
 {
   // no hacemos nada...

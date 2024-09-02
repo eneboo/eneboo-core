@@ -86,6 +86,7 @@ public:
   void Mr_Proper();
 
   bool existsTable(const QString &n) const;
+  bool canUnaccent() const;
   bool disabled_transaction_;
   QProcess *AQProc;
 
