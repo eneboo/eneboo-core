@@ -1401,7 +1401,6 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
     }
 
     fName = cadenaIniUpper + fieldName + cadenaFinUpper;
-    qWarning("FLManager : " + "Prueba fName=" + fName + ", formatV=" +  formatV);
   }
 
   return fName + " " + formatV;
