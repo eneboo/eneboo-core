@@ -886,6 +886,14 @@ cp -f ./src/translations/*.ts $PREFIX/share/eneboo/translations 2> /dev/null
 rm $PREFIX/share/eneboo/scripts/* 2> /dev/null
 cp -f ./src/scripts/*.qs $PREFIX/share/eneboo/scripts 2> /dev/null
 
+if ("$OPT_QUICK_CLIENT" == "yes"); then
+mv $PREFIX/share/eneboo/scripts/aqapplication_quick.qs $PREFIX/share/eneboo/scripts/aqapplication.qs 2> /dev/null
+rm $PREFIX/share/eneboo/scripts/aqapplication_dba.qs 2> /dev/null
+else 
+mv $PREFIX/share/eneboo/scripts/aqapplication_dba.qs $PREFIX/share/eneboo/scripts/aqapplication.qs 2> /dev/null
+rm $PREFIX/share/eneboo/scripts/aqapplication_quick.qs 2> /dev/null
+fi
+
 if [ "$OPT_QWS" != "no" ]; then
   cp -fr ./src/qt/lib/fonts $PREFIX/lib/ 2> /dev/null
 fi
