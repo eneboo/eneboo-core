@@ -312,6 +312,12 @@ QString FLSqlDatabase::formatValueLike(int t, const QVariant &v, const bool uppe
   return dr->formatValueLike(t, v, upper);
 }
 
+bool FLSqlDatabase::canUnaccent()
+{
+  FLSqlDriver *dr = ::qt_cast<FLSqlDriver *>(db_->driver());
+  return dr->canUnaccent();
+}
+
 QString FLSqlDatabase::formatValue(int t, const QVariant &v, const bool upper)
 {
   if (!db_)

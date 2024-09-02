@@ -173,6 +173,11 @@ public:
   bool canRegenTables();
 
   /**
+   @return True si la base de datos actual soporta la función unaccent
+  */
+  bool canUnaccent();
+
+  /**
   Devuelve el contenido del valor de de un campo formateado para ser reconocido
   por la base de datos actual en condiciones LIKE, dentro de la clausura WHERE de SQL.
 
@@ -202,6 +207,7 @@ public:
   @param upper Si TRUE convierte a mayúsculas el valor (si es de tipo cadena)
   @return Valor del campo debidamente formateado
   */
+
   QString formatValue(int t, const QVariant &v, const bool upper = false);
 
   /**

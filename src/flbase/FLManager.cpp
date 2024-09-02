@@ -1388,7 +1388,7 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
 
   if (upper && isText) {
 
-    bool unaccent_enabled = db_->db()->driver()->canUnaccent();
+    bool unaccent_enabled = db_->db()->canUnaccent();
 
     QString cadenaIniUpper = "upper(";
     QString cadenaFinUpper = ")";
