@@ -2214,7 +2214,7 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
     } else if (field->type() == QVariant::Date) {
       createIndex(field->name(), newMTD->name(), false , true);
     } else if (field->isSearchable()) {
-      createIndexUnaccent(field->name(), newMTD->name(), FLFieldMetaData::flDecodeType(field->type()) == QVariant::String, FLFieldMetaData::flDecodeType(field->type()) != QVariant::String);
+      createIndexUnaccent(field->name(), newMTD->name());
     }
   }
   d->checkLock = true;
@@ -2827,7 +2827,7 @@ QSqlRecordInfo QPSQLDriver::recordInfo(const QString &tablename) const
       createIndex(field->name(), tablename, false , true);
       createIndex(field->name() + "," + mtd->primaryKey(), tablename, false, true);
     } else if (field->isSearchable()) {
-      createIndexUnaccent(field->name(), tablename, isTypeString, !isTypeString);
+      createIndexUnaccent(field->name(), tablename);
     }
 #endif
   }
