@@ -1404,7 +1404,7 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
     if (unaccent_enabled) {
       cadenaIniUpper = "upper(unaccent(";
       cadenaFinUpper = "))";
-      formatV = "LIKE unaccent(" + formatV.right(formatV.length() - 5) + ")" ;
+      formatV = "LIKE unaccent(" + formatV.right(formatV.length() - 12) + ")" ;
     }
 
     fName = cadenaIniUpper + fieldName + cadenaFinUpper;
