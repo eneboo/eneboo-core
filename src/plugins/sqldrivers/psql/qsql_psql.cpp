@@ -2214,7 +2214,7 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
     } else if (field->type() == QVariant::Date) {
       createIndex(field->name(), newMTD->name(), false , true);
     } else if (field->isSearchable()) {
-      createIndex(field->name(), newMTD->name(), FLFieldMetaData::flDecodeType(field->type()) == QVariant::String, FLFieldMetaData::flDecodeType(field->type()) != QVariant::String);
+      createIndexUnaccent(field->name(), newMTD->name(), FLFieldMetaData::flDecodeType(field->type()) == QVariant::String, FLFieldMetaData::flDecodeType(field->type()) != QVariant::String);
     }
   }
   d->checkLock = true;
@@ -2827,7 +2827,7 @@ QSqlRecordInfo QPSQLDriver::recordInfo(const QString &tablename) const
       createIndex(field->name(), tablename, false , true);
       createIndex(field->name() + "," + mtd->primaryKey(), tablename, false, true);
     } else if (field->isSearchable()) {
-      createIndex(field->name(), tablename, isTypeString, !isTypeString);
+      createIndexUnaccent(field->name(), tablename, isTypeString, !isTypeString);
     }
 #endif
   }
@@ -3065,6 +3065,86 @@ void QPSQLDriver::createIndex(const QString &fieldName, const QString &tableName
         } else
           PQclear(result);
       }
+    }
+  } else
+    PQclear(result);
+}
+
+void QPSQLDriver::createIndexUnaccent(const QString &fieldName, const QString &tableName) const
+{
+  //qWarning("CREANDO INDICES : " + tableName +"." + fieldName);
+  if (!d->activeCreateIndex || !isOpen() || fieldName.isEmpty() || tableName.isEmpty())
+    return;
+
+  if (tableName.contains("alteredtable"))
+    return;
+
+  if (!dictIndexes) {
+    dictIndexes = new QDict < bool > (277);
+    dictIndexes->setAutoDelete(true);
+
+    QSqlQuery *idxs = new QSqlQuery(new QPSQLResult(this, d));
+    idxs->setForwardOnly(true);
+    idxs->exec("select indexname from pg_indexes where indexname like '%_unaccent_idx' and tablename not like '%%alteredtable%'");
+    while (idxs->next())
+      dictIndexes->insert(idxs->value(0).toString(), new bool(true));
+    delete idxs;
+  }
+
+  QString indexName(tableName.left(25) + "_" + fieldName.left(25) + "_unaccent_idx");
+  indexName.replace(" ", "").replace(",", "");
+
+  if (dictIndexes->find(indexName))
+    return;
+
+  if (d->checkLock) {
+    QSqlQuery *idxs = new QSqlQuery(new QPSQLResult(this, d));
+    idxs->setForwardOnly(true);
+    idxs->exec("select pg_class.relname,pg_locks.* from pg_class,pg_locks where "
+               "pg_class.relfilenode=pg_locks.relation and pg_locks.mode like '%Exclusive%' "
+               "and pg_class.relname='" + tableName + "'");
+    if (idxs->next()) {
+#ifdef FL_DEBUG
+      qWarning("No se puede crear índice, tabla bloqueada : " + tableName);
+#endif
+      delete idxs;
+      return;
+    } else
+      delete idxs;
+  }
+
+/*   QString indexNameUp = tableName.left(25) + "_" + fieldName.left(25) + "unaccent_idx";
+  indexNameUp.replace(" ", "").replace(",", ""); */
+
+  QString suffixOp(("upper(unaccent(%1))"));
+  //QString suffixOpUp((textOp ? " ( upper(%1) text_pattern_ops )" : " ( upper(%1) )"));
+
+  PGconn *conn = d->connection;
+  PGresult *result = PQexec(conn, "select relname from pg_class where relname = '" + tableName + "'");
+  int status = PQresultStatus(result);
+  if (status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK) {
+    int size = PQntuples(result);
+    PQclear(result);
+    if (size) {
+      result = PQexec(conn, "select indexname from pg_indexes where indexname = '" + indexName + "'");
+      status = PQresultStatus(result);
+      if (status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK) {
+        size = PQntuples(result);
+        PQclear(result);
+        if (!size) {
+          result = PQexec(conn, "create index " + indexName + " on " + tableName + suffixOp.arg(fieldName));
+          status = PQresultStatus(result);
+          if (status == PGRES_COMMAND_OK) {
+            PQclear(result);
+            dictIndexes->replace(indexName, new bool(true));
+          } else {
+            PQclear(result);
+            qWarning("ERROR : " + QString(PQresultErrorMessage(d->result)) + "\n");
+            qWarning("create index " + indexName + " on " + tableName + suffixOp.arg(fieldName));
+          }
+        }
+      } else
+        PQclear(result);
     }
   } else
     PQclear(result);
@@ -3320,7 +3400,9 @@ void QPSQLDriver::Mr_Proper()
   d->activeCreateIndex = false;
   db_->dbAux()->transaction();
   QSqlQuery qry(QString::null, db_->dbAux());
+  QSqlQuery qry5(QString::null, db_->dbAux());
   QSqlQuery qry2(QString::null, db_->dbAux());
+  QSqlQuery qry6(QString::null, db_->dbAux());
   int steps = 0;
   QString item;
 
@@ -3328,6 +3410,9 @@ void QPSQLDriver::Mr_Proper()
   QStringList listOldBks(tables("").grep(rx));
 
   qry.exec("select nombre from flfiles where nombre similar to"
+           "'%[[:digit:]][[:digit:]][[:digit:]][[:digit:]]-[[:digit:]][[:digit:]]%:[[:digit:]][[:digit:]]%' or nombre similar to"
+           "'%alteredtable[[:digit:]][[:digit:]][[:digit:]][[:digit:]]%' or (bloqueo='f' and nombre like '%.mtd')");
+  qry3.exec("select nombre from flfiles where nombre similar to"
            "'%[[:digit:]][[:digit:]][[:digit:]][[:digit:]]-[[:digit:]][[:digit:]]%:[[:digit:]][[:digit:]]%' or nombre similar to"
            "'%alteredtable[[:digit:]][[:digit:]][[:digit:]][[:digit:]]%' or (bloqueo='f' and nombre like '%.mtd')");
   FLUtil::createProgressDialog(tr("Borrando backups"), listOldBks.size() + qry.size() + 2);
@@ -3349,6 +3434,26 @@ void QPSQLDriver::Mr_Proper()
     }
     FLUtil::setProgress(++steps);
   }
+
+  while (qry5.next()) {
+    item = qry5.value(0).toString();
+    FLUtil::setLabelText(tr("Borrando registro %1").arg(item));
+    qry6.exec("delete from flfiles where nombre = '" + item + "'");
+#ifdef FL_DEBUG
+    qWarning("delete from flfiles where nombre = '" + item + "'");
+#endif
+    if (item.contains("alteredtable")) {
+      if (existsTable(item.replace(".mtd", ""))) {
+        FLUtil::setLabelText(tr("Borrando tabla %1").arg(item));
+        qry6.exec("drop table " + item.replace(".mtd", "") + " cascade");
+#ifdef FL_DEBUG
+        qWarning("drop table " + item.replace(".mtd", "") + " cascade");
+#endif
+      }
+    }
+    FLUtil::setProgress(++steps);
+  }
+
 
   for (QStringList::Iterator it = listOldBks.begin(); it != listOldBks.end(); ++it) {
     item = *it;
@@ -3406,6 +3511,29 @@ void QPSQLDriver::Mr_Proper()
     qWarning(tr("Borrando índice %1").arg(qry.value(1).toString()));
     qry2.exec("drop index " + qry.value(1).toString());
   }
+
+
+  qry.exec("select tablename,indexname from pg_indexes where indexname like '%_unaccent_idx'");
+    while (qry.next()) {
+    tableIdx = qry.value(0).toString();
+    fieldIdx = qry.value(1).toString();
+    fieldIdx.remove(tableIdx + "_");
+    fieldIdx.remove("_unaccent_idx");
+    FLUtil::setLabelText(tr("Regenerando índice %1.%2").arg(tableIdx).arg(fieldIdx));
+#ifdef FL_DEBUG
+    qWarning(tr("Regenerando índice %1.%2").arg(tableIdx).arg(fieldIdx));
+#endif
+    FLUtil::setProgress(++steps);
+    mtdIdx = db_->manager()->metadata(tableIdx);
+    if (!mtdIdx)
+      continue;
+    if (!mtdIdx->field(fieldIdx))
+      continue;
+    qWarning(tr("Borrando índice %1").arg(qry.value(1).toString()));
+    qry2.exec("drop index " + qry.value(1).toString());
+  }
+
+
   FLUtil::destroyProgressDialog();
 #endif
 

@@ -177,6 +177,7 @@ private:
   int insertMulti(const QString &tablename, QPtrList<QSqlRecord> * records);
 #ifndef FL_QUICK_CLIENT
   void createIndex(const QString &fieldName, const QString &tableName, bool textOp, bool noUpper = false) const;
+  void createIndexUnaccent(const QString &fieldName, const QString &tableName) const;
   static QDict < bool > * dictIndexes;
 #endif
   void init();
