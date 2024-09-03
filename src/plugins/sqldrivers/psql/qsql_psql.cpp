@@ -3116,7 +3116,7 @@ void QPSQLDriver::createIndexUnaccent(const QString &fieldName, const QString &t
 /*   QString indexNameUp = tableName.left(25) + "_" + fieldName.left(25) + "unaccent_idx";
   indexNameUp.replace(" ", "").replace(",", ""); */
 
-  QString suffixOp((" ( upper(unaccent(%1)) ::text )"));
+  QString suffixOp((" ( upper(unaccent(%1)) ) "));
   //QString suffixOpUp((textOp ? " ( upper(%1) text_pattern_ops )" : " ( upper(%1) )"));
 
   PGconn *conn = d->connection;
