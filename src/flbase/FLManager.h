@@ -211,7 +211,7 @@ public:
   */
   QString formatValueLike(FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
   QString formatAssignValueLike(FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
-  QString formatAssignValueLike(const QString &fieldName, FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
+  QString formatAssignValueLike(const QString &fieldName, FLFieldMetaData *fMD, const QVariant &v, const bool upper = false, const bool searchable = false);
   QString formatAssignValueLike(const QString &fieldName, int t, const QVariant &v, const bool upper = false);
 
   /**

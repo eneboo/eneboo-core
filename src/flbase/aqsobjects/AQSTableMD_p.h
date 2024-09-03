@@ -54,6 +54,7 @@ public slots:
   bool fieldIsCounter(const QString &) const;
   bool fieldAllowNull(const QString &) const;
   bool fieldIsUnique(const QString &) const;
+  bool fieldIsSearchable(const QString &) const;
   QString fieldTableM1(const QString &) const;
   QString fieldForeignFieldM1(const QString &) const;
   FLRelationMetaData *relation(const QString &, const QString &, const QString &) const;
@@ -169,6 +170,10 @@ inline bool AQSTableMD::fieldAllowNull(const QString &arg0) const
 inline bool AQSTableMD::fieldIsUnique(const QString &arg0) const
 {
   AQ_CALL_RET_V(fieldIsUnique(arg0), bool);
+}
+inline bool AQSTableMD::fieldIsSearchable(const QString &arg0) const
+{
+  AQ_CALL_RET_V(fieldIsSearchable(arg0), bool);
 }
 inline QString AQSTableMD::fieldTableM1(const QString &arg0) const
 {

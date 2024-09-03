@@ -205,6 +205,13 @@ public:
   */
   bool fieldIsUnique(const QString &fN) const;
 
+    /**
+  Obtiene si un campo es searchable a partir de su nombre.
+
+  @param fN Nombre del campo
+  */
+  bool fieldIsSearchable(const QString &fN) const;
+
   /**
   Obtiene el nombre de la tabla foránea relacionada con un campo de esta tabla mediante
   una relacion M1 (muchos a uno).

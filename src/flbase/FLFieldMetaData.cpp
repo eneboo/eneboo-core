@@ -27,13 +27,13 @@ FLFieldMetaDataPrivate::FLFieldMetaDataPrivate(const QString &n, const QString &
                                                bool iPK, int t, int l, bool c, bool v, bool ed,
                                                int pI, int pD, bool iNX, bool uNI, bool coun,
                                                const QVariant &defValue, bool oT,
-                                               const QString &rX, bool vG, bool gen, bool iCK) :
+                                               const QString &rX, bool vG, bool gen, bool iCK, bool iSh) :
   fieldName_(n.lower()), alias_(a), allowNull_((!c) ? aN : true), isPrimaryKey_(iPK), type_(t),
   length_(l), calculated_(c), visible_(v), editable_(ed), partInteger_(pI), partDecimal_(pD),
   isIndex_(iNX), isUnique_(uNI), contador_(coun), relationList_(0), relationM1_(0),
   associatedField_(0), defaultValue_(defValue), outTransaction_(oT), regExpValidator_(rX),
   visibleGrid_(vG), generated_(gen), isCompoundKey_(iCK), hasOptionsList_(false), mtd_(0),
-  fullyCalculated_(false), trimmed_(false)
+  fullyCalculated_(false), trimmed_(false), isSearchable_(iSh)
 {
   if (l < 0)
     length_ = 0;
@@ -86,13 +86,13 @@ void FLFieldMetaDataPrivate::clearRelationList()
 FLFieldMetaData::FLFieldMetaData(const QString &n, const QString &a, bool aN, bool iPK, int t,
                                  int l, bool c, bool v, bool ed, int pI, int pD, bool iNX,
                                  bool uNI, bool coun, const QVariant &defValue, bool oT,
-                                 const QString &rX, bool vG, bool gen, bool iCK) : QShared()
+                                 const QString &rX, bool vG, bool gen, bool iCK, bool iSh) : QShared()
 {
 #ifdef FL_DEBUG
   ++count_;
 #endif
   d = new FLFieldMetaDataPrivate(n, a, aN, iPK, t, l, c, v, ed, pI, pD, iNX, uNI, coun, defValue,
-                                 oT, rX, vG, gen, iCK);
+                                 oT, rX, vG, gen, iCK, iSh);
 }
 
 FLFieldMetaData::FLFieldMetaData(const FLFieldMetaData *other)
@@ -247,6 +247,7 @@ void FLFieldMetaData::copy(const FLFieldMetaData *other)
   d->partDecimal_ = od->partDecimal_;
   d->isIndex_ = od->isIndex_;
   d->isUnique_ = od->isUnique_;
+  d->isSearchable_ = od->isSearchable_;
   d->contador_ = od->contador_;
   d->associatedField_ = od->associatedField_;
   d->associatedFieldName_ = od->associatedFieldName_;

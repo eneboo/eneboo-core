@@ -1526,6 +1526,7 @@ function resolveDiff(newMeta, metaField) {
     "type" : array_types[metaField.type()],
     "pk": metaField.isPrimaryKey(),
     "unique": metaField.isUnique(),
+    "searchable": metaField.isSearchable(),
     "partI": metaField.partInteger(),
     "partD": metaField.partDecimal(),
     "default_val": metaField.defaultValue(),
@@ -1536,7 +1537,7 @@ function resolveDiff(newMeta, metaField) {
   }
 
 
-  const propertyList = ['length','allowNull', 'type', 'pk', 'unique', 'partI','partD', "default_val"];
+  const propertyList = ['length','allowNull', 'type', 'pk', 'unique', 'searchable', 'partI','partD', "default_val"];
   
   var result = {};
   var found = false;

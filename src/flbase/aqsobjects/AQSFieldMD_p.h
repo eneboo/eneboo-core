@@ -58,6 +58,7 @@ public slots:
   bool isCounter() const;
   bool isIndex() const;
   bool isUnique() const;
+  bool isSearchable() const;
   void addRelationMD(FLRelationMetaData *);
   const FLRelationMetaData *relationM1() const;
   void setAssociatedField(FLFieldMetaData *, const QString &);
@@ -431,6 +432,10 @@ inline bool AQSFieldMD::isIndex() const
 inline bool AQSFieldMD::isUnique() const
 {
   AQ_CALL_RET_V(isUnique(), bool);
+}
+inline bool AQSFieldMD::isSearchable() const
+{
+  AQ_CALL_RET_V(isSearchable(), bool);
 }
 inline void AQSFieldMD::addRelationMD(FLRelationMetaData *arg0)
 {

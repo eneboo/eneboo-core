@@ -2208,11 +2208,14 @@ bool QPSQLDriver::alterTable2(const QString &mtd1, const QString &mtd2, const QS
   QStringList fieldsNames = QStringList::split(",", newMTD->fieldsNames());
   for (QStringList::Iterator it = fieldsNames.begin(); it != fieldsNames.end(); ++it) {
     FLFieldMetaData *field = newMTD->field((*it));
-    if (field->relationM1() || field->isPrimaryKey())
+    if (field->relationM1() || field->isPrimaryKey()) {
       createIndex(field->name(), newMTD->name(), FLFieldMetaData::flDecodeType(field->type()) == QVariant::String,
                   FLFieldMetaData::flDecodeType(field->type()) != QVariant::String);
-    else if (field->type() == QVariant::Date)
+    } else if (field->type() == QVariant::Date) {
       createIndex(field->name(), newMTD->name(), false , true);
+    } else if (field->isSearchable()) {
+      createIndex(field->name(), newMTD->name(), FLFieldMetaData::flDecodeType(field->type()) == QVariant::String, FLFieldMetaData::flDecodeType(field->type()) != QVariant::String);
+    }
   }
   d->checkLock = true;
 #endif
@@ -2823,6 +2826,8 @@ QSqlRecordInfo QPSQLDriver::recordInfo(const QString &tablename) const
     } else if ((field->type() == QVariant::Date || field->name() == "codigo") && field->isIndex()) {
       createIndex(field->name(), tablename, false , true);
       createIndex(field->name() + "," + mtd->primaryKey(), tablename, false, true);
+    } else if (field->isSearchable()) {
+      createIndex(field->name(), tablename, isTypeString, !isTypeString);
     }
 #endif
   }
@@ -3930,10 +3935,17 @@ int QPSQLDriver::backendId() const
 bool QPSQLDriver::canUnaccent()
 {
   if (unaccent_checked == -1) {
+    unaccent_checked = 0;
     QSqlQuery qry(QString::null, db_->dbAux());
-    qry.exec("select * FROM pg_available_extensions WHERE name='unaccent'");
-    unaccent_checked =  qry.next() ? 1 : 0;
-
+    qry.exec("select installed_version FROM pg_available_extensions WHERE name='unaccent'");
+    while (qry.next()) {
+      if (qry.value(0).toString() != "") {
+        unaccent_checked = 1;
+        break;
+      } else {
+        qWarning("La extensión unaccent no está instalada");
+      }
+    }
   }
 
   return unaccent_checked == 1;

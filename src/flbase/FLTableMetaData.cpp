@@ -217,6 +217,18 @@ bool FLTableMetaData::fieldIsUnique(const QString &fN) const
   return false;
 }
 
+bool FLTableMetaData::fieldIsSearchable(const QString &fN) const
+{
+  if (fN.isEmpty())
+    return false;
+
+  FLFieldMetaData *field = d->fieldList_->find(fN.lower());
+  if (field)
+    return field->d->isSearchable_;
+
+  return false;
+}
+
 bool FLTableMetaData::fieldIsCounter(const QString &fN) const
 {
   if (fN.isEmpty())

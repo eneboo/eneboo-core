@@ -378,7 +378,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
         fieldCheck = new FLFieldMetaData(fieldNameCheckColumn_, tr(aliasCheckColumn_),
                                          true, false, FLFieldMetaData::Check, 0, false,
                                          true, true, 0, 0, false, false, false, QVariant(),
-                                         false, QString::null, true, false, false);
+                                         false, QString::null, true, false, false, false);
         tMD->addFieldMD(fieldCheck);
       }
       if (!cursor_->contains(fieldNameCheckColumn_)) {

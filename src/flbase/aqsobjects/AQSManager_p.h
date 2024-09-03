@@ -42,7 +42,7 @@ public slots:
   FLTableMetaData *createTable(FLTableMetaData *);
   QString formatValueLike(FLFieldMetaData *, const QVariant &, bool = false);
   QString formatAssignValueLike(FLFieldMetaData *, const QVariant &, bool = false);
-  QString formatAssignValueLike(const QString &, FLFieldMetaData *, const QVariant &, bool = false);
+  QString formatAssignValueLike(const QString &, FLFieldMetaData *, const QVariant &, bool = false, bool = false);
   QString formatAssignValueLike(const QString &, int, const QVariant &, bool = false);
   QString formatValueLike(int, const QVariant &, bool = false);
   QString formatValue(FLFieldMetaData *, const QVariant &, bool = false);
@@ -116,9 +116,9 @@ inline QString AQSManager::formatAssignValueLike(const QString &arg0,  FLFieldMe
 {
   AQ_CALL_RET_V(formatAssignValueLike(arg0, arg1, arg2, arg3), QString);
 }
-inline QString AQSManager::formatAssignValueLike(const QString &arg0,  int arg1,  const QVariant &arg2,  bool arg3)
+inline QString AQSManager::formatAssignValueLike(const QString &arg0,  int arg1,  const QVariant &arg2,  bool arg3, bool arg4)
 {
-  AQ_CALL_RET_V(formatAssignValueLike(arg0, arg1, arg2, arg3), QString);
+  AQ_CALL_RET_V(formatAssignValueLike(arg0, arg1, arg2, arg3, arg4), QString);
 }
 inline QString AQSManager::formatValueLike(int arg0,  const QVariant &arg1,  bool arg2)
 {

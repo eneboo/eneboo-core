@@ -254,6 +254,9 @@ bool FLManager::checkMetaData(FLTableMetaData *tmd1, FLTableMetaData *tmd2)
       return false;
     if (field1->isUnique() != field2->isUnique() || field1->isIndex() != field2->isIndex())
       return false;
+    if (field1->isSearchable() != field2->isSearchable()) {
+      return false;
+    }
     if (field1->length() != field2->length() || field1->partDecimal() != field2->partDecimal() || field1->partInteger()
         != field2->partInteger())
       return false;
@@ -307,7 +310,7 @@ FLFieldMetaData *FLManager::metadataField(QDomElement *field, bool v, bool ed)
   if (!field)
     return 0;
 
-  bool ck = false;
+  bool ck = false, sh = false;
   QString n, a, ol, rX, assocBy, assocWith, so;
   bool aN = true, iPK = true, c = false, iNX = true, uNI = false,
        coun = false, oT = false, vG = true, fullCalc = false, trimm = false;
@@ -456,6 +459,11 @@ FLFieldMetaData *FLManager::metadataField(QDomElement *field, bool v, bool ed)
         no = no.nextSibling();
         continue;
       }
+      if (e.tagName() == "searchable") {
+        sh = (e.text() == "true");
+        no = no.nextSibling();
+        continue;
+      }
       if (e.tagName() == "optionslist") {
         ol = e.text();
         no = no.nextSibling();
@@ -471,7 +479,7 @@ FLFieldMetaData *FLManager::metadataField(QDomElement *field, bool v, bool ed)
   }
 
   FLFieldMetaData *f = new FLFieldMetaData(n, FLUtil::translate("MetaData", a), aN, iPK, t, l, c, v, ed, pI, pD, iNX,
-                                           uNI, coun, dV, oT, rX, vG, true, ck);
+                                           uNI, coun, dV, oT, rX, vG, true, ck, sh);
   f->setFullyCalculated(fullCalc);
   f->setTrimed(trimm);
 
@@ -1373,7 +1381,7 @@ QString FLManager::formatValueLike(FLFieldMetaData *fMD, const QVariant &v, cons
   return formatValueLike(fMD->type(), v, upper);
 }
 
-QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const QVariant &v, const bool upper)
+QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const QVariant &v, const bool upper, const bool searchable)
 {
   if (fieldName.isEmpty() || t == QVariant::Invalid)
     return "1 = 1";
@@ -1385,9 +1393,9 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
     return "1 = 1";
 
   QString fName = fieldName;
-
+  // TODO: METER SEARCHABLE...
   if (upper && isText) {
-    bool unaccent_enabled = db_->canUnaccent();
+    bool unaccent_enabled = db_->canUnaccent() && searchable;
 
     QString cadenaIniUpper = "upper(";
     QString cadenaFinUpper = ")";
@@ -1396,6 +1404,7 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
     if (unaccent_enabled) {
       cadenaIniUpper = "upper(unaccent(";
       cadenaFinUpper = "))";
+      formatV = "LIKE unaccent(" + formatV.right(6) + ")" ;
     }
 
     fName = cadenaIniUpper + fieldName + cadenaFinUpper;
@@ -1403,12 +1412,13 @@ QString FLManager::formatAssignValueLike(const QString &fieldName, int t, const 
 
   return fName + " " + formatV;
 }
+
 QString FLManager::formatAssignValueLike(const QString &fieldName, FLFieldMetaData *fMD, const QVariant &v,
                                          const bool upper)
 {
   if (!fMD)
     return "1 = 1";
-  return formatAssignValueLike(fieldName, fMD->type(), v, upper);
+  return formatAssignValueLike(fieldName, fMD->type(), v, upper, fMD->isSearchable());
 }
 
 QString FLManager::formatAssignValueLike(FLFieldMetaData *fMD, const QVariant &v, const bool upper)
@@ -1418,10 +1428,10 @@ QString FLManager::formatAssignValueLike(FLFieldMetaData *fMD, const QVariant &v
 
   FLTableMetaData *mtd = fMD->metadata();
   if (!mtd)
-    return formatAssignValueLike(fMD->name(), fMD->type(), v, upper);
+    return formatAssignValueLike(fMD->name(), fMD->type(), v, upper, fMD->isSearchable());
 
   if (fMD->isPrimaryKey())
-    return formatAssignValueLike(mtd->primaryKey(true), fMD->type(), v, upper);
+    return formatAssignValueLike(mtd->primaryKey(true), fMD->type(), v, upper, fMD->isSearchable());
 
   QString fieldName(fMD->name());
   if (mtd->isQuery() && !fieldName.contains(".")) {
@@ -1443,7 +1453,7 @@ QString FLManager::formatAssignValueLike(FLFieldMetaData *fMD, const QVariant &v
     fieldName.prepend(prefixTable + QString::fromLatin1("."));
   }
 
-  return formatAssignValueLike(fieldName, fMD->type(), v, upper);
+  return formatAssignValueLike(fieldName, fMD->type(), v, upper, fMD->isSearchable());
 }
 
 QString FLManager::formatValue(int t, const QVariant &v, const bool upper)
@@ -1529,7 +1539,7 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
              QString::fromLatin1(".mtd"));
     if (!fi.open(IO_ReadOnly)) {
 #ifdef FL_DEBUG
-      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no est√°n definidos").arg(n));
+      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no est·n definidos").arg(n));
 #endif
     } else {
       QTextStream t;

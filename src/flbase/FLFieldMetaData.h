@@ -87,12 +87,13 @@ public:
   @param vG Indica si el campo es visible en la rejilla de la tabla
   @param gen Indica si el campo es generado.
   @param iCK Indica si es clave compuesta
+  @param iSh Indica si es searchable
   */
   FLFieldMetaData(const QString &n, const QString &a, bool aN, bool iPK, int t,
                   int l = 0, bool c = false, bool v = true, bool ed = false,
                   int pI = 4, int pD = 0, bool iNX = false, bool uNI = false,
                   bool coun = false, const QVariant &defValue = QVariant(), bool oT = false,
-                  const QString &rX = QString::null, bool vG = true, bool gen = true, bool iCK = false);
+                  const QString &rX = QString::null, bool vG = true, bool gen = true, bool iCK = false, bool iSh = false);
   FLFieldMetaData(const FLFieldMetaData *other);
 
   /**
@@ -255,6 +256,13 @@ public:
   @return TRUE si el campo determina registros únicos, FALSE en caso contrario
   */
   bool isUnique() const;
+
+  /**
+  Obtiene si el campo es apto para ser usado con unaccent.
+
+  @return TRUE si el campo determina registros únicos, FALSE en caso contrario
+  */
+  bool isSearchable() const;
 
   /**
   Tipo de datos lista de relaciones
@@ -547,6 +555,11 @@ public:
   bool isUnique_;
 
   /**
+  Indica si el campo es único
+  */
+  bool isSearchable_;
+
+  /**
   Indica si el campo es un contador de referencia y abanq en el
   momento de insertar un registro debe intentar calcular cual sería el
   siguiente numero.
@@ -771,6 +784,11 @@ inline bool FLFieldMetaData::isIndex() const
 inline bool FLFieldMetaData::isUnique() const
 {
   return d->isUnique_;
+}
+
+inline bool FLFieldMetaData::isSearchable() const
+{
+  return d->isSearchable_;
 }
 
 inline const FLFieldMetaData::FLRelationMetaDataList *FLFieldMetaData::relationList() const
