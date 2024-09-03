@@ -464,7 +464,7 @@ public:
   FLFieldMetaDataPrivate(const QString &n, const QString &a, bool aN, bool iPK, int t,
                          int l, bool c, bool v, bool ed, int pI, int pD,
                          bool iNX, bool uNI, bool coun, const QVariant &defValue, bool oT,
-                         const QString &rX, bool vG, bool gen, bool iCK);
+                         const QString &rX, bool vG, bool gen, bool iCK, bool iSh);
   FLFieldMetaDataPrivate();
 
   ~FLFieldMetaDataPrivate();

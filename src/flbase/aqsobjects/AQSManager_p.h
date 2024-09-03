@@ -42,8 +42,8 @@ public slots:
   FLTableMetaData *createTable(FLTableMetaData *);
   QString formatValueLike(FLFieldMetaData *, const QVariant &, bool = false);
   QString formatAssignValueLike(FLFieldMetaData *, const QVariant &, bool = false);
-  QString formatAssignValueLike(const QString &, FLFieldMetaData *, const QVariant &, bool = false, bool = false);
-  QString formatAssignValueLike(const QString &, int, const QVariant &, bool = false);
+  QString formatAssignValueLike(const QString &, FLFieldMetaData *, const QVariant &, bool = false);
+  QString formatAssignValueLike(const QString &, int, const QVariant &, bool = false, bool = false);
   QString formatValueLike(int, const QVariant &, bool = false);
   QString formatValue(FLFieldMetaData *, const QVariant &, bool = false);
   QString formatAssignValue(FLFieldMetaData *, const QVariant &, bool = false);
