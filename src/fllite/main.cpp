@@ -360,7 +360,8 @@ void aq_main(int argc, char **argv)
  splash = new QSplashScreen(QPixmap::fromMimeSource("splashclient.png"));
 #endif
     splash->show();
-    splash->message(QT_TR_NOOP("Inicializando..."), Qt::AlignRight, QColor(255, 255, 255));
+    //splash->message(QT_TR_NOOP("Inicializando..."), Qt::AlignRight, QColor(255, 255, 255));
+    splash->message(QT_TR_NOOP("Aprovisionando..."), Qt::AlignRight, QColor(0, 0, 0));
   } else if (!silentConnect(silentConn)) {
     QTimer::singleShot(0, AbanQ, SLOT(quit()));
     return;
@@ -370,7 +371,6 @@ void aq_main(int argc, char **argv)
   AbanQ->flushX();
   AbanQ->syncX();
   AbanQ->processEvents();
-  splash->message(QT_TR_NOOP("Aprovisionando..."), Qt::AlignRight, QColor(0, 0, 0));
   AbanQ->init(
     FLSettings::readEntry("application/formAlone", formAlone),
     FLSettings::readEntry("application/callFunction", callFunction),
