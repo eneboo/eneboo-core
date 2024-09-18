@@ -80,6 +80,9 @@ public slots:
   bool existsTable(const QString &) const;
   int transactionLevel() const;
   FLSqlCursor *lastActiveCursor() const;
+  bool useCachedFields(const QString &) const;
+  cachedFieldsMap_ cachedFieldsTable(const QString &table);
+  void setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields);
 
 protected:
   static void *construct(const QSArgumentList &args) {
@@ -288,6 +291,19 @@ inline int AQSSqlDatabase::transactionLevel() const
 inline FLSqlCursor *AQSSqlDatabase::lastActiveCursor() const
 {
   AQ_CALL_RET(lastActiveCursor());
+}
+
+inline cachedFieldsMap_ AQSSqlDatabase::cachedFieldsTable(const QString &table)
+{
+  AQ_CALL_RET_V(cachedFieldsTable(table), cachedFieldsMap_);
+}
+inline void AQSSqlDatabase::setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields)
+{
+  AQ_CALL_VOID(setCachedFieldsTable(table, pkValue, fields));
+}
+inline bool AQSSqlDatabase::useCachedFields(const QString &tableName) const
+{
+  AQ_CALL_RET_V(useCachedFields(tableName), bool);
 }
 //@AQ_END_IMP_PUB_SLOTS@
 

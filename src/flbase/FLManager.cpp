@@ -587,7 +587,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   if (!mtd)
     return 0;
 
-  QString name, a, q, ftsfun;
+  QString name, a, q, ftsfun, cF;
   bool v = true, ed = true, cw = false, dl = false;
 
   QDomNode no = mtd->firstChild();
@@ -606,6 +606,11 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
       }
       if (e.tagName() == "query") {
         q = e.text();
+        no = no.nextSibling();
+        continue;
+      }
+      if (e.tagName() == "cachedfields") {
+        cF = e.text();
         no = no.nextSibling();
         continue;
       }
@@ -650,6 +655,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   tmd->setFTSFunction(ftsfun);
   tmd->setConcurWarn(cw);
   tmd->setDetectLocks(dl);
+  tmd->setCachedFields(cF);
   no = mtd->firstChild();
 
   while (!no.isNull()) {

@@ -502,9 +502,19 @@ public:
     remote_database_ = database;
   }
 
+  cachedFieldsMap_ cachedFieldsTable(const QString &table);
+  void setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields);
+  bool useCachedFields(const QString &tableName) const;
+
+
 
 
 private:
+
+  /** Almacena los campos cacheados */
+  typedef std::map<std::string, std::variant<bool, int, std::string>> cachedFields_;
+  typedef std::map<std::string, cachedFields_> cachedFieldMap_;
+  typedef std::map<std::string, cachedFieldsMap_> cachedFieldsTable_;
 
 
   /**

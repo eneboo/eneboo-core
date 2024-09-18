@@ -857,3 +857,20 @@ void FLSqlDatabase::finishInternal()
   currentSavePoint_ = 0;
   lastActiveCursor_ = 0;
 }
+
+  cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) {
+    return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
+}
+
+  void FLSqlDatabase::setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields) {
+    qWarning("setCachedFieldsTable " + table "/" + pkValue); 
+    if (cachedFieldsTable_.find(table) < 0) {
+      cachedFieldsTable_[table] = new cachedFieldsMap_();
+    }
+
+    cachedFieldsTable_[table][pkValue] = fields;
+}
+
+  bool FLSqlDatabase::useCachedFields(const QString &tableName);
+    return cachedFieldsTable_.find(table) > 0;
+}

@@ -71,6 +71,9 @@ public slots:
   void setConcurWarn(bool = true);
   bool detectLocks() const;
   void setDetectLocks(bool = true);
+  QStringList cachedFields() const;
+  void setcachedFields(QString cachedFields);
+  bool useCachedFields() const;
 
 protected:
   static void *construct(const QSArgumentList &args) {
@@ -239,6 +242,22 @@ inline void AQSTableMD::setDetectLocks(bool arg0)
 {
   AQ_CALL_VOID(setDetectLocks(arg0));
 }
+
+inline QStringList AQSTableMD::cachedFields() const
+{
+  AQ_CALL_RET_V(cachedFields(), QStringList);
+}
+inline void AQSTableMD::setcachedFields(QString cachedFields)
+{
+  AQ_CALL_VOID(setcachedFields(cachedFields));
+}
+
+inline bool AQSTableMD::useCachedFields() const
+{
+  AQ_CALL_RET_V(useCachedFields(), bool);
+}
+/
+
 //@AQ_END_IMP_PUB_SLOTS@
 
 #endif /* AQSTABLEMD_P_H_ */
