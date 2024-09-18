@@ -77,6 +77,11 @@ public:
   */
   ~FLSqlDatabase();
 
+  /** Almacena los campos cacheados */
+  typedef std::map<std::string, std::variant<bool, int, std::string>> cachedFields_;
+  typedef std::map<std::string, cachedFields_> cachedFieldMap_;
+  typedef std::map<std::string, cachedFieldsMap_> cachedFieldsTable_;
+
   /**
   @return Lista de los alias de los controladores actualmente disponibles.
   */
@@ -503,7 +508,7 @@ public:
   }
 
   cachedFieldsMap_ cachedFieldsTable(const QString &table);
-  void setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields);
+  void setCachedFieldsTable(const QString &table, const QString &pkValue, const cachedFields_ fields);
   bool useCachedFields(const QString &tableName) const;
 
 
@@ -511,10 +516,7 @@ public:
 
 private:
 
-  /** Almacena los campos cacheados */
-  typedef std::map<std::string, std::variant<bool, int, std::string>> cachedFields_;
-  typedef std::map<std::string, cachedFields_> cachedFieldMap_;
-  typedef std::map<std::string, cachedFieldsMap_> cachedFieldsTable_;
+
 
 
   /**
