@@ -509,7 +509,7 @@ public:
   }
 
   cachedFieldsMap_ *cachedFieldsTable(const QString &table);
-  void setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ fields);
+  void setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ &fields);
   bool useCachedFields(const QString &tableName) const;
 
 

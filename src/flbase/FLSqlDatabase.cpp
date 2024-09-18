@@ -872,7 +872,7 @@ void FLSqlDatabase::finishInternal()
     return result;
 }
 
-  void FLSqlDatabase::setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ fields) 
+  void FLSqlDatabase::setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ &fields) 
   {
     qWarning("setCachedFieldsTable " + tableName + "/" + pkValue); 
     if (!cFT->find(tableName)) {
