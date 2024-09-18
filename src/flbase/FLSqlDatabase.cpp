@@ -864,11 +864,12 @@ void FLSqlDatabase::finishInternal()
   lastActiveCursor_ = 0;
 }
 
-  FLSqlDatabase::cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) 
+  cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) 
   {
     // return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
 
-    return cFT->find(table);
+    cachedFieldsMap_ *result = cFT->find(table);
+    return result;
 }
 
   void FLSqlDatabase::setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ fields) 
@@ -880,7 +881,7 @@ void FLSqlDatabase::finishInternal()
 
     cachedFieldsMap_ *mapTable = cFT->find(tableName);
     if (mapTable->find(pkValue)) {
-      mapTable->update(pkValue, fields);
+      mapTable->replace(pkValue, fields);
     } else {
       mapTable->insert(pkValue, fields);
     }
