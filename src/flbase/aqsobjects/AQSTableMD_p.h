@@ -256,7 +256,7 @@ inline bool AQSTableMD::useCachedFields() const
 {
   AQ_CALL_RET_V(useCachedFields(), bool);
 }
-/
+
 
 //@AQ_END_IMP_PUB_SLOTS@
 
