@@ -78,7 +78,7 @@ public:
   ~FLSqlDatabase();
 
   /** Almacena los campos cacheados */
-  typedef std::map<std::string, std::variant<bool, int, std::string>> cachedFields_;
+  typedef QDict<QVariant> cachedFields_;
   typedef std::map<std::string, cachedFields_> cachedFieldMap_;
   typedef std::map<std::string, cachedFieldsMap_> cachedFieldsTable_;
 
