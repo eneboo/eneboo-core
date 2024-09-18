@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #ifndef AQSTABLEMD_P_H_
@@ -249,7 +249,7 @@ inline QStringList AQSTableMD::cachedFields() const
 }
 inline void AQSTableMD::setCachedFields(const QString &cachedFields)
 {
-  AQ_CALL_VOID(setCachedFields(cachedFields));
+  AQ_CALL_VOID(setCachedFields(*cachedFields));
 }
 
 inline bool AQSTableMD::useCachedFields() const
