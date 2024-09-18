@@ -745,7 +745,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
       qry->deleteLater();
     }
   }
-
+  qWarning("******** es cached V2 %s", (tmd->useCachedFields() ? "SI": "NO"));
   FLAccessControlLists *acl = aqApp->acl();
   if (acl)
     acl->process(tmd);
