@@ -299,9 +299,9 @@ inline FLSqlCursor *AQSSqlDatabase::lastActiveCursor() const
   AQ_CALL_RET(lastActiveCursor());
 }
 
-inline cachedFieldsMap_ AQSSqlDatabase::cachedFieldsTable(const QString &table)
+inline cachedFieldsMap_ *AQSSqlDatabase::cachedFieldsTable(const QString &table)
 {
-  AQ_CALL_RET_V(cachedFieldsTable(table), cachedFieldsMap_);
+  AQ_CALL_RET(cachedFieldsTable(table));
 }
 inline void AQSSqlDatabase::setCachedFieldsTable(const QString &tableName, QString &pkValue, cachedFields_ fields)
 {
