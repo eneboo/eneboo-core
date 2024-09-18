@@ -39,7 +39,7 @@ FLSqlDatabase::FLSqlDatabase()
 {
   setInteractiveGUI();
   setQsaExceptions();
-  cFT = new cachedFieldsTable_()
+  cFT = new cachedFieldsTable_(2);
   cFT->setAutoDelete(true);
   cFT->clear();
 }
@@ -872,7 +872,7 @@ void FLSqlDatabase::finishInternal()
   void FLSqlDatabase::setCachedFieldsTable(const QString &table, const QString &pkValue, const cachedFields_ fields) {
     qWarning("setCachedFieldsTable " + table + "/" + pkValue); 
     if (!cFT_[table]) {
-      cFT_[table] = new cachedFieldsMap_();
+      cFT_[table] = new cachedFieldsMap_(2);
     }
 
     cFT_[table][pkValue] = fields;
