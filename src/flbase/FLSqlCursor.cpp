@@ -361,11 +361,13 @@ void FLSqlCursor::refreshDelayed(int msec)
   }
   QString cFilter(QSqlCursor::filter());
   setFilter("");
-  if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata()) {
-    qWarning("FLSqlCursor::refreshDelayed. filtro: " + cFilter + ", tabla:" +  ( d->metadata_ ? d->metadata_->name(): "No hay metadata"));
-  }
   if (cFilter == QSqlCursor::filter() && isValid())
     return;
+
+  if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata()) {
+    qWarning("FLSqlCursor::refreshDelayed. filtro: " + QSqlCursor::filter() + ", tabla:" +  ( d->metadata_ ? d->metadata_->name(): "No hay metadata"));
+  }
+  
   QSqlCursor::select();
   int pos = atFrom();
   if (pos >= size())
