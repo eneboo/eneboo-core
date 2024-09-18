@@ -859,12 +859,13 @@ void FLSqlDatabase::finishInternal()
 }
 
   FLSqlDatabase::cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) {
-    return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
+    // return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
+    return cachedFieldsTable_[table];
 }
 
   void FLSqlDatabase::setCachedFieldsTable(const QString &table, const QString &pkValue, const cachedFields_ fields) {
     qWarning("setCachedFieldsTable " + table + "/" + pkValue); 
-    if (cachedFieldsTable_.find(table) < 0) {
+    if (!cachedFieldsTable_[table]) {
       cachedFieldsTable_[table] = new cachedFieldsMap_();
     }
 
@@ -872,5 +873,5 @@ void FLSqlDatabase::finishInternal()
 }
 
   bool FLSqlDatabase::useCachedFields(const QString &tableName) {
-    return cachedFieldsTable_.find(table) > 0;
+    return cachedFieldsTable_[tableName] ? true : false;
 }
