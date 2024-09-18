@@ -655,7 +655,9 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   tmd->setFTSFunction(ftsfun);
   tmd->setConcurWarn(cw);
   tmd->setDetectLocks(dl);
+  qWarning("******** metadata %s -> cf: %s", name, cF);
   tmd->setCachedFields(cF);
+  qWarning("******** es cached %s", (tmd->useCachedFields ? "SI": "NO"));
   no = mtd->firstChild();
 
   while (!no.isNull()) {
