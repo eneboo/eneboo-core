@@ -25,8 +25,8 @@
 
   /** Almacena los campos cacheados */
   typedef QDict<QVariant> cachedFields_;
-  typedef std::map<std::string, cachedFields_> cachedFieldsMap_;
-  typedef std::map<std::string, cachedFieldsMap_> cachedFieldsTable_;
+  typedef QDict<cachedFields_> cachedFieldsMap_;
+  typedef QDict<cachedFieldsMap_> cachedFieldsTable_;
 
 class AQSSqlDatabase : public AQSVoidPtr
 {
