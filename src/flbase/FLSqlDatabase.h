@@ -508,7 +508,7 @@ public:
     remote_database_ = database;
   }
 
-  cachedFieldsMap_ cachedFieldsTable(const QString &table);
+  cachedFieldsMap_ *cachedFieldsTable(const QString &table);
   void setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ fields);
   bool useCachedFields(const QString &tableName) const;
 
