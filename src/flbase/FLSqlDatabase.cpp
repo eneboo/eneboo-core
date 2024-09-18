@@ -871,6 +871,6 @@ void FLSqlDatabase::finishInternal()
     cachedFieldsTable_[table][pkValue] = fields;
 }
 
-  bool FLSqlDatabase::useCachedFields(const QString &tableName);
+  bool FLSqlDatabase::useCachedFields(const QString &tableName) {
     return cachedFieldsTable_.find(table) > 0;
 }

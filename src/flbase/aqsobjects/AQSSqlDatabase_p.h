@@ -22,6 +22,11 @@
 #include "AQSVoidPtr_p.h"
 #include "AQObjects.h"
 
+  /** Almacena los campos cacheados */
+  typedef QDict<QVariant> cachedFields_;
+  typedef std::map<std::string, cachedFields_> cachedFieldsMap_;
+  typedef std::map<std::string, cachedFieldsMap_> cachedFieldsTable_;
+
 class AQSSqlDatabase : public AQSVoidPtr
 {
   Q_OBJECT
