@@ -655,9 +655,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   tmd->setFTSFunction(ftsfun);
   tmd->setConcurWarn(cw);
   tmd->setDetectLocks(dl);
-  qWarning("******** metadata " + name);
   tmd->setCachedFields(cF);
-  qWarning("******** es cached %s", (tmd->useCachedFields() ? "SI": "NO"));
   no = mtd->firstChild();
 
   while (!no.isNull()) {
@@ -745,10 +743,13 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
       qry->deleteLater();
     }
   }
-  qWarning("******** es cached V2 %s", (tmd->useCachedFields() ? "SI": "NO"));
   FLAccessControlLists *acl = aqApp->acl();
   if (acl)
     acl->process(tmd);
+
+  // TODO: procesar datos cacheados y cargarlos en el diccionario.
+  // Recoger nombre campos cacheados.
+  // Recoger valores de campos cacheados.
   return tmd;
 }
 
