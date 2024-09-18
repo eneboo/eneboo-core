@@ -249,7 +249,7 @@ inline QStringList AQSTableMD::cachedFields() const
 }
 inline void AQSTableMD::setCachedFields(const QString &cachedFields)
 {
-  AQ_CALL_VOID(setCachedFields(*cachedFields));
+  AQ_CALL_VOID(setCachedFields(cachedFields));
 }
 
 inline bool AQSTableMD::useCachedFields() const

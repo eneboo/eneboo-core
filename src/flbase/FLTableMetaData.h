@@ -356,7 +356,7 @@ public:
   */
   bool useCachedFields();
   QStringList cachedFields();
-  void setCachedFields(QString &cachedFields);
+  void setCachedFields(QString cachedFields);
 
   /**
   Indica si lo metadatos están en caché (FLManager::cacheMetaData_)
@@ -576,7 +576,7 @@ inline QStringList FLTableMetaData::cachedFields()
   return d->cF_;
 }
 
-inline void FLTableMetaData::setCachedFields(QString &cachedFields)
+inline void FLTableMetaData::setCachedFields(QString cachedFields)
 {
    d->cF_ = QStringList::split(",", cachedFields);
 }
