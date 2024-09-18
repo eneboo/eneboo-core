@@ -21,6 +21,7 @@
 
 #include "AQSVoidPtr_p.h"
 #include "AQObjects.h"
+#include "qdict.h"
 
   /** Almacena los campos cacheados */
   typedef QDict<QVariant> cachedFields_;
