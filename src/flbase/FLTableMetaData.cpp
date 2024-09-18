@@ -43,7 +43,6 @@ FLTableMetaDataPrivate::~FLTableMetaDataPrivate()
   clearFieldList();
   delete fieldList_;
   delete compoundKey_;
-  delete cF_;
 }
 
 void FLTableMetaDataPrivate::clearFieldList()
