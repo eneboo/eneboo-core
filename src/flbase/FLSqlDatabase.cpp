@@ -863,7 +863,7 @@ void FLSqlDatabase::finishInternal()
 }
 
   void FLSqlDatabase::setCachedFieldsTable(const QString &table, const QString &pkValue, const cachedFields_ fields) {
-    qWarning("setCachedFieldsTable " + table "/" + pkValue); 
+    qWarning("setCachedFieldsTable " + table + "/" + pkValue); 
     if (cachedFieldsTable_.find(table) < 0) {
       cachedFieldsTable_[table] = new cachedFieldsMap_();
     }
