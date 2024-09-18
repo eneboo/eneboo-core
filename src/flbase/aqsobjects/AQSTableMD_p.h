@@ -72,7 +72,7 @@ public slots:
   bool detectLocks() const;
   void setDetectLocks(bool = true);
   QStringList cachedFields() const;
-  void setcachedFields(QString cachedFields);
+  void setCachedFields(QString &);
   bool useCachedFields() const;
 
 protected:
@@ -247,7 +247,7 @@ inline QStringList AQSTableMD::cachedFields() const
 {
   AQ_CALL_RET_V(cachedFields(), QStringList);
 }
-inline void AQSTableMD::setcachedFields(QString cachedFields)
+inline void AQSTableMD::setCachedFields(QString cachedFields)
 {
   AQ_CALL_VOID(setcachedFields(cachedFields));
 }
