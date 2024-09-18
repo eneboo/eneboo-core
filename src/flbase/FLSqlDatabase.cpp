@@ -39,6 +39,9 @@ FLSqlDatabase::FLSqlDatabase()
 {
   setInteractiveGUI();
   setQsaExceptions();
+  cFT = new cachedFieldsTable_()
+  cFT->setAutoDelete(true);
+  cFT->clear();
 }
 
 FLSqlDatabase::~FLSqlDatabase()
@@ -54,6 +57,9 @@ FLSqlDatabase::~FLSqlDatabase()
     delete managerModules_;
     managerModules_ = 0;
   }
+
+  cFT = 0;
+  delete cFT;
 
   closeDB();
 }
@@ -860,18 +866,18 @@ void FLSqlDatabase::finishInternal()
 
   FLSqlDatabase::cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) {
     // return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
-    return cachedFieldsTable_[table];
+    return cFT_[table];
 }
 
   void FLSqlDatabase::setCachedFieldsTable(const QString &table, const QString &pkValue, const cachedFields_ fields) {
     qWarning("setCachedFieldsTable " + table + "/" + pkValue); 
-    if (!cachedFieldsTable_[table]) {
-      cachedFieldsTable_[table] = new cachedFieldsMap_();
+    if (!cFT_[table]) {
+      cFT_[table] = new cachedFieldsMap_();
     }
 
-    cachedFieldsTable_[table][pkValue] = fields;
+    cFT_[table][pkValue] = fields;
 }
 
   bool FLSqlDatabase::useCachedFields(const QString &tableName) {
-    return cachedFieldsTable_[tableName] ? true : false;
+    return cFT_[tableName] ? true : false;
 }
