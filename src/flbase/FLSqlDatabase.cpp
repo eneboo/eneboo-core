@@ -882,9 +882,9 @@ void FLSqlDatabase::finishInternal()
     cachedFieldsMap_ *mapTable = cFT->find(tableName);
 
     if (mapTable->find(pkValue)) {
-      mapTable->replace(pkValue, fields);
+      mapTable->replace(pkValue, &fields);
     } else {
-      mapTable->insert(pkValue, fields);
+      mapTable->insert(pkValue, &fields);
     }
 
 }
