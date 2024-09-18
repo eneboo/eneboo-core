@@ -88,7 +88,7 @@ public slots:
   FLSqlCursor *lastActiveCursor() const;
   bool useCachedFields(const QString &) const;
   cachedFieldsMap_ cachedFieldsTable(const QString &table);
-  void setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields);
+  void setCachedFieldsTable(const QString &tableName, QString &pkValue, cachedFields_ fields);
 
 protected:
   static void *construct(const QSArgumentList &args) {
@@ -303,9 +303,9 @@ inline cachedFieldsMap_ AQSSqlDatabase::cachedFieldsTable(const QString &table)
 {
   AQ_CALL_RET_V(cachedFieldsTable(table), cachedFieldsMap_);
 }
-inline void AQSSqlDatabase::setCachedFieldsTable(const QString &table, QString &pkValue, cachedFields_ fields)
+inline void AQSSqlDatabase::setCachedFieldsTable(const QString &tableName, QString &pkValue, cachedFields_ fields)
 {
-  AQ_CALL_VOID(setCachedFieldsTable(table, pkValue, fields));
+  AQ_CALL_VOID(setCachedFieldsTable(tableName, pkValue, fields));
 }
 inline bool AQSSqlDatabase::useCachedFields(const QString &tableName) const
 {
