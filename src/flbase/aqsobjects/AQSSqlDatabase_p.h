@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #ifndef AQSSQLDATABASE_P_H_
@@ -87,7 +87,7 @@ public slots:
   int transactionLevel() const;
   FLSqlCursor *lastActiveCursor() const;
   bool useCachedFields(const QString &) const;
-  cachedFieldsMap_ cachedFieldsTable(const QString &table);
+  cachedFieldsMap_ *cachedFieldsTable(const QString &table);
   void setCachedFieldsTable(const QString &tableName, QString &pkValue, cachedFields_ fields);
 
 protected:
@@ -299,7 +299,7 @@ inline FLSqlCursor *AQSSqlDatabase::lastActiveCursor() const
   AQ_CALL_RET(lastActiveCursor());
 }
 
-inline cachedFieldsMap_ AQSSqlDatabase::cachedFieldsTable(const QString &table)
+inline cachedFieldsMap_ *AQSSqlDatabase::cachedFieldsTable(const QString &table)
 {
   AQ_CALL_RET_V(cachedFieldsTable(table), cachedFieldsMap_);
 }
