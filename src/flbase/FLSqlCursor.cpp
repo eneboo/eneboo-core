@@ -366,6 +366,9 @@ void FLSqlCursor::refreshDelayed(int msec)
 
   if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata()) {
     qWarning("FLSqlCursor::refreshDelayed. filtro: " + QSqlCursor::filter() + ", tabla:" +  ( d->metadata_ ? d->metadata_->name(): "No hay metadata"));
+    if (d->cursorRelation_->metadata()->useCachedFields() && d->cursorRelation_->modeAccess() == BROWSE) {
+      qWarning("FLSqlCursor::refreshDelayed. Capturado!");
+    }
   }
   
   QSqlCursor::select();
