@@ -366,7 +366,8 @@ void FLSqlCursor::refreshDelayed(int msec)
 
   if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata()) {
     qWarning("FLSqlCursor::refreshDelayed. filtro: " + QSqlCursor::filter() + ", tabla:" +  ( d->metadata_ ? d->metadata_->name(): "No hay metadata"));
-    qWarning("FLSqlCursor::refreshDelayed. Usa cached " + (d->cursorRelation_->metadata()->useCachedFields() ? "SI" : "NO"));
+    bool usaCacheDeCampos = d->cursorRelation_->metadata()->useCachedFields();
+    qWarning("FLSqlCursor::refreshDelayed. Usa cached %s", usaCacheDeCampos ? "SI" : "NO");
     if (d->cursorRelation_->metadata()->useCachedFields() && d->cursorRelation_->modeAccess() == BROWSE) {
       qWarning("FLSqlCursor::refreshDelayed. Capturado!");
     }
