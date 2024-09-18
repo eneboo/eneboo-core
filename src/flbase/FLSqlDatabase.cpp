@@ -864,7 +864,7 @@ void FLSqlDatabase::finishInternal()
   lastActiveCursor_ = 0;
 }
 
-  cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) 
+  FLSqlDatabase::cachedFieldsMap_ FLSqlDatabase::cachedFieldsTable(const QString &table) 
   {
     // return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
 
