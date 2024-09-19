@@ -383,6 +383,8 @@ public:
     return initCount_;
   }
 
+  void generarCacheDatos(FLTableMetaData *tmd);
+
 private:
 
 #ifndef FL_QUICK_CLIENT
@@ -416,6 +418,11 @@ private:
   Base de datos a utilizar por el manejador
   */
   FLSqlDatabase *db_;
+
+    /**
+  Base de datos a utilizar por el manejador
+  */
+  FLSqlDatabase *dbCache_;
 
   /**
   Indica el número de veces que se ha llamado a FLManager::init()

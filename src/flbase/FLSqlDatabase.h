@@ -78,11 +78,6 @@ public:
   */
   ~FLSqlDatabase();
 
-  /** Almacena los campos cacheados */
-  typedef QDict<QVariant> cachedFields_;
-  typedef QDict<cachedFields_> cachedFieldsMap_;
-  typedef QDict<cachedFieldsMap_> cachedFieldsTable_;
-
   /**
   @return Lista de los alias de los controladores actualmente disponibles.
   */
@@ -507,13 +502,6 @@ public:
   void setRemoteDatabase(const QString &database) {
     remote_database_ = database;
   }
-
-  cachedFieldsMap_ *cachedFieldsTable(const QString &table);
-  void setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ &fields);
-  bool useCachedFields(const QString &tableName) const;
-
-
-
 
 private:
 

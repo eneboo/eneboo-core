@@ -39,9 +39,6 @@ FLSqlDatabase::FLSqlDatabase()
 {
   setInteractiveGUI();
   setQsaExceptions();
-  cFT = new cachedFieldsTable_(2);
-  cFT->setAutoDelete(true);
-  cFT->clear();
 }
 
 FLSqlDatabase::~FLSqlDatabase()

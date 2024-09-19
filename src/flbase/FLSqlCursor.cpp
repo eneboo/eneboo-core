@@ -371,7 +371,7 @@ void FLSqlCursor::refreshDelayed(int msec)
     if (metadata()->useCachedFields() && modeAccess() == BROWSE) {
       qWarning("FLSqlCursor::refreshDelayed. Capturado!");
       // TODO:
-      // No ejecutar el select.
+      // No ejecutar el select. Pero emito un newBuffer para que el FLFieldDB lance el valueBuffer
     }
   }
   

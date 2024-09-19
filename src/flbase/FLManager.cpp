@@ -58,6 +58,7 @@ FLManager::FLManager(FLSqlDatabase *db) :
   cacheMetaDataSys_(0),
   db_(db),
   initCount_(0)
+  dbCache_(0)
 {
 #ifndef FL_QUICK_CLIENT
   listTables_ = 0;
@@ -68,6 +69,11 @@ FLManager::FLManager(FLSqlDatabase *db) :
 FLManager::~FLManager()
 {
   finish();
+  if (dbCache_) {
+    dbCache_->close();
+    delete dbCache_;
+    dbCache_ = 0;
+  }
 }
 
 void FLManager::loadTables()
@@ -1708,3 +1714,89 @@ QString tableLarge;
   }
   return QVariant();
 }
+
+void FLManager::generarCacheDatos(FLTableMetaData *tmd)
+{
+  if (!tmd)
+    return;
+
+  if (!tmd->useCachedFields()) {
+    return;
+  }
+
+  // Recogemos conexión cache.
+  if (!dbCache_) {
+    dbCache_ = QSqlDatabase::addDatabase("QSQLITE", "cache");
+    dbCache_->open();
+    // Si no existe flmetadata se crea ...
+
+/*     if (!dbCache_->existsTable("flmetadata")) {
+      QDomDocument doc("flmetadata");
+      QDomElement docElem;
+      QFile fi(AQ_DATA +
+              QString::fromLatin1("/tables/") + n +
+              QString::fromLatin1(".mtd"));
+      fi.open(IO_ReadOnly);
+        // nada
+
+        QTextStream t;
+        t.setDevice(&fi);
+        t.setEncoding(QTextStream::Latin1);
+        QString stream = t.read();
+
+        if (!FLUtil::domDocumentSetContent(doc, stream)) {
+          qWarning("FLManager::createSystemTable : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
+        } else {
+          docElem = doc.documentElement();
+          dbCache_->createTable(metadata(&docElem, true));
+        }
+      fi.close();
+    } */
+    
+  }
+
+  // Montar mtdNuevo.
+    QString tableName = tmd->name() + "_cache";
+    FLTableMetada *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
+
+    //Generamos mtd para 
+    FLFieldMetaData *pkField = tmd->field(tmd->primaryKey());
+    // Eliminar relaciones ...
+    pkField->d->clearRelationList();
+    newMtd->addFieldMD(pkField);
+    // Añadimos el mdt a los mtds conocidos...
+    QStringlist *fieldsCached = tmd->cachedFields();
+    for (QStringList::Iterator it = fieldsCached->begin(); it != fieldsCached->end(); ++it) {
+      FLFieldMetaData *fieldCached = tmd->field(*it);
+        // Eliminados relaciones...
+        fieldCached->d->clearRelationList();
+        newMtd->addFieldMD(fieldCached);
+      }
+
+
+  bool crearTabla = false;
+
+  if (dbCache_->existsTable(tableName)) {
+
+    //FLTableMetaData *oldMtd = FLUtil.sqlSelect("flmetadata", "xml", "tabla='" + tableName + "'", null, "cache");
+
+    /* if (!checkMetaData(oldMtd, mewMtd)) {
+      dbCache_->dropTable(tableName);
+      crearTabla = true;
+    } */
+  } else {
+    crearTabla = true;
+  } 
+
+  if (crearTabla) {
+
+      if (!dbCache_->createTable(newMtd)) {
+        qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
+        return;
+      } else {
+        cacheMetaData_->insert(tableName, newMtd);
+        qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
+      }
+  }
+  qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
+} 

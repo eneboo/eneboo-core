@@ -23,11 +23,6 @@
 #include "AQObjects.h"
 #include "qdict.h"
 
-  /** Almacena los campos cacheados */
-  typedef QDict<QVariant> cachedFields_;
-  typedef QDict<cachedFields_> cachedFieldsMap_;
-  typedef QDict<cachedFieldsMap_> cachedFieldsTable_;
-
 class AQSSqlDatabase : public AQSVoidPtr
 {
   Q_OBJECT
@@ -86,9 +81,6 @@ public slots:
   bool existsTable(const QString &) const;
   int transactionLevel() const;
   FLSqlCursor *lastActiveCursor() const;
-  bool useCachedFields(const QString &) const;
-  cachedFieldsMap_ *cachedFieldsTable(const QString &table);
-  void setCachedFieldsTable(const QString &tableName, QString &pkValue, cachedFields_ &fields);
 
 protected:
   static void *construct(const QSArgumentList &args) {
@@ -297,19 +289,6 @@ inline int AQSSqlDatabase::transactionLevel() const
 inline FLSqlCursor *AQSSqlDatabase::lastActiveCursor() const
 {
   AQ_CALL_RET(lastActiveCursor());
-}
-
-inline cachedFieldsMap_ *AQSSqlDatabase::cachedFieldsTable(const QString &table)
-{
-  AQ_CALL_RET(cachedFieldsTable(table));
-}
-inline void AQSSqlDatabase::setCachedFieldsTable(const QString &tableName, QString &pkValue, cachedFields_ &fields)
-{
-  AQ_CALL_VOID(setCachedFieldsTable(tableName, pkValue, fields));
-}
-inline bool AQSSqlDatabase::useCachedFields(const QString &tableName) const
-{
-  AQ_CALL_RET_V(useCachedFields(tableName), bool);
 }
 //@AQ_END_IMP_PUB_SLOTS@
 
