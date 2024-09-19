@@ -1765,10 +1765,10 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
     QString tableName = tmd->name() + "_cache";
     FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
     // Añadimos el mdt a los mtds conocidos...
-    QStringList fieldsCached = tmd->cachedFields();
-    fieldsCached->append(tmd->primaryKey());
+    QStringList fieldsCachedNames = tmd->cachedFields();
+    fieldsCachedNames.append(tmd->primaryKey());
 
-    for (QStringList::Iterator it = fieldsCached->begin(); it != fieldsCached->end(); ++it) {
+    for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
       FLFieldMetaData *fieldOriginal = tmd->field(*it);
         // Eliminados relaciones...
         FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
