@@ -20,7 +20,6 @@
 #define FLMANAGER_H
 
 #include "FLTableMetaData.h"
-#include "QSqlDatabase.h"
 
 class QDomElement;
 class FLFieldMetaData;
@@ -423,7 +422,7 @@ private:
     /**
   Base de datos a utilizar por el manejador
   */
-  QSqlDatabase *dbCache_;
+  FLSqlDatabase *dbCache_;
 
   /**
   Indica el número de veces que se ha llamado a FLManager::init()

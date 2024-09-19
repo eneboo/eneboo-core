@@ -71,7 +71,7 @@ FLManager::~FLManager()
 {
   finish();
   if (dbCache_) {
-    dbCache_->db()->close();
+    dbCache_->closeDB();
     delete dbCache_;
     dbCache_ = 0;
   }
@@ -1727,8 +1727,10 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
 
   // Recogemos conexión cache.
   if (!dbCache_) {
-    dbCache_ = QSqlDatabase::addDatabase("QSQLITE", "cache");
-    dbCache_->open();
+    dbCache_ = new FLSqlDatabase();
+    dbCache_->setDriver("QSQLITE");
+    dbCache_->connectDB();
+
     // Si no existe flmetadata se crea ...
 
 /*     if (!dbCache_->existsTable("flmetadata")) {
