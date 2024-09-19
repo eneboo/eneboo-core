@@ -1724,7 +1724,7 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
   if (!tmd->useCachedFields()) {
     return;
   }
-
+  qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
   if (!dbCache_) {
     dbCache_ = new FLSqlDatabase();
