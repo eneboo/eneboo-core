@@ -58,12 +58,13 @@ FLManager::FLManager(FLSqlDatabase *db) :
   cacheMetaDataSys_(0),
   db_(db),
   initCount_(0),
-  dbCache_(0)
 {
 #ifndef FL_QUICK_CLIENT
   listTables_ = 0;
   dictKeyMetaData_ = 0;
+  
 #endif
+dbCache_ = 0;
 }
 
 FLManager::~FLManager()
