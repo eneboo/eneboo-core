@@ -754,9 +754,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   if (acl)
     acl->process(tmd);
 
-  // TODO: procesar datos cacheados y cargarlos en el diccionario.
-  // Recoger nombre campos cacheados.
-  // Recoger valores de campos cacheados.
+  generarCacheDatos(tmd);
   return tmd;
 }
 
@@ -1718,10 +1716,11 @@ QString tableLarge;
 
 void FLManager::generarCacheDatos(FLTableMetaData *tmd)
 {
-  if (!tmd)
+  if (!tmd) {
     return;
-
+  }
   if (!tmd->useCachedFields()) {
+    qWarning("FLManager::generarCacheDatos : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
   qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
