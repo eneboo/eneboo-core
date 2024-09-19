@@ -1727,7 +1727,7 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
   // Recogemos conexión cache.
   if (!dbCache_) {
     dbCache_ = new FLSqlDatabase();
-    dbCache_->loadDriver("QSQLITE");
+    dbCache_->loadDriver("FLsqlite", "cache");
     dbCache_->connectDB();
 
     // Si no existe flmetadata se crea ...
@@ -1765,7 +1765,8 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
     FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
     // Añadimos el mdt a los mtds conocidos...
     QStringList fieldsCachedNames = tmd->cachedFields();
-    fieldsCachedNames.append(tmd->primaryKey());
+    QString pkName = tmd->primaryKey();
+    fieldsCachedNames.append(pkName);
 
     for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
       FLFieldMetaData *fieldOriginal = tmd->field(*it);
@@ -1790,7 +1791,7 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
   } 
 
   if (crearTabla) {
-
+      qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Creando tabla %1").arg(tableName));
       if (!dbCache_->createTable(newMtd)) {
         qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
         return;
