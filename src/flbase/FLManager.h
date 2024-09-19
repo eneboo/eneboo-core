@@ -20,6 +20,7 @@
 #define FLMANAGER_H
 
 #include "FLTableMetaData.h"
+#include "QSqlDatabase.h"
 
 class QDomElement;
 class FLFieldMetaData;
