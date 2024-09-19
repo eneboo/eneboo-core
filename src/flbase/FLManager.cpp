@@ -57,7 +57,7 @@ FLManager::FLManager(FLSqlDatabase *db) :
   cacheAction_(0),
   cacheMetaDataSys_(0),
   db_(db),
-  initCount_(0)
+  initCount_(0),
   dbCache_(0)
 {
 #ifndef FL_QUICK_CLIENT
@@ -70,7 +70,7 @@ FLManager::~FLManager()
 {
   finish();
   if (dbCache_) {
-    dbCache_->close();
+    dbCache_->db()->close();
     delete dbCache_;
     dbCache_ = 0;
   }

@@ -422,7 +422,7 @@ private:
     /**
   Base de datos a utilizar por el manejador
   */
-  FLSqlDatabase *dbCache_;
+  QSqlDatabase *dbCache_;
 
   /**
   Indica el número de veces que se ha llamado a FLManager::init()
