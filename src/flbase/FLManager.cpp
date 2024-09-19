@@ -1726,9 +1726,16 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
   qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
   if (!dbCache_) {
+    qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No hay conexión con la base de datos cache. conectando ..."));
     dbCache_ = new FLSqlDatabase();
-    dbCache_->loadDriver("FLsqlite", "cache");
-    dbCache_->connectDB();
+    if (!dbCache_->loadDriver("FLsqlite", "cache")) {
+      qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No se puede cargar el driver de la base de datos cache"));
+      return;
+    }
+    if (!dbCache_->connectDB()) {
+      qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No se puede conectar a la base de datos cache"));
+      return;
+    }
 
     // Si no existe flmetadata se crea ...
 
