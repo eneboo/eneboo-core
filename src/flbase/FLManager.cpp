@@ -57,7 +57,7 @@ FLManager::FLManager(FLSqlDatabase *db) :
   cacheAction_(0),
   cacheMetaDataSys_(0),
   db_(db),
-  initCount_(0),
+  initCount_(0)
 {
 #ifndef FL_QUICK_CLIENT
   listTables_ = 0;
@@ -71,7 +71,7 @@ FLManager::~FLManager()
 {
   finish();
   if (dbCache_) {
-    dbCache_->closeDB();
+    //dbCache_->closeDB();
     delete dbCache_;
     dbCache_ = 0;
   }
@@ -1728,7 +1728,7 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
   // Recogemos conexión cache.
   if (!dbCache_) {
     dbCache_ = new FLSqlDatabase();
-    dbCache_->setDriver("QSQLITE");
+    dbCache_->loadDriver("QSQLITE");
     dbCache_->connectDB();
 
     // Si no existe flmetadata se crea ...
@@ -1758,24 +1758,23 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
     
   }
 
-  // Montar mtdNuevo.
-    QString tableName = tmd->name() + "_cache";
-    FLTableMetada *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
 
-    //Generamos mtd para 
-    FLFieldMetaData *pkField = tmd->field(tmd->primaryKey());
-    // Eliminar relaciones ...
-    pkField->d->clearRelationList();
-    newMtd->addFieldMD(pkField);
+
+
+  // Montar newMtd.
+    QString tableName = tmd->name() + "_cache";
+    FLTableMetadata *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
     // Añadimos el mdt a los mtds conocidos...
-    QStringlist *fieldsCached = tmd->cachedFields();
+    QStringList *fieldsCached = tmd->cachedFields();
+    fieldsCached->append(tmd->primaryKey());
+
     for (QStringList::Iterator it = fieldsCached->begin(); it != fieldsCached->end(); ++it) {
-      FLFieldMetaData *fieldCached = tmd->field(*it);
+      FLFieldMetaData *fieldOriginal = tmd->field(*it);
         // Eliminados relaciones...
-        fieldCached->d->clearRelationList();
+        FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
+        fieldCached->clearRelationList();
         newMtd->addFieldMD(fieldCached);
       }
-
 
   bool crearTabla = false;
 

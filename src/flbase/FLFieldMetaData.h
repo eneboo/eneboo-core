@@ -444,6 +444,10 @@ public:
   */
   void setSearchOptions(const QString &ol);
 
+  void clearRelationList() {
+    d->clearRelationList();
+  }
+
 private:
 
   /**
