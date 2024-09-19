@@ -1734,7 +1734,7 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
       dbCache_ = 0;
       return;
     }
-    if (!dbCache_->connectDB(db_->name() + "_cache")) {
+    if (!dbCache_->connectDB(db_->name() + "_cache", "", "", "", 0, "", "")) {
       qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No se puede conectar a la base de datos cache"));
       delete dbCache_;
       dbCache_ = 0;
