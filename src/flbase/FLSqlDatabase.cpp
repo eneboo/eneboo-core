@@ -55,9 +55,6 @@ FLSqlDatabase::~FLSqlDatabase()
     managerModules_ = 0;
   }
 
-  cFT = 0;
-  delete cFT;
-
   closeDB();
 }
 
@@ -859,34 +856,4 @@ void FLSqlDatabase::finishInternal()
   }
   currentSavePoint_ = 0;
   lastActiveCursor_ = 0;
-}
-
-  FLSqlDatabase::cachedFieldsMap_ *FLSqlDatabase::cachedFieldsTable(const QString &table) 
-  {
-    // return cachedFieldsTable_.find(table) > 0 ? cachedFieldsTable_[table] : new cachedFieldsMap_();
-
-    cachedFieldsMap_ *result = cFT->find(table);
-    return result;
-}
-
-  void FLSqlDatabase::setCachedFieldsTable(const QString &tableName, const QString &pkValue, const cachedFields_ &fields) 
-  {
-    qWarning("setCachedFieldsTable " + tableName + "/" + pkValue); 
-    if (!cFT->find(tableName)) {
-      cFT->insert(tableName, new cachedFieldsMap_(2));
-    } 
-
-    cachedFieldsMap_ *mapTable = cFT->find(tableName);
-
-    if (mapTable->find(pkValue)) {
-      mapTable->replace(pkValue, &fields);
-    } else {
-      mapTable->insert(pkValue, &fields);
-    }
-
-}
-
-  bool FLSqlDatabase::useCachedFields(const QString &tableName) const 
-  {
-    return cFT->find(tableName) ? true : false;
 }

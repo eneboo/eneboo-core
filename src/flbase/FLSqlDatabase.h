@@ -506,8 +506,6 @@ public:
 private:
 
 
-  cachedFieldsTable_ *cFT;
-
   /**
   Cierra la conexión actual de la base de datos
   */
