@@ -1736,17 +1736,17 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       return;
     }
 
-    QString dbFolder = "../tables_cached";
+    QString dbFolder = AQ_DISKCACHE_DIRPATH + "/tables_cached";
     // Si dbFolder no existe , se crea
     QDir dir(dbFolder);
     if (!dir.exists()) {
       qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
       dir.mkpath(dbFolder);
     }
+    QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
 
-
-    if (!dbCache_->connectDB(dbFolder + "/" + db_->database() + "_cache.sqlite3db", "", "", "", 0, "", "")) {
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("No se puede conectar a la base de datos cache"));
+    if (!dbCache_->connectDB(fileCache, "", "", "", 0, "", "")) {
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("No se puede conectar a la base de datos cache %1").arg(fileCache));
       delete dbCache_;
       dbCache_ = 0;
       return;
