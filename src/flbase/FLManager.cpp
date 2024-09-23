@@ -1736,7 +1736,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       return;
     }
 
-    QString dbFolder = AQ_DISKCACHE_DIRPATH + "/tables_cached";
+    QString dbFolder =  AQ_DISKCACHE_DIRPATH + "../tables_cached";
+    dbFolder = dbFolder.absPath();
     // Si dbFolder no existe , se crea
     QDir dir(dbFolder);
     if (!dir.exists()) {
@@ -1780,14 +1781,14 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   } 
 
   if (crearTabla) {
-      qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Creando tabla %1").arg(tableName));
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
       if (!dbCache_->createTable(newMtd)) {
-        qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
         return;
       } else {
         cacheMetaData_->insert(tableName, newMtd);
-        qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
       }
   }
-  qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
+  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
 } 
