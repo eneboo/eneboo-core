@@ -1736,14 +1736,15 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       return;
     }
 
-    QString dbFolder =  AQ_DISKCACHE_DIRPATH + "../tables_cached";
+    QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
     QDir dir(dbFolder);
-    dbFolder = dir.absPath();
-
+    
     if (!dir.exists()) {
       qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
       dir.mkpath(dbFolder);
     }
+
+    dbFolder = dir.absPath();
     
     QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
 
