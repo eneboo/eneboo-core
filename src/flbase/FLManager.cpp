@@ -1757,11 +1757,11 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     
   }
 
+  QString tableName = tmd->name() + "_cache";
 
-
-
-  // Montar newMtd.
-    QString tableName = tmd->name() + "_cache";
+  if (!dbCache_->existsTable(tableName)) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
+    // Montar newMtd.
     FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
     // Añadimos el mdt a los mtds conocidos...
     QStringList fieldsCachedNames = tmd->cachedFields();
@@ -1780,14 +1780,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
         newMtd->addFieldMD(fieldCached);
       }
 
-  bool crearTabla = false;
 
-  if (!dbCache_->existsTable(tableName)) {
-    crearTabla = true;
-  } 
-
-  if (crearTabla) {
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
+      
       if (!dbCache_->createTable(newMtd)) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
         return;
