@@ -18,6 +18,7 @@
 
 #include <qdom.h>
 #include <qdict.h>
+#include <qdir.h>
 #include <qstringlist.h>
 
 #include "FLManager.h"
@@ -754,7 +755,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   if (acl)
     acl->process(tmd);
 
-  generarCacheDatos(tmd);
+  checkTablaCache(tmd);
   return tmd;
 }
 
@@ -1714,57 +1715,42 @@ QString tableLarge;
   return QVariant();
 }
 
-void FLManager::generarCacheDatos(FLTableMetaData *tmd)
+void FLManager::checkTablaCache(FLTableMetaData *tmd)
 {
   if (!tmd) {
     return;
   }
   if (!tmd->useCachedFields()) {
-    qWarning("FLManager::generarCacheDatos : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
-  qWarning("FLManager::generarCacheDatos : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
+  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
   if (!dbCache_) {
-    qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No hay conexión con la base de datos cache. conectando ..."));
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("No hay conexión con la base de datos cache. conectando ..."));
     dbCache_ = new FLSqlDatabase();
     if (!dbCache_->loadDriver("FLsqlite", "cache")) {
-      qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No se puede cargar el driver de la base de datos cache"));
-      delete dbCache_;
-      dbCache_ = 0;
-      return;
-    }
-    if (!dbCache_->connectDB(db_->database() + "_cache", "", "", "", 0, "", "")) {
-      qWarning("FLManager::generarCacheDatos : " + QApplication::tr("No se puede conectar a la base de datos cache"));
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("No se puede cargar el driver de la base de datos cache"));
       delete dbCache_;
       dbCache_ = 0;
       return;
     }
 
-    // Si no existe flmetadata se crea ...
+    QString dbFolder = "../tables_cached";
+    // Si dbFolder no existe , se crea
+    QDir dir(dbFolder);
+    if (!dir.exists()) {
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
+      dir.mkpath(dbFolder);
+    }
 
-/*     if (!dbCache_->existsTable("flmetadata")) {
-      QDomDocument doc("flmetadata");
-      QDomElement docElem;
-      QFile fi(AQ_DATA +
-              QString::fromLatin1("/tables/") + n +
-              QString::fromLatin1(".mtd"));
-      fi.open(IO_ReadOnly);
-        // nada
 
-        QTextStream t;
-        t.setDevice(&fi);
-        t.setEncoding(QTextStream::Latin1);
-        QString stream = t.read();
-
-        if (!FLUtil::domDocumentSetContent(doc, stream)) {
-          qWarning("FLManager::createSystemTable : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
-        } else {
-          docElem = doc.documentElement();
-          dbCache_->createTable(metadata(&docElem, true));
-        }
-      fi.close();
-    } */
+    if (!dbCache_->connectDB(dbFolder + "/" + db_->database() + "_cache.sqlite3db", "", "", "", 0, "", "")) {
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("No se puede conectar a la base de datos cache"));
+      delete dbCache_;
+      dbCache_ = 0;
+      return;
+    }
     
   }
 
@@ -1789,15 +1775,7 @@ void FLManager::generarCacheDatos(FLTableMetaData *tmd)
 
   bool crearTabla = false;
 
-  if (dbCache_->existsTable(tableName)) {
-
-    //FLTableMetaData *oldMtd = FLUtil.sqlSelect("flmetadata", "xml", "tabla='" + tableName + "'", null, "cache");
-
-    /* if (!checkMetaData(oldMtd, mewMtd)) {
-      dbCache_->dropTable(tableName);
-      crearTabla = true;
-    } */
-  } else {
+  if (!dbCache_->existsTable(tableName)) {
     crearTabla = true;
   } 
 
