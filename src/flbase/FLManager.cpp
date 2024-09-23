@@ -1767,7 +1767,6 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     QStringList fieldsCachedNames = tmd->cachedFields();
     QString pkName = tmd->primaryKey();
     fieldsCachedNames.append(pkName);
-    qWarning("FLManager::checkTablaCache : La clave primaria es %1").arg(pkName);
 
     for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
       FLFieldMetaData *fieldOriginal = tmd->field(*it);
@@ -1775,6 +1774,9 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añadiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
         FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
         fieldCached->clearRelationList();
+        if (fieldOriginal->name() == pkName) {
+          fieldCached->setIsPrimaryKey(true);
+        }
         newMtd->addFieldMD(fieldCached);
       }
 
