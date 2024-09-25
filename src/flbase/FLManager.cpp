@@ -1829,6 +1829,6 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
 void FLManager::insertMetadataCache(QString &name, QString idM, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
-    db_->managerModules()->setContent(name, idM, "tmd")
+    db_->managerModules()->setContent(name, idM, "tmd");
 
   }
