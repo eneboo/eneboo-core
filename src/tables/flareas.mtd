@@ -2,7 +2,6 @@
 <TMD>
 	<name>flareas</name>
 	<alias>QT_TRANSLATE_NOOP("MetaData","Áreas")</alias>
-	<cachedfields>descripcion</cachedfields>
 
 	<field>
 		<name>bloqueo</name>

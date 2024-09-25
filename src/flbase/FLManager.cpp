@@ -1718,9 +1718,6 @@ QString tableLarge;
 
 void FLManager::checkTablaCache(FLTableMetaData *tmd)
 {
-
-  curcache = new FLSqlQuery("tabla", "campo", "where", "cache", aqApp.manaer().cache());
-
   if (!tmd) {
     return;
   }
