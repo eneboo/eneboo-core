@@ -1759,7 +1759,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     cacheMtd->addFieldMD(fieldTimestamp);
 
     //cacheMetaData_->insert(cacheTableName, cacheMtd);
-    dbCache_->manager()->insertMetadataCache(cacheTableName,"sys",cacheMtd);
+    dbCache_->manager()->insertMetadataCache(cacheTableName,QString("sys"),cacheMtd);
 
     if (!dbCache_->existsTable(cacheTableName)) {
       if (!dbCache_->createTable(cacheMtd)) {
@@ -1827,8 +1827,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
 } 
 
-void FLManager::insertMetadataCache(QString &name, QString &idM, FLTableMetaData *tmd) {
+void FLManager::insertMetadataCache(QString &name, QString idM, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
-    db_->managerModules()->setContent(name, idM, tmd)
+    db_->managerModules()->setContent(name, idM, "tmd")
 
   }
