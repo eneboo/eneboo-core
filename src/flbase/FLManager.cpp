@@ -1728,6 +1728,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
 
+  QString cacheTableName = "timestamps_cache";
+
   if (!dbCache_) {
       qWarning("FLManager::checkTablaCache : " + QApplication::tr("No hay conexión con la base de datos cache. conectando ..."));
       dbCache_ = new FLSqlDatabase();
@@ -1749,7 +1751,6 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       dbFolder = dir.absPath();
       
       QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
-      QString cacheTableName = "timestamps_cache";
 
 
 
@@ -1774,7 +1775,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
         FLSqlConnections::addDatabase(dbCache_, "cache");
 
 
-        if (!dbCache->existsTable(cacheTableName)) {
+        if (!dbCache_->existsTable(cacheTableName)) {
           if (!dbCache_->createTable(cacheMtd)) {
               qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(cacheTableName));
               return;
@@ -1785,7 +1786,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
         }
 
-            cacheMetaData_->insert(cacheTableName, newMtd);
+            cacheMetaData_->insert(cacheTableName, cacheMtd);
       }
     }
 
