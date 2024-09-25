@@ -1713,7 +1713,7 @@ QString tableLarge;
 void FLManager::checkTablaCache(FLTableMetaData *tmd)
 {
 
-  if (db_->database().find("_cache.sqlite3db")) {
+  if (db_->database().find("_cache.sqlite3db") >= 0) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("La base de datos %1 es la propia cache").arg(db_->database()));
     return;
   }
