@@ -761,7 +761,6 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
   if (db_->database().find("_cache.sqlite3db") >= 0) {
     ret = cacheMetaData_->find(n);
   } else {
-    initCacheDB();
     ret = metadataDev(n, quick);
   }
 
@@ -863,7 +862,6 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
     throwMsgWarning(db_, msg.arg(n));
   }
 #endif
-
   return ret;
 #endif
 }
@@ -1730,9 +1728,10 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     return;
   }
   if (!tmd->useCachedFields()) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
+    //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
+  initCacheDB();
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
 
