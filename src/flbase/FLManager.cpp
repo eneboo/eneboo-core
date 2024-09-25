@@ -1807,7 +1807,10 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           }
 
       qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando en tabla %1 registro %2").arg(cacheTableName).arg(tableName));
-      FLUtil::sqlInsert(cacheTableName,"tablename",tableName,"cache");
+      if(!FLUtil::sqlInsert(cacheTableName,"tablename",tableName,"cache")) {
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al insertar en %1").arg(cacheTableName));
+        return;
+      }
 
   }
 
