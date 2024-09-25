@@ -385,6 +385,10 @@ public:
 
   void checkTablaCache(FLTableMetaData *tmd);
 
+  void insertMetadataCache(QString &name, FLTableMetaData *tmd) {
+    cacheMetaData_->insert(name, tmd);
+  }
+
 private:
 
 #ifndef FL_QUICK_CLIENT
