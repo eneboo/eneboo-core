@@ -1742,6 +1742,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   QString cacheTableName = "timestamps_cache";
 
   FLSqlDatabase *dbCache_ = FLSqlConnections::database("cache");
+  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Usando db cache : %1").arg(dbCache_->database()));
 
   if (!cacheMetaData_->find(cacheTableName)) {
     FLTableMetaData *cacheMtd = new FLTableMetaData(cacheTableName, QString::null, QString::null);
@@ -1805,7 +1806,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
             qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
           }
 
-
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando en tabla %1 registro %2").arg(cacheTableName).arg(tableName));
       FLUtil::sqlInsert(cacheTableName,"tablename",tableName,"cache");
 
   }
