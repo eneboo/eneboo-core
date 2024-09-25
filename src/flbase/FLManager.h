@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #ifndef FLMANAGER_H
@@ -66,28 +66,28 @@ public:
   ~FLManager();
 
   /**
-  Acciones de inicialización.
+  Acciones de inicializaciï¿½n.
   */
   void init();
 
   /**
-  Acciones de finalización.
+  Acciones de finalizaciï¿½n.
   */
   void finish();
 
   /**
   Para obtener definicion de una tabla de la base de datos, a partir de un fichero XML.
 
-  El nombre de la tabla corresponde con el nombre del fichero mas la extensión ".mtd"
-  que contiene en XML la descripción de la tablas. Este método escanea el fichero
-  y construye/devuelve el objeto FLTableMetaData correspondiente, además
+  El nombre de la tabla corresponde con el nombre del fichero mas la extensiï¿½n ".mtd"
+  que contiene en XML la descripciï¿½n de la tablas. Este mï¿½todo escanea el fichero
+  y construye/devuelve el objeto FLTableMetaData correspondiente, ademï¿½s
   realiza una copia de estos metadatos en una tabla de la misma base de datos
-  para poder determinar cuando ha sido modificados y así, si es necesario, reconstruir
+  para poder determinar cuando ha sido modificados y asï¿½, si es necesario, reconstruir
   la tabla para que se adapte a la nuevos metadatos. NO SE HACEN
-  CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
-  IMPORTANTE :Para que estos métodos funcionen correctamente, es estrictamente
-        necesario haber creado la base de datos en PostgreSQL con codificación
+  IMPORTANTE :Para que estos mï¿½todos funcionen correctamente, es estrictamente
+        necesario haber creado la base de datos en PostgreSQL con codificaciï¿½n
         UNICODE; "createdb -E UNICODE abanq".
 
   @param n Nombre de la tabla de la base de datos de la que obtener los metadatos
@@ -100,10 +100,10 @@ public:
   /**
   Para obtener una consulta de la base de datos, a partir de un fichero XML.
 
-  El nombre de la consulta corresponde con el nombre del fichero mas la extensión ".qry"
-  que contiene en XML la descripción de la consulta. Este método escanea el fichero
+  El nombre de la consulta corresponde con el nombre del fichero mas la extensiï¿½n ".qry"
+  que contiene en XML la descripciï¿½n de la consulta. Este mï¿½todo escanea el fichero
   y construye/devuelve el objeto FLSqlQuery. NO SE HACEN
-  CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
   @param n Nombre de la consulta de la base de datos que se quiere obtener
   @return Un objeto FLSqlQuery que representa a la consulta que se quiere obtener
@@ -111,11 +111,11 @@ public:
   FLSqlQuery *query(const QString &n, QObject *parent = 0);
 
   /**
-  Obtiene la definición de una acción a partir de su nombre.
+  Obtiene la definiciï¿½n de una acciï¿½n a partir de su nombre.
 
-  Este método busca en los [id_modulo].xml la acción que se le pasa
+  Este mï¿½todo busca en los [id_modulo].xml la acciï¿½n que se le pasa
   como nombre y construye y devuelve el objeto FLAction correspondiente.
-  NO SE HACEN CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  NO SE HACEN CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
   @param n Nombre de la accion
   @return Un objeto FLAction con la descripcion de la accion
@@ -133,9 +133,9 @@ public:
   bool existsTable(const QString &n, bool cache = true) const;
 
   /**
-  Esta función es esencialmente igual a la anterior, se proporciona por conveniencia.
+  Esta funciï¿½n es esencialmente igual a la anterior, se proporciona por conveniencia.
 
-  Compara los metadatos de dos tablas,  la definición en XML de esas dos tablas se
+  Compara los metadatos de dos tablas,  la definiciï¿½n en XML de esas dos tablas se
   pasan como dos cadenas de caracteres.
 
   @param mtd1 Cadena de caracteres con XML que describe la primera tabla
@@ -147,7 +147,7 @@ public:
   }
 
   /**
-  Esta función es esencialmente igual a la anterior, se proporciona por conveniencia.
+  Esta funciï¿½n es esencialmente igual a la anterior, se proporciona por conveniencia.
   */
   bool checkMetaData(FLTableMetaData *tmd1, FLTableMetaData *tmd2);
 
@@ -155,17 +155,17 @@ public:
   Modifica la estructura o metadatos de una tabla, preservando los posibles datos
   que pueda contener.
 
-  Según la definición existente en un momento dado de los metadatos en el fichero .mtd, este
-  método reconstruye la tabla con esos metadatos sin la pérdida de información o datos,
+  Segï¿½n la definiciï¿½n existente en un momento dado de los metadatos en el fichero .mtd, este
+  mï¿½todo reconstruye la tabla con esos metadatos sin la pï¿½rdida de informaciï¿½n o datos,
   que pudieran existir en ese momento en la tabla.
 
   @param n Nombre de la tabla a reconstruir
-  @return TRUE si la modificación tuvo éxito
+  @return TRUE si la modificaciï¿½n tuvo ï¿½xito
   */
   bool alterTable(const QString &n);
 
   /**
-  Esta función es esencialmente igual a la anterior, se proporciona por conveniencia.
+  Esta funciï¿½n es esencialmente igual a la anterior, se proporciona por conveniencia.
 
   Modifica la estructura de una tabla dada, preservando los datos. La nueva
   estructura y la vieja se pasan en cadenas de caracteres con la descripcion XML.
@@ -174,7 +174,7 @@ public:
   @param mtd1 Descripcion en XML de la vieja estructura
   @param mtd2 Descripcion en XML de la nueva estructura
   @param key Clave sha1 de la vieja estructura
-  @return TRUE si la modificación tuvo éxito
+  @return TRUE si la modificaciï¿½n tuvo ï¿½xito
   */
   bool alterTable(const QString &mtd1, const QString &mtd2, const QString &key = QString::null);
 
@@ -183,7 +183,7 @@ public:
 
   @param n Nombre de la tabla que se quiere crear
   @return Un objeto FLTableMetaData con los metadatos de la tabla que se ha creado, o
-      0 si no se pudo crear la tabla o ya existía
+      0 si no se pudo crear la tabla o ya existï¿½a
   */
   FLTableMetaData *createTable(const QString &n);
 
@@ -192,7 +192,7 @@ public:
 
   @param tmd Metadatos de la tabla
   @return Un objeto FLTableMetaData con los metadatos de la tabla que se ha creado, o
-      0 si no se pudo crear la tabla o ya existía
+      0 si no se pudo crear la tabla o ya existï¿½a
   */
   FLTableMetaData *createTable(FLTableMetaData *tmd);
 
@@ -200,14 +200,14 @@ public:
   Devuelve el contenido del valor de de un campo formateado para ser reconocido
   por la base de datos actual en condiciones LIKE, dentro de la clausura WHERE de SQL.
 
-  Este método toma como parametros los metadatos del campo definidos con
-  FLFieldMetaData. Además de TRUE y FALSE como posibles valores de un campo
-  lógico también acepta los valores Sí y No (o su traducción al idioma correspondiente).
+  Este mï¿½todo toma como parametros los metadatos del campo definidos con
+  FLFieldMetaData. Ademï¿½s de TRUE y FALSE como posibles valores de un campo
+  lï¿½gico tambiï¿½n acepta los valores Sï¿½ y No (o su traducciï¿½n al idioma correspondiente).
   Las fechas son adaptadas al forma AAAA-MM-DD, que es el formato reconocido por PostgreSQL .
 
   @param fMD Objeto FLFieldMetaData que describre los metadatos para el campo
   @param v Valor que se quiere formatear para el campo indicado
-  @param upper Si TRUE convierte a mayúsculas el valor (si es de tipo cadena)
+  @param upper Si TRUE convierte a mayï¿½sculas el valor (si es de tipo cadena)
   */
   QString formatValueLike(FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
   QString formatAssignValueLike(FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
@@ -215,11 +215,11 @@ public:
   QString formatAssignValueLike(const QString &fieldName, int t, const QVariant &v, const bool upper = false, const bool searchable = false);
 
   /**
-  Este método hace lo mismo que el anterior, y se suministra por conveniencia.
+  Este mï¿½todo hace lo mismo que el anterior, y se suministra por conveniencia.
 
   @param t Tipo de datos del valor
   @param v Valor que se quiere formatear para el campo indicado
-  @param upper Si TRUE convierte a mayúsculas el valor (si es de tipo cadena)
+  @param upper Si TRUE convierte a mayï¿½sculas el valor (si es de tipo cadena)
   */
   QString formatValueLike(int t, const QVariant &v, const bool upper = false);
 
@@ -227,14 +227,14 @@ public:
   Devuelve el contenido del valor de de un campo formateado para ser reconocido
   por la base de datos actual, dentro de la clausura WHERE de SQL.
 
-  Este método toma como parametros los metadatos del campo definidos con
-  FLFieldMetaData. Además de TRUE y FALSE como posibles valores de un campo
-  lógico también acepta los valores Sí y No (o su traducción al idioma correspondiente).
+  Este mï¿½todo toma como parametros los metadatos del campo definidos con
+  FLFieldMetaData. Ademï¿½s de TRUE y FALSE como posibles valores de un campo
+  lï¿½gico tambiï¿½n acepta los valores Sï¿½ y No (o su traducciï¿½n al idioma correspondiente).
   Las fechas son adaptadas al forma AAAA-MM-DD, que es el formato reconocido por PostgreSQL .
 
   @param fMD Objeto FLFieldMetaData que describre los metadatos para el campo
   @param v Valor que se quiere formatear para el campo indicado
-  @param upper Si TRUE convierte a mayúsculas el valor (si es de tipo cadena)
+  @param upper Si TRUE convierte a mayï¿½sculas el valor (si es de tipo cadena)
   */
   QString formatValue(FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
   QString formatAssignValue(FLFieldMetaData *fMD, const QVariant &v, const bool upper = false);
@@ -242,92 +242,92 @@ public:
   QString formatAssignValue(const QString &fieldName, int t, const QVariant &v, const bool upper = false);
 
   /**
-  Este método hace lo mismo que el anterior, y se suministra por conveniencia.
+  Este mï¿½todo hace lo mismo que el anterior, y se suministra por conveniencia.
 
   @param t Tipo de datos del valor
   @param v Valor que se quiere formatear para el campo indicado
-  @param upper Si TRUE convierte a mayúsculas el valor (si es de tipo cadena)
+  @param upper Si TRUE convierte a mayï¿½sculas el valor (si es de tipo cadena)
   */
   QString formatValue(int t, const QVariant &v, const bool upper = false);
 
   /**
   Crea un objeto FLTableMetaData a partir de un elemento XML.
 
-  Dado un elemento XML, que contiene la descripción de una
+  Dado un elemento XML, que contiene la descripciï¿½n de una
   tablas, construye y devuelve el objeto FLTableMetaData correspondiente.
-  NO SE HACEN CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  NO SE HACEN CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
-  @param mtd Elemento XML con la descripción de la tabla
+  @param mtd Elemento XML con la descripciï¿½n de la tabla
   @param quick Si TRUE no realiza chequeos, usar con cuidado
-  @return Objeto FLTableMetaData que contiene la descrición de la relación
+  @return Objeto FLTableMetaData que contiene la descriciï¿½n de la relaciï¿½n
   */
   FLTableMetaData *metadata(QDomElement *mtd, bool quick = false);
 
   /**
   Crea un objeto FLFieldMetaData a partir de un elemento XML.
 
-  Dado un elemento XML, que contiene la descripción de un
+  Dado un elemento XML, que contiene la descripciï¿½n de un
   campo de una tabla construye y agrega a una lista de descripciones
   de campos el objeto FLFieldMetaData correspondiente, que contiene
-  dicha definición del campo. Tambien lo agrega a una lista de claves
+  dicha definiciï¿½n del campo. Tambien lo agrega a una lista de claves
   compuesta, si el campo construido pertenece a una clave compuesta.
-  NO SE HACEN CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  NO SE HACEN CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
-  @param field Elemento XML con la descripción del campo
+  @param field Elemento XML con la descripciï¿½n del campo
   @param v Valor utilizado por defecto para la propiedad visible
   @param ed Valor utilizado por defecto para la propiedad editable
-  @return Objeto FLFieldMetaData que contiene la descripción del campo
+  @return Objeto FLFieldMetaData que contiene la descripciï¿½n del campo
   */
   FLFieldMetaData *metadataField(QDomElement *field, bool v = true, bool ed = true);
 
   /**
   Crea un objeto FLRelationMetaData a partir de un elemento XML.
 
-  Dado un elemento XML, que contiene la descripción de una
-  relación entre tablas, construye y devuelve el objeto FLRelationMetaData
-  correspondiente, que contiene dicha definición de la relación.
-  NO SE HACEN CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  Dado un elemento XML, que contiene la descripciï¿½n de una
+  relaciï¿½n entre tablas, construye y devuelve el objeto FLRelationMetaData
+  correspondiente, que contiene dicha definiciï¿½n de la relaciï¿½n.
+  NO SE HACEN CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
-  @param relation Elemento XML con la descripción de la relación
-  @return Objeto FLRelationMetaData que contiene la descripción de la relación
+  @param relation Elemento XML con la descripciï¿½n de la relaciï¿½n
+  @return Objeto FLRelationMetaData que contiene la descripciï¿½n de la relaciï¿½n
   */
   FLRelationMetaData *metadataRelation(QDomElement *relation);
 
   /**
   Crea un objeto FLParameterQuery a partir de un elemento XML.
 
-  Dado un elemento XML, que contiene la descripción de una
-  parámetro de una consulta, construye y devuelve el objeto FLParameterQuery
+  Dado un elemento XML, que contiene la descripciï¿½n de una
+  parï¿½metro de una consulta, construye y devuelve el objeto FLParameterQuery
   correspondiente.
-  NO SE HACEN CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  NO SE HACEN CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
-  @param parameter Elemento XML con la descripción del parámetro de una consulta
-  @return Objeto FLParameterQuery que contiene la descrición del parámetro
+  @param parameter Elemento XML con la descripciï¿½n del parï¿½metro de una consulta
+  @return Objeto FLParameterQuery que contiene la descriciï¿½n del parï¿½metro
   */
   FLParameterQuery *queryParameter(QDomElement *parameter);
 
   /**
   Crea un objeto FLGroupByQuery a partir de un elemento XML.
 
-  Dado un elemento XML, que contiene la descripción de un nivel de agrupamiento
+  Dado un elemento XML, que contiene la descripciï¿½n de un nivel de agrupamiento
   de una consulta, construye y devuelve el objeto FLGroupByQuery correspondiente.
-  NO SE HACEN CHEQUEOS DE ERRORES SINTÁCTICOS EN EL XML.
+  NO SE HACEN CHEQUEOS DE ERRORES SINTï¿½CTICOS EN EL XML.
 
-  @param group Elemento XML con la descripción del nivel de agrupamiento de una consulta.
-  @return Objeto FLGroupByQuery que contiene la descrición del nivel de agrupamiento
+  @param group Elemento XML con la descripciï¿½n del nivel de agrupamiento de una consulta.
+  @return Objeto FLGroupByQuery que contiene la descriciï¿½n del nivel de agrupamiento
   */
   FLGroupByQuery *queryGroup(QDomElement *group);
 
   /**
   Crea una tabla del sistema.
 
-  Este método lee directamente de disco el fichero con la descripción de una tabla
+  Este mï¿½todo lee directamente de disco el fichero con la descripciï¿½n de una tabla
   del sistema y la crea en la base de datos. Su uso normal es para inicializar
   el sistema con tablas iniciales.
 
   @param n Nombre de la tabla.
   @return Un objeto FLTableMetaData con los metadatos de la tabla que se ha creado, o
-      0 si no se pudo crear la tabla o ya existía
+      0 si no se pudo crear la tabla o ya existï¿½a
   */
   FLTableMetaData *createSystemTable(const QString &n);
 
@@ -355,29 +355,29 @@ public:
   por claves SHA del contenido del valor.
 
   Se utiliza para optimizar consultas que incluyen campos con valores grandes,
-  como por ejemplo imágenes, para manejar en las consulta SQL la referencia al valor
-  que es de tamaño constante en vez del valor en sí. Esto disminuye el tráfico al
-  reducir considerablemente el tamaño de los registros obtenidos.
+  como por ejemplo imï¿½genes, para manejar en las consulta SQL la referencia al valor
+  que es de tamaï¿½o constante en vez del valor en sï¿½. Esto disminuye el trï¿½fico al
+  reducir considerablemente el tamaï¿½o de los registros obtenidos.
 
-  Las consultas pueden utilizar una referencia y obtener su valor sólo cuando se
+  Las consultas pueden utilizar una referencia y obtener su valor sï¿½lo cuando se
   necesita mediante FLManager::fetchLargeValue().
 
   @param mtd Metadatos de la tabla que contiene el campo
-  @param largeValue Valor de gran tamaño del campo
+  @param largeValue Valor de gran tamaï¿½o del campo
   @return Clave de referencia al valor
   */
   QString storeLargeValue(FLTableMetaData *mtd, const QString &largeValue);
 
   /**
-  Obtiene el valor de gran tamaño segun su clave de referencia.
+  Obtiene el valor de gran tamaï¿½o segun su clave de referencia.
 
   @param refKey Clave de referencia. Esta clave se suele obtener mediante FLManager::storeLargeValue
-  @return Valor de gran tamaño almacenado
+  @return Valor de gran tamaï¿½o almacenado
   */
   QVariant fetchLargeValue(const QString &refKey) const;
 
   /**
-  Uso interno. Indica el número de veces que se ha llamado a FLManager::init().
+  Uso interno. Indica el nï¿½mero de veces que se ha llamado a FLManager::init().
   */
   int initCount() const {
     return initCount_;
@@ -400,17 +400,17 @@ private:
 #endif
 
   /**
-  Caché de metadatos, para optimizar lecturas
+  Cachï¿½ de metadatos, para optimizar lecturas
   */
   QDict<FLTableMetaData> *cacheMetaData_;
 
   /**
-  Caché de definiciones de acciones, para optimizar lecturas
+  Cachï¿½ de definiciones de acciones, para optimizar lecturas
   */
   QDict<FLAction> *cacheAction_;
 
   /**
-  Caché de metadatos de talblas del sistema para optimizar lecturas
+  Cachï¿½ de metadatos de talblas del sistema para optimizar lecturas
   */
   QDict<FLTableMetaData> *cacheMetaDataSys_;
 
@@ -418,14 +418,8 @@ private:
   Base de datos a utilizar por el manejador
   */
   FLSqlDatabase *db_;
-
-    /**
-  Base de datos a utilizar por el manejador
-  */
-  FLSqlDatabase *dbCache_;
-
   /**
-  Indica el número de veces que se ha llamado a FLManager::init()
+  Indica el nï¿½mero de veces que se ha llamado a FLManager::init()
   */
   int initCount_;
 };

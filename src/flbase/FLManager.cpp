@@ -66,17 +66,11 @@ FLManager::FLManager(FLSqlDatabase *db) :
   dictKeyMetaData_ = 0;
   
 #endif
-dbCache_ = 0;
 }
 
 FLManager::~FLManager()
 {
   finish();
-  if (dbCache_) {
-    //dbCache_->closeDB();
-    delete dbCache_;
-    dbCache_ = 0;
-  }
 }
 
 void FLManager::loadTables()
@@ -1728,111 +1722,92 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
 
+  
+
+  QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
+  QDir dir(dbFolder);
+  
+  if (!dir.exists()) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
+    dir.mkpath(dbFolder);
+  }
+  dbFolder = dir.absPath();
+  QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
+
+  if (!FLSqlConnection::addDatabase("FLsqlite", fileCache, "", "","",0,"cache","")) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añadir la base de datos %1").arg(fileCache));
+    return;
+  }
+
   QString cacheTableName = "timestamps_cache";
 
-  if (!dbCache_) {
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("No hay conexión con la base de datos cache. conectando ..."));
-      dbCache_ = new FLSqlDatabase();
-      if (!dbCache_->loadDriver("FLsqlite", "cache")) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("No se puede cargar el driver de la base de datos cache"));
-        delete dbCache_;
-        dbCache_ = 0;
-        return;
-      }
+  FLSqlDatabase *dbCache_ = FLSqlDatabase::database("cache");
 
-      QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
-      QDir dir(dbFolder);
-      
-      if (!dir.exists()) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
-        dir.mkpath(dbFolder);
-      }
+  if (!cacheMetaData_->find(cacheTableName)) {
+    FLTableMetaData *cacheMtd = new FLTableMetaData(cacheTableName, QString::null, QString::null);
+    FLFieldMetaData *fieldTabla = new FLFieldMetaData("tablename", "tabla", false, true, QVariant::String, 50);
 
-      dbFolder = dir.absPath();
-      
-      QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
+    FLFieldMetaData *fieldTimestamp = new FLFieldMetaData("timestamp", "timestamp", false, false, QVariant::UInt);
+    cacheMtd->addFieldMD(fieldTabla);
+    cacheMtd->addFieldMD(fieldTimestamp);
 
-
-
-
-      if (!dbCache_->connectDB(fileCache, "", "", "", 0, "", "")) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("No se puede conectar a la base de datos cache %1").arg(fileCache));
-        delete dbCache_;
-        dbCache_ = 0;
-        return;
-      } else {
-
-        FLTableMetaData *cacheMtd = new FLTableMetaData(cacheTableName, QString::null, QString::null);
-        FLFieldMetaData *fieldTabla = new FLFieldMetaData("tablename", "tabla", false, true, QVariant::String, 50);
-
-        FLFieldMetaData *fieldTimestamp = new FLFieldMetaData("timestamp", "timestamp", false, false, QVariant::UInt);
-        cacheMtd->addFieldMD(fieldTabla);
-        cacheMtd->addFieldMD(fieldTimestamp);
-
-
-
-
-        FLSqlConnections::addDatabase(dbCache_, "cache");
-
-
-        if (!dbCache_->existsTable(cacheTableName)) {
-          if (!dbCache_->createTable(cacheMtd)) {
-              qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(cacheTableName));
-              return;
-            } else {
-            
-              qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(cacheTableName));
-            }
-
+    if (!dbCache_->existsTable(cacheTableName)) {
+      if (!dbCache_->createTable(cacheMtd)) {
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(cacheTableName));
+          return;
+        } else {
+        
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(cacheTableName));
         }
 
-            cacheMetaData_->insert(cacheTableName, cacheMtd);
-      }
     }
+    cacheMetaData_->insert(cacheTableName, cacheMtd);
+  }
+
+
+
 
   QString tableName = tmd->name() + "_cache";
 
-  FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
-  // Añadimos el mdt a los mtds conocidos...
-  QStringList fieldsCachedNames = tmd->cachedFields();
-  QString pkName = tmd->primaryKey();
-  fieldsCachedNames.append(pkName);
+  if (!cacheMetaData_->find(tableName)) {
+      FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
+      // Añadimos el mdt a los mtds conocidos...
+      QStringList fieldsCachedNames = tmd->cachedFields();
+      QString pkName = tmd->primaryKey();
+      fieldsCachedNames.append(pkName);
 
-  for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
-    FLFieldMetaData *fieldOriginal = tmd->field(*it);
-      // Eliminados relaciones...
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añadiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
-      FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
-      fieldCached->clearRelationList();
-      if (fieldOriginal->name() == pkName) {
-        fieldCached->setIsPrimaryKey(true);
-      }
-      newMtd->addFieldMD(fieldCached);
-    }
+      for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
+        FLFieldMetaData *fieldOriginal = tmd->field(*it);
+          // Eliminados relaciones...
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añadiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
+          FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
+          fieldCached->clearRelationList();
+          if (fieldOriginal->name() == pkName) {
+            fieldCached->setIsPrimaryKey(true);
+          }
+          newMtd->addFieldMD(fieldCached);
+        }
 
-  if (!dbCache_->existsTable(tableName)) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
-    // Montar newMtd.
+      if (!dbCache_->existsTable(tableName)) {
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
+        // Montar newMtd.
 
-      
-      if (!dbCache_->createTable(newMtd)) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
-        return;
-      } else {
-        
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
-      }
+          
+          if (!dbCache_->createTable(newMtd)) {
+            qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
+            return;
+          } else {
+            
+            qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
+          }
 
 
       FLUtil::sqlInsert(cacheTableName,"tablename",tableName,"cache");
 
   }
 
-  cacheMetaData_->insert(tableName, newMtd); // Añadimos metadata a la lista de metadatas disponibles ....
+    cacheMetaData_->insert(tableName, cacheMtd);
+  }
 
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
 } 
-
-
-//TODO: crear función updateCache.
-// poder acceder a conexión caché
