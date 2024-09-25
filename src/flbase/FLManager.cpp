@@ -1714,7 +1714,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 {
 
   if (db_->database().find("_cache.sqlite3db") >= 0) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("La base de datos %1 es la propia cache").arg(db_->database()));
+    //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La base de datos %1 es la propia cache").arg(db_->database()));
     return;
   }
 
@@ -1798,7 +1798,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           newMtd->addFieldMD(fieldCached);
         }
 
-      dbCache_->manager()->insertMetadataCache(tableName, db_->managerModules()->idModuleOfFile(tableName + ".mtd"), newMtd);
+      dbCache_->manager()->insertMetadataCache(tableName, QString("sys"), newMtd);
 
       if (!dbCache_->existsTable(tableName)) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
