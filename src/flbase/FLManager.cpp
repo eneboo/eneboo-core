@@ -759,7 +759,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
-    ret = cacheMetaData_.find(n);
+    ret = cacheMetaData_->find(n);
   } else {
     ret = metadataDev(n, quick);
   }
