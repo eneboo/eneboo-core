@@ -785,7 +785,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
     if (stream.isEmpty()) {
 #ifdef FL_DEBUG
       qWarning("FLManager : " +
-               QApplication::tr("Error al cargar los metadatos para la tabla %1")
+               QApplication::tr("Error al cargar los metadatos para la tabla %1 (a)")
                .arg(n));
 #endif
       return 0;
@@ -807,7 +807,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
       if (stream.isEmpty()) {
 #ifdef FL_DEBUG
         qWarning("FLManager : " +
-                 QApplication::tr("Error al cargar los metadatos para la tabla %1")
+                 QApplication::tr("Error al cargar los metadatos para la tabla %1 (b)")
                  .arg(n));
 #endif
         return 0;
@@ -818,7 +818,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
     if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
       qWarning("FLManager : " +
-               QApplication::tr("Error al cargar los metadatos para la tabla %1")
+               QApplication::tr("Error al cargar los metadatos para la tabla %1 (c)")
                .arg(n));
 #endif
       return 0;
@@ -981,7 +981,7 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
 
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
+    qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1 (d)").arg(n));
 #endif
     if (quick)
       delete dictKey;
@@ -1158,7 +1158,7 @@ FLSqlQuery *FLManager::query(const QString &n, QObject *parent)
         doc, db_->managerModules()->contentCached(n + QString::fromLatin1(".qry"))
       )) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar la consulta %1").arg(n));
+    qWarning("FLManager : " + QApplication::tr("Error al cargar la consulta %1 (e)").arg(n));
 #endif
 
     return 0;
@@ -1240,7 +1240,7 @@ FLAction *FLManager::action(const QString &n)
 
   if (!FLUtil::domDocumentSetContent(doc, contentActions)) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar la accion %1").arg(n));
+    qWarning("FLManager : " + QApplication::tr("Error al cargar la accion %1 (f)").arg(n));
 #endif
 
     return 0;
@@ -1559,7 +1559,7 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
 
       if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
-        qWarning("FLManager::createSystemTable : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
+        qWarning("FLManager::createSystemTable : " + QApplication::tr("Error al cargar los metadatos para la tabla %1 (g)").arg(n));
 #endif
 
         return 0;
