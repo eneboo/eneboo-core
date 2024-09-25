@@ -785,7 +785,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
     if (stream.isEmpty()) {
 #ifdef FL_DEBUG
       qWarning("FLManager : " +
-               QApplication::tr("Error al cargar los metadatos para la tabla %1 (a)")
+               QApplication::tr("Error al cargar los metadatos para la tabla %1")
                .arg(n));
 #endif
       return 0;
@@ -807,7 +807,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
       if (stream.isEmpty()) {
 #ifdef FL_DEBUG
         qWarning("FLManager : " +
-                 QApplication::tr("Error al cargar los metadatos para la tabla %1 (b)")
+                 QApplication::tr("Error al cargar los metadatos para la tabla %1")
                  .arg(n));
 #endif
         return 0;
@@ -818,7 +818,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
     if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
       qWarning("FLManager : " +
-               QApplication::tr("Error al cargar los metadatos para la tabla %1 (c)")
+               QApplication::tr("Error al cargar los metadatos para la tabla %1")
                .arg(n));
 #endif
       return 0;
@@ -981,7 +981,7 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
 
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1 (d)").arg(n));
+    qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
 #endif
     if (quick)
       delete dictKey;
@@ -1158,7 +1158,7 @@ FLSqlQuery *FLManager::query(const QString &n, QObject *parent)
         doc, db_->managerModules()->contentCached(n + QString::fromLatin1(".qry"))
       )) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar la consulta %1 (e)").arg(n));
+    qWarning("FLManager : " + QApplication::tr("Error al cargar la consulta %1").arg(n));
 #endif
 
     return 0;
@@ -1240,7 +1240,7 @@ FLAction *FLManager::action(const QString &n)
 
   if (!FLUtil::domDocumentSetContent(doc, contentActions)) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar la accion %1 (f)").arg(n));
+    qWarning("FLManager : " + QApplication::tr("Error al cargar la accion %1").arg(n));
 #endif
 
     return 0;
@@ -1559,7 +1559,7 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
 
       if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
-        qWarning("FLManager::createSystemTable : " + QApplication::tr("Error al cargar los metadatos para la tabla %1 (g)").arg(n));
+        qWarning("FLManager::createSystemTable : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
 #endif
 
         return 0;
@@ -1712,6 +1712,12 @@ QString tableLarge;
 
 void FLManager::checkTablaCache(FLTableMetaData *tmd)
 {
+
+  if (db_->database().find("_cache.sqlite3db")) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("La base de datos %1 es la propia cache").arg(db_->database()));
+    return;
+  }
+
   if (!tmd) {
     return;
   }
@@ -1753,7 +1759,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     cacheMtd->addFieldMD(fieldTimestamp);
 
     //cacheMetaData_->insert(cacheTableName, cacheMtd);
-    dbCache_->manager()->insertMetadataCache(cacheTableName, cacheMtd);
+    dbCache_->manager()->insertMetadata(cacheTableName,"sys",cacheMtd);
 
     if (!dbCache_->existsTable(cacheTableName)) {
       if (!dbCache_->createTable(cacheMtd)) {
@@ -1792,7 +1798,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           newMtd->addFieldMD(fieldCached);
         }
 
-      dbCache_->manager()->insertMetadataCache(tableName, newMtd);
+      dbCache_->manager()->insertMetadata(tableName, db_->managerModules()->idModuleOfFile(tableName + ".mtd"), newMtd);
 
       if (!dbCache_->existsTable(tableName)) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
@@ -1820,3 +1826,9 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
 } 
+
+void FLManager::insertMetadataCache(QString &name, QString &idM, FLTableMetaData *tmd) {
+    cacheMetaData_->insert(name, tmd);
+    db_->managerModules()->setContent(name, idM, tmd)
+
+  }

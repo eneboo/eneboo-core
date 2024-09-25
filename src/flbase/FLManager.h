@@ -385,9 +385,7 @@ public:
 
   void checkTablaCache(FLTableMetaData *tmd);
 
-  void insertMetadataCache(QString &name, FLTableMetaData *tmd) {
-    cacheMetaData_->insert(name, tmd);
-  }
+  void insertMetadataCache(QString &name, QString &idM, FLTableMetaData *tmd);
 
 private:
 
