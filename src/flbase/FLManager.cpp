@@ -1732,13 +1732,13 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     return;
   }
   initCacheDB();
-  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
+  //qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
 
   QString cacheTableName = "timestamps";
 
   FLSqlDatabase *dbCache_ = FLSqlConnections::database("cache");
-  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Usando db cache : %1").arg(dbCache_->database()));
+  //qWarning("FLManager::checkTablaCache : " + QApplication::tr("Usando db cache : %1").arg(dbCache_->database()));
 
   if (!cacheMetaData_->find(cacheTableName)) {
     FLTableMetaData *cacheMtd = new FLTableMetaData(cacheTableName, QString::null, QString::null);
@@ -1749,7 +1749,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     cacheMtd->addFieldMD(fieldTimestamp);
 
     cacheMetaData_->insert(cacheTableName, cacheMtd);
-    //dbCache_->manager()->insertMetadataCache(cacheTableName,QString("sys"),cacheMtd);
+    dbCache_->manager()->insertMetadataCache(cacheTableName,QString("sys"),cacheMtd);
 
     if (!dbCache_->existsTable(cacheTableName)) {
       if (!dbCache_->createTable(cacheMtd)) {
@@ -1788,8 +1788,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           newMtd->addFieldMD(fieldCached);
         }
 
-      //dbCache_->manager()->insertMetadataCache(tableName, QString("sys"), newMtd);
-      cacheMetaData_->insert(tableName, tmd);
+      cacheMetaData_->insert(tableName, newMtd);
+      dbCache_->manager()->insertMetadataCache(tableName, QString("sys"), newMtd);
 
       if (!dbCache_->existsTable(tableName)) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
@@ -1820,7 +1820,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
 void FLManager::insertMetadataCache(QString &name, QString idM, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
-    db_->managerModules()->setContent(name, idM, "tmd");
+    //db_->managerModules()->setContent(name, idM, "tmd");
 
   }
 
