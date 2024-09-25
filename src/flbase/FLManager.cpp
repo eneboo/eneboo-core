@@ -761,6 +761,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
   if (db_->database().find("_cache.sqlite3db") >= 0) {
     ret = cacheMetaData_->find(n);
   } else {
+    initCacheDB();
     ret = metadataDev(n, quick);
   }
 
@@ -1735,23 +1736,6 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
 
-  
-
-  QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
-  QDir dir(dbFolder);
-  
-  if (!dir.exists()) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
-    dir.mkpath(dbFolder);
-  }
-  dbFolder = dir.absPath();
-  QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
-
-  if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cache","")) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añadir la base de datos %1").arg(fileCache));
-    return;
-  }
-
   QString cacheTableName = "timestamps";
 
   FLSqlDatabase *dbCache_ = FLSqlConnections::database("cache");
@@ -1839,3 +1823,20 @@ void FLManager::insertMetadataCache(QString &name, QString idM, FLTableMetaData 
     db_->managerModules()->setContent(name, idM, "tmd");
 
   }
+
+void FLManager::initCacheDB() {
+  QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
+  QDir dir(dbFolder);
+  
+  if (!dir.exists()) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(dbFolder));
+    dir.mkpath(dbFolder);
+  }
+  dbFolder = dir.absPath();
+  QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
+
+  if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cache","")) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añadir la base de datos %1").arg(fileCache));
+    return;
+  }
+}

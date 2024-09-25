@@ -383,6 +383,8 @@ public:
     return initCount_;
   }
 
+  void initCacheDB();
+
   void checkTablaCache(FLTableMetaData *tmd);
 
   void insertMetadataCache(QString &name, QString idM, FLTableMetaData *tmd);
