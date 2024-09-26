@@ -418,8 +418,9 @@ void FLManagerModules::init()
     cursor.commitBuffer();
   }
 
-  staticBdInfo_ = new AQStaticBdInfo(db_->database());
 #endif
+
+  staticBdInfo_ = new AQStaticBdInfo(db_->database());
 
   readState();
 }
