@@ -19,12 +19,14 @@ var form = this;
 
 function init() {
 
-  
+  aqApp.db().manager().initCacheDB();
   var settings = new AQSettings;
 
   if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
     sys.keepAlive();
   }
+
+  
   
   if (isLoadedModule("flfactppal")) {
     var util: FLUtil = new FLUtil();
