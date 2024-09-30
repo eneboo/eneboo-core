@@ -1749,7 +1749,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     cacheMtd->addFieldMD(fieldTimestamp);
 
     cacheMetaData_->insert(cacheTableName, cacheMtd);
-    dbCache_->manager()->insertMetadataCache(cacheTableName,QString("sys"),cacheMtd);
+    dbCache_->manager()->insertMetadataCache(cacheTableName ,cacheMtd);
 
     if (!dbCache_->existsTable(cacheTableName)) {
       if (!dbCache_->createTable(cacheMtd)) {
@@ -1767,7 +1767,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
 
 
-  QString tableName = tmd->name();
+  QString tableName = tmd->name() + "_cache"; // Hay que poner coletilla _cache para no chapar el mtd original (p.e.: clientes , clientes_cache)
 
   if (!cacheMetaData_->find(tableName)) {
       FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
@@ -1788,8 +1788,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           newMtd->addFieldMD(fieldCached);
         }
 
-      cacheMetaData_->insert(tableName, newMtd);
-      dbCache_->manager()->insertMetadataCache(tableName, QString("sys"), newMtd);
+      cacheMetaData_->insert(tableName, newMtd); 
+      dbCache_->manager()->insertMetadataCache(tableName, newMtd);
 
       if (!dbCache_->existsTable(tableName)) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
