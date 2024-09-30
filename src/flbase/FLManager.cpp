@@ -1818,7 +1818,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
 } 
 
-void FLManager::insertMetadataCache(QString &name, QString idM, FLTableMetaData *tmd) {
+void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
     //db_->managerModules()->setContent(name, idM, "tmd");
 
