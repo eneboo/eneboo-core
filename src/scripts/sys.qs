@@ -3331,3 +3331,77 @@ function keepAlive()
 
  sys.AQTimer.singleShot(60000, sys.keepAlive);
 }
+
+function updateCachedTable(tableName)
+{
+  // Recojemos el timestamp de la tabla
+
+  const whereCache = tableName != undefined ? "tablename='" + tableName + "_cache'" : "1=1";
+  var qryCachesFields = new FLSqlQuery();
+  qryCachesFields.setSelect("tablename,timestamp");
+  qryCachesFields.setFrom("timestamps");
+  qryCachesFields.setWhere(whereCache);
+  if (!qryCachesFields.exec()) {
+    debug("Error ejecutando consulta");
+    return false;
+  }
+
+  const llamada: String = "delegate_qry_api";
+
+  while(qryCachesFields.next()) {
+    const currentTableName = qryCachesFields.value("tablename").split("_cache")[0];
+    var timestamp = qryCachesFields.value("timestamp");
+  // LLamada a aqextensión solicitando datos.
+    
+ 		debug("Lanzando llamada --> " + llamada);
+ 		// var error = "Servidor no encontrado";
+ 		var res = formHTTP.iface.get(llamada, {"timestamp" : timestamp, "tablename" :  currentTableName});
+  		if ("ok" in res && res["ok"]) {
+        debug('ok');
+        const data = res["salida"]["result"]; // Lista con datos ... (linea y modo)
+        var lastTimeStamp = null;
+
+        for (var i=0; i<data.length; i++) {
+          const linea = data[i];
+          const modo = linea["mode"];
+          const fields = linea["fields"];
+          const pkField = linea["pk"];
+          const tableName_ = linea["tablename"];
+          if (updateCachedFields(tableName_, modo, pkField, fields)) {
+            lastTimeStamp = linea["timestamp"];
+          } else {
+            debug("Error actualizando tabla " + tableName_);
+            return false;
+          }
+        }
+
+        if (lastTimeStamp != null) {
+          const whereUpdate = "tablename='" + tableName + "_cache'";
+          AQUtil.sqlUpdate("timestamps", "timestamp", "'" + lastTimeStamp + "'", "tablename='" + currentTableName + "'", "cache");
+        }
+  		} else {
+        debug('error');
+        debug(res["salida"]["result"]);
+        break;
+      } 
+  }
+
+    return false;
+}
+
+function updateCachedFields(tableName, mode, pkField,fields) {
+  if (mode == "delete") {
+    return AQUtil.quickSqlDelete(tableName + "_cache", pkField + " = " + fields[pkField], "cache");
+  } else {
+    const fieldsNames = Object.keys(fields);
+    const fieldsValues = Object.values(fields);
+    if (mode == "insert") {
+      return AQUtil.sqlInsert(tableName + "_cache", fieldsNames, fieldsValues, "cache");
+    } else if (mode == "update") {
+      return AQUtil.sqlUpdate(tableName + "_cache", fieldsNames, fieldsValues, pkField + " = " + fields[pkField], "cache");
+    } else {
+      debug("Modo no soportado: " + mode);
+      return false;
+    }
+  }
+}
