@@ -1744,7 +1744,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     FLTableMetaData *cacheMtd = new FLTableMetaData(cacheTableName, QString::null, QString::null);
     FLFieldMetaData *fieldTabla = new FLFieldMetaData("tablename", "tabla", false, true, QVariant::String, 50);
 
-    FLFieldMetaData *fieldTimestamp = new FLFieldMetaData("timestamp", "timestamp", true, false, QVariant::UInt);
+    FLFieldMetaData *fieldTimestamp = new FLFieldMetaData("timestamp", "timestamp", true, false, QVariant::String, 50);
     cacheMtd->addFieldMD(fieldTabla);
     cacheMtd->addFieldMD(fieldTimestamp);
 
