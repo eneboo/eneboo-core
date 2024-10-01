@@ -3332,12 +3332,19 @@ function keepAlive()
  sys.AQTimer.singleShot(60000, sys.keepAlive);
 }
 
-function updateCachedTable(tableName)
+function updateCachedTables(tableNames)
 {
   // Recojemos el timestamp de la tabla
+  var whereCache = "1=1";
+  if (tableNames == undefined) {
+    whereCache = "tablename in (";  
+    whereCache += tableNames.join(",");
+    whereCache += ")";
 
-  const whereCache = tableName != undefined ? "tablename='" + tableName + "_cache'" : "1=1";
-  var qryCachesFields = new FLSqlQuery();
+  }
+
+  debug("Consulta " + whereCache);
+  var qryCachesFields = new FLSqlQuery(null, "cache");
   qryCachesFields.setSelect("tablename,timestamp");
   qryCachesFields.setFrom("timestamps");
   qryCachesFields.setWhere(whereCache);
@@ -3345,63 +3352,129 @@ function updateCachedTable(tableName)
     debug("Error ejecutando consulta");
     return false;
   }
-
-  const llamada: String = "delegate_qry_api";
-
+  
+  const llamada: String = "delegate_qry";
+  var result = true;
+  var tablesPayload = [];
   while(qryCachesFields.next()) {
-    const currentTableName = qryCachesFields.value("tablename").split("_cache")[0];
+    var tableName = qryCachesFields.value("tablename");
+    const currentTableName = tableName.split("_cache")[0];
+    const metatable = aqApp.db().manager().metadata(currentTableName);
     var timestamp = qryCachesFields.value("timestamp");
   // LLamada a aqextensión solicitando datos.
-    
+  var cachedFields = metatable.cachedFields();
+  cachedFields.push(metatable.primaryKey());
+
+  tablesPayload.push({"tablename": currentTableName, "cachedfields": cachedFields.join(","), "timestamp": timestamp});
+  }
+
  		debug("Lanzando llamada --> " + llamada);
  		// var error = "Servidor no encontrado";
- 		var res = formHTTP.iface.get(llamada, {"timestamp" : timestamp, "tablename" :  currentTableName});
-  		if ("ok" in res && res["ok"]) {
-        debug('ok');
-        const data = res["salida"]["result"]; // Lista con datos ... (linea y modo)
-        var lastTimeStamp = null;
+    var str_json = formUTIL.jsonToString(tablesPayload);
+    var ba = new QByteArray;
+    ba.string = str_json;
+    const json64 = AQS.toBase64(ba);
+ 		var res = formHTTP.iface.get(llamada, {"payload" : json64});
 
+  		if ("result" in res["salida"] && res["salida"]["result"] == "ok") {
+        debug("ok");
+        const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
+        
+        var lastTimeStamp;
         for (var i=0; i<data.length; i++) {
+          lastTimeStamp = null;
+          debug("Linea " + i);
           const linea = data[i];
+
           const modo = linea["mode"];
           const fields = linea["fields"];
           const pkField = linea["pk"];
           const tableName_ = linea["tablename"];
           if (updateCachedFields(tableName_, modo, pkField, fields)) {
-            lastTimeStamp = linea["timestamp"];
-          } else {
-            debug("Error actualizando tabla " + tableName_);
-            return false;
-          }
-        }
 
-        if (lastTimeStamp != null) {
-          const whereUpdate = "tablename='" + tableName + "_cache'";
-          AQUtil.sqlUpdate("timestamps", "timestamp", "'" + lastTimeStamp + "'", "tablename='" + currentTableName + "'", "cache");
+            lastTimeStamp = linea["timestamp"];
+            debug("Actualizando timestamp de " + tableName_ + " a " + lastTimeStamp);
+            const whereUpdate = "tablename='" + qryCachesFields.value("tablename") + "'";
+            debug("whereUpdate: " + whereUpdate);
+            AQUtil.sqlUpdate("timestamps", "timestamp", lastTimeStamp , whereUpdate, "cache");
+          
+          } else {
+            //debug("* Error actualizando tabla " + tableName_ + "_cache");
+            result = false;
+          }
         }
   		} else {
         debug('error');
-        debug(res["salida"]["result"]);
-        break;
+        debug("ERROR devuelto " + res["salida"]["data"]);
+        result = true;
       } 
+
+    return result;
   }
 
-    return false;
-}
+
+
 
 function updateCachedFields(tableName, mode, pkField,fields) {
-  if (mode == "delete") {
-    return AQUtil.quickSqlDelete(tableName + "_cache", pkField + " = " + fields[pkField], "cache");
+  manager = aqApp.db().manager();
+  metaTable = manager.metadata(tableName);
+  metaField = metaTable.field(pkField);
+  const array_fields = metaTable.cachedFields();
+  debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
+
+  debug("updateCachedFields: tablename: " + tableName);
+  const where = pkField + " = " + AQUtil.formatValue(metaField, fields[pkField]);
+  debug("** where: " + where);
+
+  if (mode == "Delete") {
+    return AQUtil.quickSqlDelete(tableName, where, "cache");
   } else {
-    const fieldsNames = Object.keys(fields);
-    const fieldsValues = Object.values(fields);
-    if (mode == "insert") {
-      return AQUtil.sqlInsert(tableName + "_cache", fieldsNames, fieldsValues, "cache");
-    } else if (mode == "update") {
-      return AQUtil.sqlUpdate(tableName + "_cache", fieldsNames, fieldsValues, pkField + " = " + fields[pkField], "cache");
-    } else {
-      debug("Modo no soportado: " + mode);
+    const fieldsNames = [];
+    const fieldsValues = [];
+    for (var field in fields) {
+      //debug("?? Campo: " + field);
+      if (field == pkField) {
+        continue;
+      }
+      var found = false;
+      for (var i=0; i<array_fields.length; i++) {
+        if (array_fields[i] == field) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        continue;
+      }
+
+      fieldsNames.push(field);
+      fieldsValues.push(fields[field]);
+    }
+    var cursor = new FLSqlCursor(tableName + "_cache", "cache");
+
+    cursor.select(where);
+    if (mode == "Update") {
+      if (!cursor.first()) {
+        debug("Error en posicionamiento");
+        return false;
+      }
+    }
+    
+    cursor.setModeAccess(mode== "Insert" ? cursor.Insert: cursor.Edit);
+    cursor.refreshBuffer();
+
+    for (var i=0; i<fieldsNames.length; i++) {
+      debug("* Campo: " + fieldsNames[i] + " = " + fieldsValues[i]);
+      cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
+    }
+    if (!cursor.commitBuffer()) {
+      
       return false;
     }
+    debug("BIENNN! " + tableName);
+    return true;
   }
+
 }
+
