@@ -769,8 +769,14 @@ void FLFieldDB::initCursor()
   if (!tableName_.isEmpty() && foreignField_.isEmpty() && fieldRelation_.isEmpty()) {
     cursorBackup_ = cursor_;
     if (cursor_) {
-      cursor_ = new FLSqlCursor(tableName_, true,
+      FLTableMetaData *tMD = cursor_->db()->manager()->metadata(tableName_);
+      if (tMD->useCachedFields()) {
+        cursor_ = new FLSqlCursor(tableName_ + "_cache", true,
+                                "cache", 0, 0, this);
+      } else {
+        cursor_ = new FLSqlCursor(tableName_, true,
                                 cursor_->db()->connectionName(), 0, 0, this);
+      }
     } else {
       if (!topWidget_)
         return;
