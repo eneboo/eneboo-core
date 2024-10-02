@@ -256,7 +256,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
       d->metadata_ = d->db_->manager()->createTable(name);
     else{
         qWarning(tr("FLSqlCursor::init: PASO A %1").arg(name));
-        QGuardedPtr<FLTableMetaData> *mtd_nuevo = d->db_->manager()->metatada(name);
+        FLTableMetaData *mtd_nuevo = d->db_->manager()->metatada(name);
         qWarning(tr("FLSqlCursor::init: PASO B %1").arg(name));
         delete (FLTableMetaData *)d->metadata_;
         d->metadata_ = 0;
