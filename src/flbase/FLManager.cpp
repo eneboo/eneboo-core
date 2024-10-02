@@ -760,6 +760,7 @@ qWarning(QApplication::tr("AAA: db_name: %1 , existe: %2").arg(db_->database()).
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
+    initCacheDB();
     qWarning(QApplication::tr("FLManager::metadata %1 Trucaje!!!, size: %2").arg(n).arg(QVariant(cacheMetaData_->count()).toString()));
     ret = cacheMetaData_->find(n);
     if (ret) {
