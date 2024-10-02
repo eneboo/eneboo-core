@@ -899,9 +899,17 @@ void FLFieldDB::initCursor()
     cursorAuxInit = true;
     cursor_->append(cursor_->db()->db()->recordInfo(tableName_).find(fieldName_));
     cursor_->append(cursor_->db()->db()->recordInfo(tableName_).find(fieldRelation_));
+
+    if (tMD->useCachedFields()) {
+      cursor_->refresh();
+    }
+
     if (tMD && !tMD->inCache()) {
       delete tMD;
     }
+
+
+
   }
 }
 
