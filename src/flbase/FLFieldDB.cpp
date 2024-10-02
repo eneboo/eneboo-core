@@ -833,7 +833,7 @@ void FLFieldDB::initCursor()
 
     FLRelationMetaData *rMD = tMD->relation(fieldRelation_, foreignField_, curName);
     if (!rMD) {
-      qWarning("FLFieldDB : no hay rMD. Generándolo ... ")
+      qWarning("FLFieldDB : no hay rMD. Generándolo ... ");
       bool checkIntegrity = false;
       FLRelationMetaData *testM1 = cursor_->metadata()->relation(foreignField_, fieldRelation_,
                                                                  tableName_);
