@@ -1832,13 +1832,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 } 
 
 FLTableMetaData FLManager::getMetadataCache(const QString &name) {
-  FLTableMetaData *tmd = cacheMetaData_->find(name);
-  if (!tmd) {
-    return 0;
-  }
-  FLTableMetaData newMtd =  new FLTableMetaData(tmd);
-  qWarning( QApplication::tr("FLManager::checkTablaCache : COPIA DE : %1").arg(name));
-  return newMtd;
+  return new FLTableMetaData(cacheMetaData_->find(name));
+
 }
 
 void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
