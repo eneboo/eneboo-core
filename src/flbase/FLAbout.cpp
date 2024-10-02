@@ -20,7 +20,7 @@ email                : mail@infosial.com
 
 #include <qlabel.h>
 #include <qframe.h>
-#include <qvboxlayout.h>
+#include "qlayout.h"
 #include <qclipboard.h>
 #include <qapplication.h> /// qapp
 #include "FLAbout.h"
