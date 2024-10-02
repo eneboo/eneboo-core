@@ -769,7 +769,7 @@ qWarning("AAA" + db_->database());
       qWarning("NOOO");
       QDictIterator<FLTableMetaData> it(*cacheMetaData_);
       for (; it.current(); ++it) {
-          qWarning("*" + it.name());
+          qWarning("*" + (*it)->name());
 
       }
     }
