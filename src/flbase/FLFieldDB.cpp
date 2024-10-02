@@ -2003,7 +2003,7 @@ void FLFieldDB::refresh(const QString &fN)
       tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nisValidCursor: %4,\ntablename: %5")
       .arg(databaseName)
       .arg(curName)
-      .arg(QString(cursor_->size()))
+      .arg(QVariant(cursor_->size()).toString())
       .arg(cursor_->isValid() ? "Si" : "No")
       .arg(tableName)
       );
