@@ -867,9 +867,6 @@ void FLFieldDB::initCursor()
         qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Registros en caché : %2").arg(cachedTableName).arg(cantidad));
         //QSqlDatabase *cache_conn = FLSqlConnections::database("cache")->db();
 
-        FLSqlDatabase *dbCache_ = FLSqlConnections::database("cache");
-        qWarning(tr("**************** REGISTRADOSXX: %1").arg(QVariant(dbCache_->cacheMetaData_->count()).toString()));
-
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
