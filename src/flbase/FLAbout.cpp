@@ -55,17 +55,19 @@ clipboard->setText(ENB_DATOS_COMP);
 
 void FLAbout::mostrarKitDigital()
 {
-  qWarning("PASO1");
-  QFrame *frameKD = static_cast<QFrame * >(FLWidgetAboutLayout->child("frameKitDigital", "QFrame"));
-  qWarning("PASO2");
+  QFrame *frameKD = static_cast<QFrame * >(child("frameKitDigital", "QFrame"));
+  qWarning("Recogido");
+  if (frameKD->isShown()) {
+    qWarning( "FLAbout::mostrarKitDigital(): está visible" );
+  }
+  
   if (FLUtil::readDBSettingEntry("kit_digital") == "1")
   {
     qWarning( "FLAbout::mostrarKitDigital(): habilitado" );
     frameKD->show();
   } else {
-    qWarning("PASO3");
+    qWarning( "FLAbout::mostrarKitDigital(): NO habilitado" );
     frameKD->hide();
   }
-  qWarning("PASO4");
 }
 
