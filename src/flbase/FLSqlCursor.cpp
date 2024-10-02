@@ -254,8 +254,13 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   {
     if (!d->db_->manager()->existsTable(name))
       d->metadata_ = d->db_->manager()->createTable(name);
-    else
-      d->metadata_ = d->db_->manager()->metadata(name);
+    else{
+        qWarning(tr("FLSqlCursor::init: tabla: %1 bd: %2").arg(name).arg(db()->->connectionName()));
+        d->metadata_ = d->db_->manager()->metadata(name);
+        if (!d->metadata_) {
+            qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
+        }
+    }
   }
 
   d->cursorRelation_ = cR;

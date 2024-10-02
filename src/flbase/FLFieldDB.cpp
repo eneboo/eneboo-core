@@ -863,15 +863,15 @@ void FLFieldDB::initCursor()
         QString cachedTableName = tableName_ + "_cache";
    
         QString cantidad = FLUtil::sqlSelect(cachedTableName, "count(*)", "1=1", cachedTableName, 0, "cache").toString();
-        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Registros en caché : %2").arg(cachedTableName).arg(cantidad));
 
-        cursor_ = new FLSqlCursor(cachedTableName, true, "cache", cursorAux, rMD,this);
+        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Registros en caché : %2").arg(cachedTableName).arg(cantidad));
+        cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
         QString filter_cache = cursor_->filter();
         
         qWarning(
-          tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nsize:%4,\nisValidCursor: %5")
+          tr("FLFieldDB::initCursor:\ndatabase: %1,\ncurname: %2,\nfiltro: %3,\nsize:%4,\nisValidCursor: %5")
           .arg(databaseName)
           .arg(curName)
           .arg(filter_cache)
@@ -1017,7 +1017,6 @@ void FLFieldDB::initEditor()
         connect(editor_, SIGNAL(activated(const QString &)), this,
                 SLOT(updateValue(const QString &)));
       } else {
-        qWarning("Paso1 " + fieldName_);
         editor_ = new FLLineEdit(this, "editor");
 
         ::qt_cast<FLLineEdit *>(editor_)->setFont(qApp->font());
@@ -1099,7 +1098,6 @@ void FLFieldDB::initEditor()
 
       editor_-> setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 7, (QSizePolicy::SizeType) 0,
                                           editor_->sizePolicy().hasHeightForWidth()));
-      qWarning("Paso10 " + fieldName_);
       FLWidgetFieldDBLayout->addWidget(editor_);
       break;
 
