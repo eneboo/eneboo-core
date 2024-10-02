@@ -38,6 +38,7 @@ FLAbout::FLAbout(const QString &v,
                        "<b>sin garantías de ninguna clase</b><br>"
                        );
  lblCompilacion->setText(ENB_DATOS_COMP);
+ mostrarKitDigital();
 }
 
 FLAbout::~FLAbout() {}

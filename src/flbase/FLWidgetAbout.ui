@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>518</width>
+            <width>810</width>
             <height>947</height>
         </rect>
     </property>
@@ -294,7 +294,7 @@ Plan de Recuperación, Transformación y Resiliencia de España "Next Generation
                                             <enum>Horizontal</enum>
                                         </property>
                                         <property name="sizeType">
-                                            <enum>Expanding</enum>
+                                            <enum>Fixed</enum>
                                         </property>
                                         <property name="sizeHint">
                                             <size>
@@ -317,7 +317,7 @@ Plan de Recuperación, Transformación y Resiliencia de España "Next Generation
                                                 </property>
                                                 <property name="maximumSize">
                                                     <size>
-                                                        <width>420</width>
+                                                        <width>32767</width>
                                                         <height>32767</height>
                                                     </size>
                                                 </property>
@@ -329,6 +329,9 @@ Plan de Recuperación, Transformación y Resiliencia de España "Next Generation
                                                 </property>
                                                 <property name="scaledContents">
                                                     <bool>false</bool>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>WordBreak|AlignCenter</set>
                                                 </property>
                                             </widget>
                                             <widget class="QLabel">
@@ -349,6 +352,9 @@ Plan de Recuperación, Transformación y Resiliencia de España "Next Generation
                                                 <property name="pixmap">
                                                     <pixmap>image51913</pixmap>
                                                 </property>
+                                                <property name="alignment">
+                                                    <set>WordBreak|AlignCenter</set>
+                                                </property>
                                             </widget>
                                         </vbox>
                                     </widget>
@@ -360,7 +366,7 @@ Plan de Recuperación, Transformación y Resiliencia de España "Next Generation
                                             <enum>Horizontal</enum>
                                         </property>
                                         <property name="sizeType">
-                                            <enum>Expanding</enum>
+                                            <enum>Fixed</enum>
                                         </property>
                                         <property name="sizeHint">
                                             <size>
