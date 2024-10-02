@@ -756,13 +756,16 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
-qWarning("AAA");
+qWarning("AAA" + db_->database());
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
     qWarning("FLManager::metadata Trucaje!!!" + n);
     ret = cacheMetaData_->find(n);
-
+    if (ret) {
+      qWarning("YESS");
+      return ret;
+    }
   } else {
     ret = metadataDev(n, quick);
   }
