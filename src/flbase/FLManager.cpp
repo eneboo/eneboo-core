@@ -761,30 +761,14 @@ FLTableMetaData *FLManager::getMetadataCache(QString name) {
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
-qWarning(QApplication::tr("AAA: db_name: %1 , existe: %2").arg(db_->database()).arg(existsTable(n) ? "SI" :"NO"));
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
-/*     qWarning(QApplication::tr("FLManager::metadata %1 Trucaje!!!, size: %2").arg(n).arg(QVariant(cacheMetaData_->count()).toString()));
-    ret = cacheMetaData_->find(n);
-    if (ret) {
-      qWarning("YESS");
-      return ret;
-    } else {
-      qWarning("NOOO");
-      QDictIterator<FLTableMetaData> it(*cacheMetaData_);
-      for (; it.current(); ++it) {
-          qWarning("*" + (*it)->name());
-          
-      }
-    } */
-
     FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
     if (!dbDefault_) {
       qWarning("FLManager::metadata: No se pudo obtener la base de datos default");
       return 0;
     } else {
-      qWarning("FLManager::metadata: Se obtuvo la base de datos default");
       return dbDefault_->manager()->getMetadataCache(n);
 
     }

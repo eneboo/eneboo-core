@@ -859,32 +859,8 @@ void FLFieldDB::initCursor()
     }
 
     if (tMD->useCachedFields()) {
-        
         QString cachedTableName = tableName_ + "_cache";
-   
-        QString cantidad = FLUtil::sqlSelect(cachedTableName, "count(*)", "1=1", cachedTableName, 0, "cache").toString();
-        qWarning("INICIO!!!");
-        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Registros en caché : %2").arg(cachedTableName).arg(cantidad));
-        //QSqlDatabase *cache_conn = FLSqlConnections::database("cache")->db();
-
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
-        QString databaseName = cursor_->db()->connectionName();
-        QString curName = cursor_->curName();
-        QString filter_cache = cursor_->filter();
-        QString is_open = cursor_->db()->isOpen() ? "Si" : "No";
-        
-        qWarning(
-          tr("FLFieldDB::initCursor:\ndatabase: %1,\ncurname: %2,\nfiltro: %3,\nsize:%4,\nisValidCursor: %5,\nisOpen:%6")
-          .arg(databaseName)
-          .arg(curName)
-          .arg(filter_cache)
-          .arg(QVariant(cursor_->size()).toString())
-          .arg(cursor_->isValid() ? "Si" : "No")
-          .arg(is_open)
-          );
-
-          cursor_->refresh();
-          qWarning(tr("FLFieldDB::refresh() - FIN, size:%1").arg(QVariant(cursor_->size()).toString()));
 
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);

@@ -255,8 +255,14 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
     if (!d->db_->manager()->existsTable(name))
       d->metadata_ = d->db_->manager()->createTable(name);
     else{
-        qWarning(tr("FLSqlCursor::init: tabla: %1 bd: %2").arg(name).arg(d->db_->connectionName()));
+        qWarning(tr("FLSqlCursor::init: PASO A %1").arg(name));
+        QGuardedPtr<FLTableMetaData> *mtd = d->db_->manager()->table(name);
+        qWarning(tr("FLSqlCursor::init: PASO B %1").arg(name));
+        delete (FLTableMetaData *)d->metadata_;
+        d->metadata_ = 0;
+        qWarning(tr("FLSqlCursor::init: PASO C %1").arg(name));
         d->metadata_ = d->db_->manager()->metadata(name);
+        qWarning(tr("FLSqlCursor::init: PASO D %1").arg(name));
         if (!d->metadata_) {
             qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
             
