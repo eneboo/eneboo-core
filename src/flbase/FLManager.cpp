@@ -768,7 +768,7 @@ qWarning("AAA" + db_->database());
     } else {
       qWarning("NOOO");
       for (int i = 0; i < cacheMetaData_->count(); i++) {
-        qWarning(" * " + cacheMetaData_[i]->name());
+        qWarning(" * " + cacheMetaData_[i].name());
       }
     }
   } else {
