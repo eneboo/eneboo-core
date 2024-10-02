@@ -767,11 +767,8 @@ qWarning("AAA" + db_->database());
       return ret;
     } else {
       qWarning("NOOO");
-      QDictIterator<FLTableMetaData *> it(cacheMetaData_);
-      while (it.current()) {
-        qWarning(it.key());
-        qWarning(it.value()->name());
-        it++;
+      for (FLTableMetaData::Iterator it = cacheMetaData_.begin(); it != cacheMetaData_.end(); ++it) {
+        qWarning("*" + (*it)->name());
       }
     }
   } else {
