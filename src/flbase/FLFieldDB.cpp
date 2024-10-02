@@ -870,6 +870,7 @@ void FLFieldDB::initCursor()
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
         QString filter_cache = cursor_->filter();
+        QString is_open = cursor_->db()->isOpen() ? "Si" : "No";
         
         qWarning(
           tr("FLFieldDB::initCursor:\ndatabase: %1,\ncurname: %2,\nfiltro: %3,\nsize:%4,\nisValidCursor: %5")
@@ -878,6 +879,7 @@ void FLFieldDB::initCursor()
           .arg(filter_cache)
           .arg(QVariant(cursor_->size()).toString())
           .arg(cursor_->isValid() ? "Si" : "No")
+          .arg(is_open)
           );
 
           cursor_->refresh();
