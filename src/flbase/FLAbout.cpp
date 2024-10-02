@@ -23,6 +23,7 @@ email                : mail@infosial.com
 #include <qclipboard.h>
 #include <qapplication.h> /// qapp
 #include "FLAbout.h"
+#include "FLUtil.h"
 #include "AQConfig.h"
 
 FLAbout::FLAbout(const QString &v,
