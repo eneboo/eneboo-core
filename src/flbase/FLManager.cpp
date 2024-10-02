@@ -1831,8 +1831,11 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   
 } 
 
-FLTableMetaData *FLManager::getMetadataCache(QString name) {
+FLTableMetaData *FLManager::getMetadataCache(QString &name) {
   FLTableMetaData *tmd = cacheMetaData_->find(name);
+  if (!tmd) {
+    return 0;
+  }
   FLTableMetaData *newMtd =  new FLTableMetaData(tmd->name(), QString::null, QString::null);
   QStringList fieldsCachedNames = tmd->cachedFields();
   QString pkName = tmd->primaryKey();
@@ -1840,14 +1843,7 @@ FLTableMetaData *FLManager::getMetadataCache(QString name) {
 
   for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
     FLFieldMetaData *fieldOriginal = tmd->field(*it);
-      // Eliminados relaciones...
-      //qWarning("FLManager::checkTablaCache : " + QApplication::tr("A�adiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
-      FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
-      fieldCached->clearRelationList();
-      if (fieldOriginal->name() == pkName) {
-        fieldCached->setIsPrimaryKey(true);
-      }
-      newMtd->addFieldMD(fieldCached);
+      newMtd->addFieldMD(fieldOriginal);
   }
   qWarning( QApplication::tr("FLManager::checkTablaCache : COPIA DE : %1").arg(name));
   return newMtd;
