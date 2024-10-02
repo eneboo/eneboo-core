@@ -833,7 +833,6 @@ void FLFieldDB::initCursor()
 
     FLRelationMetaData *rMD = tMD->relation(fieldRelation_, foreignField_, curName);
     if (!rMD) {
-      qWarning("FLFieldDB : no hay rMD. Generándolo ... ");
       bool checkIntegrity = false;
       FLRelationMetaData *testM1 = cursor_->metadata()->relation(foreignField_, fieldRelation_,
                                                                  tableName_);
@@ -860,25 +859,30 @@ void FLFieldDB::initCursor()
     }
 
     if (tMD->useCachedFields()) {
+
         QString cachedTableName = tableName_ + "_cache";
+
+        FLSqlCursor *curPrueba_ = new  FLSqlcursor(cachedTableName, true, "cache", null, null, this);
+        if (curPrueba_) {
+            qWarning(tr("FLFieldDB : La tabla ( %1 ) está en caché").arg(cachedTableName));
+            curPrueba_->refresh();
+            qWarning(tr("FLFieldDB : size. %1, valid: %2").arg(QVariant(curPrueba_->size()).toString()).arg(curPrueba_->isValid() ? "SI":"NO"));
+        }
+
+        
         qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché").arg(cachedTableName));
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
-        cursor_->refresh();
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
-        QString filter = cursor_->filter();
+        QString filter_cache = cursor_->filter();
         qWarning(
           tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nisValidCursor: %4")
           .arg(databaseName)
           .arg(curName)
+          .arg(filter_cache)
           .arg(QVariant(cursor_->size()).toString())
           .arg(cursor_->isValid() ? "Si" : "No")
           );
-
-        if (!cursor_->isValid()) {
-          qWarning(tr("FLFieldDB::initCursor cursor no válido"));
-          cursor_->refresh();
-        }
 
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
