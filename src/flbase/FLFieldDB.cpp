@@ -869,6 +869,7 @@ void FLFieldDB::initCursor()
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
         QString filter_cache = cursor_->filter();
+        
         qWarning(
           tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nsize:%4,\nisValidCursor: %5")
           .arg(databaseName)
@@ -877,6 +878,9 @@ void FLFieldDB::initCursor()
           .arg(QVariant(cursor_->size()).toString())
           .arg(cursor_->isValid() ? "Si" : "No")
           );
+
+          cursor_->refresh();
+          qWarning(tr("FLFieldDB::refresh() - FIN, size:%1").arg(QVariant(cursor_->size()).tiString()));
 
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
