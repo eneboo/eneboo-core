@@ -268,7 +268,7 @@ void FLDateEdit::fix()
 FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   FLWidgetFieldDB(parent, name), editor_(0), fieldName_(QString::null), tableName_(QString::null),
   actionName_(QString::null), foreignField_(QString::null), fieldRelation_(QString::null),
-  filter_(QString::null), cursor_(0), cursorAux(0), cursorInit(false), cursorAuxInit(false),
+  filter_(QString::null), cursor_(0), cursorAux(0), curPrueba_(0), cursorInit(false), cursorAuxInit(false),
   topWidget_(0), showed(false), showAlias_(true), datePopup_(0), dateFrame_(0),
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
