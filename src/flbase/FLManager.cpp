@@ -1788,7 +1788,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           newMtd->addFieldMD(fieldCached);
         }
       
-      qWarning(tr("FLManager::checkTablaCache : REGISTRANDO: %1").arg(tableName));
+      qWarning( QApplication::tr("FLManager::checkTablaCache : REGISTRANDO: %1").arg(tableName));
       cacheMetaData_->insert(tableName, newMtd); 
       dbCache_->manager()->insertMetadataCache(tableName, newMtd);
 
