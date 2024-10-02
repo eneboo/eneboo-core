@@ -1836,15 +1836,7 @@ FLTableMetaData FLManager::getMetadataCache(const QString &name) {
   if (!tmd) {
     return 0;
   }
-  FLTableMetaData *newMtd =  new FLTableMetaData(tmd->name(), QString::null, QString::null);
-  QStringList fieldsCachedNames = tmd->cachedFields();
-  QString pkName = tmd->primaryKey();
-  fieldsCachedNames.append(pkName);
-
-  for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
-    FLFieldMetaData *fieldOriginal = tmd->field(*it);
-      newMtd->addFieldMD(fieldOriginal);
-  }
+  FLTableMetaData *newMtd =  new FLTableMetaData(tmd);
   qWarning( QApplication::tr("FLManager::checkTablaCache : COPIA DE : %1").arg(name));
   return newMtd;
 }
