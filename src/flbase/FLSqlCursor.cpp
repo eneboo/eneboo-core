@@ -259,6 +259,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
         d->metadata_ = d->db_->manager()->metadata(name);
         if (!d->metadata_) {
             qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
+            
         }
     }
   }

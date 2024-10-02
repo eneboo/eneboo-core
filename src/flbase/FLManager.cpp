@@ -758,7 +758,8 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
 qWarning("AAA" + db_->database());
 #ifdef QSDEBUGGER
-  FLTableMetaData *ret = 0;
+  
+
   if (db_->database().find("_cache.sqlite3db") >= 0) {
     qWarning("FLManager::metadata Trucaje!!!" + n);
     ret = cacheMetaData_->find(n);
@@ -767,8 +768,9 @@ qWarning("AAA" + db_->database());
       return ret;
     } else {
       qWarning("NOOO");
-      for (int i = 0; i < cacheMetaData_->count(); i++) {
-        qWarning(" * " + cacheMetaData_[i].name());
+
+      for (FLTableMetaData::Iterator it = cacheMetaData_.begin(); it != cacheMetaData_.end(); ++it) {
+        qWarning(" * " + (*it).name());
       }
     }
   } else {
