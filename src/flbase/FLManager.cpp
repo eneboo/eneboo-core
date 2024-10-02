@@ -755,10 +755,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   return tmd;
 }
 
-FLTableMetaData *FLManager::getMetadataCache(QString name) {
-  FLTableMetaData *res = cacheMetaData_->find(name);
-  return res;
-}
+
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
@@ -1833,6 +1830,28 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
   
 } 
+
+FLTableMetaData *FLManager::getMetadataCache(QString name) {
+  FLTableMetaData *tmd = cacheMetaData_->find(name);
+  FLTableMetaData *newMtd =  new FLTableMetaData(tmd->name(), QString::null, QString::null);
+  QStringList fieldsCachedNames = tmd->cachedFields();
+  QString pkName = tmd->primaryKey();
+  fieldsCachedNames.append(pkName);
+
+  for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
+    FLFieldMetaData *fieldOriginal = tmd->field(*it);
+      // Eliminados relaciones...
+      //qWarning("FLManager::checkTablaCache : " + QApplication::tr("A�adiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
+      FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
+      fieldCached->clearRelationList();
+      if (fieldOriginal->name() == pkName) {
+        fieldCached->setIsPrimaryKey(true);
+      }
+      newMtd->addFieldMD(fieldCached);
+  }
+  qWarning( QApplication::tr("FLManager::checkTablaCache : COPIA DE : %1").arg(name));
+  return newMtd;
+}
 
 void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
