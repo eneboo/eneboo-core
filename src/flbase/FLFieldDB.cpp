@@ -1824,7 +1824,7 @@ void FLFieldDB::refreshQuick(const QString &fN)
   if (fN.isEmpty() || fN != fieldName_ || !cursor_)
     return;
 
-  qWarning(tr("FLFieldDB::refreshQuick(%1) %2").arg(fieldName_).arg(fN));
+  //qWarning(tr("FLFieldDB::refreshQuick(%1) %2").arg(fieldName_).arg(fN));
 
   FLTableMetaData *tMD = cursor_->metadata();
   if (!tMD)
@@ -1845,7 +1845,7 @@ void FLFieldDB::refreshQuick(const QString &fN)
   int partDecimal = partDecimal_ != -1 ? partDecimal_ : field->partDecimal();
   bool ol = field->hasOptionsList();
 
-  qWarning(tr("FLFieldDB::refreshQuick() %1 --> %2").arg(fN).arg(v.toString()));
+  //qWarning(tr("FLFieldDB::refreshQuick() %1 --> %2").arg(fN).arg(v.toString()));
 
   switch (type) {
     case QVariant::Double:
@@ -2004,7 +2004,7 @@ void FLFieldDB::refreshQuick(const QString &fN)
 
 void FLFieldDB::refresh(const QString &fN)
 {
-  qWarning(tr("FLFieldDB::refresh(%1) fN:%2 called!").arg(fieldName_).arg(fN));
+  //qWarning(tr("FLFieldDB::refresh(%1) fN:%2 called!").arg(fieldName_).arg(fN));
   if (!cursor_)
     return;
 
@@ -2017,7 +2017,7 @@ void FLFieldDB::refresh(const QString &fN)
   if (fN.isEmpty()) {
     v = cursor_->valueBuffer(fieldName_);
     null = cursor_->bufferIsNull(fieldName_);
-    qWarning(tr("FLFieldDB::refresh() %1 --> %2").arg(fN).arg(v.toString()));
+    //qWarning(tr("FLFieldDB::refresh() %1 --> %2").arg(fN).arg(v.toString()));
   } else {
     if (!cursorAux && fN.lower() == fieldRelation_.lower()) {
       if (cursor_->bufferIsNull(fieldRelation_))
