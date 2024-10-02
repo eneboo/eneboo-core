@@ -389,7 +389,7 @@ public:
 
   void insertMetadataCache(QString &name, FLTableMetaData *tmd);
 
-  FLTableMetaData *getMetadataCache(QString &name);
+  FLTableMetaData getMetadataCache(QString &name);
 
 private:
 
