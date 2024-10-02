@@ -862,12 +862,11 @@ void FLFieldDB::initCursor()
 
         QString cachedTableName = tableName_ + "_cache";
 
-        FLSqlCursor *curPrueba_;
-        curPrueba_ = new FLSqlcursor(cachedTableName, true, "cache", 0, 0, this);
+        FLSqlCursor *cur = new FLSqlcursor(cachedTableName, true, "cache", 0, 0, this);
         if (curPrueba_) {
             qWarning(tr("FLFieldDB : La tabla ( %1 ) está en caché").arg(cachedTableName));
-            curPrueba_->refresh();
-            qWarning(tr("FLFieldDB : size. %1, valid: %2").arg(QVariant(curPrueba_->size()).toString()).arg(curPrueba_->isValid() ? "SI":"NO"));
+            cur->refresh();
+            qWarning(tr("FLFieldDB : size. %1, valid: %2").arg(QVariant(cur->size()).toString()).arg(cur->isValid() ? "SI":"NO"));
         }
 
         
