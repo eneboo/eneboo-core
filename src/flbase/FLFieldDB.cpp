@@ -863,13 +863,14 @@ void FLFieldDB::initCursor()
         QString cachedTableName = tableName_ + "_cache";
    
         QString cantidad = FLUtil::sqlSelect(cachedTableName, "count(*)", "1=1", cachedTableName, 0, "cache").toString();
-        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché : %2").arg(cachedTableName).arg(cantidad));
-        cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
+        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Registros en caché : %2").arg(cachedTableName).arg(cantidad));
+
+        cursor_ = new FLSqlCursor(cachedTableName, true, "cache", cursorAux, rMD,this);
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
         QString filter_cache = cursor_->filter();
         qWarning(
-          tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nisValidCursor: %4")
+          tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nsize:%4,\nisValidCursor: %5")
           .arg(databaseName)
           .arg(curName)
           .arg(filter_cache)
@@ -922,7 +923,7 @@ void FLFieldDB::initCursor()
 
 void FLFieldDB::initEditor()
 {
-  qWarning("InitEditor " + tableName_);
+  //qWarning("InitEditor " + tableName_);
   if (!cursor_)
     return;
 
@@ -937,8 +938,12 @@ void FLFieldDB::initEditor()
   }
 
   FLTableMetaData *tMD = cursor_->metadata();
-  if (!tMD)
+  if (!tMD) {
+    qWarning("FLFieldDB::initEditor() : No hay metadatos para " + fieldName_);
     return;
+  }
+
+
   FLFieldMetaData *field = tMD->field(fieldName_);
   if (!field)
     return;
