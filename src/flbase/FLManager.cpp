@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qdom.h>
@@ -1265,7 +1265,7 @@ FLAction *FLManager::action(const QString &n)
 
         QDomNodeList nl(e.elementsByTagName("name"));
         if (nl.count() == 0) {
-          qWarning("Debe indicar la etiqueta <name> en acción '%s'", n.latin1());
+          qWarning("Debe indicar la etiqueta <name> en acciï¿½n '%s'", n.latin1());
           no = no.nextSibling();
           continue;
         } else {
@@ -1555,7 +1555,7 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
              QString::fromLatin1(".mtd"));
     if (!fi.open(IO_ReadOnly)) {
 #ifdef FL_DEBUG
-      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no están definidos").arg(n));
+      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no estï¿½n definidos").arg(n));
 #endif
     } else {
       QTextStream t;
@@ -1599,13 +1599,13 @@ bool FLManager::isSystemTable(const QString &n)
                       "flsettings,"
                       "flseqs,"
                       "flupdates");
-//--> FLLarge único           
+//--> FLLarge ï¿½nico           
   if (aqApp->singleFLLarge())
                {
                systemTable = systemTable + QString::fromLatin1(",fllarge");       
                }
                
-//<-- FLLarge único                      
+//<-- FLLarge ï¿½nico                      
   if (n.endsWith(".mtd"))
     return systemTable.contains(n.left(n.length() - 4));
   return systemTable.contains(n);
@@ -1620,7 +1620,7 @@ QString FLManager::storeLargeValue(FLTableMetaData *mtd, const QString &largeVal
   if (isSystemTable(tableName))
     return QString::null;
 
-// --> FLLarge único
+// --> FLLarge ï¿½nico
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1646,7 +1646,7 @@ QString tableLarge;
 
 
 
-//<-- FLLarge único
+//<-- FLLarge ï¿½nico
 
   
   /*if (!existsTable(tableLarge)) {
@@ -1692,7 +1692,7 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
 {
   if (refKey.left(3) != "RK@")
     return QVariant();
-// --> FLLarge único
+// --> FLLarge ï¿½nico
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1701,7 +1701,7 @@ QString tableLarge;
   tableLarge = QString::fromLatin1("fllarge_") + refKey.section('@', 1, 1);
 
   
-//<-- FLLarge único
+//<-- FLLarge ï¿½nico
 
   if (!existsTable(tableLarge))
     return QVariant();
@@ -1733,7 +1733,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   }
   initCacheDB();
   //qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
-  // Recogemos conexión cache.
+  // Recogemos conexiï¿½n cache.
 
   QString cacheTableName = "timestamps";
 
@@ -1771,7 +1771,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
   if (!cacheMetaData_->find(tableName)) {
       FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
-      // Añadimos el mdt a los mtds conocidos...
+      // Aï¿½adimos el mdt a los mtds conocidos...
       QStringList fieldsCachedNames = tmd->cachedFields();
       QString pkName = tmd->primaryKey();
       fieldsCachedNames.append(pkName);
@@ -1779,7 +1779,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
         FLFieldMetaData *fieldOriginal = tmd->field(*it);
           // Eliminados relaciones...
-          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añadiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Aï¿½adiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
           FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
           fieldCached->clearRelationList();
           if (fieldOriginal->name() == pkName) {
@@ -1787,7 +1787,8 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           }
           newMtd->addFieldMD(fieldCached);
         }
-
+      
+      qWarning(tr("FLManager::checkTablaCache : REGISTRANDO: %1").arg(tableName));
       cacheMetaData_->insert(tableName, newMtd); 
       dbCache_->manager()->insertMetadataCache(tableName, newMtd);
 
@@ -1836,7 +1837,7 @@ void FLManager::initCacheDB() {
   QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
 
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cache","")) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añadir la base de datos %1").arg(fileCache));
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al aï¿½adir la base de datos %1").arg(fileCache));
     return;
   }
 }
