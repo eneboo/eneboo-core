@@ -756,7 +756,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
-qWarning("AAA" + db_->database());
+qWarning(QApplication::tr("AAA: db_name: %1 , existe: %2").arg(db_->database()).arg(existsTable(n) ? "SI" :"NO"));
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
