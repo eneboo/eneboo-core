@@ -756,10 +756,13 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
+qWarning("AAA");
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
+    qWarning("FLManager::metadata Trucaje!!!" + n);
     ret = cacheMetaData_->find(n);
+
   } else {
     ret = metadataDev(n, quick);
   }
@@ -1813,10 +1816,11 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
   }
 
+  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
     
   }
 
-  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
+  
 } 
 
 void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
