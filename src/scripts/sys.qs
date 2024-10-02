@@ -3336,7 +3336,7 @@ function updateCachedTables(tableNames)
 {
   // Recojemos el timestamp de la tabla
   var whereCache = "1=1";
-  if (tableNames == undefined) {
+  if (tableNames != undefined) {
     whereCache = "tablename in (";  
     whereCache += tableNames.join(",");
     whereCache += ")";
@@ -3394,7 +3394,7 @@ function updateCachedTables(tableNames)
 
             lastTimeStamp = linea["timestamp"];
             debug("Actualizando timestamp de " + tableName_ + " a " + lastTimeStamp);
-            const whereUpdate = "tablename='" + qryCachesFields.value("tablename") + "'";
+            const whereUpdate = "tablename='" + tableName_ + "_cache'";
             debug("whereUpdate: " + whereUpdate);
             AQUtil.sqlUpdate("timestamps", "timestamp", lastTimeStamp , whereUpdate, "cache");
           
@@ -3411,7 +3411,6 @@ function updateCachedTables(tableNames)
 
     return result;
   }
-
 
 
 
