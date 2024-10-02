@@ -1837,6 +1837,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
     //db_->managerModules()->setContent(name, idM, "tmd");
+    qWarning(tr("**************** REGISTRADOS: %1").arg(QVariant(cacheMetaData_->count()).toString()));
 
   }
 
