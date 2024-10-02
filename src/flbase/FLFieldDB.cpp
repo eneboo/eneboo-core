@@ -880,7 +880,7 @@ void FLFieldDB::initCursor()
           );
 
           cursor_->refresh();
-          qWarning(tr("FLFieldDB::refresh() - FIN, size:%1").arg(QVariant(cursor_->size()).tiString()));
+          qWarning(tr("FLFieldDB::refresh() - FIN, size:%1").arg(QVariant(cursor_->size()).toString()));
 
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
