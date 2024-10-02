@@ -769,14 +769,9 @@ void FLFieldDB::initCursor()
   if (!tableName_.isEmpty() && foreignField_.isEmpty() && fieldRelation_.isEmpty()) {
     cursorBackup_ = cursor_;
     if (cursor_) {
-      FLTableMetaData *tMD = cursor_->db()->manager()->metadata(tableName_);
-      if (tMD->useCachedFields()) {
-        cursor_ = new FLSqlCursor(tableName_ + "_cache", true,
-                                "cache", 0, 0, this);
-      } else {
         cursor_ = new FLSqlCursor(tableName_, true,
                                 cursor_->db()->connectionName(), 0, 0, this);
-      }
+
     } else {
       if (!topWidget_)
         return;
@@ -863,8 +858,12 @@ void FLFieldDB::initCursor()
 #endif
     }
 
-    cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,
-                              this);
+    if (tMD->useCachedFields()) {
+        qWarning(tr("FLFieldDB : La tabla ( %1 ) usa los campos en caché").arg(tableName_));
+        cursor_ = new FLSqlCursor(tableName_ + "_cache", false, "cache", cursorAux, rMD,this);
+      } else {
+        cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
+      }
     if (!cursor_) {
       cursor_ = cursorAux;
       if (showed) {
