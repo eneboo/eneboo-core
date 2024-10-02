@@ -268,7 +268,7 @@ void FLDateEdit::fix()
 FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   FLWidgetFieldDB(parent, name), editor_(0), fieldName_(QString::null), tableName_(QString::null),
   actionName_(QString::null), foreignField_(QString::null), fieldRelation_(QString::null),
-  filter_(QString::null), cursor_(0), cursorAux(0), curPrueba_(0), cursorInit(false), cursorAuxInit(false),
+  filter_(QString::null), cursor_(0), cursorAux(0), cursorInit(false), cursorAuxInit(false),
   topWidget_(0), showed(false), showAlias_(true), datePopup_(0), dateFrame_(0),
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
@@ -859,18 +859,10 @@ void FLFieldDB::initCursor()
     }
 
     if (tMD->useCachedFields()) {
-
-        QString cachedTableName = tableName_ + "_cache";
-
-        curPrueba_ = new FLSqlcursor(cachedTableName, true, "cache", 0, 0, this);
-        if (curPrueba_) {
-            qWarning(tr("FLFieldDB : La tabla ( %1 ) está en caché").arg(cachedTableName));
-            curPrueba_->refresh();
-            qWarning(tr("FLFieldDB : size. %1, valid: %2").arg(QVariant(curPrueba_->size()).toString()).arg(curPrueba_->isValid() ? "SI":"NO"));
-        }
-
         
-        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché").arg(cachedTableName));
+        QString cachedTableName = tableName_ + "_cache";
+        int cantidad = new FLUtil::sqlSelect(cachedTableName, "count(*)", "1=1", null, 1, "cache");
+        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché : %2").arg(cachedTableName).arg(QVariant(cantidad).toString()));
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
