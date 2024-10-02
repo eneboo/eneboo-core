@@ -51,5 +51,6 @@ public slots:
   Copia la información de compilación en el portapapeles
   */
   void copy2Clipboard();
+  void mostrarKitDigital();
 };
 #endif

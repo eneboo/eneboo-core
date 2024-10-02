@@ -19,6 +19,7 @@ email                : mail@infosial.com
  ***************************************************************************/
 
 #include <qlabel.h>
+#include <qframe.h>
 #include <qclipboard.h>
 #include <qapplication.h> /// qapp
 #include "FLAbout.h"
@@ -47,5 +48,21 @@ void FLAbout::copy2Clipboard()
 {
 QClipboard *clipboard = QApplication::clipboard();
 clipboard->setText(ENB_DATOS_COMP);
+}
+
+
+void FLWidgetAbout::mostrarKitDigital()
+{
+    qWarning( "FLWidgetAbout::mostrarKitDigital(): Not implemented yet" );
+  FLUtil *util = new FLUtil();
+  QFrame *frameKD = static_cast<QFrame * >(FLWidgetAboutLayout->child("frameKitDigital", "QFrame"));
+
+  if (util->readDBSettingEntry("kit_digital") == "1")
+  {
+    qWarning( "FLWidgetAbout::mostrarKitDigital(): habilitado" );
+    frameKD->show();
+  } else {
+    frameKD->hide();
+  }
 }
 
