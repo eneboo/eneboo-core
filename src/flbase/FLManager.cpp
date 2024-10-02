@@ -767,7 +767,8 @@ qWarning("AAA" + db_->database());
       return ret;
     } else {
       qWarning("NOOO");
-      for (var i = 0; i < cacheMetaData_.count; i++) {
+      for (int i = 0; i < cacheMetaData_.count; i++) {
+        
         FLTableMetaData *t = cacheMetaData_[i];
         qWarning(t->name());
 
