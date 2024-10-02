@@ -389,6 +389,8 @@ public:
 
   void insertMetadataCache(QString &name, FLTableMetaData *tmd);
 
+  FLTableMetaData *getMetadataCache(QString &name);
+
 private:
 
 #ifndef FL_QUICK_CLIENT

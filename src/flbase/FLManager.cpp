@@ -755,13 +755,17 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   return tmd;
 }
 
+FLTableMetaData *FLManager::getMetadataCache(QString &name) {
+  return cacheMetaData_->find(name);
+}
+
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
 qWarning(QApplication::tr("AAA: db_name: %1 , existe: %2").arg(db_->database()).arg(existsTable(n) ? "SI" :"NO"));
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
-    qWarning(QApplication::tr("FLManager::metadata %1 Trucaje!!!, size: %2").arg(n).arg(QVariant(cacheMetaData_->count()).toString()));
+/*     qWarning(QApplication::tr("FLManager::metadata %1 Trucaje!!!, size: %2").arg(n).arg(QVariant(cacheMetaData_->count()).toString()));
     ret = cacheMetaData_->find(n);
     if (ret) {
       qWarning("YESS");
@@ -773,7 +777,18 @@ qWarning(QApplication::tr("AAA: db_name: %1 , existe: %2").arg(db_->database()).
           qWarning("*" + (*it)->name());
           
       }
+    } */
+
+    FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
+    if (!dbDefault_) {
+      qWarning("FLManager::metadata: No se pudo obtener la base de datos default");
+      return 0;
+    } else {
+      qWarning("FLManager::metadata: Se obtuvo la base de datos default");
+      return dbDefault_->manager()->getMetadataCache(name);
+
     }
+
   } else {
     ret = metadataDev(n, quick);
   }
@@ -1836,9 +1851,6 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
 void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
-    //db_->managerModules()->setContent(name, idM, "tmd");
-    qWarning(QApplication::tr("**************** REGISTRADOS: %1").arg(QVariant(cacheMetaData_->count()).toString()));
-
   }
 
 void FLManager::initCacheDB() {
