@@ -863,7 +863,7 @@ void FLFieldDB::initCursor()
         QString cachedTableName = tableName_ + "_cache";
 
         FLSqlCursor *curPrueba_;
-        curPrueba_ = new FLSqlcursor(cachedTableName, true, "cache", null, null, this);
+        curPrueba_ = new FLSqlcursor(cachedTableName, true, "cache", 0, 0, this);
         if (curPrueba_) {
             qWarning(tr("FLFieldDB : La tabla ( %1 ) está en caché").arg(cachedTableName));
             curPrueba_->refresh();
