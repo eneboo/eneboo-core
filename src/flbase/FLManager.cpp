@@ -1833,6 +1833,9 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
 FLTableMetaData *FLManager::getMetadataCache(const QString &name) {
   FLTableMetaData *mtd = cacheMetaData_->find(name);
+  if (!mtd) {
+    return 0;
+  }
   return new FLTableMetaData(mtd);
 
 }
