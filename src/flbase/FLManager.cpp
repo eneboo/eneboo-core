@@ -765,6 +765,11 @@ qWarning("AAA" + db_->database());
     if (ret) {
       qWarning("YESS");
       return ret;
+    } else {
+      qWarning("NOOO");
+      for (int i = 0; i < cacheMetaData_->count(); i++) {
+        qWarning(" * " + cacheMetaData_->at(i)->name());
+      }
     }
   } else {
     ret = metadataDev(n, quick);
