@@ -618,6 +618,7 @@ private:
   Cursor con los datos de la tabla origen para el componente
   */
   FLSqlCursor *cursor_;
+    FLSqlCursor *curPrueba_;
 
   /**
   Cursor auxiliar de uso interno para almacenar los registros de la tabla
