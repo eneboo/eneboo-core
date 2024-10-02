@@ -862,8 +862,8 @@ void FLFieldDB::initCursor()
         
         QString cachedTableName = tableName_ + "_cache";
    
-        int *cantidad = FLUtil::sqlSelect(cachedTableName, "count(*)", "1=1", cachedTableName, 0, "cache");
-        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché : %2").arg(cachedTableName).arg(QVariant(cantidad).toString()));
+        QString cantidad = FLUtil::sqlSelect(cachedTableName, "count(*)", "1=1", cachedTableName, 0, "cache").toString();
+        qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché : %2").arg(cachedTableName).arg(cantidad));
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
