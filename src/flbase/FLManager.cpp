@@ -785,7 +785,7 @@ qWarning(QApplication::tr("AAA: db_name: %1 , existe: %2").arg(db_->database()).
       return 0;
     } else {
       qWarning("FLManager::metadata: Se obtuvo la base de datos default");
-      return dbDefault_->manager()->getMetadataCache(name);
+      return dbDefault_->manager()->getMetadataCache(n);
 
     }
 
