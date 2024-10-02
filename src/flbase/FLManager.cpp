@@ -760,7 +760,7 @@ qWarning("AAA" + db_->database());
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
   if (db_->database().find("_cache.sqlite3db") >= 0) {
-    qWarning(QApplication::tr("FLManager::metadata %1 Trucaje!!!, size: %2").arg(n).arg(QVariant(cacheMetaData_->size()).toString()));
+    qWarning(QApplication::tr("FLManager::metadata %1 Trucaje!!!, size: %2").arg(n).arg(QVariant(cacheMetaData_->count()).toString()));
     ret = cacheMetaData_->find(n);
     if (ret) {
       qWarning("YESS");
@@ -770,7 +770,7 @@ qWarning("AAA" + db_->database());
       QDictIterator<FLTableMetaData> it(*cacheMetaData_);
       for (; it.current(); ++it) {
           qWarning("*" + (*it)->name());
-
+          
       }
     }
   } else {
