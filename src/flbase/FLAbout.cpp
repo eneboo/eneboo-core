@@ -56,10 +56,7 @@ clipboard->setText(ENB_DATOS_COMP);
 void FLAbout::mostrarKitDigital()
 {
   QFrame *frameKD = static_cast<QFrame * >(child("frameKitDigital", "QFrame"));
-  qWarning("Recogido");
-  if (frameKD->isShown()) {
-    qWarning( "FLAbout::mostrarKitDigital(): está visible" );
-  }
+  frameKD->isShown(); // Evita un segFault...
   
   if (FLUtil::readDBSettingEntry("kit_digital") == "1")
   {

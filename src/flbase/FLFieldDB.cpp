@@ -2000,10 +2000,11 @@ void FLFieldDB::refresh(const QString &fN)
     QString filter = cursor_->filter();
     QString tableName = cursor_->metadata()->name();
     qWarning(
-      tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nfilter: %3,\ntablename: %4")
+      tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nisValidCursor: %4,\ntablename: %5")
       .arg(databaseName)
       .arg(curName)
-      .arg(filter)
+      .arg(QString(cursor_->size()))
+      .arg(cursor_->isValid() ? "Si" : "No")
       .arg(tableName)
       );
 
