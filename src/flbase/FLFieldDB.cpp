@@ -863,6 +863,24 @@ void FLFieldDB::initCursor()
         QString cachedTableName = tableName_ + "_cache";
         qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché").arg(cachedTableName));
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
+
+        QString databaseName = cursor_->db()->connectionName();
+        QString curName = cursor_->curName();
+        QString filter = cursor_->filter();
+        QString tableName = cursor_->metadata()->name();
+        qWarning(
+          tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nisValidCursor: %4,\ntablename: %5")
+          .arg(databaseName)
+          .arg(curName)
+          .arg(QVariant(cursor_->size()).toString())
+          .arg(cursor_->isValid() ? "Si" : "No")
+          .arg(tableName)
+          );
+
+        if (!cursor_->isValid()) {
+          cursor_->refresh();
+        }
+
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
       }
@@ -993,6 +1011,7 @@ void FLFieldDB::initEditor()
         connect(editor_, SIGNAL(activated(const QString &)), this,
                 SLOT(updateValue(const QString &)));
       } else {
+        qWarning("Paso1 " + fieldName_);
         editor_ = new FLLineEdit(this, "editor");
 
         ::qt_cast<FLLineEdit *>(editor_)->setFont(qApp->font());
@@ -1074,6 +1093,7 @@ void FLFieldDB::initEditor()
 
       editor_-> setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 7, (QSizePolicy::SizeType) 0,
                                           editor_->sizePolicy().hasHeightForWidth()));
+      qWarning("Paso10 " + fieldName_);
       FLWidgetFieldDBLayout->addWidget(editor_);
       break;
 
@@ -1995,19 +2015,6 @@ void FLFieldDB::refresh(const QString &fN)
   QVariant v;
   bool null;
   if (fN.isEmpty()) {
-    QString databaseName = cursor_->db()->connectionName();
-    QString curName = cursor_->curName();
-    QString filter = cursor_->filter();
-    QString tableName = cursor_->metadata()->name();
-    qWarning(
-      tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nsize: %3,\nisValidCursor: %4,\ntablename: %5")
-      .arg(databaseName)
-      .arg(curName)
-      .arg(QVariant(cursor_->size()).toString())
-      .arg(cursor_->isValid() ? "Si" : "No")
-      .arg(tableName)
-      );
-
     v = cursor_->valueBuffer(fieldName_);
     null = cursor_->bufferIsNull(fieldName_);
     qWarning(tr("FLFieldDB::refresh() %1 --> %2").arg(fN).arg(v.toString()));
