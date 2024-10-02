@@ -873,7 +873,7 @@ void FLFieldDB::initCursor()
         QString is_open = cursor_->db()->isOpen() ? "Si" : "No";
         
         qWarning(
-          tr("FLFieldDB::initCursor:\ndatabase: %1,\ncurname: %2,\nfiltro: %3,\nsize:%4,\nisValidCursor: %5")
+          tr("FLFieldDB::initCursor:\ndatabase: %1,\ncurname: %2,\nfiltro: %3,\nsize:%4,\nisValidCursor: %5,\nisOpen: %6")
           .arg(databaseName)
           .arg(curName)
           .arg(filter_cache)
