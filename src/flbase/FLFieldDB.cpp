@@ -863,7 +863,7 @@ void FLFieldDB::initCursor()
         QString cachedTableName = tableName_ + "_cache";
         qWarning(tr("FLFieldDB : Usando la tabla ( %1 ).Campos en caché").arg(cachedTableName));
         cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
-
+        cursor_->refresh();
         QString databaseName = cursor_->db()->connectionName();
         QString curName = cursor_->curName();
         QString filter = cursor_->filter();
@@ -876,6 +876,7 @@ void FLFieldDB::initCursor()
           );
 
         if (!cursor_->isValid()) {
+          qWarning(tr("FLFieldDB::initCursor cursor no válido"));
           cursor_->refresh();
         }
 
@@ -924,6 +925,7 @@ void FLFieldDB::initCursor()
 
 void FLFieldDB::initEditor()
 {
+  qWarning("InitEditor " + tableName_);
   if (!cursor_)
     return;
 
