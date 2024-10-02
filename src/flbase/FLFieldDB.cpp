@@ -1984,7 +1984,7 @@ void FLFieldDB::refreshQuick(const QString &fN)
 
 void FLFieldDB::refresh(const QString &fN)
 {
-  qWarning(tr("FLFieldDB::refresh(%1) %2 called!").arg(fieldName_).arg(fN));
+  qWarning(tr("FLFieldDB::refresh(%1) fN:%2 called!").arg(fieldName_).arg(fN));
   if (!cursor_)
     return;
 
@@ -1995,6 +1995,18 @@ void FLFieldDB::refresh(const QString &fN)
   QVariant v;
   bool null;
   if (fN.isEmpty()) {
+    QString databaseName = cursor_->db()->connectionName();
+    QString curName = cursor_->curName();
+    QString filter = cursor_->filter();
+    QString tableName = cursor_->metadata()->name();
+    qWarning(
+      tr("FLFieldDB::refresh() database: %1,\ncurname: %2,\nfilter: %3,\ntablename: %4")
+      .arg(databaseName)
+      .arg(curName)
+      .arg(filter)
+      .arg(tableName)
+      );
+
     v = cursor_->valueBuffer(fieldName_);
     null = cursor_->bufferIsNull(fieldName_);
     qWarning(tr("FLFieldDB::refresh() %1 --> %2").arg(fN).arg(v.toString()));
