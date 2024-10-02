@@ -756,7 +756,8 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 }
 
 FLTableMetaData *FLManager::getMetadataCache(QString name) {
-  return cacheMetaData_->find(name);
+  FLTableMetaData *res = cacheMetaData_->find(name);
+  return res;
 }
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
