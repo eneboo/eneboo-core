@@ -62,8 +62,9 @@ FLManager::FLManager(FLSqlDatabase *db) :
   db_(db),
   initCount_(0)
 {
-#ifndef FL_QUICK_CLIENT
+
   listTables_ = 0;
+#ifndef FL_QUICK_CLIENT
   dictKeyMetaData_ = 0;
   
 #endif
@@ -76,7 +77,7 @@ FLManager::~FLManager()
 
 void FLManager::loadTables()
 {
-#ifndef FL_QUICK_CLIENT
+
   if (!db_->dbAux())
     return;
   if (!listTables_)
@@ -85,14 +86,16 @@ void FLManager::loadTables()
     listTables_->clear();
 
   *listTables_ = db_->dbAux()->tables();
-#endif
+
 }
 
 void FLManager::init()
 {
   ++initCount_;
 
-#ifndef FL_QUICK_CLIENT
+#ifdef FL_QUICK_CLIENT
+  if (db_->driverName() == "FLsqlite") {
+#endif
   FLTableMetaData *tmpTMD;
 
   tmpTMD = createSystemTable("flmetadata");
@@ -137,7 +140,11 @@ void FLManager::init()
       c.insert();
     }
   }
+
+#ifdef FL_QUICK_CLIENT
+  }
 #endif
+
 
   if (!cacheMetaData_) {
     cacheMetaData_ = new QDict<FLTableMetaData>(277);
@@ -157,7 +164,6 @@ void FLManager::init()
 
 bool FLManager::existsTable(const QString &n, bool cache) const
 {
-#ifndef FL_QUICK_CLIENT
   if (!db_ || !db_->dbAux() || n.isEmpty())
     return false;
   if (cache && listTables_) {
@@ -165,9 +171,6 @@ bool FLManager::existsTable(const QString &n, bool cache) const
     return ((it != listTables_->constEnd()) ? true : db_->existsTable(n));
   } else
     return db_->existsTable(n);
-#else
-  return true;
-#endif
 }
 
 void FLManager::finish()
@@ -177,12 +180,12 @@ void FLManager::finish()
     delete dictKeyMetaData_;
     dictKeyMetaData_ = 0;
   }
+#endif
 
   if (listTables_) {
     delete listTables_;
     listTables_ = 0;
   }
-#endif
 
   if (cacheMetaData_) {
     delete cacheMetaData_;
@@ -197,7 +200,6 @@ void FLManager::finish()
 
 FLTableMetaData *FLManager::createTable(FLTableMetaData *tmd)
 {
-#ifndef FL_QUICK_CLIENT
   if (!tmd)
     return 0;
 
@@ -210,14 +212,11 @@ FLTableMetaData *FLManager::createTable(FLTableMetaData *tmd)
 #endif
     return 0;
   }
-#endif //FL_QUICK_CLIENT
-  return tmd;
 }
 
 FLTableMetaData *FLManager::createTable(const QString &n)
 {
   FLTableMetaData *tmd = metadata(n);
-#ifndef FL_QUICK_CLIENT
   if (!tmd)
     return 0;
   if (existsTable(tmd->name())) {
@@ -225,9 +224,6 @@ FLTableMetaData *FLManager::createTable(const QString &n)
     return tmd;
   }
   return createTable(tmd);
-#else
-  return tmd;
-#endif
 }
 
 bool FLManager::alterTable(const QString &mtd1, const QString &mtd2, const QString &key)
@@ -1557,7 +1553,12 @@ QString FLManager::formatAssignValue(FLFieldMetaData *fMD, const QVariant &v, co
 
 FLTableMetaData *FLManager::createSystemTable(const QString &n)
 {
-#ifndef FL_QUICK_CLIENT
+#ifdef FL_QUICK_CLIENT
+if (db_->driverName() != "FLsqlite") {
+  return metadata(n, true);
+}
+#endif
+
   if (!existsTable(n)) {
     QDomDocument doc(n);
     QDomElement docElem;
@@ -1590,10 +1591,6 @@ FLTableMetaData *FLManager::createSystemTable(const QString &n)
   }
 
   return 0;
-#else
-
-  return metadata(n, true);
-#endif //FL_QUICK_CLIENT
 }
 
 bool FLManager::isSystemTable(const QString &n)
