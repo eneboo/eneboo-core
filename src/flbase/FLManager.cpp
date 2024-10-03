@@ -197,12 +197,13 @@ void FLManager::finish()
 
 FLTableMetaData *FLManager::createTable(FLTableMetaData *tmd)
 {
+  debug("********* P-1");
   if (!tmd)
     return 0;
-
+  debug("********* P0 " + tmd->name());
   if (tmd->isQuery() || existsTable(tmd->name(), false))
     return tmd;
-
+  debug("********* P1 " + tmd->name());
   if (!db_->createTable(tmd)) {
 #ifdef FL_DEBUG
     qWarning("FLManager : " + QApplication::tr("No se ha podido crear la tabla ") + tmd->name());
