@@ -398,12 +398,11 @@ private:
   */
   QStringList *listTables_;
 
-#ifndef FL_QUICK_CLIENT
   /**
   Diccionario de claves de metadatos, para optimizar lecturas
   */
   QDict<QString> *dictKeyMetaData_;
-#endif
+
 
   /**
   Cach� de metadatos, para optimizar lecturas
