@@ -292,6 +292,8 @@ bool FLSqlDatabase::createTable(FLTableMetaData *tmd)
     return false;
   }
 
+  return true;
+
 }
 
 bool FLSqlDatabase::canRegenTables()
