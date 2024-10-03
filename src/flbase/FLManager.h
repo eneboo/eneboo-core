@@ -393,12 +393,12 @@ public:
 
 private:
 
-#ifndef FL_QUICK_CLIENT
   /**
   Lista de las tablas de la base de datos, para optimizar lecturas
   */
   QStringList *listTables_;
 
+#ifndef FL_QUICK_CLIENT
   /**
   Diccionario de claves de metadatos, para optimizar lecturas
   */
