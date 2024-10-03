@@ -268,27 +268,33 @@ void FLSqlDatabase::closeDB()
 
 bool FLSqlDatabase::createTable(FLTableMetaData *tmd)
 {
-qWarning(qApp->tr("FLSqlDatabase::createTable driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
+qWarning(qApp->tr("FLSqlDatabase::createTable 0000000 driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
 #ifdef FL_QUICK_CLIENT
   if (driverName_ != "FLsqlite") {
+      qWarning(qApp->tr("FLSqlDatabase::createTable 1111111 driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
       return true;
   }
 #endif
-  if (driverName_.isEmpty() || !tmd || !dbAux_)
+  if (driverName_.isEmpty() || !tmd || !dbAux_) {
+    qWarning(qApp->tr("FLSqlDatabase::createTable 222222 driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
     return false;
+  }
+    
 
   FLSqlDriver *dr = ::qt_cast<FLSqlDriver *>(dbAux_->driver());
   QString sql = dr->sqlCreateTable(tmd);
 
-  if (sql.isEmpty())
+  if (sql.isEmpty()) {
+    qWarning(qApp->tr("FLSqlDatabase::createTable 333333 driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
     return false;
+  }
 
   QSqlQuery q(QString::null, dbAux_);
   if (!q.exec(sql)) {
 #ifdef FL_DEBUG
     qWarning("FLManager : SQL - " + sql);
 #endif
-
+    qWarning(qApp->tr("FLSqlDatabase::createTable 444444 driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
     return false;
   }
 
