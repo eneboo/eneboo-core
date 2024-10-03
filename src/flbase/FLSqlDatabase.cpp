@@ -268,7 +268,7 @@ void FLSqlDatabase::closeDB()
 
 bool FLSqlDatabase::createTable(FLTableMetaData *tmd)
 {
-qWarning(qApp->tr(("FLSqlDatabase::createTable driver: %1 table: %2").arg(driverName_).arg(tmd->name())));
+qWarning(qApp->tr("FLSqlDatabase::createTable driver: %1 table: %2").arg(driverName_).arg(tmd->name()));
 #ifdef FL_QUICK_CLIENT
   if (driverName_ != "FLsqlite") {
       return true;
