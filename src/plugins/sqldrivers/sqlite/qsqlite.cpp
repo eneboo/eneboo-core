@@ -122,7 +122,7 @@ bool SqliteDriver::tryConnect(const QString &db, const QString &user, const QStr
 
 QString SqliteDriver::sqlCreateTable(const FLTableMetaData *tmd)
 {
-#ifndef FL_QUICK_CLIENT
+
   if (!tmd)
     return QString::null;
 
@@ -241,10 +241,6 @@ QString SqliteDriver::sqlCreateTable(const FLTableMetaData *tmd)
   sql += createIndex;
 
   return sql;
-
-#endif //FL_QUICK_CLIENT
-
-  return QString::null;
 }
 
 QString SqliteDriver::formatValueLike(int t, const QVariant &v, const bool upper)
