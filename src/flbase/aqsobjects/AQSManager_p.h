@@ -55,7 +55,7 @@ public slots:
   bool isSystemTable(const QString &);
   QString storeLargeValue(FLTableMetaData *, const QString &);
   QVariant fetchLargeValue(const QString &) const;
-  void initCacheDB();
+  void initCacheLite();
 protected:
   static void *construct(const QSArgumentList &args) {
     return 0;
@@ -148,9 +148,9 @@ inline void AQSManager::loadTables()
 {
   AQ_CALL_VOID(loadTables());
 }
-inline void AQSManager::initCacheDB()
+inline void AQSManager::initCacheLite()
 {
-  AQ_CALL_VOID(initCacheDB());
+  AQ_CALL_VOID(initCacheLite());
 }
 inline void AQSManager::cleanupMetaData()
 {

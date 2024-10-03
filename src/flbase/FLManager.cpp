@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
- versiï¿½n 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
+ versión 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qdom.h>
@@ -753,7 +753,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
 
-if (db_->database().find("_cache.sqlite3db") >= 0) {
+if (db_->database().find("_cachelite.sqlite3db") >= 0) {
     FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
     if (!dbDefault_) {
       qWarning("FLManager::metadata: No se pudo obtener la base de datos default");
@@ -1271,7 +1271,7 @@ FLAction *FLManager::action(const QString &n)
 
         QDomNodeList nl(e.elementsByTagName("name"));
         if (nl.count() == 0) {
-          qWarning("Debe indicar la etiqueta <name> en acciï¿½n '%s'", n.latin1());
+          qWarning("Debe indicar la etiqueta <name> en acción '%s'", n.latin1());
           no = no.nextSibling();
           continue;
         } else {
@@ -1566,7 +1566,7 @@ if (db_->driverName() != "FLsqlite") {
              QString::fromLatin1(".mtd"));
     if (!fi.open(IO_ReadOnly)) {
 #ifdef FL_DEBUG
-      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no estï¿½n definidos").arg(n));
+      qWarning("FLManager : " + QApplication::tr("Los metadatos para %1 no están definidos").arg(n));
 #endif
     } else {
       QTextStream t;
@@ -1606,13 +1606,13 @@ bool FLManager::isSystemTable(const QString &n)
                       "flsettings,"
                       "flseqs,"
                       "flupdates");
-//--> FLLarge ï¿½nico           
+//--> FLLarge único           
   if (aqApp->singleFLLarge())
                {
                systemTable = systemTable + QString::fromLatin1(",fllarge");       
                }
                
-//<-- FLLarge ï¿½nico                      
+//<-- FLLarge único                      
   if (n.endsWith(".mtd"))
     return systemTable.contains(n.left(n.length() - 4));
   return systemTable.contains(n);
@@ -1627,7 +1627,7 @@ QString FLManager::storeLargeValue(FLTableMetaData *mtd, const QString &largeVal
   if (isSystemTable(tableName))
     return QString::null;
 
-// --> FLLarge ï¿½nico
+// --> FLLarge único
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1653,7 +1653,7 @@ QString tableLarge;
 
 
 
-//<-- FLLarge ï¿½nico
+//<-- FLLarge único
 
   
   /*if (!existsTable(tableLarge)) {
@@ -1699,7 +1699,7 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
 {
   if (refKey.left(3) != "RK@")
     return QVariant();
-// --> FLLarge ï¿½nico
+// --> FLLarge único
 QString tableLarge;
 
   if (aqApp->singleFLLarge())
@@ -1708,7 +1708,7 @@ QString tableLarge;
   tableLarge = QString::fromLatin1("fllarge_") + refKey.section('@', 1, 1);
 
   
-//<-- FLLarge ï¿½nico
+//<-- FLLarge único
 
   if (!existsTable(tableLarge))
     return QVariant();
@@ -1726,7 +1726,7 @@ QString tableLarge;
 void FLManager::checkTablaCache(FLTableMetaData *tmd)
 {
 
-  if (db_->database().find("_cache.sqlite3db") >= 0) {
+  if (db_->database().find("_cachelite.sqlite3db") >= 0) {
     //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La base de datos %1 es la propia cache").arg(db_->database()));
     return;
   }
@@ -1738,13 +1738,13 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
-  initCacheDB();
+  initCacheLite();
   //qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
-  // Recogemos conexiï¿½n cache.
+  // Recogemos conexión cache.
 
-  QString cacheTableName = "timestamps";
+  QString cacheTableName = "timestamps_cachelite";
 
-  FLSqlDatabase *dbCache_ = FLSqlConnections::database("cache");
+  FLSqlDatabase *dbCache_ = FLSqlConnections::database("cachelite");
   //qWarning("FLManager::checkTablaCache : " + QApplication::tr("Usando db cache : %1").arg(dbCache_->database()));
 
   if (!cacheMetaData_->find(cacheTableName)) {
@@ -1774,11 +1774,11 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
 
 
-  QString tableName = tmd->name() + "_cache"; // Hay que poner coletilla _cache para no chapar el mtd original (p.e.: clientes , clientes_cache)
+  QString tableName = tmd->name() + "_cachelite"; // Hay que poner coletilla _cache para no chapar el mtd original (p.e.: clientes , clientes_cache)
 
   if (!cacheMetaData_->find(tableName)) {
       FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
-      // Aï¿½adimos el mdt a los mtds conocidos...
+      // Añdimos el mdt a los mtds conocidos...
       QStringList fieldsCachedNames = tmd->cachedFields();
       QString pkName = tmd->primaryKey();
       fieldsCachedNames.append(pkName);
@@ -1786,7 +1786,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
         FLFieldMetaData *fieldOriginal = tmd->field(*it);
           // Eliminados relaciones...
-          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Aï¿½adiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añdiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
           FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
           fieldCached->clearRelationList();
           if (fieldOriginal->name() == pkName) {
@@ -1813,7 +1813,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           }
 
       qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando en tabla %1 registro %2").arg(cacheTableName).arg(tableName));
-      if(!FLUtil::sqlInsert(cacheTableName,"tablename",tableName,"cache")) {
+      if(!FLUtil::sqlInsert(cacheTableName,"tablename",tableName,"cachelite")) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al insertar en %1").arg(cacheTableName));
         return;
       }
@@ -1840,7 +1840,7 @@ void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
   }
 
-void FLManager::initCacheDB() {
+void FLManager::initCacheLite() {
   QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
   QDir dir(dbFolder);
   
@@ -1849,10 +1849,10 @@ void FLManager::initCacheDB() {
     dir.mkpath(dbFolder);
   }
   dbFolder = dir.absPath();
-  QString fileCache = dbFolder + "/" + db_->database() + "_cache.sqlite3db";
+  QString fileCache = dbFolder + "/" + db_->database() + "_cachelite.sqlite3db";
 
-  if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cache","")) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al aï¿½adir la base de datos %1").arg(fileCache));
+  if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
     return;
   }
 }

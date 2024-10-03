@@ -859,8 +859,8 @@ void FLFieldDB::initCursor()
     }
 
     if (tMD->useCachedFields()) {
-        QString cachedTableName = tableName_ + "_cache";
-        cursor_ = new FLSqlCursor(cachedTableName, false, "cache", cursorAux, rMD,this);
+        QString cachedTableName = tableName_ + "_cachelite";
+        cursor_ = new FLSqlCursor(cachedTableName, false, "cachelite", cursorAux, rMD,this);
 
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);

@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLSqlConnections.h"
@@ -70,7 +70,7 @@ FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
     if (ret1) {
       //qWarning("FLSqlConnections::Existe default");
       //qWarning("El driver default es " + ret1->driverName());
-      if (ret1->driverName() == "FLsqlapi" && connectionName != "cache") {
+      if (ret1->driverName() == "FLsqlapi" && connectionName != "cachelite") {
         //qWarning("retorna default");
         return ret1;
       }
@@ -90,8 +90,8 @@ FLSqlDatabase *FLSqlConnections::database(const QString &connectionName)
   FLSqlDatabase *ret = d->dictDB->find(connectionName);
   if (!ret) {
 #ifdef FL_DEBUG
-    qWarning(QString("FLSqlConnections::database : No existe la conexión '%1',"
-                     " se devuelve la conexión por defecto 'default'").arg(connectionName));
+    qWarning(QString("FLSqlConnections::database : No existe la conexiï¿½n '%1',"
+                     " se devuelve la conexiï¿½n por defecto 'default'").arg(connectionName));
 #endif
     if (!d->defaultDB)
       addDatabase(new FLSqlDatabase());

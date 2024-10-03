@@ -19,7 +19,7 @@ var form = this;
 
 function init() {
 
-  aqApp.db().manager().initCacheDB();
+  aqApp.db().manager().initCacheLite();
   var settings = new AQSettings;
 
   if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
@@ -3344,9 +3344,9 @@ function updateCachedTables(tableNames)
   }
 
   debug("Consulta " + whereCache);
-  var qryCachesFields = new FLSqlQuery(null, "cache");
+  var qryCachesFields = new FLSqlQuery(null, "cachelite");
   qryCachesFields.setSelect("tablename,timestamp");
-  qryCachesFields.setFrom("timestamps");
+  qryCachesFields.setFrom("timestamps_cachelite");
   qryCachesFields.setWhere(whereCache);
   if (!qryCachesFields.exec()) {
     debug("Error ejecutando consulta");
@@ -3358,7 +3358,7 @@ function updateCachedTables(tableNames)
   var tablesPayload = [];
   while(qryCachesFields.next()) {
     var tableName = qryCachesFields.value("tablename");
-    const currentTableName = tableName.split("_cache")[0];
+    const currentTableName = tableName.split("_cachelite")[0];
     const metatable = aqApp.db().manager().metadata(currentTableName);
     var timestamp = qryCachesFields.value("timestamp");
   // LLamada a aqextensión solicitando datos.
@@ -3396,10 +3396,10 @@ function updateCachedTables(tableNames)
             debug("Actualizando timestamp de " + tableName_ + " a " + lastTimeStamp);
             const whereUpdate = "tablename='" + tableName_ + "_cache'";
             debug("whereUpdate: " + whereUpdate);
-            AQUtil.sqlUpdate("timestamps", "timestamp", lastTimeStamp , whereUpdate, "cache");
+            AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", lastTimeStamp , whereUpdate, "cachelite");
           
           } else {
-            //debug("* Error actualizando tabla " + tableName_ + "_cache");
+            //debug("* Error actualizando tabla " + tableName_ + "_cachelite");
             result = false;
           }
         }
@@ -3426,7 +3426,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   debug("** where: " + where);
 
   if (mode == "Delete") {
-    return AQUtil.quickSqlDelete(tableName, where, "cache");
+    return AQUtil.quickSqlDelete(tableName, where, "cachelite");
   } else {
     const fieldsNames = [];
     const fieldsValues = [];
@@ -3450,7 +3450,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
       fieldsNames.push(field);
       fieldsValues.push(fields[field]);
     }
-    var cursor = new FLSqlCursor(tableName + "_cache", "cache");
+    var cursor = new FLSqlCursor(tableName + "_cachelite", "cachelite");
 
     cursor.select(where);
     if (mode == "Update") {
