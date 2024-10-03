@@ -1841,7 +1841,7 @@ void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
   }
 
 void FLManager::initCacheLite() {
-  QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../tables_cached";
+  QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
   QDir dir(dbFolder);
   
   if (!dir.exists()) {
