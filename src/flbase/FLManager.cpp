@@ -752,9 +752,8 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
-#ifdef QSDEBUGGER
-  FLTableMetaData *ret = 0;
-  if (db_->database().find("_cache.sqlite3db") >= 0) {
+
+if (db_->database().find("_cache.sqlite3db") >= 0) {
     FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
     if (!dbDefault_) {
       qWarning("FLManager::metadata: No se pudo obtener la base de datos default");
@@ -764,9 +763,12 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 
     }
 
-  } else {
-    ret = metadataDev(n, quick);
-  }
+}
+
+#ifdef QSDEBUGGER
+  FLTableMetaData *ret = 0;
+  ret = metadataDev(n, quick);
+  
 
   // FLTableMetaData *ret = metadataDev(n, quick);
   if (!quick && ret && aqApp->consoleShown() &&
