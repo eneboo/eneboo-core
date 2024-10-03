@@ -64,10 +64,8 @@ FLManager::FLManager(FLSqlDatabase *db) :
 {
 
   listTables_ = 0;
-#ifndef FL_QUICK_CLIENT
   dictKeyMetaData_ = 0;
   
-#endif
 }
 
 FLManager::~FLManager()
@@ -175,12 +173,11 @@ bool FLManager::existsTable(const QString &n, bool cache) const
 
 void FLManager::finish()
 {
-#ifndef FL_QUICK_CLIENT
+
   if (dictKeyMetaData_) {
     delete dictKeyMetaData_;
     dictKeyMetaData_ = 0;
   }
-#endif
 
   if (listTables_) {
     delete listTables_;
