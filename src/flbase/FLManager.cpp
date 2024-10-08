@@ -293,6 +293,7 @@ bool FLManager::alterTable(const QString &n)
   c.setFilter(QString::fromLatin1("tabla='") + n + QString::fromLatin1("'"));
   c.select();
   if (c.next()) {
+    qWarning("ALTER1");
     QString mtd(db_->managerModules()->contentCached(n + QString::fromLatin1(".mtd")));
     return alterTable(c.value("xml").toString(), mtd);
   } else
@@ -795,7 +796,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
   bool isSysTable = (n.left(3) == "sys" || isSystemTable(n));
 
   if (!isSysTable) {
-
+    qWarning("ALTER2");
     stream = db_->managerModules()->contentCached(
                n + QString::fromLatin1(".mtd"), &key
              );
@@ -818,6 +819,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
 
   if (!ret) {
     if (isSysTable) {
+      qWarning("ALTER3");
       stream = db_->managerModules()->contentCached(
                  n + QString::fromLatin1(".mtd")
                );
@@ -891,8 +893,10 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
   bool notSysTable = n.left(3) != "sys" && !isSystemTable(n);
   bool readStream = (notSysTable && !quick);
 
-  if (readStream)
+  if (readStream) {
+    qWarning("ALTER4 " + n);
     stream = db_->managerModules()->contentCached(n + QString::fromLatin1(".mtd"), &key);
+  }
   if (!notSysTable)
     dictKey = new QString(n);
 
@@ -992,8 +996,10 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
     }
   }
 
-  if (!readStream)
+  if (!readStream) {
+    qWarning("ALTER4 " + n);
     stream = db_->managerModules()->contentCached(n + QString::fromLatin1(".mtd"), &key);
+  }
 
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG

@@ -672,6 +672,7 @@ QString FLManagerModules::contentCode(const QString &n)
 {
   if (n == "sys.qs" || n == "plus_sys.qs")
     return content(n);
+    qWarning("ALTER5 " + n);
   QString s(contentCached(n));
   if (!s.left(45).lower().contains("var form"))
     s.prepend("var form = this; //auto-added\n");
