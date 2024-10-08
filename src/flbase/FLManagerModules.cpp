@@ -562,7 +562,7 @@ QString FLManagerModules::content(const QString &n, const bool only_fs)
       return ret;
     }
   } else {
-    qWarning("FLManagerModules::Content: flfiles not contains: %s. SKiping ...", QString(n));
+    qWarning("FLManagerModules::Content: flfiles not contains: " + n + ". SKiping ...");
   }
 
   return QString::null;
