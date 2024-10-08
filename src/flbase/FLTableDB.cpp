@@ -123,6 +123,8 @@ void FLTableDB::setTableRecordsCursor()
 
 bool FLTableDB::eventFilter(QObject *obj, QEvent *ev)
 {
+  qWarning("FLTableDB::eventFilter(%s, %d)", obj->objectName().latin1(), ev->type());
+
   if (!tableRecords_ || !lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_)
     return FLWidgetTableDB::eventFilter(obj, ev);
   if (ev->type() == QEvent::KeyPress && obj == tableRecords_) {
