@@ -194,6 +194,7 @@ void FLSqlCursorPrivate::msgBoxWarning(const QString &text,
 #ifdef AQ_MD5_CHECK
 bool FLSqlCursorPrivate::needUpdate()
 {
+  qWarning("FLSqlCursorPrivate::needUpdate()!!");
   if (isQuery_)
     return false;
   QString md5Str(db_->md5TuplesStateTable(curName_));
@@ -1768,6 +1769,7 @@ void FLSqlCursor::browseRecord()
 void FLSqlCursor::editRecord()
 {
 #ifdef AQ_MD5_CHECK
+  qWarning("FLSqlCursor::editRecord()");
   if (d->needUpdate())
   {
     QString pKN(d->metadata_->primaryKey());
