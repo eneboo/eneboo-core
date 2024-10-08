@@ -2160,6 +2160,7 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       if (!fieldsOrderBy.isEmpty())
       {
         qry->setOrderBy(fieldsOrderBy);
+        qWarning(tr("FLSqlCursor::select() : Ordenado por %1").arg(fieldsOrderBy));
         setSort(QSqlIndex::fromStringList(QStringList::split(',', fieldsOrderBy), this));
       }
 

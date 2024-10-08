@@ -259,6 +259,7 @@ QSqlIndex QSqlIndex::fromStringList( const QStringList& l, const QSqlCursor* cur
     QSqlIndex newSort;
     for ( uint i = 0; i < l.count(); ++i ) {
 	QString f = l[ i ];
+    qWarning( "QSqlIndex::fromStringList: " + f );
 	bool desc = FALSE;
 	if ( f.mid( f.length()-3 ) == "ASC" )
 	    f = f.mid( 0, f.length()-3 );
