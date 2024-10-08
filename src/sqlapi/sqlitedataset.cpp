@@ -808,7 +808,7 @@ void SqliteDataset::fill_fields()
     }
 
   #ifdef FL_SQL_LOG
-	  qWarning("**********************");
+	  qWarning("********** SQLAPI *************");
 	  qWarning("%s",query);
   #endif
 

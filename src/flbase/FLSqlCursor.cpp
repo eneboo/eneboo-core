@@ -307,8 +307,10 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
     if (qry)
       qry->deleteLater();
   }
-  else
+  else {
+    qWarning(tr("FLSqlCursor::init: PASO2 %1 %2").arg(name).arg(d->metadata_->name()));
     QSqlCursor::setName(d->metadata_->name(), autopopulate);
+  }
 
   d->modeAccess_ = BROWSE;
   if (cR && r)
@@ -333,7 +335,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 #ifdef FL_DEBUG
   ++countRefCursor;
 #endif
-qWarning(tr("FLSqlCursor::init: PASO2 %1").arg(name));
+qWarning(tr("FLSqlCursor::init: PASO3 %1").arg(name));
 }
 
 FLSqlCursor::~FLSqlCursor()
