@@ -702,7 +702,6 @@ QSqlIndex SqliteDriver::primaryIndex(const QString &tablename) const
     return idx;
   QDomDocument doc(tablename);
   QDomElement docElem;
-  qWarning("ALTER7 " + tablename);
   QString stream = db_->managerModules()->contentCached(tablename + ".mtd");
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
@@ -757,7 +756,6 @@ QSqlRecord SqliteDriver::record(const QString &tablename) const
     return fil;
   QDomDocument doc(tablename);
   QDomElement docElem;
-  qWarning("ALTER8 " + tablename);
   QString stream = db_->managerModules()->contentCached(tablename + ".mtd");
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
@@ -823,7 +821,6 @@ QSqlRecordInfo SqliteDriver::recordInfo(const QString &tablename) const
     return info;
   QDomDocument doc(tablename);
   QDomElement docElem;
-  qWarning("ALTER9 " + tablename);
   QString stream = db_->managerModules()->contentCached(tablename + ".mtd");
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG

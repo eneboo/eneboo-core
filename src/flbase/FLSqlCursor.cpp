@@ -255,7 +255,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   {
     if (!d->db_->manager()->existsTable(name)) {
         d->metadata_ = d->db_->manager()->createTable(name);
-        qWarning(tr("FLSqlCursor::init: createTable %1 ").arg(name));
       }
     else{
 
@@ -270,12 +269,9 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
             qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
             
         }
-
-        qWarning(tr("FLSqlCursor::init: metadata %1 , table: %2").arg(d->metadata_->name()));
     }
   }
 
-  qWarning(tr("FLSqlCursor::init: PASO1 %1").arg(name));
 
   d->cursorRelation_ = cR;
   if (r)
@@ -308,7 +304,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
       qry->deleteLater();
   }
   else {
-    qWarning(tr("FLSqlCursor::init: PASO2 %1 %2").arg(name).arg(d->metadata_->name()));
     QSqlCursor::setName(d->metadata_->name(), autopopulate);
   }
 
@@ -335,7 +330,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 #ifdef FL_DEBUG
   ++countRefCursor;
 #endif
-qWarning(tr("FLSqlCursor::init: PASO3 %1").arg(name));
 }
 
 FLSqlCursor::~FLSqlCursor()

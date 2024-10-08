@@ -293,7 +293,6 @@ bool FLManager::alterTable(const QString &n)
   c.setFilter(QString::fromLatin1("tabla='") + n + QString::fromLatin1("'"));
   c.select();
   if (c.next()) {
-    qWarning("ALTER1");
     QString mtd(db_->managerModules()->contentCached(n + QString::fromLatin1(".mtd")));
     return alterTable(c.value("xml").toString(), mtd);
   } else
@@ -753,7 +752,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
-qWarning("FLManager::metadata: " + n + ", database: " + db_->database());
+
 if (db_->database().find("_cachelite.sqlite3db") >= 0) {
     qWarning("FLManager::metadata: Buscando en cache_lite: " + n);
     FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
@@ -765,9 +764,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
       return dbDefault_->manager()->getMetadataCache(n);
 
     }
-} else {
-  qWarning("FLManager::metadata: tradicional: " + n);
-}
+}  
 
 #ifdef QSDEBUGGER
   FLTableMetaData *ret = 0;
@@ -796,7 +793,6 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
   bool isSysTable = (n.left(3) == "sys" || isSystemTable(n));
 
   if (!isSysTable) {
-    qWarning("ALTER2");
     stream = db_->managerModules()->contentCached(
                n + QString::fromLatin1(".mtd"), &key
              );
@@ -819,7 +815,6 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
 
   if (!ret) {
     if (isSysTable) {
-      qWarning("ALTER3");
       stream = db_->managerModules()->contentCached(
                  n + QString::fromLatin1(".mtd")
                );
@@ -894,7 +889,6 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
   bool readStream = (notSysTable && !quick);
 
   if (readStream) {
-    qWarning("ALTER4 " + n);
     stream = db_->managerModules()->contentCached(n + QString::fromLatin1(".mtd"), &key);
   }
   if (!notSysTable)
@@ -997,7 +991,6 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
   }
 
   if (!readStream) {
-    qWarning("ALTER4 " + n);
     stream = db_->managerModules()->contentCached(n + QString::fromLatin1(".mtd"), &key);
   }
 
