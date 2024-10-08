@@ -333,6 +333,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 #ifdef FL_DEBUG
   ++countRefCursor;
 #endif
+qWarning(tr("FLSqlCursor::init: PASO2 %1").arg(name));
 }
 
 FLSqlCursor::~FLSqlCursor()
