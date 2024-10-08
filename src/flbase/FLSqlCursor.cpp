@@ -275,6 +275,8 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
     }
   }
 
+  qWarning(tr("FLSqlCursor::init: PASO1 %1").arg(name));
+
   d->cursorRelation_ = cR;
   if (r)
   {
