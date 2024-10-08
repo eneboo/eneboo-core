@@ -1012,8 +1012,12 @@ void FLDataTable::setFocus()
   if (!hasFocus())
   {
     setPaletteBackgroundColor(qApp->palette().color(QPalette::Active, QColorGroup::Base));
-    qWarning("FLDataTable::setFocus: Ignorando ....");
-    //QDataTable::refresh();
+    if (cursor_->db()->driverName() == "FLsqlapi") {
+      qWarning("FLDataTable::setFocus: Ignorando ....");
+    } else {
+      QDataTable::refresh();
+    }
+
   }
   else
     syncNumRows();

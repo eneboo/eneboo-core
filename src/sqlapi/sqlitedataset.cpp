@@ -327,9 +327,9 @@ namespace dbiplus
     db = NULL;
     errmsg = NULL;
     autorefresh = false;
-    debug_sql = true;
-    debug_paginacion = true;
-    debug_aqextension = true;
+    debug_sql = false;
+    debug_paginacion = false;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
@@ -344,9 +344,9 @@ namespace dbiplus
     db = newDb;
     errmsg = NULL;
     autorefresh = false;
-    debug_sql = true;
-    debug_paginacion = true;
-    debug_aqextension = true;
+    debug_sql = false;
+    debug_paginacion = false;
+    debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
     bloque_last = 0;
