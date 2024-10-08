@@ -742,22 +742,26 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
         *shaKey = key; */
     }
   } else {
+    qWarning("DESDE 1");
     return content(n, true);
   }
     
 
   if (key.isEmpty()) {
+    qWarning("DESDE 2");
     str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
+    qWarning("DESDE 3");
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
   }
 #else
+  qWarning("DESDE 4");
   str_ret = content(n);
 #endif
 
