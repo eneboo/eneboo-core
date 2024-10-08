@@ -3383,13 +3383,14 @@ function updateCachedTables(tableNames)
         var lastTimeStamp;
         for (var i=0; i<data.length; i++) {
           lastTimeStamp = null;
-          debug("Linea " + i);
+          
           const linea = data[i];
 
           const modo = linea["mode"];
           const fields = linea["fields"];
           const pkField = linea["pk"];
           const tableName_ = linea["tablename"];
+          debug("Linea " + i + ", campos:" + fields);
           if (updateCachedFields(tableName_, modo, pkField, fields)) {
 
             lastTimeStamp = linea["timestamp"];
@@ -3418,7 +3419,8 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   manager = aqApp.db().manager();
   metaTable = manager.metadata(tableName);
   metaField = metaTable.field(pkField);
-  const array_fields = metaTable.cachedFields();
+  var array_fields = metaTable.cachedFields();
+  array_fields.push(pkField);
   debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
 
   debug("updateCachedFields: tablename: " + tableName);
@@ -3432,9 +3434,6 @@ function updateCachedFields(tableName, mode, pkField,fields) {
     const fieldsValues = [];
     for (var field in fields) {
       //debug("?? Campo: " + field);
-      if (field == pkField) {
-        continue;
-      }
       var found = false;
       for (var i=0; i<array_fields.length; i++) {
         if (array_fields[i] == field) {
@@ -3476,4 +3475,5 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   }
 
 }
+
 
