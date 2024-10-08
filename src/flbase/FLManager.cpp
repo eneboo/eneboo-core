@@ -754,6 +754,7 @@ FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
 
 if (db_->database().find("_cachelite.sqlite3db") >= 0) {
+    qWarning("FLManager::metadata: Buscando en cache_lite: " + n);
     FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
     if (!dbDefault_) {
       qWarning("FLManager::metadata: No se pudo obtener la base de datos default");
