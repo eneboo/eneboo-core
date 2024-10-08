@@ -862,7 +862,7 @@ void FLFieldDB::initCursor()
         QString cachedTableName = tableName_ + "_cachelite";
         qWarning("FLFieldDB::initCursor() : Cachelite " + cachedTableName + ", fieldName: " + fieldName_);
         cursor_ = new FLSqlCursor(cachedTableName, false, "cachelite", cursorAux, rMD,this);
-
+        qWarning("FLFieldDB::initCursor() : Cachelite " + cachedTableName + " FIN!!");
       } else {
         cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
       }
