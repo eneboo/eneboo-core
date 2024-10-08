@@ -1263,12 +1263,8 @@ bool SqliteResult::fetchLast()
 
 int SqliteResult::size()
 {
-  qWarning("SqliteResult::size A");
-  if (!dataSet) {
-    qWarning("SqliteResult::size B");
+  if (!dataSet)
     return 0;
-  }
-  qWarning("SqliteResult::size C");
   return dataSet->num_rows();
 }
 
