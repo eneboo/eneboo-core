@@ -1841,6 +1841,9 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
 
   if ((!isValid() || size() <= 0) && m != INSERT)
   {
+    qWarning("VALIDO:" + (isValid() ? "SI" : "NO"));
+    qWarning("SIZE:" + QString::number(size()));
+
     QMessageBox::warning(qApp->focusWidget(), tr("Aviso"),
                          tr("No hay ningún registro seleccionado"),
                          QMessageBox::Ok, 0, 0);
