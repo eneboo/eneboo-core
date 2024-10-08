@@ -253,8 +253,10 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
   if (!name.isEmpty())
   {
-    if (!d->db_->manager()->existsTable(name))
-      d->metadata_ = d->db_->manager()->createTable(name);
+    if (!d->db_->manager()->existsTable(name)) {
+        d->metadata_ = d->db_->manager()->createTable(name);
+        qWarning(tr("FLSqlCursor::init: createTable %1 ").arg(name));
+      }
     else{
 
         if (d->metadata_) {
@@ -2160,7 +2162,6 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       if (!fieldsOrderBy.isEmpty())
       {
         qry->setOrderBy(fieldsOrderBy);
-        qWarning(tr("FLSqlCursor::select() : Ordenado por %1").arg(fieldsOrderBy));
         setSort(QSqlIndex::fromStringList(QStringList::split(',', fieldsOrderBy), this));
       }
 
