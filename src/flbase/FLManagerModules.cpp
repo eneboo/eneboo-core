@@ -59,7 +59,7 @@ void test_sha256(const string name, const string str)
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     if (ss.str() == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-    	qWarning("FLManagerModules : Fichero " + QString(name) + " vacío.");
+    	qWarning("FLManagerModules : Fichero " + QString(name) + " vac?o.");
     else
     	{
     ss << "  " << name;
@@ -157,7 +157,7 @@ void FLManagerModules::loadAllIdModules()
     FLInfoMod *infoMod = new FLInfoMod();
     infoMod->idModulo = QString("sys");
     infoMod->idArea = QString("sys");
-    infoMod->descripcion = QString("Administración");
+    infoMod->descripcion = QString("Administraci?n");
     infoMod->version = QString("0.0");
     infoMod->icono = contentFS(AQ_DATA + "/sys.xpm");
     infoMod->areaDescripcion = QString("Sistema");
@@ -328,10 +328,10 @@ void FLManagerModules::init()
   tmpTMD = db_->manager()->createSystemTable("flsettings");
   tmpTMD = db_->manager()->createSystemTable("flserial");
   tmpTMD = db_->manager()->createSystemTable("flvar");
-//-->FLLarge único   
+//-->FLLarge ?nico   
   if (aqApp->singleFLLarge())
     tmpTMD = db_->manager()->createSystemTable("fllarge");
-//<--FLarge único
+//<--FLarge ?nico
 
   tmpTMD = db_->manager()->createSystemTable("flupdates");
 
@@ -412,7 +412,7 @@ void FLManagerModules::init()
     cursor.refreshBuffer();
     cursor.setValueBuffer("idmodulo", "sys");
     cursor.setValueBuffer("idarea", "sys");
-    cursor.setValueBuffer("descripcion", QApplication::tr("Administración"));
+    cursor.setValueBuffer("descripcion", QApplication::tr("Administraci?n"));
     cursor.setValueBuffer("icono", contentFS(AQ_DATA + "/sys.xpm"));
     cursor.setValueBuffer("bloqueo", QVariant(false, 0));
     cursor.commitBuffer();
@@ -520,7 +520,7 @@ QString FLManagerModules::content(const QString &n, const bool only_fs)
     return QString::null;
   }
 
-  if (notSysTable) {
+  if (notSysTable && ((dictKeyFiles && dictKeyFiles->find(n)) || !dictKeyFiles)) { // Si existe en flfiles ....
     QString formatVal(db_->manager()->formatAssignValue("nombre", QVariant::String, n, true));
     QSqlQuery q(QString::null, db_->dbAux());
     q.setForwardOnly(true);
@@ -561,6 +561,8 @@ QString FLManagerModules::content(const QString &n, const bool only_fs)
       }
       return ret;
     }
+  } else {
+    qWarning("FLManagerModules::Content: flfiles not contains: %s. SKiping ...", n);
   }
 
   return QString::null;
@@ -684,9 +686,9 @@ QString FLManagerModules::contentCode(const QString &n)
   s.replace(rx, "\n");
   //rx.setMinimal(true);
   //rx.setPattern("class\\s+(\\w+)\\s+extends\\s+\\1([\\s\n]*\\{.*\\}[\\s\n]*\\})");
-  //scode.replace(rx, "/* ¡¡ ERROR !! : LA CLASE HEREDA DE ELLA MISMA."
-  //               "\nCODIGO INHABILITADO AUTOMÁTICAMENTE POR AbanQ :\n\n"
-  //               "class \\1 extends \\1 \\2\n\n ¡¡ FIN ERROR !! */");
+  //scode.replace(rx, "/* ?? ERROR !! : LA CLASE HEREDA DE ELLA MISMA."
+  //               "\nCODIGO INHABILITADO AUTOM?TICAMENTE POR AbanQ :\n\n"
+  //               "class \\1 extends \\1 \\2\n\n ?? FIN ERROR !! */");
 #endif
 
   return s;
@@ -742,26 +744,22 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
         *shaKey = key; */
     }
   } else {
-    qWarning("DESDE 1");
     return content(n, true);
   }
     
 
   if (key.isEmpty()) {
-    qWarning("DESDE 2");
     str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
-    qWarning("DESDE 3");
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
   }
 #else
-  qWarning("DESDE 4");
   str_ret = content(n);
 #endif
 
@@ -868,7 +866,7 @@ void FLManagerModules::setActiveIdModule(const QString &id)
     activeIdModule_ = id;
   } else {
 #ifdef FL_DEBUG
-    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un módulo inexistente"));
+    qWarning(QApplication::tr("FLManagerModules : Se ha intentando activar un m?dulo inexistente"));
 #endif
     activeIdArea_ = QString::null;
     activeIdModule_ = QString::null;
