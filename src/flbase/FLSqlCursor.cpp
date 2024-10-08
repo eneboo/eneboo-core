@@ -254,8 +254,20 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   {
     if (!d->db_->manager()->existsTable(name))
       d->metadata_ = d->db_->manager()->createTable(name);
-    else
-      d->metadata_ = d->db_->manager()->metadata(name);
+    else{
+
+        if (d->metadata_) {
+          // Ya existe metadata previo
+          qWarning(tr("FLSqlCursor::init: metadata %1 ya existe cuando se declara %2").arg(d->metadata_->name()).arg(name));
+
+        }
+
+        d->metadata_ = d->db_->manager()->metadata(name);
+        if (!d->metadata_) {
+            qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
+            
+        }
+    }
   }
 
   d->cursorRelation_ = cR;
@@ -1597,7 +1609,7 @@ void FLSqlCursor::setValueBuffer(const QString &fN, const QVariant &v)
   }
   else
     d->buffer_->setValue(fN, vv);
-
+  //qWarning(tr("FLSqlCursor::setValueBuffer() : Emitiendo bufferChanged de campo %1 desde tabla %2 ").arg(fN).arg(d->metadata_->name()));
   emit bufferChanged(fN);
 }
 
@@ -1829,6 +1841,9 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
 
   if ((!isValid() || size() <= 0) && m != INSERT)
   {
+    qWarning("VALIDO:%s", isValid() ? "SI" : "NO");
+    qWarning("SIZE:%d", size());
+
     QMessageBox::warning(qApp->focusWidget(), tr("Aviso"),
                          tr("No hay ningún registro seleccionado"),
                          QMessageBox::Ok, 0, 0);
