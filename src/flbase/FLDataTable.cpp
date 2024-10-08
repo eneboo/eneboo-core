@@ -1012,7 +1012,8 @@ void FLDataTable::setFocus()
   if (!hasFocus())
   {
     setPaletteBackgroundColor(qApp->palette().color(QPalette::Active, QColorGroup::Base));
-    QDataTable::refresh();
+    qWarning("FLDataTable::setFocus: Ignorando ....");
+    //QDataTable::refresh();
   }
   else
     syncNumRows();
