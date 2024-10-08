@@ -898,8 +898,9 @@ void FLFieldDB::initCursor()
             SLOT(refreshQuick(const QString &)));
 
     cursorAuxInit = true;
-    cursor_->append(cursor_->db()->db()->recordInfo(tableName_ + tMD->useCachedFields() ? "_cachelite" : "").find(fieldName_));
-    cursor_->append(cursor_->db()->db()->recordInfo(tableName_ + tMD->useCachedFields() ? "_cachelite" : "").find(fieldRelation_));
+    QString cachedTableName = tMD->useCachedFields() ? tableName_ + "_cachelite" : tableName_;
+    cursor_->append(cursor_->db()->db()->recordInfo(cachedTableName).find(fieldName_));
+    cursor_->append(cursor_->db()->db()->recordInfo(cachedTableName).find(fieldRelation_));
 
     if (tMD->useCachedFields()) {
       cursor_->refresh();
