@@ -752,7 +752,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
 
 FLTableMetaData *FLManager::metadata(const QString &n, bool quick)
 {
-
+qWarning("FLManager::metadata: " + n + ", database: " + db_->database());
 if (db_->database().find("_cachelite.sqlite3db") >= 0) {
     qWarning("FLManager::metadata: Buscando en cache_lite: " + n);
     FLSqlDatabase *dbDefault_ = FLSqlConnections::database("default");
@@ -760,10 +760,12 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
       qWarning("FLManager::metadata: No se pudo obtener la base de datos default");
       return 0;
     } else {
+
       return dbDefault_->manager()->getMetadataCache(n);
 
     }
-
+} else {
+  qWarning("FLManager::metadata: tradicional: " + n);
 }
 
 #ifdef QSDEBUGGER
@@ -793,6 +795,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
   bool isSysTable = (n.left(3) == "sys" || isSystemTable(n));
 
   if (!isSysTable) {
+
     stream = db_->managerModules()->contentCached(
                n + QString::fromLatin1(".mtd"), &key
              );

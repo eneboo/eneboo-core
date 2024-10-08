@@ -270,6 +270,8 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
             qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
             
         }
+
+        qWarning(tr("FLSqlCursor::init: metadata %1 , table: %2").arg(d->metadata_->name()));
     }
   }
 
