@@ -807,6 +807,11 @@ void SqliteDataset::fill_fields()
       qWarning("QUERY! --> %s", query);
     }
 
+  #ifdef FL_SQL_LOG
+	  qWarning("**********************");
+	  qWarning("%s",query);
+  #endif
+
     if (db == NULL)
       return false;
     if (((SqliteDatabase *)db)->getHandle() == NULL)
