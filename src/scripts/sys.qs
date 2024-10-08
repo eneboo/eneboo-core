@@ -3337,9 +3337,9 @@ function updateCachedTables(tableNames)
   // Recojemos el timestamp de la tabla
   var whereCache = "1=1";
   if (tableNames != undefined) {
-    whereCache = "tablename in (";  
-    whereCache += tableNames.join(",");
-    whereCache += ")";
+    whereCache = "tablename in ('";  
+    whereCache += tableNames.join("','");
+    whereCache += "')";
 
   }
 
@@ -3394,7 +3394,7 @@ function updateCachedTables(tableNames)
 
             lastTimeStamp = linea["timestamp"];
             debug("Actualizando timestamp de " + tableName_ + " a " + lastTimeStamp);
-            const whereUpdate = "tablename='" + tableName_ + "_cache'";
+            const whereUpdate = "tablename='" + tableName_ + "'";
             debug("whereUpdate: " + whereUpdate);
             AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", lastTimeStamp , whereUpdate, "cachelite");
           
@@ -3453,6 +3453,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
     var cursor = new FLSqlCursor(tableName + "_cachelite", "cachelite");
 
     cursor.select(where);
+
     if (mode == "Update") {
       if (!cursor.first()) {
         debug("Error en posicionamiento");
@@ -3471,7 +3472,6 @@ function updateCachedFields(tableName, mode, pkField,fields) {
       
       return false;
     }
-    debug("BIENNN! " + tableName);
     return true;
   }
 
