@@ -3464,6 +3464,9 @@ function updateCachedFields(tableName, mode, pkField,fields) {
         return false;
       }
     }
+
+    cursor.setActivatedCheckIntegrity(false);
+    cursor.setActivatedCommitActions(false);
     
     cursor.setModeAccess(mode== "Insert" ? cursor.Insert: cursor.Edit);
     cursor.refreshBuffer();
