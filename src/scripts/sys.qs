@@ -3356,8 +3356,10 @@ function updateCachedTables(tableNames)
   const llamada: String = "delegate_qry";
   var result = true;
   var tablesPayload = [];
+  var tableNames = [];
   while(qryCachesFields.next()) {
     var tableName = qryCachesFields.value("tablename");
+    tableNames.push(tableName);
     const currentTableName = tableName.split("_cachelite")[0];
     const metatable = aqApp.db().manager().metadata(currentTableName);
     var timestamp = qryCachesFields.value("timestamp");
@@ -3379,8 +3381,10 @@ function updateCachedTables(tableNames)
   		if ("result" in res["salida"] && res["salida"]["result"] == "ok") {
         debug("ok");
         const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
+        const timestamp_server = res["salida"]["timestamp"];
         
         var lastTimeStamp;
+        var isUpdatedTimestamp = false;
         for (var i=0; i<data.length; i++) {
           lastTimeStamp = null;
           
@@ -3392,18 +3396,26 @@ function updateCachedTables(tableNames)
           const tableName_ = linea["tablename"];
           debug("Linea " + i + ", campos:" + fields);
           if (updateCachedFields(tableName_, modo, pkField, fields)) {
-
+            
             lastTimeStamp = linea["timestamp"];
             debug("Actualizando timestamp de " + tableName_ + " a " + lastTimeStamp);
-            const whereUpdate = "tablename='" + tableName_ + "'";
+            const whereUpdate = "tablename='" + tableName_ + "_cachelite'";
             debug("whereUpdate: " + whereUpdate);
             AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", lastTimeStamp , whereUpdate, "cachelite");
-          
+            isUpdatedTimestamp = true;
           } else {
             //debug("* Error actualizando tabla " + tableName_ + "_cachelite");
             result = false;
+            break;
           }
         }
+      
+      if (!isUpdatedTimestamp) {
+        debug("No se han recibido datos, actualizando tabla a ahora")
+        const whereCacheTables = "tablename in ('" + tableNames.join("', '") + "')";
+        AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", timestamp_server , whereCacheTables, "cachelite");
+      }
+        
   		} else {
         debug('error');
         debug("ERROR devuelto " + res["salida"]["data"]);
