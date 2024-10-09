@@ -3430,6 +3430,7 @@ function updateCachedTables(tableNames)
 function updateCachedFields(tableName, mode, pkField,fields) {
   manager = aqApp.db().manager();
   metaTable = manager.metadata(tableName);
+  const tableName_cachelite = tableName + "_cachelite";
   metaField = metaTable.field(pkField);
   var array_fields = metaTable.cachedFields();
   array_fields.push(pkField);
