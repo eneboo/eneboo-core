@@ -1250,7 +1250,7 @@ PGresult *
 PQexec(PGconn *conn, const char *query)
 {
 #ifdef FL_SQL_LOG
-	fprintf(stdout,"**********************\n");
+	fprintf(stdout,"********* POSTGRESQL *********\n");
 	fprintf(stdout,"%s\n",query);
 #endif
 	if (!PQexecStart(conn))

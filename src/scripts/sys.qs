@@ -3343,7 +3343,7 @@ function updateCachedTables(tableNames)
 
   }
 
-  debug("Consulta " + whereCache);
+  //debug("Consulta " + whereCache);
   var qryCachesFields = new FLSqlQuery(null, "cachelite");
   qryCachesFields.setSelect("tablename,timestamp");
   qryCachesFields.setFrom("timestamps_cachelite");
@@ -3357,73 +3357,66 @@ function updateCachedTables(tableNames)
   var result = true;
   var tablesPayload = [];
   var tableNames = [];
+
+  // Generando payload ....
   while(qryCachesFields.next()) {
     var tableName = qryCachesFields.value("tablename");
     tableNames.push(tableName);
     const currentTableName = tableName.split("_cachelite")[0];
     const metatable = aqApp.db().manager().metadata(currentTableName);
     var timestamp = qryCachesFields.value("timestamp");
-  // LLamada a aqextensión solicitando datos.
+  // LLamada a aqextensi?n solicitando datos.
   var cachedFields = metatable.cachedFields();
   cachedFields.push(metatable.primaryKey());
-
   tablesPayload.push({"tablename": currentTableName, "cachedfields": cachedFields.join(","), "timestamp": timestamp});
   }
 
- 		debug("Lanzando llamada --> " + llamada);
- 		// var error = "Servidor no encontrado";
-    var str_json = formUTIL.jsonToString(tablesPayload);
-    var ba = new QByteArray;
-    ba.string = str_json;
-    const json64 = AQS.toBase64(ba);
- 		var res = formHTTP.iface.get(llamada, {"payload" : json64});
 
-  		if ("result" in res["salida"] && res["salida"]["result"] == "ok") {
-        debug("ok");
-        const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
-        const timestamp_server = res["salida"]["timestamp"];
-        
-        var lastTimeStamp;
-        var isUpdatedTimestamp = false;
-        for (var i=0; i<data.length; i++) {
-          lastTimeStamp = null;
-          
-          const linea = data[i];
 
-          const modo = linea["mode"];
-          const fields = linea["fields"];
-          const pkField = linea["pk"];
-          const tableName_ = linea["tablename"];
-          debug("Linea " + i + ", campos:" + fields);
-          if (updateCachedFields(tableName_, modo, pkField, fields)) {
-            
-            lastTimeStamp = linea["timestamp"];
-            debug("Actualizando timestamp de " + tableName_ + " a " + lastTimeStamp);
-            const whereUpdate = "tablename='" + tableName_ + "_cachelite'";
-            debug("whereUpdate: " + whereUpdate);
-            AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", lastTimeStamp , whereUpdate, "cachelite");
-            isUpdatedTimestamp = true;
-          } else {
-            //debug("* Error actualizando tabla " + tableName_ + "_cachelite");
-            result = false;
-            break;
-          }
-        }
-      
-      if (!isUpdatedTimestamp) {
-        debug("No se han recibido datos, actualizando tabla a ahora")
-        const whereCacheTables = "tablename in ('" + tableNames.join("', '") + "')";
-        AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", timestamp_server , whereCacheTables, "cachelite");
+  //debug("Lanzando llamada --> " + llamada);
+  // var error = "Servidor no encontrado";
+  var str_json = formUTIL.jsonToString(tablesPayload);
+  var ba = new QByteArray;
+  ba.string = str_json;
+  const json64 = AQS.toBase64(ba);
+  var res = formHTTP.iface.get(llamada, {"payload" : json64});
+
+
+
+  if ("result" in res["salida"] && res["salida"]["result"] == "ok") {
+    const timestamp_server = res["salida"]["timestamp"];
+    const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
+    
+    for (var i=0; i<data.length; i++) {
+    
+      const linea = data[i];
+
+      const modo = linea["mode"];
+      const fields = linea["fields"];
+      const pkField = linea["pk"];
+      const tableName_cachelite = linea["tablename"];
+      const tableName_= tableName_cachelite.split("_cachelite")[0];
+      if (updateCachedFields(tableName_cachelite, modo, pkField, fields)) {
+        const whereUpdate = "tablename='" + tableName_ +"'";
+        AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", timestamp_server , whereUpdate, "cachelite");
+      } else {
+        result = false;
+        break;
       }
-        
-  		} else {
-        debug('error');
-        debug("ERROR devuelto " + res["salida"]["data"]);
-        result = true;
-      } 
-
-    return result;
+    }
+  
+  if (data.length == 0) {
+    const whereCacheTables = "tablename in ('" + tableNames.join("', '") + "')";
+    AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", timestamp_server , whereCacheTables, "cachelite");
   }
+    
+  } else {
+    debug("ERROR devuelto " + res["salida"]["data"]);
+    result = true;
+  } 
+
+  return result;
+}
 
 
 
@@ -3434,14 +3427,13 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   metaField = metaTable.field(pkField);
   var array_fields = metaTable.cachedFields();
   array_fields.push(pkField);
-  debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
-
-  debug("updateCachedFields: tablename: " + tableName);
+  //debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
+  debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
   const where = pkField + " = " + AQUtil.formatValue(metaField, fields[pkField]);
-  debug("** where: " + where);
+  //debug("** where: " + where);
 
   if (mode == "Delete") {
-    return AQUtil.quickSqlDelete(tableName, where, "cachelite");
+    return AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
   } else {
     const fieldsNames = [];
     const fieldsValues = [];
@@ -3462,7 +3454,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
       fieldsNames.push(field);
       fieldsValues.push(fields[field]);
     }
-    var cursor = new FLSqlCursor(tableName + "_cachelite", "cachelite");
+    var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
 
     cursor.select(where);
 
@@ -3477,16 +3469,13 @@ function updateCachedFields(tableName, mode, pkField,fields) {
     cursor.refreshBuffer();
 
     for (var i=0; i<fieldsNames.length; i++) {
-      debug("* Campo: " + fieldsNames[i] + " = " + fieldsValues[i]);
+      //debug("\n* Campo: " + fieldsNames[i] + " = " + fieldsValues[i]);
       cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
     }
-    if (!cursor.commitBuffer()) {
-      
-      return false;
-    }
-    return true;
+    return cursor.commitBuffer();
   }
 
-}
+  return true;
 
+}
 

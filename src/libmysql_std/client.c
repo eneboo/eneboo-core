@@ -2571,7 +2571,7 @@ mysql_real_query( MYSQL *mysql, const char *query, ulong length ) {
   DBUG_PRINT( "query", ( "Query = '%-.4096s'", query ) );
 
 #ifdef FL_SQL_LOG
-  fprintf( stdout, "**********************\n" );
+  fprintf( stdout, "********* MYSQL *************\n" );
   fprintf( stdout, "%s\n", query );
 #endif
 

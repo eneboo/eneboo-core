@@ -467,7 +467,6 @@ void FLManagerModules::staticLoaderSetup()
 
 QString FLManagerModules::contentStatic(const QString &n)
 {
-  qWarning("FLManagerModules::contentStatic " + n);
   QString str_ret(FLModulesStaticLoader::content(n, staticBdInfo_));
 
   if (!str_ret.isEmpty()) {
@@ -485,7 +484,6 @@ QString FLManagerModules::contentStatic(const QString &n)
 
 QString FLManagerModules::content(const QString &n, const bool only_fs)
 {
-  qWarning("FLManagerModules::content(" + n);
   if (n.isEmpty() || n.length() <= 3)
     return QString::null;
 
