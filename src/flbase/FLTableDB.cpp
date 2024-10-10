@@ -333,7 +333,7 @@ QString FLTableDB::findFilter()
 
 void FLTableDB::refreshDelayed(int msec, const bool refreshData)
 {
-  qwarning("REFRESH_DELAYED: " + tableName_);
+  qWarning("REFRESH_DELAYED: " + tableName_);
   QString bfilter = filter_;
   if (!timer)
     return;
@@ -361,7 +361,7 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
 
 void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
 {
-  qwarning("REFRESH: " + tableName_);
+  qWarning("REFRESH: " + tableName_);
   if (!lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_ || (topWidget && !topWidget->isShown()))
     return;
 
