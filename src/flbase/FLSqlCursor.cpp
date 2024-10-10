@@ -298,8 +298,9 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   {
     FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
     d->query_ = qry->sql();
-    if (qry && !d->query_.isEmpty())
+    if (qry && !d->query_.isEmpty()) {
       exec(d->query_);
+    }
     if (qry)
       qry->deleteLater();
   }
@@ -2179,7 +2180,7 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       d->query_ = qry->sql();
       qry->deleteLater();
     }
-
+    qWarning("T 2");
     return exec(d->query_);
   }
 
