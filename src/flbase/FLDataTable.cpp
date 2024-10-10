@@ -845,6 +845,7 @@ bool FLDataTable::eventFilter(QObject *o, QEvent *e)
         !cursor_->curFilter().contains(persistentFilter_))
     {
       cursor_->setFilter(persistentFilter_);
+      qWarning("REFRESH 1");
       refresh();
       return true;
     }
@@ -960,6 +961,7 @@ void FLDataTable::refresh()
     if (sndCursor)
     {
       setFilter(cursor_->curFilter());
+      qWarning("REFRESH 5");
       QDataTable::refresh();
       cursor_->QSqlCursor::seek(cursor_->atFrom());
       selectRow();
@@ -967,6 +969,7 @@ void FLDataTable::refresh()
     else
     {
       setFilter(cursor_->curFilter());
+      qWarning("REFRESH 4");
       QDataTable::refresh();
       selectRow();
     }
@@ -984,6 +987,7 @@ void FLDataTable::setFocus()
     if (cursor_->db()->driverName() == "FLsqlapi") {
       qWarning("FLDataTable::setFocus: Ignorando ....");
     } else {
+      qWarning("REFRESH 3");
       QDataTable::refresh();
     }
 
@@ -1155,6 +1159,7 @@ void FLDataTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
   if (!persistentFilter_.isEmpty() && !cursor_->curFilter().contains(persistentFilter_))
   {
     cursor_->setFilter(persistentFilter_);
+    qWarning("REFRESH 2");
     refresh();
     return;
   }
