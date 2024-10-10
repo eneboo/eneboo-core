@@ -27217,8 +27217,7 @@ static void main_init(ShellState *data) {
   verify_uninitialized();
 #endif
   sqlite3_config(SQLITE_CONFIG_URI, 1);
-  printf("Singlethread!!\n");
-  sqlite3_config(SQLITE_CONFIG_SINGLETHREAD);
+  sqlite3_config(SQLITE_CONFIG_MULTITHREAD);
   sqlite3_snprintf(sizeof(mainPrompt), mainPrompt,"sqlite> ");
   sqlite3_snprintf(sizeof(continuePrompt), continuePrompt,"   ...> ");
 }
