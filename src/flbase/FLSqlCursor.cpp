@@ -321,7 +321,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   if (d->timer_)
     delete d->timer_;
   d->timer_ = new QTimer(this, QObject::name());
-  qWarning("FLSqlCursor::init. Fin init cursor " + name);
   connect(d->timer_, SIGNAL(timeout()), SLOT(refreshDelayed()));
 
 #ifdef AQ_MD5_CHECK
@@ -426,12 +425,12 @@ void FLSqlCursor::refresh(const QString &fN)
     if (fN.isEmpty() || d->relation_->foreignField() == fN)
     {
       d->buffer_ = 0;
-      qWarning("FLSqlCursor::refresh. Lanzando el delayed!!!!");
       refreshDelayed(500);
     }
   }
   else
   {
+    qWarning("FLSqlCursor::refresh: Con %s" , d->curName_);
     QSqlCursor::select();
     int pos = atFrom();
     if (pos >= size())
@@ -1616,7 +1615,7 @@ void FLSqlCursor::setValueBuffer(const QString &fN, const QVariant &v)
   }
   else
     d->buffer_->setValue(fN, vv);
-  //qWarning(tr("FLSqlCursor::setValueBuffer() : Emitiendo bufferChanged de campo %1 desde tabla %2 ").arg(fN).arg(d->metadata_->name()));
+  qWarning(tr("FLSqlCursor::setValueBuffer() : Emitiendo bufferChanged de campo %1 desde tabla %2 ").arg(fN).arg(d->metadata_->name()));
   emit bufferChanged(fN);
 }
 
