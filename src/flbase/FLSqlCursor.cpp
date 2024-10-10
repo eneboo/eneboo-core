@@ -311,7 +311,6 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   d->modeAccess_ = BROWSE;
   if (cR && r)
   {
-    qWarning("OJO");
     disconnect(cR, SIGNAL(bufferChanged(const QString &)), this, SLOT(refresh(const QString &)));
     connect(cR, SIGNAL(bufferChanged(const QString &)), this, SLOT(refresh(const QString &)));
     disconnect(cR, SIGNAL(newBuffer()), this, SLOT(clearPersistentFilter()));
