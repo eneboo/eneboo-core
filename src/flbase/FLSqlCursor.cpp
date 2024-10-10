@@ -642,7 +642,7 @@ bool FLSqlCursor::refreshBuffer()
     setNotGenerateds();
 
     updateBufferCopy();
-    qWarning("J 20");
+    qWarning("J 20" + d->curName_);
     emit newBuffer();
   }
   break;
@@ -664,7 +664,7 @@ bool FLSqlCursor::refreshBuffer()
   case BROWSE:
     d->buffer_ = editBuffer(true);
     setNotGenerateds();
-    qWarning("J 19");
+    qWarning("J 19" + d->curName_);
     emit newBuffer();
     break;
   }

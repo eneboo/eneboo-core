@@ -365,6 +365,11 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   if (!lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_ || (topWidget && !topWidget->isShown()))
     return;
 
+  if (!showed) {
+    qWarning("DONDE VAS MELÓn");
+    return;
+  }
+
   FLTableMetaData *tMD = cursor_->metadata();
   if (!tMD)
     return;
