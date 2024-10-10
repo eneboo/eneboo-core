@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+ versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #ifndef FLOBJECTFACTORY_H
@@ -72,9 +72,9 @@ class FLSqlQueryInterface;
 #define DN_ ( dn_ ? dn_ : newNode() )
 
 
-//! Clase general de la aplicación
+//! Clase general de la aplicaci?n
 /**
- Recursos generales de la aplicación.
+ Recursos generales de la aplicaci?n.
  Utilizada para abrir formularios, ejecutar scripts, procesar eventos, etc
 
  @author InfoSiAL S.L.
@@ -104,7 +104,7 @@ public:
 public slots:
 
   /**
-  Obtiene el widget principal del módulo activo.
+  Obtiene el widget principal del m?dulo activo.
 
   @return Objeto QWidget que corresponde con el widget principal del formulario
   */
@@ -113,7 +113,7 @@ public slots:
   }
 
   /**
-  @return La ventana principal de un módulo
+  @return La ventana principal de un m?dulo
   */
   QWidget *modMainWidget(const QString &idModulo) const {
     return obj_->modMainWidget(idModulo);
@@ -127,9 +127,9 @@ public slots:
   }
 
   /**
-   Abre en el MDI el formulario maestro del tipo FLFormDB asociado a una acción.
+   Abre en el MDI el formulario maestro del tipo FLFormDB asociado a una acci?n.
 
-   @param n Nombre de la acción asociada al formulario maestro
+   @param n Nombre de la acci?n asociada al formulario maestro
    @param p Imagen QPixmap que sirve de icono para el formulario
    */
   void openMasterForm(const QString &n, const QPixmap &p = QPixmap()) {
@@ -137,16 +137,16 @@ public slots:
   }
 
   /**
-   Ejecuta la función "main" del script "scriptform" de una acción.
+   Ejecuta la funci?n "main" del script "scriptform" de una acci?n.
 
-   @param n Nombre de la acción
+   @param n Nombre de la acci?n
    */
   void execMainScript(const QString &n) {
     obj_->execMainScript(n);
   }
 
   /**
-   Fuerza a que los eventos pendientes de la aplicación sean procesados
+   Fuerza a que los eventos pendientes de la aplicaci?n sean procesados
    */
   void processEvents() {
     obj_->processEvents();
@@ -155,7 +155,7 @@ public slots:
   /**
    Obtiene una lista de controles de clase c para el formulario wN
 
-   @param wN Nombre del formulario con el formato [Form|Record]<nombre de la acción>
+   @param wN Nombre del formulario con el formato [Form|Record]<nombre de la acci?n>
    @param c Nombre de la clase del objeto que se busca
 
    @return Cadena que contiene la lista con formato nombreObjeto1/descObjeto1*nomObjeto2/descObj2*...
@@ -165,28 +165,28 @@ public slots:
   }
 
   /**
-   Obtiene la lista de pestañas que contiene un control QTabWidget
+   Obtiene la lista de pesta?as que contiene un control QTabWidget
 
-   @param wN Nombre del formulario con el formato [Form|Record]<nombre de la acción>
+   @param wN Nombre del formulario con el formato [Form|Record]<nombre de la acci?n>
    @param n Nombre del tabWidget
 
-   @return Cadena que contiene la lista con formato nomPestaña1/descPestaña1*nomPestaña2/descPestaña2*...
+   @return Cadena que contiene la lista con formato nomPesta?a1/descPesta?a1*nomPesta?a2/descPesta?a2*...
    */
   QString getTabWidgetPages(const QString &wN, const QString &n) {
     return obj_->getTabWidgetPages(wN, n);
   }
 
   /**
-   Prefijo de instalación
+   Prefijo de instalaci?n
 
-   @return Cadena que contiene el prefijo de instalación
+   @return Cadena que contiene el prefijo de instalaci?n
    */
   QString installPrefix() {
     return AQ_PREFIX;
   }
 
   /**
-   @return El directorio principal utilizado por la caché de disco
+   @return El directorio principal utilizado por la cach? de disco
    para almacenar los archivos
    */
   QString diskCacheAbsDirPath() {
@@ -194,9 +194,9 @@ public slots:
   }
 
   /**
-   Devuelve el número de versión en una cadena, por ejemplo "2.3.0" ó "3.0.5"
+   Devuelve el n?mero de versi?n en una cadena, por ejemplo "2.3.0" ? "3.0.5"
 
-   @return Cadena que contiene número de versión
+   @return Cadena que contiene n?mero de versi?n
    */
   QString version() {
     return AQ_VERSION;
@@ -210,20 +210,20 @@ public slots:
   }
 
   /**
-   Indica si el módulo especificado está cargado en el sistema.
+   Indica si el m?dulo especificado est? cargado en el sistema.
 
-   @param idM Cadena con el nombre del módulo
+   @param idM Cadena con el nombre del m?dulo
    @param connName Nombre de la conexion
-   @return TRUE en caso de que el módulo esté cargado, FALSE en caso contrario
+   @return TRUE en caso de que el m?dulo est? cargado, FALSE en caso contrario
    */
   bool isLoadedModule(const QString &idM, const QString &connName = "default") {
     return FLSqlConnections::database(connName)->managerModules()->listAllIdModules().contains(idM);
   }
 
   /**
-   Indica si la aplicación se compiló en modo DEBUG
+   Indica si la aplicaci?n se compil? en modo DEBUG
 
-   @return TRUE en caso de que la aplicación se compilara en modo DEBUG, FALSE en caso contrario
+   @return TRUE en caso de que la aplicaci?n se compilara en modo DEBUG, FALSE en caso contrario
    */
   bool isDebugEnabled() {
 #ifdef FL_DEBUG
@@ -233,9 +233,9 @@ public slots:
   }
 
   /**
-   Indica si la aplicación se compiló en modo DEBUGGER
+   Indica si la aplicaci?n se compil? en modo DEBUGGER
 
-   @return TRUE en caso de que la aplicación se compilara en modo DEBUGGER, FALSE en caso contrario
+   @return TRUE en caso de que la aplicaci?n se compilara en modo DEBUGGER, FALSE en caso contrario
    */
   bool isDebuggerEnabled() {
 #ifdef QSDEBUGGER
@@ -245,9 +245,9 @@ public slots:
   }
 
   /**
-   Indica si la aplicación se ejecuta en modo DEBUGGER
+   Indica si la aplicaci?n se ejecuta en modo DEBUGGER
 
-   @return TRUE en caso de que la aplicación se ejecuta en modo DEBUGGER, FALSE en caso contrario
+   @return TRUE en caso de que la aplicaci?n se ejecuta en modo DEBUGGER, FALSE en caso contrario
    */
   bool isDebuggerMode() {
 #ifdef QSDEBUGGER
@@ -257,20 +257,20 @@ public slots:
   }
 
   /**
-   Indica si la aplicación se compiló en modo TEST
+   Indica si la aplicaci?n se compil? en modo TEST
 
-   @return TRUE en caso de que la aplicación se compilara en modo TEST, FALSE en caso contrario
+   @return TRUE en caso de que la aplicaci?n se compilara en modo TEST, FALSE en caso contrario
    */
   bool isTestEnabled() {
     return false;
   }
 
   /**
-   Obtiene la versión de un módulo.
+   Obtiene la versi?n de un m?dulo.
 
-   @param idM Identificador del módulo del que se quiere saber su versión
+   @param idM Identificador del m?dulo del que se quiere saber su versi?n
    @param connName Nombre de la conexion
-   @return Cadena con la versión
+   @return Cadena con la versi?n
    */
   QString versionModule(const QString &idM, const QString &connName = "default") {
     return FLSqlConnections::database(connName)->managerModules()->versionModule(idM);
@@ -285,19 +285,19 @@ public slots:
   }
 
   /**
-   Muestra una página html. Usado en la documentación
+   Muestra una p?gina html. Usado en la documentaci?n
 
-   @param url Dirección url de la página
+   @param url Direcci?n url de la p?gina
    */
   void showDocPage(const QString &url) {
     obj_->showDocPage(url);
   }
 
   /**
-   Ejecuta una función del script en el contexto de un objeto.
+   Ejecuta una funci?n del script en el contexto de un objeto.
 
-   @param function Nombre de la función.
-   @param arguments Argumentos de la función.
+   @param function Nombre de la funci?n.
+   @param arguments Argumentos de la funci?n.
    @param context Nombre del objeto contexto para el script.
    */
   QSArgument call(const QString &function, const QSArgumentList &arguments = QSArgumentList(),
@@ -306,9 +306,9 @@ public slots:
   }
 
   /**
-   Ejecuta una función del script en el contexto de un objeto, sin argumentos
+   Ejecuta una funci?n del script en el contexto de un objeto, sin argumentos
 
-   @param function Nombre de la función.
+   @param function Nombre de la funci?n.
    @param context Nombre del objeto contexto para el script.
    */
   QSArgument call(const QString &function, const QString &nameObjectContext) {
@@ -330,19 +330,19 @@ public slots:
   }
 
   /**
-   Establece el título de la ventana principal.
+   Establece el t?tulo de la ventana principal.
 
-   El título de la ventana principal siempre tendrá una parte fija establecida
-   automáticamente por el motor y se le añadira el texto que se quiera establecer
+   El t?tulo de la ventana principal siempre tendr? una parte fija establecida
+   autom?ticamente por el motor y se le a?adira el texto que se quiera establecer
 
-   @text Texto a establecer en el título de la ventana principal
+   @text Texto a establecer en el t?tulo de la ventana principal
    */
   void setCaptionMainWidget(const QString &text) {
     obj_->setCaptionMainWidget(text);
   }
 
   /**
-   Obtiene el último texto establecido con FLApplication::setCaptionMainWidget para el título de la ventana principal
+   Obtiene el ?ltimo texto establecido con FLApplication::setCaptionMainWidget para el t?tulo de la ventana principal
    */
   QString lastTextCaption() const {
     return obj_->lastTextCaption();
@@ -369,10 +369,10 @@ public slots:
   }
 
   /**
-   Obtiene la contraseña del usuario conectado a la base de datos
+   Obtiene la contrase?a del usuario conectado a la base de datos
 
    @param connName Nombre de la conexion
-   @return Contraseña del usuario
+   @return Contrase?a del usuario
    */
   QString passUser(const QString &connName = "default") const {
     return FLSqlConnections::database(connName)->password();
@@ -389,7 +389,7 @@ public slots:
   }
 
   /**
-   Obtiene el nombre del host de la conexión
+   Obtiene el nombre del host de la conexi?n
 
    @param connName Nombre de la conexion
    @return Nombre del host
@@ -399,10 +399,10 @@ public slots:
   }
 
   /**
-   Obtiene el puerto TCP de la conexión
+   Obtiene el puerto TCP de la conexi?n
 
    @param connName Nombre de la conexion
-   @return Número de puerto
+   @return N?mero de puerto
    */
   int portBD(const QString &connName = "default") const {
     return FLSqlConnections::database(connName)->port();
@@ -420,9 +420,9 @@ public slots:
   }
 
   /**
-   Devuelve el identificador de la sesión actual
+   Devuelve el identificador de la sesi?n actual
 
-   @return Identificador de sesión
+   @return Identificador de sesi?n
    */
   QString idSession() {
     return aqApp ->timeUser().toString(Qt::ISODate);
@@ -438,7 +438,7 @@ public slots:
   }
 
   /**
-   Reinicializa la aplicación.
+   Reinicializa la aplicaci?n.
 
    Vuelve a cargar las traducciones, los scripts y reinicializa
    la caja de herramientas.
@@ -483,23 +483,23 @@ public slots:
   }
 
   /**
-   Añade una base de datos a las conexiones disponibles.
+   A?ade una base de datos a las conexiones disponibles.
 
-   La base de datos será abierta. Si ya existiera una conexión con el mismo nombre
-   la base datos correspondiente será cerrada y borrada, sustituyéndola por la nueva.
+   La base de datos ser? abierta. Si ya existiera una conexi?n con el mismo nombre
+   la base datos correspondiente ser? cerrada y borrada, sustituy?ndola por la nueva.
 
    @param driverAlias Alias del driver ( PostgreSQL, MySQL, SQLite, ... ), ver FLSqlDatabase.
    @param nameDB  Nombre de la base de datos a la que conectar
-   @param user  Usuario de la conexión
-   @param password Contraseña para el usuario
-   @param host  Nombre o dirección del servidor de la base de datos
+   @param user  Usuario de la conexi?n
+   @param password Contrase?a para el usuario
+   @param host  Nombre o direcci?n del servidor de la base de datos
    @param port  Puerto TCP de conexion
    @param connectionName Nombre de la nueva conexion
-   @param connectOptions Contiene opciones auxiliares de conexión a la base de datos.
+   @param connectOptions Contiene opciones auxiliares de conexi?n a la base de datos.
                         El formato de la cadena de opciones es una lista separada por punto y coma
-                        de nombres de opción o la opción = valor. Las opciones dependen del uso del
+                        de nombres de opci?n o la opci?n = valor. Las opciones dependen del uso del
                         driver de base de datos.
-   @return TRUE si se pudo realizar la conexión, FALSE en caso contrario
+   @return TRUE si se pudo realizar la conexi?n, FALSE en caso contrario
    */
   bool addDatabase(const QString &driverAlias, const QString &nameDB, const QString &user,
                    const QString &password, const QString &host, int port,
@@ -509,11 +509,11 @@ public slots:
   }
 
   /**
-   Añade una base de datos a las conexiones disponibles utilizando los datos de otra conexión
+   A?ade una base de datos a las conexiones disponibles utilizando los datos de otra conexi?n
 
    @param newConnName    Nombre a utilizar para la nueva conexion
-   @param sourceConnName Nombre de una conexión existente a utilizar como origen de los datos de conexión
-   @return TRUE si se pudo realizar la conexión, FALSE en caso contrario
+   @param sourceConnName Nombre de una conexi?n existente a utilizar como origen de los datos de conexi?n
+   @return TRUE si se pudo realizar la conexi?n, FALSE en caso contrario
    */
   bool addDatabase(const QString &newConnName, const QString &sourceConnName = "default") {
     FLSqlDatabase *srcDb = FLSqlConnections::database(sourceConnName);
@@ -545,7 +545,7 @@ public slots:
   /**
    Convierte una cadena a Unicode
 
-   @param codec Nombre de la codificación del texto
+   @param codec Nombre de la codificaci?n del texto
    @param text Texto a convertir
    */
   QString toUnicode(const QString &text, const QString &codecName) {
@@ -558,10 +558,10 @@ public slots:
   }
 
     /**
-   Crea un fichero con la codificación especificada
+   Crea un fichero con la codificaci?n especificada
 
    @param file Nombre del fichero a escribir
-   @param encode Codificación. Puede ser ISO-8859-1 o UTF8
+   @param encode Codificaci?n. Puede ser ISO-8859-1 o UTF8
    @param contenido Datos a grabar en el fichero
    */
   void write(const QString &encode, const QString &file, const QString &text) {
@@ -586,7 +586,7 @@ public slots:
   /**
    Convierte una cadena en Unicode a la codificacion indicada
 
-   @param codec Nombre de la codificación a utilizar
+   @param codec Nombre de la codificaci?n a utilizar
    @param text Texto a convertir
    */
   QCString fromUnicode(const QString &text, const QString &codecName) {
@@ -640,9 +640,9 @@ public slots:
   /**
    Abre un cuadro de dialogo para seleccionar un fichero de imagen.
 
-   El cuadro de diálogo incluye un marco de previsualización
+   El cuadro de di?logo incluye un marco de previsualizaci?n
 
-   @return Ruta y nombre del fichero seleccionado, o vacío si se canceló
+   @return Ruta y nombre del fichero seleccionado, o vac?o si se cancel?
    */
   QString dialogGetFileImage();
 
@@ -687,42 +687,42 @@ public slots:
   }
   
   /**
-   Añade código script al objeto sys, para poder ejecutarlo dinámicamente.
+   A?ade c?digo script al objeto sys, para poder ejecutarlo din?micamente.
 
-   Si el código ya existe no lo añade
-   @param code Código script
-   @param scriptEntryFunction Funcion del código del script a ejecutar despues de evaluarlo
-   @return TRUE si se añadió el código, FALSE si el código ya existe.
+   Si el c?digo ya existe no lo a?ade
+   @param code C?digo script
+   @param scriptEntryFunction Funcion del c?digo del script a ejecutar despues de evaluarlo
+   @return TRUE si se a?adi? el c?digo, FALSE si el c?digo ya existe.
    */
   bool addSysCode(const QString &code, const QString &scriptEntryFunction = QString::null) {
     return obj_->addSysCode(code, scriptEntryFunction);
   }
 
   /**
-   Establece el nombre de la funcion de entrada tras evaluar el código
+   Establece el nombre de la funcion de entrada tras evaluar el c?digo
    */
   void setScriptEntryFunction(const QString &scriptEntryFunction) {
     obj_->setScriptEntryFunction(scriptEntryFunction);
   }
 
   /**
-   Para activar/desactivar la detección de posibles bloqueos de una conexión a base
+   Para activar/desactivar la detecci?n de posibles bloqueos de una conexi?n a base
    de datos sobre el resto.
 
-   Al activar la detección se inicia un cronómetro que periódicamente comprueba bloqueos,
-   si existe un bloqueo se emite la señal databaseLockDetected(), y se muestra un mensaje en el
-   caso que se indique hacerlo. Al desactivarla se para este cronómetro y por tanto las
-   comprobaciones periódicas.
+   Al activar la detecci?n se inicia un cron?metro que peri?dicamente comprueba bloqueos,
+   si existe un bloqueo se emite la se?al databaseLockDetected(), y se muestra un mensaje en el
+   caso que se indique hacerlo. Al desactivarla se para este cron?metro y por tanto las
+   comprobaciones peri?dicas.
 
-   La detección de bloqueos solo funciona en las bases de datos que lo soportan,
+   La detecci?n de bloqueos solo funciona en las bases de datos que lo soportan,
    ver FLSqlDatabase::canDetectLocks().
 
    @param  on              True activado False desactivado
-   @param  msecLapsus      Lapso de tiempo que debe transcurrir entre cada comprobación, por defecto 30 seg.
-   @param  limChecks       Numero límite de comprobaciones a realizar, al llegar a este límite el cronómetro
+   @param  msecLapsus      Lapso de tiempo que debe transcurrir entre cada comprobaci?n, por defecto 30 seg.
+   @param  limChecks       Numero l?mite de comprobaciones a realizar, al llegar a este l?mite el cron?metro
    para. Si es -1 no hay limite.
-   @param  showWarn        True para mostrar un cuadro de diálogo con el aviso de bloqueo
-   @param  msgWarn         Texto a mostrar en el diálogo de aviso, si es vacío mostrará uno estándar
+   @param  showWarn        True para mostrar un cuadro de di?logo con el aviso de bloqueo
+   @param  msgWarn         Texto a mostrar en el di?logo de aviso, si es vac?o mostrar? uno est?ndar
    @param  connectionName  Nombre de la conexion a la base de datos
    */
   void setDatabaseLockDetection(bool on = true, int msecLapsus = 30000, int limChecks = -1,
@@ -732,12 +732,12 @@ public slots:
   }
 
   /**
-   Para obtener información sobre el estado de los bloqueos existentes en la base de datos.
+   Para obtener informaci?n sobre el estado de los bloqueos existentes en la base de datos.
 
-   Si hay bloqueos devuelve una lista de cadenas de texto en forma de registros de información. En esta lista
-   la primera cadena de texto contiene los nombres de los campos de información incluidos y separados con "@",
-   las siguientes cadenas son una por cada bloqueo con la información correspondiente.
-   Si hay registros bloqueados produciendo situaciones de espera, se incluye información de los mismos cuando
+   Si hay bloqueos devuelve una lista de cadenas de texto en forma de registros de informaci?n. En esta lista
+   la primera cadena de texto contiene los nombres de los campos de informaci?n incluidos y separados con "@",
+   las siguientes cadenas son una por cada bloqueo con la informaci?n correspondiente.
+   Si hay registros bloqueados produciendo situaciones de espera, se incluye informaci?n de los mismos cuando
    la cadena empieza por "##", indicando el nombre del campo clave primaria y el valor para el registro bloqueado.
 
    Ejemplo:
@@ -748,19 +748,19 @@ public slots:
    "secuencias@ExclusiveLock@8393"
 
    @param  connectionName  Nombre de la conexion a la base de datos
-   @return Lista con información de los bloqueos, si es vacia no hay bloqueos.
+   @return Lista con informaci?n de los bloqueos, si es vacia no hay bloqueos.
    */
   QStringList locksStatus(const QString &connectionName = "default") {
     return FLSqlConnections::database(connectionName)->locksStatus();
   }
 
   /**
-   Comprueba si las transacciones de la base de datos actual están bloqueando a otras conexiones.
+   Comprueba si las transacciones de la base de datos actual est?n bloqueando a otras conexiones.
 
    Si hay bloqueos devuelve una lista de los mismos con el formato descrito en FLSqlDatabase::locksStatus()
 
    @param  connectionName  Nombre de la conexion a la base de datos
-   @return Lista con información de los bloqueos, si es vacia no hay bloqueos.
+   @return Lista con informaci?n de los bloqueos, si es vacia no hay bloqueos.
    */
   QStringList detectLocks(const QString &connectionName = "default") {
     return FLSqlConnections::database(connectionName)->detectLocks();
@@ -776,7 +776,7 @@ public slots:
    @param  primaryKeyValue El valor de la clave primaria de un registro para solo comprobar los riesgos sobre el,
                            o vacio para comprobarlos en todos. ( No funciona con claves compuestas ).
    @param  connectionName  Nombre de la conexion a la base de datos
-   @return Lista con información de los bloqueos, si es vacia no hay bloqueos.
+   @return Lista con informaci?n de los bloqueos, si es vacia no hay bloqueos.
    */
   QStringList detectRisksLocks(const QString &table = QString::null, const QString &primaryKeyValue = QString::null,
                                const QString &connectionName = "default") {
@@ -790,7 +790,7 @@ public slots:
   \code
     var msgWarn = "<p><img source=\"locked.png\" align=\"right\"><b><u>Prueba</u></b><br><br>" +
                   "Esto es una prueba de mensaje emergente, al pulsar el enlace se " +
-                  "llamará a la funcion flfactppal.pub_msgNoDisponible('Informes')." +
+                  "llamar? a la funcion flfactppal.pub_msgNoDisponible('Informes')." +
                   "<br><br><em><a href=\"flfactppal.pub_msgNoDisponible\">Invocar funcion</a></em></p>";
     var scriptCalls = [];
     scriptCalls["flfactppal.pub_msgNoDisponible"] = "Informes";
@@ -810,12 +810,12 @@ public slots:
   FLDomNodeInterface *toXmlReportData(FLSqlQueryInterface *q);
 
   /**
-  Traducción de una cadena al idioma local
+  Traducci?n de una cadena al idioma local
 
-  Se hace una llamada a la función tr() de la clase QObject para hacer la traducción.
+  Se hace una llamada a la funci?n tr() de la clase QObject para hacer la traducci?n.
   Se utiliza para traducciones desde fuera de objetos QObject
 
-  @param contexto Contexto en el que se encuentra la cadena, generalmente se refiere a la clase en la que está definida
+  @param contexto Contexto en el que se encuentra la cadena, generalmente se refiere a la clase en la que est? definida
   @param s        Cadena de texto a traducir
   @return         Devuelve la cadena traducida al idioma local
   */
@@ -827,7 +827,7 @@ public slots:
   }
 
   /**
-  Traducción multiidioma de una cadena texto
+  Traducci?n multiidioma de una cadena texto
 
   @param s  Cadena de texto a traducir mediante el traductor "multilang"
   @param l  Identificador del idioma (ES, EN, IT, CA, etc..) al que traducir
@@ -838,29 +838,29 @@ public slots:
   }
 
   /**
-  Activa/Desactiva la traducción dinámica multiidioma
+  Activa/Desactiva la traducci?n din?mica multiidioma
 
-  @param enable   Si es TRUE activa a partir de ese momento la traducción dinámica multiidioma.
-                  Importante: Todos los mensajes serán traducidos mediante el traductor "multilang" y
+  @param enable   Si es TRUE activa a partir de ese momento la traducci?n din?mica multiidioma.
+                  Importante: Todos los mensajes ser?n traducidos mediante el traductor "multilang" y
                   al lenguaje activado, ignorando las traducciones existentes locales.
-                  Si es FALSE desactiva la traducción dinámica y los mensajes volverán a traducirse
+                  Si es FALSE desactiva la traducci?n din?mica y los mensajes volver?n a traducirse
                   utilizando el traductor para el idioma local.
-  @param langid   Identificador del idioma a utilizar para la traducción multiidioma. Si 'enable' es FALSE
-                  o es vacio este parámetro será ignorado, y se seguirá utilizando el último idioma establecido.
+  @param langid   Identificador del idioma a utilizar para la traducci?n multiidioma. Si 'enable' es FALSE
+                  o es vacio este par?metro ser? ignorado, y se seguir? utilizando el ?ltimo idioma establecido.
   */
   void setMultiLang(bool enable = true, const QString &langid = QString::null) {
     obj_->setMultiLang(enable, langid);
   }
 
   /**
-  @return Si la traducción dinámica multiidioma está activada
+  @return Si la traducci?n din?mica multiidioma est? activada
   */
   bool multiLangEnabled() const {
     return obj_->multiLangEnabled();
   }
 
   /**
-  @return El identificador del idioma actualmente establedico para la traducción dinámica multiidioma
+  @return El identificador del idioma actualmente establedico para la traducci?n din?mica multiidioma
   */
   QString multiLangId() const {
     return obj_->multiLangId();
@@ -874,10 +874,10 @@ public slots:
   }
 
   /**
-  Evalua el código de todos los scripts del proyecto QSA
+  Evalua el c?digo de todos los scripts del proyecto QSA
 
   Si se ha establecido una funcion de entrada con setScriptEntryFunction(),
-  justo antes de llamar a este método, esta es invocada tras la evaluacion.
+  justo antes de llamar a este m?todo, esta es invocada tras la evaluacion.
   */
   void evaluateProject() {
     obj_->evaluateProject();
@@ -922,7 +922,7 @@ public slots:
     return obj_;
   }
   /**
-  Informa si la aplicación está en modo nube
+  Informa si la aplicaci?n est? en modo nube
 
   */
   bool isCloudMode() const {
@@ -963,7 +963,7 @@ public slots:
 signals:
 
   /**
-   Señal emitida cuando se ha detectado un bloqueo en la conexion a la base de datos
+   Se?al emitida cuando se ha detectado un bloqueo en la conexion a la base de datos
    */
   void databaseLockDetected();
 
@@ -1058,7 +1058,7 @@ public slots:
   /**
    Pasa el cursor a modo Edit
 
-   @return True si el cursor está en modo Edit o estaba en modo Insert y ha pasado con éxito a modo Edit
+   @return True si el cursor est? en modo Edit o estaba en modo Insert y ha pasado con ?xito a modo Edit
    */
   bool setEditMode() {
     return (obj_ ? obj_->setEditMode() : false);
@@ -1098,16 +1098,16 @@ public slots:
   }
 
   /**
-   Establece el valor de un campo del buffer de forma atómica y fuera de transacción.
+   Establece el valor de un campo del buffer de forma at?mica y fuera de transacci?n.
 
-   Invoca a la función, cuyo nombre se pasa como parámetro, del script del contexto del cursor
+   Invoca a la funci?n, cuyo nombre se pasa como par?metro, del script del contexto del cursor
    (ver FLSqlCursor::ctxt_) para obtener el valor del campo. El valor es establecido en el campo de forma
-   atómica, bloqueando la fila durante la actualización. Esta actualización se hace fuera de la transacción
-   actual, dentro de una transacción propia, lo que implica que el nuevo valor del campo está inmediatamente
+   at?mica, bloqueando la fila durante la actualizaci?n. Esta actualizaci?n se hace fuera de la transacci?n
+   actual, dentro de una transacci?n propia, lo que implica que el nuevo valor del campo est? inmediatamente
    disponible para las siguientes transacciones.
 
    @param fN Nombre del campo
-   @param functionName Nombre de la función a invocar del script
+   @param functionName Nombre de la funci?n a invocar del script
    */
   void setAtomicValueBuffer(const QString &fN, const QString &functionName) {
     if (obj_)
@@ -1221,23 +1221,23 @@ public slots:
   }
 
   /**
-   Dice si un campo está deshabilitado.
+   Dice si un campo est? deshabilitado.
 
-   Un campo estará deshabilitado, porque está clase le dará un valor automáticamente.
-   Estos campos son lo campos que están en una relación con otro cursor, por lo que
-   su valor lo toman del campo foráneo con el que se relacionan. El objeto FLReceiver pasa
+   Un campo estar? deshabilitado, porque est? clase le dar? un valor autom?ticamente.
+   Estos campos son lo campos que est?n en una relaci?n con otro cursor, por lo que
+   su valor lo toman del campo for?neo con el que se relacionan. El objeto FLReceiver pasa
    a ser propiedad del objeto FLSqlCursor, por lo tanto al destruir el objeto FLSqlCursor se
-   borrará automáticamente el objeto FLReceiver.
+   borrar? autom?ticamente el objeto FLReceiver.
 
    @param fN Nombre del campo a comprobar
-   @return TRUE si está deshabilitado y FALSE en caso contrario
+   @return TRUE si est? deshabilitado y FALSE en caso contrario
    */
   bool fieldDisabled(const QString &fN) {
     return (obj_ ? obj_->fieldDisabled(fN) : false);
   }
 
   /**
-   Indica si hay una transacción en curso.
+   Indica si hay una transacci?n en curso.
 
    @return TRUE si hay una transaccion en curso, FALSE en caso contrario
    */
@@ -1246,33 +1246,33 @@ public slots:
   }
 
   /**
-   Inicia una transacción.
+   Inicia una transacci?n.
 
-   Si ya hay una transacción en curso no hace nada. Si lock es igual a TRUE inicia
-   un bloqueo de la tabla, el bloqueo termina cuando se termina la transacción, con
+   Si ya hay una transacci?n en curso no hace nada. Si lock es igual a TRUE inicia
+   un bloqueo de la tabla, el bloqueo termina cuando se termina la transacci?n, con
    commit() o rollback()
 
-   @return TRUE si la operación tuvo exito
+   @return TRUE si la operaci?n tuvo exito
    */
   bool transaction(bool lock) {
     return (obj_ ? obj_->transaction(lock) : false);
   }
 
   /**
-   Deshace las operaciones de una transacción y la acaba.
+   Deshace las operaciones de una transacci?n y la acaba.
 
-   @return TRUE si la operación tuvo exito
+   @return TRUE si la operaci?n tuvo exito
    */
   bool rollback() {
     return (obj_ ? obj_->rollback() : false);
   }
 
   /**
-   Hace efectiva la transacción y la acaba.
+   Hace efectiva la transacci?n y la acaba.
 
-   @param notify Si TRUE emite la señal cursorUpdated y pone el cursor en modo BROWSE,
-   si FALSE no hace ninguna de estas dos cosas y emite la señal de autoCommit
-   @return TRUE si la operación tuvo exito
+   @param notify Si TRUE emite la se?al cursorUpdated y pone el cursor en modo BROWSE,
+   si FALSE no hace ninguna de estas dos cosas y emite la se?al de autoCommit
+   @return TRUE si la operaci?n tuvo exito
    */
   bool commit() {
     return (obj_ ? obj_->commit() : false);
@@ -1299,7 +1299,7 @@ public slots:
   }
 
   /**
-   Activa o desactiva las acciones a realizar antes y después de un commit
+   Activa o desactiva las acciones a realizar antes y despu?s de un commit
 
    @param a TRUE las activa y FALSE las desactiva
    */
@@ -1322,7 +1322,7 @@ public slots:
 
    Se comprueba la integridad referencial al intentar borrar, tambien se comprueba la no duplicidad de
    claves primarias y si hay nulos en campos que no lo permiten cuando se inserta o se edita.
-   Si alguna comprobacion falla muestra un cuadro de diálogo con el tipo de fallo encontrado y el metodo
+   Si alguna comprobacion falla muestra un cuadro de di?logo con el tipo de fallo encontrado y el metodo
    devuelve FALSE.
 
    @param showError Si es TRUE muestra el cuadro de dialogo con el error que se produce al no
@@ -1339,9 +1339,9 @@ public slots:
 
    Si no se ha indicado cursor relacionado obtiene el cursor completo, segun la consulta
    por defecto. Si se ha indicado que depende de otro cursor con el que se relaciona,
-   el contenido del cursor dependerá del valor del campo que determina la relación.
-   Si se indica el nombre de un campo se considera que el buffer sólo ha cambiado en ese
-   campo y así evitar repeticiones en el refresco.
+   el contenido del cursor depender? del valor del campo que determina la relaci?n.
+   Si se indica el nombre de un campo se considera que el buffer s?lo ha cambiado en ese
+   campo y as? evitar repeticiones en el refresco.
 
    @param fN Nombre del campo de buffer que ha cambiado
    */
@@ -1351,13 +1351,13 @@ public slots:
   }
 
   /**
-   Refresca el buffer según el modo de acceso establecido.
+   Refresca el buffer seg?n el modo de acceso establecido.
 
    Lleva informacion del cursor al buffer para editar o navegar, o prepara el buffer para
    insertar o borrar.
 
-   Si existe un campo contador se invoca a la función "calculateCounter" del script del
-   contexto (ver FLSqlCursor::ctxt_) establecido para el cursor. A esta función se le pasa
+   Si existe un campo contador se invoca a la funci?n "calculateCounter" del script del
+   contexto (ver FLSqlCursor::ctxt_) establecido para el cursor. A esta funci?n se le pasa
    como argumento el nombre del campo contador y debe devolver el valor que debe contener
    ese campo.
    */
@@ -1366,7 +1366,7 @@ public slots:
   }
 
   /**
-   Devuelve la posición del registro actual del cursor.
+   Devuelve la posici?n del registro actual del cursor.
 
    Ver QSqlCursor::at()
    */
@@ -1375,77 +1375,77 @@ public slots:
   }
 
   /**
-   Redefinición del método seek() de QSqlCursor.
+   Redefinici?n del m?todo seek() de QSqlCursor.
 
-   Este método simplemente invoca al método seek() original de QSqlCursor() y refresca
+   Este m?todo simplemente invoca al m?todo seek() original de QSqlCursor() y refresca
    el buffer con el metodo FLSqlCursor::refreshBuffer().
 
-   @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
+   @param emit Si TRUE emite la se?al FLSqlCursor::currentChanged()
    */
   bool seek(int i, bool relative = false, bool emite = false) {
     return (obj_ ? obj_->seek(i, relative, emite) : false);
   }
 
   /**
-   Redefinición del métedo next() de QSqlCursor.
+   Redefinici?n del m?tedo next() de QSqlCursor.
 
-   Este método simplemente invoca al método next() original de QSqlCursor() y refresca el
+   Este m?todo simplemente invoca al m?todo next() original de QSqlCursor() y refresca el
    buffer con el metodo FLSqlCursor::refreshBuffer().
 
-   @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
+   @param emit Si TRUE emite la se?al FLSqlCursor::currentChanged()
    */
   bool next(bool emite = true) {
     return (obj_ ? obj_->next(emite) : false);
   }
 
   /**
-   Redefinición del método prev() de QSqlCursor.
+   Redefinici?n del m?todo prev() de QSqlCursor.
 
-   Este método simplemente invoca al método prev() original de QSqlCursor() y refresca
+   Este m?todo simplemente invoca al m?todo prev() original de QSqlCursor() y refresca
    el buffer con el metodo FLSqlCursor::refreshBuffer().
 
-   @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
+   @param emit Si TRUE emite la se?al FLSqlCursor::currentChanged()
    */
   bool prev(bool emite = true) {
     return (obj_ ? obj_->prev(emite) : false);
   }
 
   /**
-   Redefinición del método first() de QSqlCursor.
+   Redefinici?n del m?todo first() de QSqlCursor.
 
-   Este método simplemente invoca al método first() original de QSqlCursor() y refresca el
+   Este m?todo simplemente invoca al m?todo first() original de QSqlCursor() y refresca el
    buffer con el metodo FLSqlCursor::refreshBuffer().
 
-   @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
+   @param emit Si TRUE emite la se?al FLSqlCursor::currentChanged()
    */
   bool first(bool emite = true) {
     return (obj_ ? obj_->first(emite) : false);
   }
 
   /**
-   Redefinición del método last() de QSqlCursor.
+   Redefinici?n del m?todo last() de QSqlCursor.
 
-   Este método simplemente invoca al método last() original de QSqlCursor() y refresca el
+   Este m?todo simplemente invoca al m?todo last() original de QSqlCursor() y refresca el
    buffer con el metodo FLSqlCursor::refreshBuffer().
 
-   @param emit Si TRUE emite la señal FLSqlCursor::currentChanged()
+   @param emit Si TRUE emite la se?al FLSqlCursor::currentChanged()
    */
   bool last(bool emite = true) {
     return (obj_ ? obj_->last(emite) : false);
   }
 
   /**
-   Redefinición del método del() de QSqlCursor.
+   Redefinici?n del m?todo del() de QSqlCursor.
 
-   Este método invoca al método del() original de QSqlCursor() y comprueba si hay borrado
-   en cascada, en caso afirmativo borrar también los registros relacionados en cardinalidad 1M.
+   Este m?todo invoca al m?todo del() original de QSqlCursor() y comprueba si hay borrado
+   en cascada, en caso afirmativo borrar tambi?n los registros relacionados en cardinalidad 1M.
    */
   int del(bool invalidate = true) {
     return (obj_ ? obj_->del(invalidate) : false);
   }
 
   /**
-   Redefinición del método select() de QSqlCursor
+   Redefinici?n del m?todo select() de QSqlCursor
    */
   bool select(const QString &filter, const QSqlIndex &sort = QSqlIndex()) {
     if (!obj_ || obj_->aqWasDeleted())
@@ -1454,7 +1454,7 @@ public slots:
   }
 
   /**
-   Redefinicion del método select() de QSqlCursor
+   Redefinicion del m?todo select() de QSqlCursor
    */
   bool select() {
     if (!obj_ || obj_->aqWasDeleted())
@@ -1464,62 +1464,62 @@ public slots:
   }
 
   /**
-   Devuelve el número de filas seleccionadas en el cursor
+   Devuelve el n?mero de filas seleccionadas en el cursor
 
-   @return Número de filas
+   @return N?mero de filas
    */
   int size() {
     return (obj_ ? obj_->size() : 0);
   }
 
   /**
-   Obtiene la posición del registro actual, según la clave primaria contenida en el buffer.
+   Obtiene la posici?n del registro actual, seg?n la clave primaria contenida en el buffer.
 
-   La posición del registro actual dentro del cursor se calcula teniendo en cuenta el
+   La posici?n del registro actual dentro del cursor se calcula teniendo en cuenta el
    filtro actual ( FLSqlCursor::curFilter() ) y el campo o campos de ordenamiento
    del mismo ( QSqlCursor::sort() ).
-   Este método es útil, por ejemplo, para saber en que posición dentro del cursor
+   Este m?todo es ?til, por ejemplo, para saber en que posici?n dentro del cursor
    se ha insertado un registro.
 
-   @return Posición del registro dentro del cursor, o 0 si no encuentra coincidencia.
+   @return Posici?n del registro dentro del cursor, o 0 si no encuentra coincidencia.
    */
   int atFrom() {
     return (obj_ ? obj_->atFrom() : -1);
   }
 
   /**
-   Obtiene la posición dentro del cursor del primer registro que en el campo indicado
-   empieze con el valor solicitado. Supone que los registros están ordenados por dicho
-   campo, para realizar una búsqueda binaria.
+   Obtiene la posici?n dentro del cursor del primer registro que en el campo indicado
+   empieze con el valor solicitado. Supone que los registros est?n ordenados por dicho
+   campo, para realizar una b?squeda binaria.
 
-   La posición del registro actual dentro del cursor se calcula teniendo en cuenta el
+   La posici?n del registro actual dentro del cursor se calcula teniendo en cuenta el
    filtro actual ( FLSqlCursor::curFilter() ) y el campo o campos de ordenamiento
    del mismo ( QSqlCursor::sort() ).
-   Este método es útil, por ejemplo, para saber en que posición dentro del cursor
+   Este m?todo es ?til, por ejemplo, para saber en que posici?n dentro del cursor
    se encuentra un registro con un cierto valor en un campo.
 
    @param  fN  Nombre del campo en el que buscar el valor
    @param  v   Valor a buscar ( mediante like 'v%' )
    @param  orderAsc TRUE (por defecto) si el orden es ascendente, FALSE si es descendente
-   @return Posición del registro dentro del cursor, o 0 si no encuentra coincidencia.
+   @return Posici?n del registro dentro del cursor, o 0 si no encuentra coincidencia.
    */
   int atFromBinarySearch(const QString &fN, const QString &v, bool orderAsc = true) {
     return (obj_ ? obj_->atFromBinarySearch(fN, v, orderAsc) : -1);
   }
 
   /**
-   Manda el contenido del buffer al cursor, o realiza la acción oportuna para el cursor.
+   Manda el contenido del buffer al cursor, o realiza la acci?n oportuna para el cursor.
 
-   Todos los cambios realizados en el buffer se hacen efectivos en el cursor al invocar este método.
+   Todos los cambios realizados en el buffer se hacen efectivos en el cursor al invocar este m?todo.
    La manera de efectuar estos cambios viene determinada por el modo de acceso establecido para
    el cursor, ver FLSqlCursor::Mode, si el modo es editar o insertar actualiza con los nuevos valores de
    los campos del registro, si el modo es borrar borra el registro, y si el modo es navegacion no hace nada.
-   Antes de nada tambien comprueba la integridad referencial invocando al método FLSqlCursor::checkIntegrity().
+   Antes de nada tambien comprueba la integridad referencial invocando al m?todo FLSqlCursor::checkIntegrity().
 
-   Si existe un campo calculado se invoca a la función "calculateField" del script del
-   contexto (ver FLSqlCursor::ctxt_) establecido para el cursor. A esta función se le pasa
+   Si existe un campo calculado se invoca a la funci?n "calculateField" del script del
+   contexto (ver FLSqlCursor::ctxt_) establecido para el cursor. A esta funci?n se le pasa
    como argumento el nombre del campo calculado y debe devolver el valor que debe contener
-   ese campo, p.e. si el campo es el total de una factura y de tipo calculado la función
+   ese campo, p.e. si el campo es el total de una factura y de tipo calculado la funci?n
    "calculateField" debe devolver la suma de lineas de las facturas mas/menos impuestos y
    descuentos.
 
@@ -1533,7 +1533,7 @@ public slots:
   /**
    Manda el contenido del buffer del cursor relacionado a dicho cursor.
 
-   Hace efectivos todos los cambios en el buffer del cursor relacionado posiconándose en el registro
+   Hace efectivos todos los cambios en el buffer del cursor relacionado posicon?ndose en el registro
    correspondiente que recibe los cambios.
    */
   bool commitBufferCursorRelation() {
@@ -1548,7 +1548,7 @@ public slots:
   }
 
   /**
-   Establece el contexto de ejecución de scripts
+   Establece el contexto de ejecuci?n de scripts
 
    Ver FLSqlCursor::ctxt_.
 
@@ -1560,18 +1560,18 @@ public slots:
   }
 
   /**
-   Para obtener el contexto de ejecución de scripts.
+   Para obtener el contexto de ejecuci?n de scripts.
 
    Ver FLSqlCursor::ctxt_.
 
-   @return Contexto de ejecución
+   @return Contexto de ejecuci?n
    */
   QObject *context() const {
     return (obj_ ? obj_->context() : 0);
   }
 
   /**
-   Para obtener la acción asociada al cursor.
+   Para obtener la acci?n asociada al cursor.
 
    @return  Objeto FLAction
    */
@@ -1584,7 +1584,7 @@ public slots:
   }
 
   /**
-   Establece la acción asociada al cursor.
+   Establece la acci?n asociada al cursor.
 
    @param a Objeto FLAction
    */
@@ -1597,7 +1597,7 @@ public slots:
   }
 
   /**
-   Establece los campos unlock de un registro, saltándose las comprobación
+   Establece los campos unlock de un registro, salt?ndose las comprobaci?n
 
    @param fN Nombre del campo
    @param v Valor para el campo unlock
@@ -1608,9 +1608,9 @@ public slots:
   }
 
   /**
-   Para comprobar si el registro actual del cursor está bloqueado.
+   Para comprobar si el registro actual del cursor est? bloqueado.
 
-   @return TRUE si está bloqueado, FALSE en caso contrario.
+   @return TRUE si est? bloqueado, FALSE en caso contrario.
    */
   bool isLocked() {
     return (obj_ ? obj_->isLocked() : false);
@@ -1632,7 +1632,7 @@ public slots:
   }
 
   /**
-   Abre el formulario de inserción de registro definido en los metadatos (FLTableMetaData) listo
+   Abre el formulario de inserci?n de registro definido en los metadatos (FLTableMetaData) listo
    para insertar el registro activo del cursor.
    */
   void insertRecord() {
@@ -1662,9 +1662,9 @@ public slots:
   }
 
   /**
-   Realiza la acción asociada a elegir un registro del cursor, por defecto se abre el formulario de
-   edición de registro,llamando al método FLSqlCursor::editRecord(), si la bandera FLSqlCursor::edition
-   indica TRUE, si indica FALSE este método no hace nada
+   Realiza la acci?n asociada a elegir un registro del cursor, por defecto se abre el formulario de
+   edici?n de registro,llamando al m?todo FLSqlCursor::editRecord(), si la bandera FLSqlCursor::edition
+   indica TRUE, si indica FALSE este m?todo no hace nada
    */
   void chooseRecord() {
     if (obj_)
@@ -1685,7 +1685,7 @@ public slots:
    100 - serial
    200 - unlock
 
-   @return Entero con el código del tipo de dato del campo
+   @return Entero con el c?digo del tipo de dato del campo
    */
   const int fieldType(const QString &fN) const {
     return (obj_ ? (obj_->metadata() ? obj_->metadata() ->fieldType(fN) : 0) : 0);
@@ -1736,8 +1736,8 @@ public slots:
    Deshace transacciones abiertas por este cursor.
 
    @param count  Cantidad de transacciones a deshacer, -1 todas.
-   @param msg    Cadena de texto que se muestra en un cuadro de diálogo antes de deshacer las transacciones.
-   Si es vacía no muestra nada.
+   @param msg    Cadena de texto que se muestra en un cuadro de di?logo antes de deshacer las transacciones.
+   Si es vac?a no muestra nada.
    */
   void rollbackOpened(int count = -1, const QString &msg = QString::null) {
     if (obj_)
@@ -1748,8 +1748,8 @@ public slots:
    Termina transacciones abiertas por este cursor.
 
    @param count  Cantidad de transacciones a terminar, -1 todas.
-   @param msg    Cadena de texto que se muestra en un cuadro de diálogo antes de terminar las transacciones.
-   Si es vacía no muestra nada.
+   @param msg    Cadena de texto que se muestra en un cuadro de di?logo antes de terminar las transacciones.
+   Si es vac?a no muestra nada.
    */
   void commitOpened(int count = -1, const QString &msg = QString::null) {
     if (obj_)
@@ -1759,10 +1759,10 @@ public slots:
   /**
    Entra en un bucle de comprobacion de riesgos de bloqueos para esta tabla y el registro actual
 
-   El bucle continua mientras existan bloqueos, hasta que se vuelva a llamar a este método con
-   'terminate' activado o cuando el usuario cancele la operación.
+   El bucle continua mientras existan bloqueos, hasta que se vuelva a llamar a este m?todo con
+   'terminate' activado o cuando el usuario cancele la operaci?n.
 
-   @param  terminate True terminará el bucle de comprobaciones si está activo
+   @param  terminate True terminar? el bucle de comprobaciones si est? activo
    */
   void checkRisksLocks(bool terminate = false) {
     if (obj_)
@@ -1772,7 +1772,7 @@ public slots:
   /**
    Establece el acceso global para la tabla, ver FLSqlCursor::setAcosCondition().
 
-   Este será el permiso a aplicar a todos los campos por defecto
+   Este ser? el permiso a aplicar a todos los campos por defecto
 
    @param  ac Permiso global; p.e.: "r-", "-w"
    */
@@ -1784,7 +1784,7 @@ public slots:
   /**
    Establece la lista de control de acceso (ACOs) para los campos de la tabla, , ver FLSqlCursor::setAcosCondition().
 
-   Esta lista de textos deberá tener en sus componentes de orden par los nombres de los campos,
+   Esta lista de textos deber? tener en sus componentes de orden par los nombres de los campos,
    y en los componentes de orden impar el permiso a aplicar a ese campo,
    p.e.: "nombre", "r-", "descripcion", "--", "telefono", "rw",...
 
@@ -1816,7 +1816,7 @@ public slots:
 
    @param  condName  Si es vacio no se evalua la condicion y la regla no se aplica nunca.
    Para VALUE y REGEXP nombre de un campo.
-   Para FUNCTION nombre de una funcion de script.  A la función se le pasa como
+   Para FUNCTION nombre de una funcion de script.  A la funci?n se le pasa como
    argumento el objeto cursor.
 
    @param  condVal   Valor que hace que la condicion sea cierta
@@ -1829,9 +1829,9 @@ public slots:
   /**
    Limpia la condicion utilizada para aplicar el control de acceso.
 
-   Tras llamar a este método no se evaluará la condición y por lo tanto no se aplicará
+   Tras llamar a este m?todo no se evaluar? la condici?n y por lo tanto no se aplicar?
    ninguna regla de acceso. Se debe utilizar FLSqlCursor::setAcosCondition() para habilitar de nuevo
-   una condicion de evaluación.
+   una condicion de evaluaci?n.
    */
   void clearAcosCondition() {
     if (obj_)
@@ -1846,7 +1846,7 @@ public slots:
   }
 
   /**
-  Comprueba si hay una colisión de campos editados por dos sesiones simultáneamente.
+  Comprueba si hay una colisi?n de campos editados por dos sesiones simult?neamente.
 
   @return Lista con los nombres de los campos que colisionan
   */
@@ -1855,7 +1855,7 @@ public slots:
   }
 
   /**
-  Cambia el cursor a otra conexión de base de datos
+  Cambia el cursor a otra conexi?n de base de datos
   */
   void changeConnection(const QString &connName) {
     obj_->changeConnection(connName);
@@ -1911,7 +1911,7 @@ signals:
   void newBuffer();
 
   /**
-   Indica si ha cambiado un campo del buffer, junto con la señal se envía el nombre del campo que
+   Indica si ha cambiado un campo del buffer, junto con la se?al se env?a el nombre del campo que
    ha cambiado.
    */
   void bufferChanged(const QString &);
@@ -1922,17 +1922,17 @@ signals:
   void cursorUpdated();
 
   /**
-   Indica que se ha elegido un registro, mediante doble clic sobre él o bien pulsando la tecla Enter
+   Indica que se ha elegido un registro, mediante doble clic sobre ?l o bien pulsando la tecla Enter
    */
   void recordChoosed();
 
   /**
-   Indica que la posición del registro activo dentro del cursor ha cambiado
+   Indica que la posici?n del registro activo dentro del cursor ha cambiado
    */
   void currentChanged(int);
 
   /**
-   Indica que se ha realizado un commit automático para evitar bloqueos
+   Indica que se ha realizado un commit autom?tico para evitar bloqueos
    */
   void autoCommit();
 
@@ -1942,7 +1942,7 @@ signals:
   void bufferCommited();
 
   /**
-  Indica que se ha cambiado la conexión de base de datos del cursor. Ver changeConnection
+  Indica que se ha cambiado la conexi?n de base de datos del cursor. Ver changeConnection
   */
   void connectionChanged();
 
@@ -1968,7 +1968,7 @@ private:
 
 //! Manejo de consultas sql
 /**
- Permite realizar una consulta SQL completa con todas las cláusulas
+ Permite realizar una consulta SQL completa con todas las cl?usulas
  (select, from, where, group by, etc)
 
  @author InfoSiAL S.L.
@@ -2031,9 +2031,9 @@ public slots:
 
    @param  s Cadena de texto con la parte SELECT de la sentencia SQL que
    genera la consulta. Esta cadena NO debe incluir la palabra reservada
-   SELECT, ni tampoco el caracter '*' como comodín. Solo admite la lista
+   SELECT, ni tampoco el caracter '*' como comod?n. Solo admite la lista
    de campos que deben aparecer en la consulta separados por la cadena
-   indicada en el parámetro 'sep'
+   indicada en el par?metro 'sep'
    @param  sep Cadena utilizada como separador en la lista de campos. Por defecto
    se utiliza la coma.
    */
@@ -2074,8 +2074,8 @@ public slots:
   /**
    Para obtener la sentencia completa SQL de la consulta.
 
-   Este método une las tres partes de la consulta (SELECT, FROM Y WHERE),
-   sustituye los parámetros por el valor que tienen en el diccionario y devuelve
+   Este m?todo une las tres partes de la consulta (SELECT, FROM Y WHERE),
+   sustituye los par?metros por el valor que tienen en el diccionario y devuelve
    todo en una cadena de texto.
 
    @return Cadena de texto con la sentencia completa SQL que genera la consulta
@@ -2085,7 +2085,7 @@ public slots:
   }
 
   /**
-   Reimplementación de QSqlQuery::value(int)
+   Reimplementaci?n de QSqlQuery::value(int)
    */
   QVariant value(int i) const {
     return obj_->value(i);
@@ -2128,7 +2128,7 @@ public slots:
   }
 
   /**
-   Devuelve la posición de una campo en la consulta, dado su nombre.
+   Devuelve la posici?n de una campo en la consulta, dado su nombre.
 
    @param n Nombre del campo
    @return Posicion del campo en la consulta. Si no existe el campo devuelve -1
@@ -2148,19 +2148,19 @@ public slots:
   }
 
   /**
-   Obtiene el valor de un parámetro.
+   Obtiene el valor de un par?metro.
 
-   @param name Nombre del parámetro.
+   @param name Nombre del par?metro.
    */
   QVariant valueParam(const QString &name) const {
     return obj_->valueParam(name);
   }
 
   /**
-   Establece el valor de un parámetro.
+   Establece el valor de un par?metro.
 
-   @param name Nombre del parámetro
-   @param v Valor para el parámetros
+   @param name Nombre del par?metro
+   @param v Valor para el par?metros
    */
   void setValueParam(const QString &name, const QVariant &v) {
     obj_->setValueParam(name, v);
@@ -2194,9 +2194,9 @@ public slots:
   }
 
   /**
-   Recupera el último registro del resultado de la consulta asociada con el cursor
+   Recupera el ?ltimo registro del resultado de la consulta asociada con el cursor
 
-   @return TRUE si existe un último registro, FALSE si no existe.
+   @return TRUE si existe un ?ltimo registro, FALSE si no existe.
    */
   bool last() {
     return obj_->last();
@@ -2210,18 +2210,18 @@ public slots:
   }
 
   /**
-   Este método muestra el contenido de la consulta, por la sálida estándar.
+   Este m?todo muestra el contenido de la consulta, por la s?lida est?ndar.
 
-   Está pensado sólo para tareas de depuración
+   Est? pensado s?lo para tareas de depuraci?n
    */
   void showDebug() {
     obj_->showDebug();
   }
 
   /**
-   Devuelve el número de líneas que devuelve la consulta
+   Devuelve el n?mero de l?neas que devuelve la consulta
 
-   @return Número de líneas (-1 si la consulta no está activa o la BD no da información sobre número de filas)
+   @return N?mero de l?neas (-1 si la consulta no est? activa o la BD no da informaci?n sobre n?mero de filas)
    */
   int size() const {
     return obj_->size();
@@ -2320,7 +2320,7 @@ public slots:
   }
 
   /**
-   Obtiene el nombre de la acción.
+   Obtiene el nombre de la acci?n.
 
    @return Nombre de la accion
    */
@@ -2329,7 +2329,7 @@ public slots:
   }
 
   /**
-   Establece el nombre de la acción.
+   Establece el nombre de la acci?n.
 
    @param aN Nombre de la accion
    */
@@ -2356,7 +2356,7 @@ public slots:
   }
 
   /**
-   Obtiene el nombre de la tabla foránea.
+   Obtiene el nombre de la tabla for?nea.
 
    @return Nombre de la tabla
    */
@@ -2365,7 +2365,7 @@ public slots:
   }
 
   /**
-   Establece el nombre de la tabla foránea.
+   Establece el nombre de la tabla for?nea.
 
    @param fT Nombre de la tabla
    */
@@ -2374,7 +2374,7 @@ public slots:
   }
 
   /**
-   Obtiene el nombre del campo foráneo.
+   Obtiene el nombre del campo for?neo.
 
    @return Nombre del campo
    */
@@ -2383,7 +2383,7 @@ public slots:
   }
 
   /**
-   Establece el nombre del campo foráneo.
+   Establece el nombre del campo for?neo.
 
    @param fN Nombre del campo
    */
@@ -2417,7 +2417,7 @@ public slots:
   }
 
   /**
-   Añade un filtro al cursor.
+   A?ade un filtro al cursor.
 
    */
   void setFilter(const QString &f) {
@@ -2501,7 +2501,7 @@ public slots:
   /**
   Guarda imagen de campos tipo Pixmap en una ruta determinada.
 
-  @param filename: Ruta al fichero donde se guardará la imagen
+  @param filename: Ruta al fichero donde se guardar? la imagen
   @param fmt Indica el formato con el que guardar la imagen
   @author Silix
   */
@@ -2549,19 +2549,19 @@ public slots:
   }
 
   /**
-   Inserta como acelerador de teclado una combinación de teclas, devociendo su identificador
+   Inserta como acelerador de teclado una combinaci?n de teclas, devociendo su identificador
 
-   @param key Cadena de texto que representa la combinación de teclas (p.e. "Ctrl+Shift+O")
-   @return El identificador asociado internamente a la combinación de teclas aceleración insertada
+   @param key Cadena de texto que representa la combinaci?n de teclas (p.e. "Ctrl+Shift+O")
+   @return El identificador asociado internamente a la combinaci?n de teclas aceleraci?n insertada
    */
   int insertAccel(const QString &key) {
     return obj_->insertAccel(key);
   }
 
   /**
-   Elimina, desactiva, una combinación de teclas de aceleración según su identificador.
+   Elimina, desactiva, una combinaci?n de teclas de aceleraci?n seg?n su identificador.
 
-   @param id Identificador de la combinación de teclas de aceleración
+   @param id Identificador de la combinaci?n de teclas de aceleraci?n
    */
   void removeAccel(int id) {
     obj_->removeAccel(id);
@@ -2622,8 +2622,8 @@ public slots:
   }
 
   /**
-   Cuando se pulsa una combinación de teclas de aceleración se emite esta señal indicando el identificador
-   de la combinación de teclas pulsada
+   Cuando se pulsa una combinaci?n de teclas de aceleraci?n se emite esta se?al indicando el identificador
+   de la combinaci?n de teclas pulsada
    */
   void emitActivatedAccel(int id) {
     emit activatedAccel(id);
@@ -2631,7 +2631,7 @@ public slots:
 
   /**
    Devuelve el valor de la propiedad showAlias. Esta propiedad es
-   usada para saber si hay que mostrar el alias cuando se está
+   usada para saber si hay que mostrar el alias cuando se est?
    en modo de cursor relacionado.
    */
   bool showAlias() const {
@@ -2664,7 +2664,7 @@ public slots:
   }
 
   /**
-  Para asistente de completado automático.
+  Para asistente de completado autom?tico.
   */
   void setAutoCompletionMode(AutoCompMode m) {
     obj_->setAutoCompletionMode((FLFieldDB::AutoCompMode) m);
@@ -2680,28 +2680,28 @@ public slots:
 signals:
 
   /**
-   Cuando se pulsa una combinación de teclas de aceleración se emite esta señal indicando el identificador
-   de la combinación de teclas pulsada
+   Cuando se pulsa una combinaci?n de teclas de aceleraci?n se emite esta se?al indicando el identificador
+   de la combinaci?n de teclas pulsada
    */
   void activatedAccel(int);
 
   /**
-   Señal emitida si se pulsa la tecla F2 en el editor
+   Se?al emitida si se pulsa la tecla F2 en el editor
    */
   void keyF2Pressed();
 
   /**
-   Señal emitida si se pulsa la tecla F4 en el editor
+   Se?al emitida si se pulsa la tecla F4 en el editor
    */
   void keyF4Pressed();
 
   /**
-   Señal emitida si se pulsa la tecla Return
+   Se?al emitida si se pulsa la tecla Return
    */
   void keyReturnPressed();
 
   /**
-  Señal de foco perdido
+  Se?al de foco perdido
   */
   void lostFocus();
 
@@ -2780,7 +2780,7 @@ public slots:
   }
 
   /**
-   Obtiene el nombre del campo foráneo.
+   Obtiene el nombre del campo for?neo.
 
    @return Nombre del campo
    */
@@ -2789,7 +2789,7 @@ public slots:
   }
 
   /**
-   Establece el nombre del campo foráneo.
+   Establece el nombre del campo for?neo.
 
    @param fN Nombre del campo
    */
@@ -2823,21 +2823,21 @@ public slots:
   }
 
   /**
-   Establece el nombre de función a llamar cuando cambia el filtro de búsqueda
+   Establece el nombre de funci?n a llamar cuando cambia el filtro de b?squeda
    */
   void setFilterRecordsFunction( QString fn) {
     obj_->setFilterRecordsFunction(fn);
     
   } 
   /**
-   Establece si el componente esta en modo solo edición o no.
+   Establece si el componente esta en modo solo edici?n o no.
    */
   void setEditOnly(const bool mode) {
     obj_->setEditOnly(mode);
   }
 
   /**
-   Establece el componente a sólo inserción o no.
+   Establece el componente a s?lo inserci?n o no.
    */
   void setInsertOnly(const bool mode) {
     obj_->setInsertOnly(mode);
@@ -2855,35 +2855,35 @@ public slots:
   }
 
   /**
-   Invoca al método FLSqlCursor::insertRecord()
+   Invoca al m?todo FLSqlCursor::insertRecord()
    */
   void insertRecord() {
     obj_->insertRecord();
   }
 
   /**
-   Invoca al método FLSqlCursor::editRecord()
+   Invoca al m?todo FLSqlCursor::editRecord()
    */
   void editRecord() {
     obj_->editRecord();
   }
 
   /**
-   Invoca al método FLSqlCursor::browseRecord()
+   Invoca al m?todo FLSqlCursor::browseRecord()
    */
   void browseRecord() {
     obj_->browseRecord();
   }
 
   /**
-   Invoca al método FLSqlCursor::deleteRecord()
+   Invoca al m?todo FLSqlCursor::deleteRecord()
    */
   void deleteRecord() {
     obj_->deleteRecord();
   }
 
   /**
-   Invoca al método FLSqlCursor::copyRecord()
+   Invoca al m?todo FLSqlCursor::copyRecord()
    */
   void copyRecord() {
     obj_->copyRecord();
@@ -2936,7 +2936,7 @@ public slots:
   }
 
   /**
-   Establece el filtro inicial de búsqueda
+   Establece el filtro inicial de b?squeda
    */
   void setInitSearch(const QString &iS) {
     obj_->setInitSearch(iS);
@@ -2970,7 +2970,7 @@ public slots:
   }
 
   /**
-   Emite la señal currentChanged, cuando el objeto tableRecords envía dicha señal
+   Emite la se?al currentChanged, cuando el objeto tableRecords env?a dicha se?al
    */
   void emitCurrentChanged() {
     emit currentChanged();
@@ -2979,7 +2979,7 @@ public slots:
   /**
    Establece la fila actual
 
-   @param r. Índice de la fila
+   @param r. ?ndice de la fila
    */
   void setCurrentRow(const int r) {
     FLDataTable *t = obj_->tableRecords();
@@ -2990,9 +2990,9 @@ public slots:
   }
 
   /**
-   Devuelve el número de fila actual
+   Devuelve el n?mero de fila actual
 
-   @return Índice de la fila actual
+   @return ?ndice de la fila actual
    */
   int currentRow(void) {
     FLDataTable *t = obj_->tableRecords();
@@ -3024,14 +3024,14 @@ public slots:
   }
 
   /**
-   Establece el campo de búsqueda
+   Establece el campo de b?squeda
    */
   void putFirstCol(const QString &c) {
     obj_->putFirstCol(c);
   }
 
   /**
-  Establece el segundo campo de búsqueda
+  Establece el segundo campo de b?squeda
 
   @author Silix - dpinelo
   */
@@ -3052,7 +3052,7 @@ public slots:
   /**
    Establece el orden de las columnas de la tabla.
 
-   @param fields Lista de los nombres de los campos ordenada según se desea que aparezcan en la tabla
+   @param fields Lista de los nombres de los campos ordenada seg?n se desea que aparezcan en la tabla
    */
   void setOrderCols(QStringList &fields) {
     obj_->setOrderCols(fields);
@@ -3066,7 +3066,7 @@ public slots:
   }
 
   /**
-  Conmuta el sentido de la ordenación de los registros de la tabla, de ascendente a descendente y
+  Conmuta el sentido de la ordenaci?n de los registros de la tabla, de ascendente a descendente y
   viceversa. Los registros siempre se ordenan por la primera columna.
   */
   void switchSortOrder(int col = -1) {
@@ -3074,32 +3074,32 @@ public slots:
   }
 
   /**
-   Obtiene si la columna de selección está activada
+   Obtiene si la columna de selecci?n est? activada
    */
   bool checkColumnEnabled() const {
     return obj_->checkColumnEnabled();
   }
 
   /**
-   Establece el estado de activación de la columna de selección
+   Establece el estado de activaci?n de la columna de selecci?n
 
-   El cambio de estado no será efectivo hasta el siguiente refresh.
+   El cambio de estado no ser? efectivo hasta el siguiente refresh.
    */
   void setCheckColumnEnabled(bool b) {
     obj_->setCheckColumnEnabled(b);
   }
 
   /**
-   Obiente el texto de la etiqueta de encabezado para la columna de selección
+   Obiente el texto de la etiqueta de encabezado para la columna de selecci?n
    */
   QString aliasCheckColumn() const {
     return obj_->aliasCheckColumn();
   }
 
   /**
-   Establece el texto de la etiqueta de encabezado para la columna de selección
+   Establece el texto de la etiqueta de encabezado para la columna de selecci?n
 
-   El cambio del texto de la etiqueta no será efectivo hasta el próximo refresh
+   El cambio del texto de la etiqueta no ser? efectivo hasta el pr?ximo refresh
    */
   void setAliasCheckColumn(const QString &t) {
     obj_->setAliasCheckColumn(t);
@@ -3129,10 +3129,10 @@ public slots:
   }
 
   /**
-   Indica que ha cambiado el estado del campo de selección de un registro. Es decir
+   Indica que ha cambiado el estado del campo de selecci?n de un registro. Es decir
    se ha incluido o eliminado su clave primaria de la lista de claves primarias seleccionadas.
-   Esta señal se emite cuando el usuario hace click en el control de chequeo y cuando se cambia
-   programáticamente el chequeo mediante el método FLDataTable::setPrimaryKeyChecked.
+   Esta se?al se emite cuando el usuario hace click en el control de chequeo y cuando se cambia
+   program?ticamente el chequeo mediante el m?todo FLDataTable::setPrimaryKeyChecked.
 
    @param  primaryKeyValue El valor de la clave primaria del registro correspondiente
    @param  on  El nuevo estado; TRUE chequeo activado, FALSE chequeo desactivado
@@ -3142,14 +3142,14 @@ public slots:
   }
 
   /**
-   Obtiene si el marco de búsqueda está oculto
+   Obtiene si el marco de b?squeda est? oculto
    */
   bool findHidden() const {
     return obj_->findHidden();
   }
 
   /**
-   Oculta o muestra el marco de búsqueda
+   Oculta o muestra el marco de b?squeda
 
    @param  h TRUE lo oculta, FALSE lo muestra
    */
@@ -3158,7 +3158,7 @@ public slots:
   }
 
   /**
-   Obtiene si el marco para conmutar entre datos y filtro está oculto
+   Obtiene si el marco para conmutar entre datos y filtro est? oculto
    */
   bool filterHidden() const {
     return obj_->filterHidden();
@@ -3193,7 +3193,7 @@ public slots:
   /**
    Establece el alto de una fila
 
-   @param  row Número de orden de la fila, empezando en 0
+   @param  row N?mero de orden de la fila, empezando en 0
    @param  h   Alto de la fila
    */
   void setRowHeight(int row, int h) {
@@ -3248,35 +3248,35 @@ public slots:
 signals:
 
   /**
-   Señal emitida cuando se refresca la tabla
+   Se?al emitida cuando se refresca la tabla
    */
   void refreshed();
 
   /**
-   Señal emitida cuando se establece si el componente es o no de solo lectura.
+   Se?al emitida cuando se establece si el componente es o no de solo lectura.
    */
   void readOnlyChanged(bool);
 
   /**
-   Señal emitida cuando se establece si el componente es o no de solo edición.
+   Se?al emitida cuando se establece si el componente es o no de solo edici?n.
    */
   void editOnlyChanged(bool);
 
   /**
-   Señal emitida cuando se establece si el componente es o no de solo inserción.
+   Se?al emitida cuando se establece si el componente es o no de solo inserci?n.
    */
   void insertOnlyChanged(bool);
 
   /**
-   Señal emitida cuando se establece cambia el registro seleccionado.
+   Se?al emitida cuando se establece cambia el registro seleccionado.
    */
   void currentChanged();
 
   /**
-   Indica que ha cambiado el estado del campo de selección de un registro. Es decir
+   Indica que ha cambiado el estado del campo de selecci?n de un registro. Es decir
    se ha incluido o eliminado su clave primaria de la lista de claves primarias seleccionadas.
-   Esta señal se emite cuando el usuario hace click en el control de chequeo y cuando se cambia
-   programáticamente el chequeo mediante el método FLDataTable::setPrimaryKeyChecked.
+   Esta se?al se emite cuando el usuario hace click en el control de chequeo y cuando se cambia
+   program?ticamente el chequeo mediante el m?todo FLDataTable::setPrimaryKeyChecked.
 
    @param  primaryKeyValue El valor de la clave primaria del registro correspondiente
    @param  on  El nuevo estado; TRUE chequeo activado, FALSE chequeo desactivado
@@ -3344,8 +3344,8 @@ public slots:
   /**
    Cambia una fila de modo solo lectura a lectura - escritura y viceversa.
 
-   @param row. número de fila
-   @param ro. TRUE si la fila es de sólo lectura, FALSE si no lo es
+   @param row. n?mero de fila
+   @param ro. TRUE si la fila es de s?lo lectura, FALSE si no lo es
    */
   void setRowReadOnly(int row, bool ro) {
     NEW_TABLE
@@ -3355,9 +3355,9 @@ public slots:
   /**
    Ordena una columna
 
-   @param col: Número de columna
+   @param col: N?mero de columna
    @param ascending. Orden ascendente (true) o descendente (false)
-   @param wholeRows. Ordenar sólo la columna (false) o las filas enteras (true)
+   @param wholeRows. Ordenar s?lo la columna (false) o las filas enteras (true)
    */
   void sortColumn(int col, bool ascending = true, bool wholeRows = false) {
     NEW_TABLE
@@ -3367,8 +3367,8 @@ public slots:
   /**
    Cambia una columna de modo solo lectura a lectura - escritura y viceversa.
 
-   @param col. número de columna
-   @param ro. TRUE si la fila es de sólo lectura, FALSE si no lo es
+   @param col. n?mero de columna
+   @param ro. TRUE si la fila es de s?lo lectura, FALSE si no lo es
    */
   void setColumnReadOnly(int col, bool ro) {
     NEW_TABLE
@@ -3378,7 +3378,7 @@ public slots:
   /**
    Elimina una fila
 
-   @param row.número de la fila a eliminar
+   @param row.n?mero de la fila a eliminar
    */
   void removeRow(int row) {
     NEW_TABLE
@@ -3391,10 +3391,10 @@ public slots:
   void clear();
 
   /**
-   Inicia la edición de una celda
+   Inicia la edici?n de una celda
 
-   @param fil. número de la fila
-   @param col. número de la columna
+   @param fil. n?mero de la fila
+   @param col. n?mero de la columna
    */
   void editCell(int row, int col) {
     NEW_TABLE
@@ -3404,7 +3404,7 @@ public slots:
   /**
    Esconde una columna
 
-   @param col. número de la columna
+   @param col. n?mero de la columna
    */
   void hideColumn(int col) {
     NEW_TABLE
@@ -3414,7 +3414,7 @@ public slots:
   /**
    Esconde una fila
 
-   @param row. número de la fila
+   @param row. n?mero de la fila
    */
   void hideRow(int row) {
     NEW_TABLE
@@ -3424,7 +3424,7 @@ public slots:
   /**
    Muestra una columna
 
-   @param col. número de la columna
+   @param col. n?mero de la columna
    */
   void showColumn(int col) {
     NEW_TABLE
@@ -3434,7 +3434,7 @@ public slots:
   /**
    Muestra una fila
 
-   @param row. número de la fila
+   @param row. n?mero de la fila
    */
   void showRow(int row) {
     NEW_TABLE
@@ -3444,8 +3444,8 @@ public slots:
   /**
    Devuelve el texto que contiene una determinada casilla de la tabla
 
-   @param row. número de la fila de la casilla
-   @param col. número de la columna de la casilla
+   @param row. n?mero de la fila de la casilla
+   @param col. n?mero de la columna de la casilla
    */
   QString text(int row, int col) {
     NEW_TABLE
@@ -3453,10 +3453,10 @@ public slots:
   }
 
   /**
-   Establece los títulos de todas las columnas
+   Establece los t?tulos de todas las columnas
 
-   @param sep. Caracter separador de los títulos
-   @param str. Lista de títulos separados por el carácter separador
+   @param sep. Caracter separador de los t?tulos
+   @param str. Lista de t?tulos separados por el car?cter separador
    */
   void setColumnLabels(const QString &sep, const QString &str) {
     NEW_TABLE
@@ -3465,10 +3465,10 @@ public slots:
   }
 
   /**
-   Establece los títulos de las filas
+   Establece los t?tulos de las filas
 
-   @param sep. Caracter separador de los títulos
-   @param str. Lista de títulos separados por el carácter separador
+   @param sep. Caracter separador de los t?tulos
+   @param str. Lista de t?tulos separados por el car?cter separador
    */
   void setRowLabels(const QString &sep, const QString &str) {
     NEW_TABLE
@@ -3477,7 +3477,7 @@ public slots:
   }
 
   /**
-   Establece el margen para los títulos de las filas
+   Establece el margen para los t?tulos de las filas
 
    @param m. Margen
    */
@@ -3487,7 +3487,7 @@ public slots:
   }
 
   /**
-   Establece el margen para los títulos de las columnas
+   Establece el margen para los t?tulos de las columnas
 
    @param m. Margen
    */
@@ -3497,9 +3497,9 @@ public slots:
   }
 
   /**
-   Establece el número total de columnas de la tabla
+   Establece el n?mero total de columnas de la tabla
 
-   @param c. número de columnas que tendrá la tabla
+   @param c. n?mero de columnas que tendr? la tabla
    */
   void setNumCols(const int c) {
     NEW_TABLE
@@ -3507,9 +3507,9 @@ public slots:
   }
 
   /**
-   Establece el número total de filas de la tabla
+   Establece el n?mero total de filas de la tabla
 
-   @param c. número de filas que tendrá la tabla
+   @param c. n?mero de filas que tendr? la tabla
    */
   void setNumRows(const int r) {
     NEW_TABLE
@@ -3518,7 +3518,7 @@ public slots:
 
   /**
    Establece la anchura de un columna
-   @param c. Número de la columna
+   @param c. N?mero de la columna
    @param w. Anchura
    */
   void setColumnWidth(const int c, const int w) {
@@ -3537,7 +3537,7 @@ public slots:
   /**
    Establece el alto de una fila
 
-   @param  row Número de orden de la fila, empezando en 0
+   @param  row N?mero de orden de la fila, empezando en 0
    @param  h   Alto de la fila
    */
   void setRowHeight(int row, int h) {
@@ -3554,9 +3554,9 @@ public slots:
   }
 
   /**
-   Devuelve el número de fila actual.
+   Devuelve el n?mero de fila actual.
 
-   @return  número de fila actual
+   @return  n?mero de fila actual
    */
   int currentRow() {
     NEW_TABLE
@@ -3564,9 +3564,9 @@ public slots:
   }
 
   /**
-   Devuelve el númwero de columna actual.
+   Devuelve el n?mwero de columna actual.
 
-   @return  número de columna actual
+   @return  n?mero de columna actual
    */
   int currentColumn() {
     NEW_TABLE
@@ -3574,9 +3574,9 @@ public slots:
   }
 
   /**
-   Selecciona el número de fila establecido
+   Selecciona el n?mero de fila establecido
 
-   @param row. número de fila que se desea seleccionar
+   @param row. n?mero de fila que se desea seleccionar
    */
   void selectRow(int row) {
     NEW_TABLE
@@ -3584,9 +3584,9 @@ public slots:
   }
 
   /**
-   Devuelve el número total de filas de la tabla
+   Devuelve el n?mero total de filas de la tabla
 
-   @return número de filas
+   @return n?mero de filas
    */
   int numRows() {
     NEW_TABLE
@@ -3594,9 +3594,9 @@ public slots:
   }
 
   /**
-   Devuelve el número total de columnas de la tabla
+   Devuelve el n?mero total de columnas de la tabla
 
-   @return número de columnas
+   @return n?mero de columnas
    */
   int numCols() {
     NEW_TABLE
@@ -3607,7 +3607,7 @@ public slots:
    Cambia una fila por otra
    @param row1: Fila 1
    @param row2: Fila 2
-   @param swapHeader: Indica si hay que cambiar también las cabeceras de las filas
+   @param swapHeader: Indica si hay que cambiar tambi?n las cabeceras de las filas
    */
   void swapRows(int row1, int row2, bool swapHeader = false) {
     NEW_TABLE
@@ -3618,7 +3618,7 @@ public slots:
    Cambia una columna por otra
    @param col1: Columna 1
    @param col2: Columna 2
-   @param swapHeader: Indica si hay que cambiar también las cabeceras de las columnas
+   @param swapHeader: Indica si hay que cambiar tambi?n las cabeceras de las columnas
    */
   void swapColumns(int col1, int col2, bool swapHeader = false) {
     NEW_TABLE
@@ -3668,8 +3668,8 @@ public slots:
   /**
    Establece un texto para casilla determinada
 
-   @param row. número de fila
-   @param col. número de columna
+   @param row. n?mero de fila
+   @param col. n?mero de columna
    @param text. texto que deseamos insertar
    */
   void setText(int row, int col, const QString &text) {
@@ -3684,10 +3684,10 @@ public slots:
   }
 
   /**
-   Inserta una o más nuevas filas en el lugar establecido
+   Inserta una o m?s nuevas filas en el lugar establecido
 
-   @param row. posición donde insertar las nuevas filas
-   @param count. número de filas a insertar
+   @param row. posici?n donde insertar las nuevas filas
+   @param count. n?mero de filas a insertar
    */
   void insertRows(int row, int count = 1) {
     NEW_TABLE
@@ -3695,10 +3695,10 @@ public slots:
   }
 
   /**
-   Inserta una o más nuevas columnas en el lugar establecido
+   Inserta una o m?s nuevas columnas en el lugar establecido
 
-   @param col. posición donde insertar las nuevas columnas
-   @param count. número de columnas a insertar
+   @param col. posici?n donde insertar las nuevas columnas
+   @param count. n?mero de columnas a insertar
    */
   void insertColumns(int col, int count = 1) {
     NEW_TABLE
@@ -3706,9 +3706,9 @@ public slots:
   }
 
   /**
-   Ajusta el ancho de la columna automáticamente
+   Ajusta el ancho de la columna autom?ticamente
 
-   @param col. posición de la columna
+   @param col. posici?n de la columna
    */
   void adjustColumn(int col) {
     NEW_TABLE
@@ -3716,9 +3716,9 @@ public slots:
   }
 
   /**
-   Ajusta el alto de la fila automáticamente
+   Ajusta el alto de la fila autom?ticamente
 
-   @param fil. posición de la fila
+   @param fil. posici?n de la fila
    */
   void adjustRow(int fil) {
     NEW_TABLE
@@ -3772,39 +3772,39 @@ public slots:
 signals:
 
   /**
-   Señal emitida al cambiar la casilla seleccionada de la tabla
+   Se?al emitida al cambiar la casilla seleccionada de la tabla
 
-   @param int. número de fila
-   @param int. número columna
+   @param int. n?mero de fila
+   @param int. n?mero columna
    */
   void currentChanged(int, int);
 
   /**
-   Señal emitida al pulsar sobre una casilla determinada
+   Se?al emitida al pulsar sobre una casilla determinada
 
-   @param int. número de fila
-   @param int. número columna
+   @param int. n?mero de fila
+   @param int. n?mero columna
    */
   void clicked(int, int);
 
   /**
-   Señal emitida al hacer dobel click en una determinada casilla
+   Se?al emitida al hacer dobel click en una determinada casilla
 
-   @param int. número de fila
-   @param int. número columna
+   @param int. n?mero de fila
+   @param int. n?mero columna
    */
   void doubleClicked(int, int);
 
   /**
-   Señal emitida al cambiarse el valor de una celda
+   Se?al emitida al cambiarse el valor de una celda
 
-   @param int. número de fila
-   @param int. número columna
+   @param int. n?mero de fila
+   @param int. n?mero columna
    */
   void valueChanged(int, int);
 
   /**
-   Señal emitida al cambiarse la selección en la tabla
+   Se?al emitida al cambiarse la selecci?n en la tabla
    */
   void selectionChanged();
 
@@ -3864,10 +3864,10 @@ public slots:
   }
 };
 
-//! Acceso directo a vistas de tipo árbol
+//! Acceso directo a vistas de tipo ?rbol
 /**
- Acceso directo a vistas de tipo árbol
- Permite editar su estructura: añadiendo y quitando ramas
+ Acceso directo a vistas de tipo ?rbol
+ Permite editar su estructura: a?adiendo y quitando ramas
 
  @author InfoSiAL S.L.
  */
@@ -3926,7 +3926,7 @@ public slots:
   /**
    Crea una nueva columna
 
-   @param label. Título de la nueva columna
+   @param label. T?tulo de la nueva columna
    @param width. Anchura de la nueva columna
    */
   int addColumn(const QString &label, int width = -1) {
@@ -3935,10 +3935,10 @@ public slots:
   }
 
   /**
-   Establece el título de una columna
+   Establece el t?tulo de una columna
 
-   @param column. Índice de la columna
-   @param label. Título de la columna
+   @param column. ?ndice de la columna
+   @param label. T?tulo de la columna
    */
   void setColumnText(int column, const QString &label) {
     NEW_VIEW
@@ -3946,10 +3946,10 @@ public slots:
   }
 
   /**
-   Establece el la alineación de una columna
+   Establece el la alineaci?n de una columna
 
-   @param column. Índice de la columna
-   @param aling. Tipo de alineación
+   @param column. ?ndice de la columna
+   @param aling. Tipo de alineaci?n
    */
   void setColumnAlignment(int column, int align) {
     NEW_VIEW
@@ -3978,7 +3978,7 @@ public slots:
 signals:
 
   /**
-   Señal emitida al hacerse docble click sobre un elemento de la lista
+   Se?al emitida al hacerse docble click sobre un elemento de la lista
 
    @param FLListViewItemInterface Elemento seleccionado
    */
@@ -3993,10 +3993,10 @@ private:
   QListView *obj_;
 };
 
-//! Acceso directo a elementos de vistas de tipo árbol
+//! Acceso directo a elementos de vistas de tipo ?rbol
 /**
- Acceso directo a elementos de vistas de tipo árbol
- Permite añadir elementos a la vista de tipo árbol
+ Acceso directo a elementos de vistas de tipo ?rbol
+ Permite a?adir elementos a la vista de tipo ?rbol
 
  @author InfoSiAL S.L.
  */
@@ -4063,7 +4063,7 @@ public slots:
   /**
    Establece el texto del elemento
 
-   @param column. Columna donde está el texto
+   @param column. Columna donde est? el texto
    @param text. Texto
    */
   void setText(int column, const QString &text) {
@@ -4073,7 +4073,7 @@ public slots:
   /**
    Establece el texto del elemento
 
-   @param column. Columna donde está el texto
+   @param column. Columna donde est? el texto
    @param text. Texto
    */
   QString text(int column) const {
@@ -4117,9 +4117,9 @@ private:
   FLListViewItem *obj_;
 };
 
-//! Controles 'tab' (pestañas) de los formularios
+//! Controles 'tab' (pesta?as) de los formularios
 /**
- Acceso a un control tipo 'tab' (pestañas) de un formulario. Permite establecer la pestaña activa.
+ Acceso a un control tipo 'tab' (pesta?as) de un formulario. Permite establecer la pesta?a activa.
 
  @author InfoSiAL S.L.
  */
@@ -4150,8 +4150,8 @@ public slots:
   /**
    Establece el tab activado o desactivado
 
-   @param index Número del indice del tab
-   @param enable Si es TRUE el tab se mostrará habilitado, si es FALSE se pondrá inhabilitado
+   @param index N?mero del indice del tab
+   @param enable Si es TRUE el tab se mostrar? habilitado, si es FALSE se pondr? inhabilitado
    */
   void setTabEnabled(int index, bool enable) {
     obj_->setTabEnabled(obj_->page(index), enable);
@@ -4161,14 +4161,14 @@ public slots:
    Establece el tab activado o desactivado
 
    @param name Nombre del tab
-   @param enable Si es TRUE el tab se mostrará habilitado, si es FALSE se pondrá inhabilitado
+   @param enable Si es TRUE el tab se mostrar? habilitado, si es FALSE se pondr? inhabilitado
    */
   void setTabEnabled(const QString &name, bool enable);
 
   /**
    Elimina un tab
 
-   @param index Número del indice del tab
+   @param index N?mero del indice del tab
    */
   void removePage(int index) {
     obj_->removePage(obj_->page(index));
@@ -4182,16 +4182,16 @@ public slots:
   void removePage(const QString &name);
 
   /**
-   Asegura que un tab está mostrado
+   Asegura que un tab est? mostrado
 
-   @param index Número del indice del tab
+   @param index N?mero del indice del tab
    */
   void showPage(int index) {
     obj_->showPage(obj_->page(index));
   }
 
   /**
-   Asegura que un tab está mostrado
+   Asegura que un tab est? mostrado
 
    @param name Nombre del tab
    */
@@ -4208,7 +4208,7 @@ public slots:
 signals:
 
   /**
-   Señal emitida al cambiar el tab seleccionado
+   Se?al emitida al cambiar el tab seleccionado
    @param name. Nombre del tab
    */
   void currentChanged(const QString &);
@@ -4322,12 +4322,12 @@ public slots:
   /**
    Establece widget como principal del formulario.
 
-   Este widget contendrá componentes que quieran enlazar con la
+   Este widget contendr? componentes que quieran enlazar con la
    base de datos, por lo que esperan estar contenidos en una clase
    FLFormDB, la cual les proporciona el cursor (registros) a los que enlazar.
-   Si ya existiera otro widget como principal, este será borrado.
+   Si ya existiera otro widget como principal, este ser? borrado.
 
-   Si existe un widget principal establecido con anterioridad será borrado
+   Si existe un widget principal establecido con anterioridad ser? borrado
 
    @param w Widget principal para el formulario
    */
@@ -4339,7 +4339,7 @@ public slots:
   /**
    Sobrecargado de setMainWidget.
 
-   Aqui toma el nombre de un formulario de la acción asociada y construye el Widget principal, a partir de él.
+   Aqui toma el nombre de un formulario de la acci?n asociada y construye el Widget principal, a partir de ?l.
    */
   void setMainWidget() {
     if (obj_)
@@ -4351,7 +4351,7 @@ public slots:
 
    Aqui construye el Widget principal a partir del nombre de un fichero de interfaz .ui.
 
-   @param uiFileName Nombre del fichero de descripción de interfaz, incluyendo la extension .ui, p.e. clientes.ui
+   @param uiFileName Nombre del fichero de descripci?n de interfaz, incluyendo la extension .ui, p.e. clientes.ui
    */
   void setMainWidget(const QString &uiFileName) {
     if (obj_)
@@ -4410,9 +4410,9 @@ public slots:
   }
 
   /**
-   Realiza las operaciones equivalentes a pulsar el botón cerrar
+   Realiza las operaciones equivalentes a pulsar el bot?n cerrar
 
-   @return TRUE si el formulario se cierra correctamente, FALSE si no es así
+   @return TRUE si el formulario se cierra correctamente, FALSE si no es as?
    */
   bool close() {
     if (obj_) {
@@ -4432,7 +4432,7 @@ public slots:
   }
 
   /**
-   Realiza las operaciones equivalentes a pulsar el botón cancelar
+   Realiza las operaciones equivalentes a pulsar el bot?n cancelar
    */
   void reject() {
     if (obj_)
@@ -4471,7 +4471,7 @@ public slots:
   }
 
   /**
-  Sólo para compatibilizar con FLFormSearchDB. Por defecto sólo llama QWidget::show
+  S?lo para compatibilizar con FLFormSearchDB. Por defecto s?lo llama QWidget::show
   */
   QVariant exec(const QString & = QString::null) {
     return (obj_ ? obj_->exec() : QVariant());
@@ -4487,7 +4487,7 @@ public slots:
 
   /**
    Muestra el formulario sin llamar al script "init".
-   Utilizado en documentación para evitar conflictos al capturar los formularios
+   Utilizado en documentaci?n para evitar conflictos al capturar los formularios
    */
   void showForDocument() {
     if (obj_)
@@ -4503,9 +4503,9 @@ public slots:
   }
 
   /**
-  Establece el título de la ventana.
+  Establece el t?tulo de la ventana.
 
-  @param text Texto a establecer como título de la ventana
+  @param text Texto a establecer como t?tulo de la ventana
   @author Silix
   */
   void setCaptionWidget(const QString &text) {
@@ -4513,7 +4513,7 @@ public slots:
   }
 
   /**
-  Devuelve el nombre de la clase del formulario en tiempo de ejecución
+  Devuelve el nombre de la clase del formulario en tiempo de ejecuci?n
   */
   QString formClassName() const {
     if (obj_)
@@ -4523,12 +4523,12 @@ public slots:
 signals:
 
   /**
-   Señal emitida cuando se cierra el formulario
+   Se?al emitida cuando se cierra el formulario
    */
   void closed();
 
   /**
-   Señal emitida cuando el formulario ya ha sido inicializado y está listo para usarse
+   Se?al emitida cuando el formulario ya ha sido inicializado y est? listo para usarse
    */
   void formReady();
 
@@ -4540,9 +4540,9 @@ private:
   QSScript *script_;
 };
 
-//! Acceso a Formularios de edición
+//! Acceso a Formularios de edici?n
 /**
- Acceso a formularios de edición. Permite establecer el script,
+ Acceso a formularios de edici?n. Permite establecer el script,
  la ventana o el cursor asociado al formulario
 
  @author InfoSiAL S.L.
@@ -4640,12 +4640,12 @@ public slots:
   /**
    Establece widget como principal del formulario.
 
-   Este widget contendrá componentes que quieran enlazar con la
+   Este widget contendr? componentes que quieran enlazar con la
    base de datos, por lo que esperan estar contenidos en una clase
    FLFormDB, la cual les proporciona el cursor (registros) a los que enlazar.
-   Si ya existiera otro widget como principal, este será borrado.
+   Si ya existiera otro widget como principal, este ser? borrado.
 
-   Si existe un widget principal establecido con anterioridad será borrado
+   Si existe un widget principal establecido con anterioridad ser? borrado
 
    @param w Widget principal para el formulario
    */
@@ -4657,7 +4657,7 @@ public slots:
   /**
    Sobrecargado de setMainWidget.
 
-   Aqui toma el nombre de un formulario de la acción asociada y construye el Widget principal, a partir de él.
+   Aqui toma el nombre de un formulario de la acci?n asociada y construye el Widget principal, a partir de ?l.
    */
   void setMainWidget() {
     if (obj_)
@@ -4669,7 +4669,7 @@ public slots:
 
    Aqui construye el Widget principal a partir del nombre de un fichero de interfaz .ui.
 
-   @param uiFileName Nombre del fichero de descripción de interfaz, incluyendo la extension .ui, p.e. clientes.ui
+   @param uiFileName Nombre del fichero de descripci?n de interfaz, incluyendo la extension .ui, p.e. clientes.ui
    */
   void setMainWidget(const QString &uiFileName) {
     if (obj_)
@@ -4719,9 +4719,9 @@ public slots:
   }
 
   /**
-   Realiza las operaciones equivalentes a pulsar el botón cerrar
+   Realiza las operaciones equivalentes a pulsar el bot?n cerrar
 
-   @return TRUE si el formulario se cierra correctamente, FALSE si no es así
+   @return TRUE si el formulario se cierra correctamente, FALSE si no es as?
    */
   bool close() {
     if (obj_) {
@@ -4741,7 +4741,7 @@ public slots:
   }
 
   /**
-   Realiza las operaciones equivalentes a pulsar el botón cancelar
+   Realiza las operaciones equivalentes a pulsar el bot?n cancelar
    */
   void reject() {
     if (obj_)
@@ -4788,7 +4788,7 @@ public slots:
   }
 
   /**
-  Sólo para compatibilizar con FLFormSearchDB. Por defecto sólo llama QWidget::show
+  S?lo para compatibilizar con FLFormSearchDB. Por defecto s?lo llama QWidget::show
   */
   QVariant exec(const QString & = QString::null) {
     return (obj_ ? obj_->exec() : QVariant());
@@ -4804,7 +4804,7 @@ public slots:
 
   /**
    Muestra el formulario sin llamar al script "init".
-   Utilizado en documentación para evitar conflictos al capturar los formularios
+   Utilizado en documentaci?n para evitar conflictos al capturar los formularios
    */
   void showForDocument() {
     if (obj_)
@@ -4820,9 +4820,9 @@ public slots:
   }
 
   /**
-  Establece el título de la ventana.
+  Establece el t?tulo de la ventana.
 
-  @param text Texto a establecer como título de la ventana
+  @param text Texto a establecer como t?tulo de la ventana
   @author Silix
   */
   void setCaptionWidget(const QString &text) {
@@ -4830,7 +4830,7 @@ public slots:
   }
 
   /**
-  Devuelve el nombre de la clase del formulario en tiempo de ejecución
+  Devuelve el nombre de la clase del formulario en tiempo de ejecuci?n
   */
   QString formClassName() const {
     if (obj_)
@@ -4840,12 +4840,12 @@ public slots:
 signals:
 
   /**
-   Señal emitida cuando se cierra el formulario
+   Se?al emitida cuando se cierra el formulario
    */
   void closed();
 
   /**
-   Señal emitida cuando el formulario ya ha sido inicializado y está listo para usarse
+   Se?al emitida cuando el formulario ya ha sido inicializado y est? listo para usarse
    */
   void formReady();
 
@@ -4857,9 +4857,9 @@ private:
   QSScript *script_;
 };
 
-//! Acceso a Formularios de búsqueda
+//! Acceso a Formularios de b?squeda
 /**
- Acceso a formularios de búsqueda. Permite establecer el script,
+ Acceso a formularios de b?squeda. Permite establecer el script,
  la ventana o el cursor asociado al formulario
 
  @author InfoSiAL S.L.
@@ -4971,12 +4971,12 @@ public slots:
   /**
    Establece widget como principal del formulario.
 
-   Este widget contendrá componentes que quieran enlazar con la
+   Este widget contendr? componentes que quieran enlazar con la
    base de datos, por lo que esperan estar contenidos en una clase
    FLFormDB, la cual les proporciona el cursor (registros) a los que enlazar.
-   Si ya existiera otro widget como principal, este será borrado.
+   Si ya existiera otro widget como principal, este ser? borrado.
 
-   Si existe un widget principal establecido con anterioridad será borrado
+   Si existe un widget principal establecido con anterioridad ser? borrado
 
    @param w Widget principal para el formulario
    */
@@ -4988,7 +4988,7 @@ public slots:
   /**
    Sobrecargado de setMainWidget.
 
-   Aqui toma el nombre de un formulario de la acción asociada y construye el Widget principal, a partir de él.
+   Aqui toma el nombre de un formulario de la acci?n asociada y construye el Widget principal, a partir de ?l.
    */
   void setMainWidget() {
     if (obj_)
@@ -5000,7 +5000,7 @@ public slots:
 
    Aqui construye el Widget principal a partir del nombre de un fichero de interfaz .ui.
 
-   @param uiFileName Nombre del fichero de descripción de interfaz, incluyendo la extension .ui, p.e. clientes.ui
+   @param uiFileName Nombre del fichero de descripci?n de interfaz, incluyendo la extension .ui, p.e. clientes.ui
    */
   void setMainWidget(const QString &uiFileName) {
     if (obj_)
@@ -5073,9 +5073,9 @@ public slots:
   }
 
   /**
-   Realiza las operaciones equivalentes a pulsar el botón cerrar
+   Realiza las operaciones equivalentes a pulsar el bot?n cerrar
 
-   @return TRUE si el formulario se cierra correctamente, FALSE si no es así
+   @return TRUE si el formulario se cierra correctamente, FALSE si no es as?
    */
   bool close() {
     if (obj_) {
@@ -5095,7 +5095,7 @@ public slots:
   }
 
   /**
-   Realiza las operaciones equivalentes a pulsar el botón cancelar
+   Realiza las operaciones equivalentes a pulsar el bot?n cancelar
    */
   void reject() {
     if (obj_)
@@ -5141,9 +5141,9 @@ public slots:
   }
 
   /**
-  Establece el título de la ventana.
+  Establece el t?tulo de la ventana.
 
-  @param text Texto a establecer como título de la ventana
+  @param text Texto a establecer como t?tulo de la ventana
   @author Silix
   */
   void setCaptionWidget(const QString &text) {
@@ -5151,7 +5151,7 @@ public slots:
   }
 
   /**
-  Devuelve el nombre de la clase del formulario en tiempo de ejecución
+  Devuelve el nombre de la clase del formulario en tiempo de ejecuci?n
   */
   QString formClassName() const {
     if (obj_)
@@ -5161,12 +5161,12 @@ public slots:
 signals:
 
   /**
-   Señal emitida cuando se cierra el formulario
+   Se?al emitida cuando se cierra el formulario
    */
   void closed();
 
   /**
-   Señal emitida cuando el formulario ya ha sido inicializado y está listo para usarse
+   Se?al emitida cuando el formulario ya ha sido inicializado y est? listo para usarse
    */
   void formReady();
 
@@ -5178,9 +5178,9 @@ private:
   QSScript *script_;
 };
 
-//! Control de las variables de sesión
+//! Control de las variables de sesi?n
 /**
- Control de las variables de sesión. Permite leer o modificar estas variables
+ Control de las variables de sesi?n. Permite leer o modificar estas variables
 
  @author InfoSiAL S.L.
  */
@@ -5204,21 +5204,21 @@ public:
 public slots:
 
   /**
-   Establece un valor en la tabla de variables de sesión
+   Establece un valor en la tabla de variables de sesi?n
 
    @param n Nombre de la variable
    @param v Valor asociado
-   @return Verdadero en caso de establecer el valor con éxito, falso en cualquier otro caso
+   @return Verdadero en caso de establecer el valor con ?xito, falso en cualquier otro caso
    */
   bool set(const QString &n, const QVariant &v) {
     return FLVar::set(n, v);
   }
 
   /**
-   Lee un valor en la tabla de variables de sesión
+   Lee un valor en la tabla de variables de sesi?n
 
    @param n Nombre de la variable a leer
-   @return Valor asociado, en caso de leer el valor con éxito, falso en cualquier otro caso
+   @return Valor asociado, en caso de leer el valor con ?xito, falso en cualquier otro caso
    */
   QVariant get(const QString &n) {
     return FLVar::get(n);
@@ -5228,7 +5228,7 @@ public slots:
 //! Conjunto de utilidades generales
 /**
  Conjunto de utilidades generales
- (conversión de datos, traducciones, incremento de contadores...)
+ (conversi?n de datos, traducciones, incremento de contadores...)
 
  @author InfoSiAL S.L.
  */
@@ -5293,39 +5293,39 @@ public:
 
 public slots:
   /**
-   Obtiene la parte entera de un número.
+   Obtiene la parte entera de un n?mero.
 
-   Dado un número devuelve la parte entera correspondiente, es decir,
+   Dado un n?mero devuelve la parte entera correspondiente, es decir,
    cifras en la parte izquierda de la coma decimal.
 
-   @param n Número del que obtener la parte entera. Debe ser positivo
-   @return La parte entera del número, que puede ser cero
+   @param n N?mero del que obtener la parte entera. Debe ser positivo
+   @return La parte entera del n?mero, que puede ser cero
    */
   QVariant partInteger(double n) {
     return QVariant((Q_ULLONG) FLUtil::partInteger(n));
   }
 
   /**
-   Obtiene la parte decimal de un número.
+   Obtiene la parte decimal de un n?mero.
 
-   Dado un número devuelve la parte decimal correspondiente, es decir,
+   Dado un n?mero devuelve la parte decimal correspondiente, es decir,
    cifras en la parte derecha de la coma decimal.
 
-   @param n Número del que obtener la parte decimal. Debe ser positivo
-   @return La parte decimal del número, que puede ser cero
+   @param n N?mero del que obtener la parte decimal. Debe ser positivo
+   @return La parte decimal del n?mero, que puede ser cero
    */
   QVariant partDecimal(double n) {
     return QVariant((Q_ULLONG) FLUtil::partDecimal(n));
   }
 
   /**
-   Construye un string a partir de un número, especificando el formato y precisión
+   Construye un string a partir de un n?mero, especificando el formato y precisi?n
 
-   @param v. Número a convertir a QString
-   @param tipo. Formato del número
-   @param partDecimal. Precisión (número de cifras decimales) del número
+   @param v. N?mero a convertir a QString
+   @param tipo. Formato del n?mero
+   @param partDecimal. Precisi?n (n?mero de cifras decimales) del n?mero
 
-   @return Cadena que contiene el número formateado
+   @return Cadena que contiene el n?mero formateado
    */
   QString buildNumber(const QVariant &v, char tipo, int partDecimal) {
     return FLUtil::buildNumber(v, tipo, partDecimal);
@@ -5338,10 +5338,10 @@ public slots:
   }
 
   /**
-   Lee el valor de un setting en el directorio de la instalación de AbanQ
+   Lee el valor de un setting en el directorio de la instalaci?n de AbanQ
 
    @param key. Clave identificadora del setting
-   @param def. Valor por defecto en el caso de que el setting no esté establecido
+   @param def. Valor por defecto en el caso de que el setting no est? establecido
    @param ok. Indicador de que la lectura es correcta
 
    @return Valor del setting
@@ -5351,7 +5351,7 @@ public slots:
   }
 
   /**
-   Establece el valor de un setting en el directorio de instalación de AbanQ
+   Establece el valor de un setting en el directorio de instalaci?n de AbanQ
 
    @param key. Clave identificadora del setting
    @param Valor del setting
@@ -5386,13 +5386,13 @@ public slots:
   }
 
   /**
-   Redondea un valor en función de la precisión especificada para un campo tipo double de la base de datos
+   Redondea un valor en funci?n de la precisi?n especificada para un campo tipo double de la base de datos
 
-   @param n. Número a redondear
+   @param n. N?mero a redondear
    @param table. Nombre de la tabla
    @param field. Nombre del campo
 
-   @return Número redondeado
+   @return N?mero redondeado
    */
   QString roundFieldValue(const QVariant &n, const QString &table, const QString &field) {
     return FLUtil::roundFieldValue(n, table, field);
@@ -5405,52 +5405,52 @@ public slots:
   }
 
   /**
-   Enunciado de las unidades de un número.
+   Enunciado de las unidades de un n?mero.
 
-   @param n Número a tratar. Debe ser positivo
+   @param n N?mero a tratar. Debe ser positivo
    */
   QString unidades(long n) {
     return FLUtil::unidades(n);
   }
 
   /**
-   Enunciado de las centenas de millar de un número.
+   Enunciado de las centenas de millar de un n?mero.
 
-   @param n Número a tratar. Debe ser positivo
+   @param n N?mero a tratar. Debe ser positivo
    */
   QString centenamillar(long n) {
     return FLUtil::centenamillar(n);
   }
 
   /**
-   Enunciado de las decenas de un número.
+   Enunciado de las decenas de un n?mero.
 
-   @param n Número a tratar. Debe ser positivo
+   @param n N?mero a tratar. Debe ser positivo
    */
   QString decenas(long n) {
     return FLUtil::decenas(n);
   }
 
   /**
-   Enunciado de las centenas de un número.
+   Enunciado de las centenas de un n?mero.
 
-   @param n Número a tratar. Debe ser positivo
+   @param n N?mero a tratar. Debe ser positivo
    */
   QString centenas(long n) {
     return FLUtil::centenas(n);
   }
 
   /**
-   Enunciado de las unidades de millar de un número.
+   Enunciado de las unidades de millar de un n?mero.
 
-   @param n Número a tratar. Debe ser positivo
+   @param n N?mero a tratar. Debe ser positivo
    */
   QString unidadesmillar(long n) {
     return FLUtil::unidadesmillar(n);
   }
 
   /**
-   Pasa una cadena a codificación utf-8
+   Pasa una cadena a codificaci?n utf-8
 
    @param s: Cadena
    @return Cadena en formato UTF-8
@@ -5460,63 +5460,63 @@ public slots:
   }
 
   /**
-   Enunciado de las decenas de millar de un número.
+   Enunciado de las decenas de millar de un n?mero.
 
-   @param n Número a tratar. Debe ser positivo
+   @param n N?mero a tratar. Debe ser positivo
    */
   QString decenasmillar(long n) {
     return FLUtil::decenasmillar(n);
   }
 
   /**
-   Obtiene la expresión en texto de como se enuncia un número, en castellano.
+   Obtiene la expresi?n en texto de como se enuncia un n?mero, en castellano.
 
-   Dado un número entero, devuelve su expresión en texto de como se
-   enuncia de forma hablada; por ejemplo dado el número 130,
-   devolverá la cadena de texto "ciento treinta".
+   Dado un n?mero entero, devuelve su expresi?n en texto de como se
+   enuncia de forma hablada; por ejemplo dado el n?mero 130,
+   devolver? la cadena de texto "ciento treinta".
 
-   @param n Número a transladar a su forma hablada. Debe ser positivo
-   @return Cadena de texto con su expresión hablada
+   @param n N?mero a transladar a su forma hablada. Debe ser positivo
+   @return Cadena de texto con su expresi?n hablada
    */
   QString enLetra(long n) {
     return FLUtil::enLetra(n);
   }
 
   /**
-   Obtiene la expresión en texto de como se enuncia una cantidad monetaria, en castellano
+   Obtiene la expresi?n en texto de como se enuncia una cantidad monetaria, en castellano
    y en cualquier moneda indicada.
 
-   Dado un número doble, devuelve su expresión en texto de como se
-   enuncia de forma hablada en la moneda indicada; por ejemplo dado el número 130.25,
-   devolverá la cadena de texto "ciento treinta 'moneda' con veinticinco céntimos".
+   Dado un n?mero doble, devuelve su expresi?n en texto de como se
+   enuncia de forma hablada en la moneda indicada; por ejemplo dado el n?mero 130.25,
+   devolver? la cadena de texto "ciento treinta 'moneda' con veinticinco c?ntimos".
 
-   @param n Número a transladar a su forma hablada. Debe ser positivo
+   @param n N?mero a transladar a su forma hablada. Debe ser positivo
    @param m Nombre de la moneda
-   @return Cadena de texto con su expresión hablada
+   @return Cadena de texto con su expresi?n hablada
    */
   QString enLetraMoneda(double n, const QString &m) {
     return FLUtil::enLetraMoneda(n, m);
   }
 
   /**
-   Obtiene la expresión en texto de como se enuncia una cantidad monetaria, en castellano
+   Obtiene la expresi?n en texto de como se enuncia una cantidad monetaria, en castellano
    y en Euros.
 
-   Dado un número doble, devuelve su expresión en texto de como se
-   enuncia de forma hablada en euros; por ejemplo dado el número 130.25,
-   devolverá la cadena de texto "ciento treinta euros con veinticinco céntimos".
+   Dado un n?mero doble, devuelve su expresi?n en texto de como se
+   enuncia de forma hablada en euros; por ejemplo dado el n?mero 130.25,
+   devolver? la cadena de texto "ciento treinta euros con veinticinco c?ntimos".
 
-   @param n Número a transladar a su forma hablada. Debe ser positivo
-   @return Cadena de texto con su expresión hablada
+   @param n N?mero a transladar a su forma hablada. Debe ser positivo
+   @return Cadena de texto con su expresi?n hablada
    */
   QString enLetraMonedaEuro(double n) {
     return FLUtil::enLetraMonedaEuro(n);
   }
 
   /**
-   Calcula la letra asociada a un número de DNI
+   Calcula la letra asociada a un n?mero de DNI
 
-   @param n Número de DNI
+   @param n N?mero de DNI
    @return Letra asociada
    **/
   QString letraDni(long n) {
@@ -5524,10 +5524,10 @@ public slots:
   }
 
   /**
-   Calcula el dígito de control asociado a un número de cuenta bancaria
+   Calcula el d?gito de control asociado a un n?mero de cuenta bancaria
 
-   @param n Número de cuenta
-   @return Dígito de control
+   @param n N?mero de cuenta
+   @return D?gito de control
    */
   QString calcularDC(const QString &n) {
     return FLUtil::calcularDC(n);
@@ -5556,10 +5556,10 @@ public slots:
   }
 
   /**
-   Formatea una cadena de texto poniéndole separadores de miles.
+   Formatea una cadena de texto poni?ndole separadores de miles.
 
-   La cadena que se pasa se supone que un número, convirtiendola
-   con QString::toDouble(), si la cadena no es número el resultado es imprevisible.
+   La cadena que se pasa se supone que un n?mero, convirtiendola
+   con QString::toDouble(), si la cadena no es n?mero el resultado es imprevisible.
 
    @param s Cadena de texto a la que se le quieren poder separadores de miles
    @return Devuelve la cadena formateada con los separadores de miles
@@ -5569,12 +5569,12 @@ public slots:
   }
 
   /**
-   Traducción de una cadena al idioma local
+   Traducci?n de una cadena al idioma local
 
-   Se hace una llamada a la función tr() de la clase QObject para hacer la traducción.
+   Se hace una llamada a la funci?n tr() de la clase QObject para hacer la traducci?n.
    Se utiliza para traducciones desde fuera de objetos QObject
 
-   @param contexto Contexto en el que se encuentra la cadena, generalmente se refiere a la clase en la que está definida
+   @param contexto Contexto en el que se encuentra la cadena, generalmente se refiere a la clase en la que est? definida
    @param s Cadena de texto a traducir
    @return Devuelve la cadena traducida al idioma local
    */
@@ -5595,47 +5595,47 @@ public slots:
   }
 
   /**
-   Este método devuelve el siguiente valor de un campo tipo contador de una tabla.
+   Este m?todo devuelve el siguiente valor de un campo tipo contador de una tabla.
 
-   Este método es muy util cuando se insertan registros en los que
+   Este m?todo es muy util cuando se insertan registros en los que
    la referencia es secuencial y no nos acordamos de cual fue el ultimo
    numero usado. El valor devuelto es un QVariant del tipo de campo es
-   el que se busca la ultima referencia. Lo más aconsejable es que el tipo
-   del campo sea 'String' porque así se le puede dar formato y ser
-   usado para generar un código de barras. De todas formas la función
+   el que se busca la ultima referencia. Lo m?s aconsejable es que el tipo
+   del campo sea 'String' porque as? se le puede dar formato y ser
+   usado para generar un c?digo de barras. De todas formas la funci?n
    soporta tanto que el campo sea de tipo 'String' como de tipo 'double'.
 
    @param name Nombre del campo
    @param cursor_ Cursor a la tabla donde se encuentra el campo.
    @return Qvariant con el numero siguiente.
-   @author Andrés Otón Urbano.
+   @author Andr?s Ot?n Urbano.
    */
   QVariant nextCounter(const QString &name, FLSqlCursorInterface *cursor_) {
     return FLUtil::nextCounter(name, cursor_->obj());
   }
 	
   /**
-  dpinelo: Este mÃ©todo es una extensiÃ³n de nextCounter pero permitiendo la introducciÃ³n de una primera
-  secuencia de caracteres. Es Ãºtil cuando queremos mantener diversos contadores dentro de una misma tabla.
-  Ejemplo, Tabla Grupo de clientes: Agregamos un campo prefijo, que serÃ¡ una letra: A, B, C, D.
-  Queremos que la numeraciÃ³n de los clientes sea del tipo A00001, o B000023. Con esta funciÃ³n, podremos
-  seguir usando los mÃ©todos counter cuando agregamos esa letra.
+  dpinelo: Este método es una extensión de nextCounter pero permitiendo la introducción de una primera
+  secuencia de caracteres. Es útil cuando queremos mantener diversos contadores dentro de una misma tabla.
+  Ejemplo, Tabla Grupo de clientes: Agregamos un campo prefijo, que será una letra: A, B, C, D.
+  Queremos que la numeración de los clientes sea del tipo A00001, o B000023. Con esta función, podremos
+  seguir usando los métodos counter cuando agregamos esa letra.
   
   Este metodo devuelve el siguiente valor de un campo tipo contador de una tabla para una serie determinada.
 
   Este metodo es muy util cuando se insertan registros en los que
-  la referencia es secuencial segÃºn una secuencia y no nos acordamos de cual fue el Ãºltimo
+  la referencia es secuencial según una secuencia y no nos acordamos de cual fue el último
   numero usado. El valor devuelto es un QVariant del tipo de campo es
-  el que se busca la ultima referencia. Lo mÃ¡s aconsejable es que el tipo
-  del campo sea 'String' porque asÃ­ se le puede dar formato y ser
-  usado para generar un cÃ³digo de barras. De todas formas la funciÃ³n
+  el que se busca la ultima referencia. Lo más aconsejable es que el tipo
+  del campo sea 'String' porque así se le puede dar formato y ser
+  usado para generar un código de barras. De todas formas la función
   soporta tanto que el campo sea de tipo 'String' como de tipo 'double'.
 
   @param serie serie que diferencia los contadores
   @param name Nombre del campo
   @param cursor_ Cursor a la tabla donde se encuentra el campo.
   @return Qvariant con el numero siguiente.
-  @author AndrÃ©s OtÃ³n Urbano.
+  @author Andrés Otón Urbano.
    */
   QVariant nextCounterSerial( const QString &serie, const QString & name, FLSqlCursorInterface * cursor_ ) {
 	  return FLUtil::nextCounter( serie, name, cursor_->obj() );
@@ -5645,8 +5645,8 @@ public slots:
    Devuelve el siguiente valor de la secuencia segun la profundidad indicada por nivel.
    Para explicar el funcionamiento pondremos un ejemplo. Supongamos una secuencia tipo %A-%N.
    %A indica que se coloque en esa posicion una secuencia en letras y %N una secuencia en numero.
-   La numeración de niveles va de derecha a izquierda asi el nivel 1 es %N y el nivel 2 %A.
-   Si hacemos un nextSequence a nivel 1 el valor de vuelto será un %A que estubiera y un %N sumando 1
+   La numeraci?n de niveles va de derecha a izquierda asi el nivel 1 es %N y el nivel 2 %A.
+   Si hacemos un nextSequence a nivel 1 el valor de vuelto ser? un %A que estubiera y un %N sumando 1
    al anterior. Si el nivel es 2 obtendremos un %A + 1, trasformado a letras, y todos los niveles a
    la derecha de este se ponen a 1 o su correspondiente en letra que seria A.
 
@@ -5654,7 +5654,7 @@ public slots:
    @param secuencia Estructura de la secuencia.
    @param ultimo Ultimo valor de la secuencia para poder dar el siguiente valor.
    @return La secuencia en el formato facilitado.
-   @author Andrés Otón Urbano
+   @author Andr?s Ot?n Urbano
    */
   QString nextSequence(int nivel, const QString &secuencia, const QString &ultimo) {
     return FLUtil::nextSequence(nivel, secuencia, ultimo);
@@ -5671,23 +5671,23 @@ public slots:
   }
 
   /**
-   Convierte un número a su correspondiente secuencia de Letras.
+   Convierte un n?mero a su correspondiente secuencia de Letras.
 
-   @param number Número a convertir
+   @param number N?mero a convertir
    */
   QString serialNumbertoLetter(int number) {
     return FLUtil::serialNumbertoLetter(number);
   }
 
   /**
-   Comprueba si la cabecera de un fichero de definición corresponde
+   Comprueba si la cabecera de un fichero de definici?n corresponde
    con las soportadas por AbanQ.
 
-   Este método no sirve para los scripts, sólo para los ficheros de definición;
+   Este m?todo no sirve para los scripts, s?lo para los ficheros de definici?n;
    mtd, ui, qry, xml, ts y kut.
 
-   @param head Cadena de caracteres con la cabecera del fichero, bastaría
-   con las tres o cuatro primeras linea del fichero no vacías
+   @param head Cadena de caracteres con la cabecera del fichero, bastar?a
+   con las tres o cuatro primeras linea del fichero no vac?as
    @return TRUE si es un fichero soportado, FALSE en caso contrario
    */
   bool isFLDefFile(const QString &head) {
@@ -5798,14 +5798,14 @@ public slots:
    Devuelve el contenido del valor de de un campo formateado para ser reconocido
    por la base de datos actual, dentro de la clausura WHERE de SQL.
 
-   Este método toma como parametros los metadatos del campo definidos con
-   FLFieldMetaData. Además de TRUE y FALSE como posibles valores de un campo
-   lógico también acepta los valores Sí y No (o su traducción al idioma correspondiente).
+   Este m?todo toma como parametros los metadatos del campo definidos con
+   FLFieldMetaData. Adem?s de TRUE y FALSE como posibles valores de un campo
+   l?gico tambi?n acepta los valores S? y No (o su traducci?n al idioma correspondiente).
    Las fechas son adaptadas al forma AAAA-MM-DD, que es el formato reconocido por PostgreSQL .
 
    @param t Tipo de datos del valor
    @param v Valor que se quiere formatear para el campo indicado
-   @param upper Si TRUE convierte a mayúsculas el valor (si es de tipo cadena)
+   @param upper Si TRUE convierte a may?sculas el valor (si es de tipo cadena)
    @param connName Nombre de la conexion
    */
   QString formatValue(int t, const QVariant &v, const bool upper = false,
@@ -5840,11 +5840,11 @@ public slots:
   }
 
   /**
-   Suma años a una fecha.
+   Suma a?os a una fecha.
 
    @param d Fecha con la que operar
-   @param nm Numero de años que sumar. Si es negativo resta años
-   @return Fecha con el desplazamiento de años
+   @param nm Numero de a?os que sumar. Si es negativo resta a?os
+   @return Fecha con el desplazamiento de a?os
    */
   QDate addYears(const QDate &d, int ny) {
     return FLUtil::addYears(d, ny);
@@ -5858,7 +5858,7 @@ public slots:
 
    @param d1 Fecha de partida
    @param d2 Fecha de destino
-   @return Número de días entre d1 y d2. Será negativo si d2 es anterior a d1.
+   @return N?mero de d?as entre d1 y d2. Ser? negativo si d2 es anterior a d1.
    */
   int daysTo(const QDate &d1, const QDate &d2) {
     return FLUtil::daysTo(d1, d2);
@@ -5872,9 +5872,9 @@ public slots:
    Ejecuta una query de tipo select, devolviendo los resultados del primer registro encontrado
 
    @param f Sentencia from de la query
-   @param s Sentencia select de la query, que será el nombre del campo a devolver
+   @param s Sentencia select de la query, que ser? el nombre del campo a devolver
    @param w Sentencia where de la query
-   @param tL Sentencia tableslist de la query. Necesario cuando en la sentencia from se incluya más de una tabla
+   @param tL Sentencia tableslist de la query. Necesario cuando en la sentencia from se incluya m?s de una tabla
    @param connName Nombre de la conexion
    @return Valor resultante de la query o falso si no encuentra nada.
    */
@@ -5885,8 +5885,8 @@ public slots:
   }
 
   /**
-   Versión rápida de sqlSelect. Ejecuta directamente la consulta sin realizar comprobaciones.
-   Usar con precaución.
+   Versi?n r?pida de sqlSelect. Ejecuta directamente la consulta sin realizar comprobaciones.
+   Usar con precauci?n.
    */
   QVariant quickSqlSelect(const QString &f, const QString &s, const QString &w,
                           const QString &connName = "default") {
@@ -5894,57 +5894,57 @@ public slots:
   }
 
   /**
-   Realiza la inserción de un registro en una tabla mediante un objeto FLSqlCursor
+   Realiza la inserci?n de un registro en una tabla mediante un objeto FLSqlCursor
 
    @param t Nombre de la tabla
    @param fL Lista separada con comas de los nombres de los campos
    @param vL Lista separada con comas de los valores correspondientes
    @param connName Nombre de la conexion
-   @return Verdadero en caso de realizar la inserción con éxito, falso en cualquier otro caso
+   @return Verdadero en caso de realizar la inserci?n con ?xito, falso en cualquier otro caso
    */
   bool sqlInsert(const QString &t, const QString &fL, const QString &vL, const QString &connName = "default") {
     return FLUtil::sqlInsert(t, fL, vL, connName);
   }
 
   /**
-   Realiza la modificación de uno o más registros en una tabla mediante un objeto FLSqlCursor
+   Realiza la modificaci?n de uno o m?s registros en una tabla mediante un objeto FLSqlCursor
 
    @param t Nombre de la tabla
    @param fL Lista separada con comas de los nombres de los campos
    @param vL Lista separada con comas de los valores correspondientes
    @param w Sentencia where para identificar los registros a editar.
    @param connName Nombre de la conexion
-   @return Verdadero en caso de realizar la inserción con éxito, falso en cualquier otro caso
+   @return Verdadero en caso de realizar la inserci?n con ?xito, falso en cualquier otro caso
    */
   bool sqlUpdate(const QString &t, const QString &fL, const QString &vL, const QString &w, const QString &connName = "default") {
     return FLUtil::sqlUpdate(t, fL, vL, w, connName);
   }
 
   /**
-   Borra uno o más registros en una tabla mediante un objeto FLSqlCursor
+   Borra uno o m?s registros en una tabla mediante un objeto FLSqlCursor
 
    @param t Nombre de la tabla
    @param w Sentencia where para identificar los registros a borrar.
    @param connName Nombre de la conexion
-   @return Verdadero en caso de realizar la inserción con éxito, falso en cualquier otro caso
+   @return Verdadero en caso de realizar la inserci?n con ?xito, falso en cualquier otro caso
    */
   bool sqlDelete(const QString &t, const QString &w, const QString &connName = "default") {
     return FLUtil::sqlDelete(t, w, connName);
   }
 
   /**
-   Versión rápida de sqlDelete. Ejecuta directamente la consulta sin realizar comprobaciones y sin disparar señales de commits.
-   Usar con precaución.
+   Versi?n r?pida de sqlDelete. Ejecuta directamente la consulta sin realizar comprobaciones y sin disparar se?ales de commits.
+   Usar con precauci?n.
    */
   bool quickSqlDelete(const QString &t, const QString &w, const QString &connName = "default") {
     return FLUtil::quickSqlDelete(t, w, connName);
   }
 
   /**
-   Crea un diálogo de progreso
+   Crea un di?logo de progreso
 
-   @param l Label del diálogo
-   @param tS Número total de pasos a realizar
+   @param l Label del di?logo
+   @param tS N?mero total de pasos a realizar
    */
   void createProgressDialog(const QString &l, int tS) {
     FLUtil::createProgressDialog(l, tS, QObject::name());
@@ -5954,14 +5954,14 @@ public slots:
   }
 
   /**
-   Destruye el diálogo de progreso
+   Destruye el di?logo de progreso
    */
   void destroyProgressDialog() {
     FLUtil::destroyProgressDialog(QObject::name());
   }
 
   /**
-   Establece el grado de progreso del diálogo
+   Establece el grado de progreso del di?logo
 
    @param p Grado de progreso
    */
@@ -5970,16 +5970,16 @@ public slots:
   }
 
   /**
-   Establece el número total de pasos del diálogo
+   Establece el n?mero total de pasos del di?logo
 
-   @param ts Número total de pasos
+   @param ts N?mero total de pasos
    */
   void setTotalSteps(int tS) {
     FLUtil::setTotalSteps(tS, QObject::name());
   }
 
   /**
-   Cambia el texto de la etiqueta del diálogo
+   Cambia el texto de la etiqueta del di?logo
 
    @param l Etiqueta
    */
@@ -6000,7 +6000,7 @@ public slots:
   /**
    Obtiene la imagen o captura de pantalla de un formulario.
 
-   @param n Nombre del fichero que contiene la descricpción del formulario.
+   @param n Nombre del fichero que contiene la descricpci?n del formulario.
    */
   QImage snapShotUI(const QString &n) {
     return FLUtil::snapShotUI(n);
@@ -6009,7 +6009,7 @@ public slots:
   /**
    Salva en un fichero con formato PNG la imagen o captura de pantalla de un formulario.
 
-   @param n Nombre del fichero que contiene la descricpción del formulario.
+   @param n Nombre del fichero que contiene la descricpci?n del formulario.
    @param pathFile Ruta y nombre del fichero donde guardar la imagen
    */
   void saveSnapShotUI(const QString &n, const QString &pathFile) {
@@ -6017,19 +6017,19 @@ public slots:
   }
 
   /**
-   Guarda la imagen de icono de un botón de un formulario en un ficher png. Utilizado para documentación
+   Guarda la imagen de icono de un bot?n de un formulario en un ficher png. Utilizado para documentaci?n
 
    @param data Contenido de la imagen en una cadena de caracteres
-   @param pathFile Ruta completa al fichero donde se guadará la imagen
+   @param pathFile Ruta completa al fichero donde se guadar? la imagen
    */
   void saveIconFile(const QString &data, const QString &pathFile) {
     FLUtil::saveIconFile(data, pathFile);
   }
 
   /**
-   Devuelve una cadena de dos caracteres con el código de idioma del sistema
+   Devuelve una cadena de dos caracteres con el c?digo de idioma del sistema
 
-   @return código de idioma del sistema
+   @return c?digo de idioma del sistema
    */
   QString getIdioma() {
     return FLUtil::getIdioma();
@@ -6038,14 +6038,14 @@ public slots:
   /**
    Devuelve el sistema operativo sobre el que se ejecuta el programa
 
-   @return Código del sistema operativo (WIN32, LINUX, MACX)
+   @return C?digo del sistema operativo (WIN32, LINUX, MACX)
    */
   QString getOS() {
     return FLUtil::getOS();
   }
 
   /**
-  Busca ficheros recursivamente en las rutas indicadas y según el patrón indicado
+  Busca ficheros recursivamente en las rutas indicadas y seg?n el patr?n indicado
 
   Ejemplo:
 
@@ -6062,11 +6062,11 @@ public slots:
     debug(filesFound[i]);
 
 
-  @param  paths   Rutas de búsqueda
-  @param  filter  Patrón de filtrado para los ficheros. Admite varios separados por espacios "*.gif *.png".
+  @param  paths   Rutas de b?squeda
+  @param  filter  Patr?n de filtrado para los ficheros. Admite varios separados por espacios "*.gif *.png".
                   Por defecto todos, "*"
-  @param  breakOnFirstMatch Si es TRUE al encontrar el primer fichero que cumpla el patrón indicado, termina
-                            la búsqueda y devuelve el nombre de ese fichero
+  @param  breakOnFirstMatch Si es TRUE al encontrar el primer fichero que cumpla el patr?n indicado, termina
+                            la b?squeda y devuelve el nombre de ese fichero
   @return Lista de los nombres de los ficheros encontrados
   */
   QStringList findFiles(const QStringList &paths, const QString &filter = "*",
@@ -6082,7 +6082,7 @@ public slots:
   Guarda imagen Pixmap en una ruta determinada.
 
   @param data Contenido de la imagen en una cadena de caracteres
-  @param filename: Ruta al fichero donde se guardará la imagen
+  @param filename: Ruta al fichero donde se guardar? la imagen
   @param fmt Indica el formato con el que guardar la imagen
   @author Silix
   */
@@ -6091,7 +6091,7 @@ public slots:
   }
 
   /**
-  Generación "casi-aleatoria" de números aleatorios por el método rápido xorshf96
+  Generaci?n "casi-aleatoria" de n?meros aleatorios por el m?todo r?pido xorshf96
   */
   void setFastRandSeed(uint seed) {
     aq_seed_rand = seed;
@@ -6118,10 +6118,10 @@ private:
   static uint aq_seed_rand_z;
 };
 
-//! Gestión de códigos de barras
+//! Gesti?n de c?digos de barras
 /**
- Controla la gestión de un código de barras en base a su codificación.
- Se utiliza en artículos
+ Controla la gesti?n de un c?digo de barras en base a su codificaci?n.
+ Se utiliza en art?culos
 
  @author InfoSiAL S.L.
  */
@@ -6160,7 +6160,7 @@ public:
 public slots:
 
   /**
-   Devueve el objeto imagen asociado al código de barras
+   Devueve el objeto imagen asociado al c?digo de barras
 
    @return
    */
@@ -6176,28 +6176,28 @@ public slots:
   }
 
   /**
-   Convierte un código numérico que identifica el tipo de código de barras en su descripción
+   Convierte un c?digo num?rico que identifica el tipo de c?digo de barras en su descripci?n
 
-   @param t. Número identificador del tipo de codificación
-   @return Cadena con la descripción del tipo de codificación
+   @param t. N?mero identificador del tipo de codificaci?n
+   @return Cadena con la descripci?n del tipo de codificaci?n
    */
   QString typeToName(const int t) {
     return FLCodBar::typeToName(t);
   }
 
   /**
-   Devuelve el valor del código de barras
+   Devuelve el valor del c?digo de barras
 
-   @return Valor del código de barras
+   @return Valor del c?digo de barras
    */
   QString value() {
     return obj_->value();
   }
 
   /**
-   Devuelve el tipo de codificación
+   Devuelve el tipo de codificaci?n
 
-   @return Tipo de codificación
+   @return Tipo de codificaci?n
    */
   int type() {
     return obj_->type();
@@ -6258,18 +6258,18 @@ public slots:
   }
 
   /**
-   Devuelve la resolución en puntos por pulgada
+   Devuelve la resoluci?n en puntos por pulgada
 
-   @return Resolución en ppp
+   @return Resoluci?n en ppp
    */
   int res() {
     return obj_->res();
   }
 
   /**
-   Indica si el valor del código de barras es válido
+   Indica si el valor del c?digo de barras es v?lido
 
-   @return TRUE si el código es válido, FALSE si no lo es
+   @return TRUE si el c?digo es v?lido, FALSE si no lo es
    */
   bool validBarcode() {
     return obj_->validBarcode();
@@ -6288,18 +6288,18 @@ public slots:
   }
 
   /**
-   Establece el valor del código de barras
+   Establece el valor del c?digo de barras
 
-   @param value. Valor del código de barras
+   @param value. Valor del c?digo de barras
    */
   void setValue(const QString &value) {
     obj_->setValue(value);
   }
 
   /**
-   Establece el tipo de código de barras
+   Establece el tipo de c?digo de barras
 
-   @param type. Tipo de codificación
+   @param type. Tipo de codificaci?n
    */
   void setType(const int type) {
     obj_->setType(type);
@@ -6360,10 +6360,10 @@ public slots:
   }
 
   /**
-   Establece la resolución en puntos por pulgada
+   Establece la resoluci?n en puntos por pulgada
 
-   @param res Resolución en punto por pulgada que tendrá la imagen del
-   código de barras, la resolución se establecerá equitativamente
+   @param res Resoluci?n en punto por pulgada que tendr? la imagen del
+   c?digo de barras, la resoluci?n se establecer? equitativamente
    tanto en el alto, como en el ancho de la imagen, es decir res x res.
    */
   void setRes(const int res) {
@@ -6371,17 +6371,17 @@ public slots:
   }
 
   /**
-   Convierte una descripción que identifica el tipo de código de barras en su equivamente numérico
+   Convierte una descripci?n que identifica el tipo de c?digo de barras en su equivamente num?rico
 
-   @param n. Cadena con la descripción del tipo de codificación
-   @return Número identificador del tipo de codificación
+   @param n. Cadena con la descripci?n del tipo de codificaci?n
+   @return N?mero identificador del tipo de codificaci?n
    */
   int nameToType(const QString &n) {
     return FLCodBar::nameToType(n);
   }
 
   /**
-   Borra la imagen del código de barras
+   Borra la imagen del c?digo de barras
    */
   void cleanUp() {
     obj_->cleanUp();
@@ -6397,9 +6397,9 @@ private:
   bool owner;
 };
 
-//! Herramienta de edición de Scripts
+//! Herramienta de edici?n de Scripts
 /**
- Gestiona la herramienta visual de edición de Scripts incorporada
+ Gestiona la herramienta visual de edici?n de Scripts incorporada
  en en AbanQ
 
  @author InfoSiAL S.L.
@@ -6428,23 +6428,23 @@ public:
 public slots:
 
   /**
-   Establece el código a editar
+   Establece el c?digo a editar
    */
   void setCode(const QString &c) {
     obj_->setCode(c);
   }
 
   /**
-   Obtiene el código en edición
+   Obtiene el c?digo en edici?n
    */
   QString code() const {
     return obj_->code();
   }
 
   /**
-   Abre el cuadro de diálogo del editor como modal
+   Abre el cuadro de di?logo del editor como modal
 
-   @return Indicador de si el diálogo ha sido aceptado o cancelado
+   @return Indicador de si el di?logo ha sido aceptado o cancelado
    */
   int exec() {
     return obj_->exec();
@@ -6495,17 +6495,17 @@ public:
 public slots:
 
   /**
-   Nodo que ocupa una cierta posición en la lista de nodos
+   Nodo que ocupa una cierta posici?n en la lista de nodos
 
    @param index. Indice del nodo buscado
-   @return Nodo, nulo si el índice es negativo o superior a la longitud de la lista
+   @return Nodo, nulo si el ?ndice es negativo o superior a la longitud de la lista
    */
   FLDomNodeInterface *item(int index);
 
   /**
-   Devuelve el número de nodos de la lista
+   Devuelve el n?mero de nodos de la lista
 
-   @return Devuelve el número de nodos de la lista
+   @return Devuelve el n?mero de nodos de la lista
    */
   uint length() const {
     return nl_.length();
@@ -6657,22 +6657,22 @@ public:
 public slots:
 
   /**
-   Obtiene el identificador único del nodo
+   Obtiene el identificador ?nico del nodo
    */
   QString idNode() const {
     return QString::number(idNode_);
   }
 
   /**
-   Devuelve un nodo a partir de su identificador único
+   Devuelve un nodo a partir de su identificador ?nico
 
-   @param  id Identificador único del nodo
+   @param  id Identificador ?nico del nodo
    @return Nodo tipo FLDomNodeInterface
    */
   FLDomNodeInterface *nodeFromIdNode(const QString &id) const;
 
   /**
-   Elimina el contenido del nodo estableciéndolo a nulo
+   Elimina el contenido del nodo estableci?ndolo a nulo
    */
   void clear() {
     delete dn_;
@@ -6763,7 +6763,7 @@ public slots:
   /**
    Devuelve una copia profunda del nodo actual
 
-   @param deep: Indica si los nodos hijos serán también clonados o no
+   @param deep: Indica si los nodos hijos ser?n tambi?n clonados o no
    @return Nodo clonado
    */
   FLDomNodeInterface *cloneNode(bool deep = true) {
@@ -6771,7 +6771,7 @@ public slots:
   }
 
   /**
-   Indica si el nodo es igual al nodo pasado por parámetro
+   Indica si el nodo es igual al nodo pasado por par?metro
 
    @param n: nodo con el que comparar
    @return true si son iguales, false en caso contrario
@@ -6805,7 +6805,7 @@ public slots:
   }
 
   /**
-   Inserta un nodo después de un nodo de referencia
+   Inserta un nodo despu?s de un nodo de referencia
 
    @param newChild: nodo a insertar
    @param refChild: nodo de referencia
@@ -6848,7 +6848,7 @@ public slots:
    Devuelve el valor de un atributo
 
    @param att. Nombre del atributo
-   @return Valor del atributo. Si el atributo no existe devolverá una cadena vacía
+   @return Valor del atributo. Si el atributo no existe devolver? una cadena vac?a
    */
   QString attributeValue(const QString &att) const {
     if (!hasAttributes())
@@ -6911,10 +6911,10 @@ public slots:
   }
 
   /**
-   Añade un nodo hijo al nodo
+   A?ade un nodo hijo al nodo
 
-   @param newChild: Nodo a añadir
-   @return Nodo añadido
+   @param newChild: Nodo a a?adir
+   @return Nodo a?adido
    */
   FLDomNodeInterface *appendChild(FLDomNodeInterface *newChild) {
     return (newChild ? nodeInterface(DN_->appendChild(newChild->obj())) : 0);
@@ -6923,7 +6923,7 @@ public slots:
   /**
    Cambia un nodo hijo por otro
 
-   @param newChild: Nodo a añadir
+   @param newChild: Nodo a a?adir
    @param oldChild: Nodo a quitar
    @return Referencia al nodo hijo quitado
    */
@@ -6998,7 +6998,7 @@ public slots:
    Obtiene el valor de un atributo del nodo
 
    @param name: Nombre del atributo
-   @param defValue: Valor que se devolverá si el atributo no existe
+   @param defValue: Valor que se devolver? si el atributo no existe
    @return valor del atributo
    */
   QString attribute(const QString &name, const QString &defValue = QString::null) const {
@@ -7098,7 +7098,7 @@ public slots:
   /**
    Limpia la cache de nodos para liberar memoria.
 
-   Todos los nodos creados con anterioridad a la llamada a esta función serán eliminados.
+   Todos los nodos creados con anterioridad a la llamada a esta funci?n ser?n eliminados.
    */
   void cleanup();
 
@@ -7132,8 +7132,8 @@ El visor tiene tiene dos modos de funcionamiento;
 - Visor con capacidades de renderizado. Cuando se establecen los datos
   y plantilla, o se le asigna un motor de renderizado. En este caso esta clase
   funciona como una simplificacion de alto nivel para FLReportEngine.
-- Sólo visualizador de páginas. Cuando se le indica sólo el conjunto de
-  páginas a visualizar.
+- S?lo visualizador de p?ginas. Cuando se le indica s?lo el conjunto de
+  p?ginas a visualizar.
 
 @author InfoSiAL S.L.
 */
@@ -7197,9 +7197,9 @@ public slots:
   /**
   Renderiza el informe en el visor.
 
-  Sólo tiene efecto si se han indicado datos y plantilla para el visor con
+  S?lo tiene efecto si se han indicado datos y plantilla para el visor con
   setReportData y setReportTemplate, o se le ha asignado un motor de informes
-  explícitamente con setReportEngine o en el constructor.
+  expl?citamente con setReportEngine o en el constructor.
 
   @return TRUE si todo ha ido bien
   */
@@ -7235,7 +7235,7 @@ public slots:
   /**
    Establece la plantilla para el informe.
 
-   El nombre de la plantilla corresponde con el nombre del fichero con extesión ".kut".
+   El nombre de la plantilla corresponde con el nombre del fichero con extesi?n ".kut".
 
    @param  t     Nombre de la plantilla
    @param  style Nombre de la hoja de estilo a aplicar
@@ -7248,7 +7248,7 @@ public slots:
   /**
    Establece la plantilla para el informe.
 
-   El nombre de la plantilla corresponde con el nombre del fichero con extesión ".kut".
+   El nombre de la plantilla corresponde con el nombre del fichero con extesi?n ".kut".
 
    @param  xmlDoc     Nombre de la plantilla en formato xml
    @param  style Nombre de la hoja de estilo a aplicar
@@ -7264,9 +7264,9 @@ public slots:
   /**
   @return Los datos de origen del informe en un documento XML con el formato usado por Kugar.
           Se debe llamar despues de establecer los datos para el informe con set*ReportData, de
-          lo contrario el resultado será indefinido.
+          lo contrario el resultado ser? indefinido.
           Importante: Devuelve un nodo de referencia al arbol XML interno usado para crear el informe,
-                      si se modifica ese nodo se está modificando el XML interno del informe.
+                      si se modifica ese nodo se est? modificando el XML interno del informe.
                       Se debe llamar a cloneNode si se desea trabajar sobre una copiar.
   */
   FLDomNodeInterface *reportData() const {
@@ -7276,9 +7276,9 @@ public slots:
   /**
   @return Plantilla del informe en un documento XML con el formato usado por Kugar.
           Se debe llamar despues de establecer los datos para el informe con set*ReportTemplate, de
-          lo contrario el resultado será indefinido.
+          lo contrario el resultado ser? indefinido.
           Importante: Devuelve un nodo de referencia al arbol XML interno usado para crear el informe,
-                      si se modifica ese nodo se está modificando el XML interno del informe.
+                      si se modifica ese nodo se est? modificando el XML interno del informe.
                       Se debe llamar a cloneNode si se desea trabajar sobre una copiar.
   */
   FLDomNodeInterface *reportTemplate() const {
@@ -7296,7 +7296,7 @@ public slots:
   }
 
   /**
-  Obtiene una versión csv de los datos del informe (una vez ejecutado)
+  Obtiene una versi?n csv de los datos del informe (una vez ejecutado)
 
   Solo tiene efecto si el visor tiene un motor de informes activo
   */
@@ -7326,7 +7326,7 @@ public slots:
   }
 
   /**
-   Establece el número de copias por defecto a imprimir
+   Establece el n?mero de copias por defecto a imprimir
    */
   void setNumCopies(const int numCopies) {
     obj_->setNumCopies(numCopies);
@@ -7342,16 +7342,16 @@ public slots:
   /**
    Establece el nombre de la impresora a la que imprimir.
 
-   Si se establece el nombre de la impresora no se mostrará el cuadro de dialogo de impresión, y se
-   usará esa impresora para imprimir directamente. Para que el cuadro de diálogo de impresión se muestre bastará
-   con establecer un nombre vacío; setPrinterName( QString::null ).
+   Si se establece el nombre de la impresora no se mostrar? el cuadro de dialogo de impresi?n, y se
+   usar? esa impresora para imprimir directamente. Para que el cuadro de di?logo de impresi?n se muestre bastar?
+   con establecer un nombre vac?o; setPrinterName( QString::null ).
    */
   void setPrinterName(const QString &pName) {
     obj_->setPrinterName(pName);
   }
 
   /**
-   Devuelve si el último informe ha sido imprimido en impresora o archivo.
+   Devuelve si el ?ltimo informe ha sido imprimido en impresora o archivo.
    */
   bool reportPrinted() {
     obj_->reportPrinted();
@@ -7367,42 +7367,42 @@ public slots:
   }
 
   /**
-   Muestra la primera página del informe
+   Muestra la primera p?gina del informe
    */
   void slotFirstPage() {
     obj_->slotFirstPage();
   }
 
   /**
-   Muestra la útlima página del informe
+   Muestra la ?tlima p?gina del informe
    */
   void slotLastPage() {
     obj_->slotLastPage();
   }
 
   /**
-   Muestra la siguiente página del informe
+   Muestra la siguiente p?gina del informe
    */
   void slotNextPage() {
     obj_->slotNextPage();
   }
 
   /**
-   Muestra la anterior página del informe
+   Muestra la anterior p?gina del informe
    */
   void slotPrevPage() {
     obj_->slotPrevPage();
   }
 
   /**
-   Aumenta zoom de la página actual
+   Aumenta zoom de la p?gina actual
    */
   void slotZoomUp() {
     obj_->slotZoomUp();
   }
 
   /**
-   Disminuye zoom de la página actual
+   Disminuye zoom de la p?gina actual
    */
   void slotZoomDown() {
     obj_->slotZoomDown();
@@ -7423,7 +7423,7 @@ public slots:
   }
 
   /**
-  Exporta el informe a un fichero en formato PDF y lo envia por correo eléctronico
+  Exporta el informe a un fichero en formato PDF y lo envia por correo el?ctronico
   */
   void sendEMailPDF() {
     obj_->sendEMailPDF();
@@ -7437,7 +7437,7 @@ public slots:
   }
 
   /**
-  Guarda la página actual como plantilla de estilo SVG simplificada ( sólo los campos de datos )
+  Guarda la p?gina actual como plantilla de estilo SVG simplificada ( s?lo los campos de datos )
   */
   void saveSimpleSVGStyle() {
     obj_->saveSimpleSVGStyle();
@@ -7451,9 +7451,9 @@ public slots:
   }
 
   /**
-  Establece si el visor debe cerrarse automáticamente tras imprimir el informe
+  Establece si el visor debe cerrarse autom?ticamente tras imprimir el informe
 
-  @param b TRUE para cierre automático, FALSE para desactivar cierre automático
+  @param b TRUE para cierre autom?tico, FALSE para desactivar cierre autom?tico
   */
   void setAutoClose(const bool b) {
     obj_->setAutoClose(b);
@@ -7477,7 +7477,7 @@ public slots:
   /**
   Actualizar el informe.
 
-  Emite la señal requestUpdateReport y llama a updateDisplay.
+  Emite la se?al requestUpdateReport y llama a updateDisplay.
   Si el visor tiene un motor de informes ejecuta de nuevo la consulta y el renderizado.
   */
   void updateReport() {
@@ -7499,7 +7499,7 @@ public slots:
   }
 
   /**
-  Visor básico de Kugar
+  Visor b?sico de Kugar
   */
   MReportViewer *rptViewer() {
     return obj_->rptViewer();
@@ -7513,7 +7513,7 @@ public slots:
   }
 
   /**
-  Incrusta el visor básico de Kugar en la capa principal de un objeto widget padre ( generalmente un QFrame )
+  Incrusta el visor b?sico de Kugar en la capa principal de un objeto widget padre ( generalmente un QFrame )
   */
   void rptViewerEmbedInParent(QWidget *parentFrame) {
     obj_->rptViewerEmbedInParent(parentFrame);
@@ -7523,9 +7523,9 @@ public slots:
   Establece directamente la coleccion de paginas a visualizar.
   No seran visibles hasta que no se ejecute updateDisplay.
 
-  Al estableder la colección de paginas la clase pasa a ser un mero
-  visualizador de esas páginas, es decir, no tiene un motor de informes
-  asignado y los métodos específicos que llaman al motor de informes no
+  Al estableder la colecci?n de paginas la clase pasa a ser un mero
+  visualizador de esas p?ginas, es decir, no tiene un motor de informes
+  asignado y los m?todos espec?ficos que llaman al motor de informes no
   tendran efecto (renderReport, csvData, etc..)
   */
   void setReportPages(FLReportPages *pgs) {
@@ -7533,14 +7533,14 @@ public slots:
   }
 
   /**
-  Establece el modo de color de la impresión (PrintColor, PrintGrayScale)
+  Establece el modo de color de la impresi?n (PrintColor, PrintGrayScale)
   */
   void setColorMode(uint c) {
     obj_->setColorMode(c);
   }
 
   /**
-  Obtiene el modo de color de la impresión establecido
+  Obtiene el modo de color de la impresi?n establecido
   */
   uint colorMode() const {
     return obj_->colorMode();
@@ -7548,7 +7548,7 @@ public slots:
 
   /**
   Metodos proporcionados por ergonomia. Son un enlace a los
-  mismos métodos que proporciona FLReportPages, para manejar
+  mismos m?todos que proporciona FLReportPages, para manejar
   la coleccion de paginas del visor
   */
   FLPicture *getCurrentPage() {
@@ -7618,7 +7618,7 @@ public slots:
   /**
   Para desactivar las acciones por defecto para imprimir y exportar
 
-  Esto es util cuando se quieren capturar la señales que disparan
+  Esto es util cuando se quieren capturar la se?ales que disparan
   los botones del formulario, desactivar lo que hacen por defecto,
   y susituirlo por funcionalidad especifica. Por ejemplo para mostrar un
   dialogo de impresion personalizado.
@@ -7638,7 +7638,7 @@ public slots:
 signals:
 
   /**
-  Señal emitida cuando se va a actualizar el informe
+  Se?al emitida cuando se va a actualizar el informe
   */
   void requestUpdateReport();
 
@@ -7692,9 +7692,9 @@ public:
 public slots:
 
   /**
-   Arranca el comando definido en el parámetro arg0 del constructor
+   Arranca el comando definido en el par?metro arg0 del constructor
 
-   @return true si el comando se ejecutó, false en caso contrario
+   @return true si el comando se ejecut?, false en caso contrario
    */
   bool start() {
     return obj_->start();
@@ -7718,27 +7718,27 @@ public slots:
   }
 
   /**
-   Añade un argumento al proceso
+   A?ade un argumento al proceso
 
-   @param arg Argumento a añadir el proceso
+   @param arg Argumento a a?adir el proceso
    */
   void addArgument(const QString &arg) {
     obj_->addArgument(arg);
   }
 
   /**
-   Indica si el proceso está en ejecución
+   Indica si el proceso est? en ejecuci?n
 
-   @return true si está en ejecución, false en caso contrario
+   @return true si est? en ejecuci?n, false en caso contrario
    */
   bool isRunning() {
     return obj_->isRunning();
   }
 
   /**
-   Devuelve la salida estándar del proceso
+   Devuelve la salida est?ndar del proceso
 
-   @return Array binario con el contenido de la salida estándar del proceso
+   @return Array binario con el contenido de la salida est?ndar del proceso
    */
   QByteArray readStdout() {
     return obj_->readStdout();
@@ -7751,7 +7751,7 @@ public slots:
 signals:
 
   /**
-   Señal emitida cuando ha terminado el proceso
+   Se?al emitida cuando ha terminado el proceso
    */
   void exited();
 
@@ -7825,11 +7825,11 @@ private:
   FLPosPrinter *obj_;
 };
 
-//! Cliente SMTP para correo electrónico
+//! Cliente SMTP para correo electr?nico
 /**
- Cliente SMTP para correo electrónico
+ Cliente SMTP para correo electr?nico
 
- Esta clase es utilizada para componer un mensaje de correo electrónico y
+ Esta clase es utilizada para componer un mensaje de correo electr?nico y
  enviarlo mediante el protocolo SMTP.
 
  @author InfoSiAL, S.L.
@@ -7895,7 +7895,7 @@ public slots:
   /**
    Establece el remitente del mensaje
 
-   @param from Dirección de correo del remitente
+   @param from Direcci?n de correo del remitente
    */
   void setFrom(const QString &from) {
     obj_->setFrom(from);
@@ -7904,7 +7904,7 @@ public slots:
   /**
    Establece el destinatario del mensaje
 
-   @param to Dirección de correo del destinatario
+   @param to Direcci?n de correo del destinatario
    */
   void setTo(const QString &to) {
     obj_->setTo(to);
@@ -7939,9 +7939,9 @@ public slots:
   }
 
   /**
-   Añade una parte de texto al mensaje
+   A?ade una parte de texto al mensaje
 
-   @param text     Texto a añadir
+   @param text     Texto a a?adir
    @param mimeType Formato MIME del texto. Por defecto text/plain
    */
   void addTextPart(const QString &text, const QString &mimeType = "text/plain") {
@@ -7951,7 +7951,7 @@ public slots:
   /**
    Servidor de correo saliente.
 
-   Si no se indica un servidor de correo saliente intentará averiguarlo
+   Si no se indica un servidor de correo saliente intentar? averiguarlo
    mediante los registros MX de los servidores de DNS.
 
    @param mS Nombre o direccion IP del servidor de correo saliente
@@ -7963,7 +7963,7 @@ public slots:
    /**
    Usuario de correo saliente
 
-   Indica el usuario del correo saliente para la autenticación
+   Indica el usuario del correo saliente para la autenticaci?n
 
    @param User Usuario
    */
@@ -7974,7 +7974,7 @@ public slots:
    /**
    Password de correo saliente
 
-   Indica el password del correo saliente para la autenticación
+   Indica el password del correo saliente para la autenticaci?n
 
    @param Passwd Password del usuario
    */
@@ -7994,9 +7994,9 @@ public slots:
   }
   
     /**
-   Tipo de autenticación
+   Tipo de autenticaci?n
 
-   Indica el tipo de autenticación
+   Indica el tipo de autenticaci?n
 
    @param conn (0=Sin cifrar ,1=SSL,2=TLS)
    */
@@ -8015,32 +8015,32 @@ public slots:
     obj_->setPort(port);
   }
       /**
-   Tipo de conexión
+   Tipo de conexi?n
 
-   Indica el tipo de conexión al servidor
+   Indica el tipo de conexi?n al servidor
 
-   @param method (0=Sin autenticación ,1=Texto Plano,2=Login)
+   @param method (0=Sin autenticaci?n ,1=Texto Plano,2=Login)
    */
   void setAuthMethod(int method) {
     obj_->setAuthMethod(method);
   }
 
   /**
-   Inicia el envío del mensaje
+   Inicia el env?o del mensaje
    */
   void startSend() {
     obj_->startSend();
   }
 
   /**
-  Devuelve el último mensaje de estado
+  Devuelve el ?ltimo mensaje de estado
   */
   QString lastStatusMsg() const {
     return obj_->lastStatusMsg();
   }
 
   /**
-  Devuelve el último código de estado
+  Devuelve el ?ltimo c?digo de estado
   */
   int lastStateCode() const {
     return obj_->lastStateCode();
@@ -8073,32 +8073,32 @@ public slots:
 signals:
 
   /**
-   Informa del estado del envío
+   Informa del estado del env?o
    */
   void status(const QString &);
 
   /**
-   Indica que se ha iniciado el envío del mensaje
+   Indica que se ha iniciado el env?o del mensaje
    */
   void sendStarted();
 
   /**
-   Indica que se ha finalizado el envío del mensaje
+   Indica que se ha finalizado el env?o del mensaje
    */
   void sendEnded();
 
   /**
-   Indica los pasos totales que se ejecutarán en el proceso de envío. Usado para diálogos de progreso.
+   Indica los pasos totales que se ejecutar?n en el proceso de env?o. Usado para di?logos de progreso.
    */
   void sendTotalSteps(int);
 
   /**
-   Indica el número de paso que se va ejecutar. Usado para diálogos de progreso.
+   Indica el n?mero de paso que se va ejecutar. Usado para di?logos de progreso.
    */
   void sendStepNumber(int);
 
   /**
-  Informa del estado del envío, incluyendo código de estado
+  Informa del estado del env?o, incluyendo c?digo de estado
   */
   void statusChanged(const QString &, int);
 
@@ -8574,9 +8574,9 @@ private:
   QObjectList *l_;
 };
 
-//! Fábrica de objetos para Qt Script
+//! F?brica de objetos para Qt Script
 /**
- Fábrica de objetos para Qt Script.
+ F?brica de objetos para Qt Script.
 
  @author InfoSiAL S.L.
  */
