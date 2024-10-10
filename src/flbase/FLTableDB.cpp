@@ -518,7 +518,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   #ifdef FL_QUICK_CLIENT
     if (!showed) {
       qWarning("FLTableDB : No se pueden refrescar los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
-      return;
+      //return;
     }
   #endif
 
