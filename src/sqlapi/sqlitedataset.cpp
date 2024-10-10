@@ -1280,12 +1280,13 @@ bool SqliteDataset::fetch_rows(int pos) {
           }
 
       }    
-
-      Dataset::seek(pos);
-      qWarning("Pos %d existe: %s", pos, fields_object->count(pos) == 1 ? "TRUE" : "FALSE");
-      fill_fields(); 
+      if (fields_object->count(pos) == 1) {
+        Dataset::seek(pos);
+        fill_fields();
+      }
     }
-    return true;
+    
+  return true;
   }  
 
   long SqliteDataset::nextid(const char *seq_name)
