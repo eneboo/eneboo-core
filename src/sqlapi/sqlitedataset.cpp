@@ -1282,7 +1282,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       }    
 
       Dataset::seek(pos);
-      qWarning("Pos %d existe: %s", pos, fields_object->count(pos) ? "TRUE" : "FALSE");
+      qWarning("Pos %d existe: %s", pos, fields_object->count(pos) == 1 ? "TRUE" : "FALSE");
       fill_fields(); 
     }
     return true;
