@@ -391,7 +391,6 @@ void FLSqlCursor::refreshDelayed(int msec)
       // No ejecutar el select. Pero emito un newBuffer para que el FLFieldDB lance el valueBuffer
     }
   }
-  qWarning("FLSqlCursor::refreshDelayed. filtro: " + curFilter()  + ", tabla: " + curName());
   QSqlCursor::select();
   int pos = atFrom();
   if (pos >= size())
