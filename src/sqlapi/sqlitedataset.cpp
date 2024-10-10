@@ -211,7 +211,7 @@ namespace dbiplus
   int SqliteDatabase::connect()
   {
     disconnect();
-    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_OPEN_NOMUTEX); // FULLMUTEX serializa el multithread .... :(
+    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_OPEN_NOMUTEX, 0); // FULLMUTEX serializa el multithread .... :(
     //char* err=NULL;
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
