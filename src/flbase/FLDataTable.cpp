@@ -452,16 +452,13 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
 
   int type = fieldTMD->type();
 
-  if (!showAllPixmaps_ && type == QVariant::Pixmap && row != rowSelected)
-  {
+  if (!showAllPixmaps_ && type == QVariant::Pixmap && row != rowSelected) {
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
 
-  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid())
-  {
-    if (!cursor_->QSqlCursor::seek(row))
-    {
+  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+    if (!cursor_->QSqlCursor::seek(row)) {
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
@@ -469,38 +466,21 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
   }
 
-int window_offset2 = verticalHeader()->offset();
-int cell_top = cr.top();
-bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1000;
-
-if (in_range2 == false)
-  {
-    qWarning("Omitida row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top);
-    delayedViewportRepaint();
-    return;
-  } 
-
-
-
-
-  if (fieldTMD->isCheck())
-  {
-    if (showGrid())
-    {
+  if (fieldTMD->isCheck()) {
+    if (showGrid()) {
       int x2 = cr.width() - 1;
       int y2 = cr.height() - 1;
       QPen pen(p->pen());
       int gridColor = style().styleHint(QStyle::SH_Table_GridLineColor, this);
-      if (gridColor != -1)
-      {
+      if (gridColor != -1) {
         const QPalette &pal = palette();
-        if (cg != colorGroup() && cg != pal.disabled() && cg != pal.inactive())
+        if (cg != colorGroup()
+            && cg != pal.disabled()
+            && cg != pal.inactive())
           p->setPen(cg.mid());
         else
           p->setPen((QRgb)gridColor);
-      }
-      else
-      {
+      } else {
         p->setPen(cg.mid());
       }
       p->drawLine(x2, 0, x2, y2);
@@ -521,10 +501,8 @@ if (in_range2 == false)
   p->setBrush(stBru);
   p->setPen(stPen);
 
-  if (newBrush)
-  {
-    if (stBru.style() != Qt::SolidPattern)
-    {
+  if (newBrush) {
+    if (stBru.style() != Qt::SolidPattern) {
       p->fillRect(0, 0, cr.width() - 1, cr.height() - 1,
                   selected ? cg.brush(QColorGroup::Highlight) : cg.brush(QColorGroup::Base));
     }
@@ -532,8 +510,7 @@ if (in_range2 == false)
     cgAux.setBrush(QColorGroup::Base, stBru);
     cgAux.setBrush(QColorGroup::Highlight, stBru);
     QTable::paintCell(p, row, col, cr, selected, cgAux);
-  }
-  else
+  } else
     QTable::paintCell(p, row, col, cr, selected, cg);
 
   lastTextPainted_ = QString::null;
@@ -541,22 +518,17 @@ if (in_range2 == false)
   p->setBrush(bB);
   p->setPen(bP);
 
-  if (!widthCols_.isEmpty())
-  {
+  if (!widthCols_.isEmpty()) {
     QMap<QString, int>::const_iterator it(widthCols_.find(fName));
-    if (it != widthCols_.end())
-    {
+    if (it != widthCols_.end()) {
       int wH = (*it);
       if (wH == -1)
         return;
-      if (wH > 0 && wH != columnWidth(col))
-      {
+      if (wH > 0 && wH != columnWidth(col)) {
         QTable::setColumnWidth(col, wH);
-        if (col == 0 && popup_)
-        {
+        if (col == 0 && popup_) {
           QWidget *pw = parentWidget();
-          if (pw && pw->width() < wH)
-          {
+          if (pw && pw->width() < wH) {
             resize(wH, pw->height());
             pw->resize(wH, pw->height());
           }
@@ -577,14 +549,11 @@ if (in_range2 == false)
   if (wH < wC)
     wH = wC;
   wC = fontMetrics().width(lastTextPainted_) + fontMetrics().maxWidth();
-  if (wC > wH)
-  {
+  if (wC > wH) {
     QTable::setColumnWidth(col, wC);
-    if (col == 0 && popup_)
-    {
+    if (col == 0 && popup_) {
       QWidget *pw = parentWidget();
-      if (pw && pw->width() < wC)
-      {
+      if (pw && pw->width() < wC) {
         resize(wC, pw->height());
         pw->resize(wC, pw->height());
       }
