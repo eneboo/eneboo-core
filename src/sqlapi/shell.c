@@ -27203,7 +27203,6 @@ static void verify_uninitialized(void){
 ** Initialize the state information in data
 */
 static void main_init(ShellState *data) {
-  printf("INIT!! SQLITE API");
   memset(data, 0, sizeof(*data));
   data->normalMode = data->cMode = data->mode = MODE_List;
   data->autoExplain = 1;

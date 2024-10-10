@@ -325,6 +325,7 @@ void FLFormDB::initMainWidget(QWidget *w)
     FLTableDB *tdb;
     while ((tdb = static_cast<FLTableDB *>(itt.current())) != 0)
     {
+      qWarning("Aquí");
       ++itt;
       tdb->initCursor();
     }

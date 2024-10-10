@@ -426,6 +426,7 @@ void FLSqlCursor::refresh(const QString &fN)
     if (fN.isEmpty() || d->relation_->foreignField() == fN)
     {
       d->buffer_ = 0;
+      qWarning("FLSqlCursor::refresh. Lanzando el delayed!!!!");
       refreshDelayed(500);
     }
   }
