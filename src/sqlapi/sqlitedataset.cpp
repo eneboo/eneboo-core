@@ -750,15 +750,21 @@ namespace dbiplus
 void SqliteDataset::fill_fields()
   {
     //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-    if ((db == NULL) || (result.record_header.size() == 0) || (num_rows() < frecno)) return;
-    if (fields_object->size() == 0) // Filling columns name
+    if ((db == NULL) || (result.record_header.size() == 0) || (num_rows() < frecno)) {
+      return;
+    } 
+    if (fields_object->size() == 0) {// Filling columns name
+      qWarning("Filling columns name");
       for (int i = 0; i < result.record_header.size(); i++) {
         (*fields_object)[i].props = result.record_header[i];
         (*edit_object)[i].props = result.record_header[i];
       }
+    }
 
     //Filling result
     if (num_rows() != 0) {
+      qWarning("Filling results");
+      
       for (int i = 0; i < result.records[frecno].size(); i++) {
         (*fields_object)[i].val = result.records[frecno][i];
         (*edit_object)[i].val = result.records[frecno][i];
@@ -1268,7 +1274,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      if (result.total_records <= pos) {
+      if (pos > result.total_records) {
           if (!fetch_rows(pos)) {   
             return false;
           }
@@ -1276,6 +1282,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       }    
 
       Dataset::seek(pos);
+      qWarning("Pos %d existe: %s", pos, fields_object->count(pos) ? "TRUE" : "FALSE");
       fill_fields(); 
     }
     return true;
