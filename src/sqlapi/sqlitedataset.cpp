@@ -1281,10 +1281,7 @@ bool SqliteDataset::fetch_rows(int pos) {
 
       }    
       Dataset::seek(pos);
-      if (!result.records.count(pos) == 1) {
-        qWarning("pos %n no encontrada . Rellenando");
-        fill_fields();
-      }
+      fill_fields();
     }
 
   return true;
