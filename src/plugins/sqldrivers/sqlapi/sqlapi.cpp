@@ -1191,7 +1191,7 @@ QVariant SqliteResult::data(int i)
   }
 
   QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
-/*   fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
+  fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
   
   if (v.toString().isEmpty()) {
     QVariant vv;
@@ -1216,7 +1216,7 @@ QVariant SqliteResult::data(int i)
       // No hacemos nada
     } else {
       qWarning("FIXME2. tipo no convertido " + QString::number(type));
-    } */
+    } 
 
     return v;
 }
