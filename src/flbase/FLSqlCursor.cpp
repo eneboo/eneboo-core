@@ -399,7 +399,6 @@ void FLSqlCursor::refreshDelayed(int msec)
   if (!seek(pos, false, true))
   {
     d->buffer_ = 0;
-    qWarning("NB 1");
     emit newBuffer();
   }
   else
@@ -441,7 +440,6 @@ void FLSqlCursor::refresh(const QString &fN)
     if (!seek(pos, false, true))
     {
       d->buffer_ = 0;
-      qWarning("NB 2");
       emit newBuffer();
     }
   }
@@ -625,7 +623,6 @@ bool FLSqlCursor::refreshBuffer()
     d->undoAcl();
 
     updateBufferCopy();
-    qWarning("NB 3");
     emit newBuffer();
   }
   break;
@@ -642,7 +639,6 @@ bool FLSqlCursor::refreshBuffer()
     setNotGenerateds();
 
     updateBufferCopy();
-    qWarning("NB 4");
     emit newBuffer();
   }
   break;
@@ -664,7 +660,6 @@ bool FLSqlCursor::refreshBuffer()
   case BROWSE:
     d->buffer_ = editBuffer(true);
     setNotGenerateds();
-    qWarning("NB 5");
     emit newBuffer();
     break;
   }
@@ -1332,7 +1327,7 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
   }
 
   if (updated && emite) {
-    qWarning("REFRESH 6");
+    qWarning("T 3");
     emit cursorUpdated();
   }
 
@@ -1845,7 +1840,6 @@ void FLSqlCursor::copyRecord()
   }
 
   delete bufferAux;
-  qWarning("NB 6");
   emit newBuffer();
 }
 
@@ -2180,7 +2174,6 @@ bool FLSqlCursor::select(const QString &filter, const QSqlIndex &sort)
       d->query_ = qry->sql();
       qry->deleteLater();
     }
-    qWarning("T 2");
     return exec(d->query_);
   }
 
@@ -2722,7 +2715,6 @@ int FLSqlCursor::atFromBinarySearch(const QString &fN, const QString &v, bool or
 
 bool FLSqlCursor::exec(const QString &query)
 {
-  qWarning("HOLA " + query);
   bool ret = QSqlCursor::exec(query);
   if (ret && d->isQuery_ && (d->query_ != query || !d->populated_))
   {
@@ -3160,7 +3152,7 @@ bool FLSqlCursor::doCommitBuffer()
 
       if (emit_cursor_updated)
       {
-        qWarning("REFRESH 6");
+        qWarning("T 2");
         emit cursorUpdated();
       }
       emit bufferCommited();
