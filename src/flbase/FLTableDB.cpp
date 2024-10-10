@@ -267,9 +267,10 @@ void FLTableDB::moveCol(int from, int to, bool firstSearch)
     }
   }
   tableRecords_->setColumn(toS, fieldName, fieldName);
-
+  qWarning("J 2");
   refresh(true);
   if (!textSearch.isEmpty()) {
+    qWarning("J 3");
     refresh(false, true);
     if (firstSearch) {
       disconnect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
@@ -353,6 +354,7 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
   if (cursor_->modeAccess() != FLSqlCursor::BROWSE)
     return;
   if (refreshData) {
+    qWarning("J 1");
     refresh(false, true);
   }
   seekCursor();
@@ -733,6 +735,7 @@ void FLTableDB::deleteRecord()
   cursor_->deleteRecord();
   if (cursor_->useDelegateCommit() && cursor_->modeAccess() == cursor_->BROWSE) {
     qWarning("Refresh despues de borrar registro con delegateCommit");
+    qWarning("J 16");
     refresh(false, true);
   }
 }
@@ -980,12 +983,15 @@ void FLTableDB::showWidget()
   if (!cursorAux) {
     if (useFirstRefresh_) {
       if (!initSearch_.isEmpty()) {
+        qWarning("J 16");
         refresh(true, true);
         QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
       } else {
         refresh(true);
-        if (tableRecords_->numRows() <= 0)
+        if (tableRecords_->numRows() <= 0) {
+          qWarning("J 15");
           refresh(false, true);
+        }
         else
           refreshDelayed();
       }
@@ -1002,12 +1008,16 @@ void FLTableDB::showWidget()
         setReadOnly(true);
       }
       if (!initSearch_.isEmpty()) {
+        qWarning("J 11");
         refresh(true, true);
         QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
       } else {
+        qWarning("J 10");
         refresh(true);
-        if (tableRecords_->numRows() <= 0)
+        if (tableRecords_->numRows() <= 0){
+          qWarning("J 9");
           refresh(false, true);
+        }
         else
           refreshDelayed();
       }
@@ -1090,9 +1100,10 @@ void FLTableDB::setOrderCols(QStringList &fields)
   QString textSearch(lineEditSearch->text());
   if (!textSearch.isEmpty())
     textSearch = cursor_->QSqlCursor::value(fieldName).toString();
-
+  qWarning("J 8");
   refresh(true);
   if (!textSearch.isEmpty()) {
+    qWarning("J 7");
     refresh(false, true);
     disconnect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
     lineEditSearch->setText(textSearch);
@@ -1186,6 +1197,7 @@ void FLTableDB::switchSortOrder(int col)
     orderAsc2_ = !orderAsc2_;
   }
   tableRecords()->hide();
+  qWarning("J 6");
   refresh( true, true );
 }
 
@@ -1195,6 +1207,7 @@ void FLTableDB::setSortOrder(int ascending)
   
   orderAsc_ = ascending;
   tableRecords()->hide();
+  qWarning("J 5");
   refresh(true, true);
 }
 
@@ -1225,6 +1238,7 @@ void FLTableDB::refreshTabData()
   QString tdbWhere(tdbFilterBuildWhere());
   if (tdbWhere != tdbFilterLastWhere_) {
     tdbFilterLastWhere_ = tdbWhere;
+    qWarning("J 4");
     refresh(false, true);
   }
 }
