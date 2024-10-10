@@ -431,7 +431,7 @@ void FLSqlCursor::refresh(const QString &fN)
   }
   else
   {
-    qWarning("FLSqlCursor::refresh: Con %s" , d->curName_);
+    qWarning("FLSqlCursor::refresh: Con " + d->curName_);
     QSqlCursor::select();
     int pos = atFrom();
     if (pos >= size())
