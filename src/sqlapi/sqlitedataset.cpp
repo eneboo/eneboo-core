@@ -211,7 +211,7 @@ namespace dbiplus
   int SqliteDatabase::connect()
   {
     disconnect();
-    int result = sqlite3_open(db.c_str(), &conn);
+    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_OPEN_NOMUTEX); // FULLMUTEX serializa el multithread .... :(
     //char* err=NULL;
     if (result != SQLITE_OK) {
       return DB_CONNECTION_NONE;
@@ -231,7 +231,7 @@ namespace dbiplus
       QString field_name = ds->fieldName(0);
       qWarning("fn: " + field_name + ", num_rows:" + QString::number(ds->num_rows()));
       databaseApi = ds->fv(field_name).get_asString();
-      qWarning("Connected to " + databaseApi);
+      qWarning("Connected to " + databaseApi + "mode: " + QString::number(sqlite3_threadsafe()));
 
     }
 

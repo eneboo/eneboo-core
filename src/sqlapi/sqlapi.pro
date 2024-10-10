@@ -28,6 +28,8 @@ unix {
 	DEFINES += OS_UNIX=1
 }
 
+DEFINES += SQLITE_THREADSAFE=2
+
 DESTDIR = $$PREFIX/lib
 
 TARGET = sqlapi
