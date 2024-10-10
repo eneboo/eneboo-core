@@ -1280,12 +1280,12 @@ bool SqliteDataset::fetch_rows(int pos) {
           }
 
       }    
-      if (fields_object->count(pos) == 1) {
+      if (!fields_object->count(pos) == 1) {
         Dataset::seek(pos);
         fill_fields();
       }
     }
-    
+
   return true;
   }  
 
