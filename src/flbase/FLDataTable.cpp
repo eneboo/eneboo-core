@@ -954,7 +954,6 @@ void FLDataTable::refresh()
 {
   if (popup_)
     {
-      qWarning("G 5");
     QDataTable::refresh();
     }
   if (!refreshing_ && cursor_ && !cursor_->aqWasDeleted() && cursor_->metadata())
@@ -965,7 +964,6 @@ void FLDataTable::refresh()
     if (sndCursor)
     {
       setFilter(cursor_->curFilter());
-      qWarning("G 4");
       QDataTable::refresh();
       cursor_->QSqlCursor::seek(cursor_->atFrom());
       selectRow();

@@ -514,6 +514,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
         finalFilter += " and " + tdbFilterLastWhere_;
     }
     tableRecords()->setPersistentFilter(finalFilter);
+    qWarning("T 1");
     tableRecords_->refresh();
   }
 
