@@ -1272,9 +1272,11 @@ bool SqliteDataset::fetch_rows(int pos) {
           if (!fetch_rows(pos)) {   
             return false;
           }
-        Dataset::seek(pos);
-        fill_fields();
-      }     
+
+      }    
+
+      Dataset::seek(pos);
+      fill_fields(); 
     }
     return true;
   }  
