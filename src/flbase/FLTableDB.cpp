@@ -370,13 +370,6 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   if (tableName_.isEmpty())
     tableName_ = tMD->name();
 
-  #ifdef FL_QUICK_CLIENT
-    if (!showed) {
-      qWarning("FLTableDB : No se puede refrescar el FLTableDB " + tableName_ + " porque no esta mostrada");
-      return;
-    }
-  #endif
-
   if (checkColumnEnabled_) {
     if (!checkColumnVisible_) {
       FLFieldMetaData *fieldCheck = tMD->field(fieldNameCheckColumn_);
@@ -521,6 +514,14 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
         finalFilter += " and " + tdbFilterLastWhere_;
     }
     tableRecords()->setPersistentFilter(finalFilter);
+
+  #ifdef FL_QUICK_CLIENT
+    if (!showed) {
+      qWarning("FLTableDB : No se pueden refrescar los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
+      return;
+    }
+  #endif
+
     tableRecords_->refresh();
   }
 
