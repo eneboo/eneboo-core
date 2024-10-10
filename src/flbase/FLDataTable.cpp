@@ -466,6 +466,18 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
   }
 
+
+  int window_offset2 = verticalHeader()->offset();
+int cell_top = cr.top();
+bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1000;
+
+if (in_range2 == false)
+  {
+    qWarning("Omitida row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top);
+    delayedViewportRepaint();
+    return;
+  } 
+
   if (fieldTMD->isCheck()) {
     if (showGrid()) {
       int x2 = cr.width() - 1;
