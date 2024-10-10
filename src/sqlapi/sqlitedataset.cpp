@@ -211,7 +211,7 @@ namespace dbiplus
   int SqliteDatabase::connect()
   {
     disconnect();
-    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX, 0); // FULLMUTEX serializa el multithread .... :(
+    int result = sqlite3_open_v2(db.c_str(), &conn, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_CONFIG_MULTITHREAD , 0); // FULLMUTEX serializa el multithread .... :(
     //int result = sqlite3_open(db.c_str(), &conn);
     //char* err=NULL;
     if (result != SQLITE_OK) {
@@ -232,7 +232,7 @@ namespace dbiplus
       QString field_name = ds->fieldName(0);
       qWarning("fn: " + field_name + ", num_rows:" + QString::number(ds->num_rows()));
       databaseApi = ds->fv(field_name).get_asString();
-      qWarning("Connected to " + databaseApi + "mode: " + QString::number(sqlite3_threadsafe()));
+      qWarning("Connected to " + databaseApi + ", mode: " + QString::number(sqlite3_threadsafe()));
 
     }
 
@@ -1222,7 +1222,6 @@ bool SqliteDataset::fetch_rows(int pos) {
   if (debug_sql) {
     qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
-  qWarning("FIN DE PROCESAMIENTO");
   return true;
   }
 
