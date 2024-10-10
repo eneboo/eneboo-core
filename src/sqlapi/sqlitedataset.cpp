@@ -1267,15 +1267,15 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
-    qWarning("SEEK: %d, frecno: %d", pos, frecno);
     if (ds_state == dsSelect) {
       if (result.total_records <= pos) {
-          if (!fetch_rows(pos)) {   
+          if (fetch_rows(pos)) {   
+            Dataset::seek(pos);
+            fill_fields();
+          } else {
             return false;
-          } 
+          }
       }     
-    Dataset::seek(pos);
-    fill_fields();
     }
     return true;
   }  
