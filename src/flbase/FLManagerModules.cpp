@@ -750,20 +750,17 @@ QString FLManagerModules::contentCached(const QString &n, QString *shaKey)
     
 
   if (key.isEmpty()) {
-    qWarning("FLManagerModules::contentCached 1 " + n);
     str_ret = content(n);
     FLMemCache::insert(n, str_ret);
     return str_ret;
   }
 
   if (!AQ_DISKCACHE_FIND(key, str_ret)) {
-    qWarning("FLManagerModules::contentCached 2 " + n);
     str_ret = content(n);
     if (!str_ret.isEmpty())
       AQ_DISKCACHE_INS(key, str_ret);
   }
 #else
-qWarning("FLManagerModules::contentCached 3 " + n);
   str_ret = content(n);
 #endif
 
