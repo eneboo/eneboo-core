@@ -321,6 +321,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
   if (d->timer_)
     delete d->timer_;
   d->timer_ = new QTimer(this, QObject::name());
+  qWarning("FLSqlCursor::init. Fin init cursor %s\n", name);
   connect(d->timer_, SIGNAL(timeout()), SLOT(refreshDelayed()));
 
 #ifdef AQ_MD5_CHECK
@@ -390,7 +391,7 @@ void FLSqlCursor::refreshDelayed(int msec)
       // No ejecutar el select. Pero emito un newBuffer para que el FLFieldDB lance el valueBuffer
     }
   }
-  
+  qWarning("FLSqlCursor::refreshDelayed. filtro: %s, tabla: %s", curFilter(), curName());
   QSqlCursor::select();
   int pos = atFrom();
   if (pos >= size())
