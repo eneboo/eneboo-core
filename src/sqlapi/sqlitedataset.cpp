@@ -958,6 +958,9 @@ void SqliteDataset::lista_bloques_pila_paginacion()
 
 bool SqliteDataset::fetch_rows(int pos) {
     
+    if (result.records.count(pos) == 1) { // Si ya tengo ese registro devuelvo true.
+      return true;
+    }
     
     int codigo_bloque = resuelve_bloque(pos);
     
@@ -1218,7 +1221,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   if (debug_sql) {
     qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
   }
-
+  qWarning("FIN DE PROCESAMIENTO");
   return true;
   }
 
@@ -1271,7 +1274,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      if (pos < result.total_records || fetch_rows(pos)) {
+      if (fetch_rows(pos)) {
         Dataset::seek(pos);
         fill_fields();
         return true;
