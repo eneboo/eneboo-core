@@ -2768,7 +2768,6 @@ static bool is_child_of(QWidget *child, QWidget *parent)
 
 void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
 {
-  qWarning("DRAW CONTENT"); 
   int colfirst = columnAt(cx);
   int collast = columnAt(cx + cw);
   int rowfirst = rowAt(cy);
@@ -2933,7 +2932,6 @@ void QTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
   paintEmptyArea(p, cx, cy, cw, ch);
 
   drawActiveSelection = TRUE;
-  qWarning("DRAW CONTENT FIN"); 
 }
 
 /*!

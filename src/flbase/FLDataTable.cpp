@@ -845,7 +845,6 @@ bool FLDataTable::eventFilter(QObject *o, QEvent *e)
         !cursor_->curFilter().contains(persistentFilter_))
     {
       cursor_->setFilter(persistentFilter_);
-      qWarning("G 7");
       refresh();
       return true;
     }
@@ -904,7 +903,6 @@ void FLDataTable::contentsContextMenuEvent(QContextMenuEvent *e)
       QString filter(db->manager()->formatAssignValue(field, priKeyVal, false));
       cur->setFilter(filter);
       dt->setFilter(filter);
-      qWarning("G 6");
       dt->QDataTable::refresh();
 
       QHeader *horizHeader = dt->horizontalHeader();
@@ -971,7 +969,6 @@ void FLDataTable::refresh()
     else
     {
       setFilter(cursor_->curFilter());
-      qWarning("G 3");
       QDataTable::refresh();
       selectRow();
     }
@@ -989,7 +986,6 @@ void FLDataTable::setFocus()
     if (cursor_->db()->driverName() == "FLsqlapi") {
       qWarning("FLDataTable::setFocus: Ignorando ....");
     } else {
-      qWarning("G 2");
       QDataTable::refresh();
     }
 
@@ -1161,7 +1157,6 @@ void FLDataTable::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
   if (!persistentFilter_.isEmpty() && !cursor_->curFilter().contains(persistentFilter_))
   {
     cursor_->setFilter(persistentFilter_);
-    qWarning("G 1");
     refresh();
     return;
   }
