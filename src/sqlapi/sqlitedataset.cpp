@@ -1268,11 +1268,11 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      //if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
+      if (result.records.count(pos) == 1 || fetch_rows(pos)) {   
           Dataset::seek(pos);
           fill_fields();
           return true;
-      //}     
+      }     
     } 
     return false;
   }  
