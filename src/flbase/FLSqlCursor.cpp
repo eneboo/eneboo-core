@@ -1320,8 +1320,10 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
     clearMapCalcFields();
   }
 
-  if (updated && emite)
+  if (updated && emite) {
+    qWarning("REFRESH 6");
     emit cursorUpdated();
+  }
 
   emit bufferCommited();
 
@@ -3147,6 +3149,7 @@ bool FLSqlCursor::doCommitBuffer()
 
       if (emit_cursor_updated)
       {
+        qWarning("REFRESH 6");
         emit cursorUpdated();
       }
       emit bufferCommited();
