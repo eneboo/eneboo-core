@@ -955,10 +955,11 @@ QStringList FLManagerModules::listAllIdModules()
   QSqlQuery q(QString::null, db_->dbAux());
   q.setForwardOnly(true);
   q.exec("SELECT idmodulo FROM flmodules WHERE idmodulo <> 'sys'");
-  while (q.next())
-    QString idModulo(q.value(0).toString());
+  while (q.next()) {
+    QString idModulo = q.value(0).toString();
     ret << idModulo;
     listAllIdModules_->append(idModulo);
+    }
 
 
   return ret;
