@@ -444,6 +444,18 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
   FLTableMetaData *tMD;
   if (!cursor_ || cursor_->aqWasDeleted() || !(tMD = cursor_->metadata()))
     return;
+
+  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+    if (!cursor_->QSqlCursor::seek(row)) {
+      #ifdef FL_DEBUG
+            qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+      #endif
+      return;
+    }
+  }
+
+  qWarning("FLDataTable::paintCell() row: %d, col: %d", row, col);
+
   QSqlField *field = cursor_->field(indexOf(col));
   QString fName(field->name());
   FLFieldMetaData *fieldTMD = paintFieldMtd(fName, tMD);
@@ -457,22 +469,11 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     return;
   }
 
-  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
-    if (!cursor_->QSqlCursor::seek(row)) {
-#ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
-#endif
-      return;
-    }
-  }
-
-  return;
-
   int window_offset2 = verticalHeader()->offset();
-int cell_top = cr.top();
-bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1000;
+  int cell_top = cr.top();
+  bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1000;
 
-if (in_range2 == false)
+  if (in_range2 == false)
   {
     qWarning("Omitida row: %d, offset: %d, cell_top: %d" , row, window_offset2, cell_top);
     delayedViewportRepaint();
