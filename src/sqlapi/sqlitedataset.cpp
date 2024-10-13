@@ -1206,6 +1206,7 @@ bool SqliteDataset::fetch_rows(int pos) {
       if (fetch_rows(pos)) {
         Dataset::seek(pos);
         fill_fields();
+        qWarning("F1 SEEK de %d", pos);
         return true;
       }
     }
@@ -1233,6 +1234,7 @@ bool SqliteDataset::fetch_rows(int pos) {
         (*fields_object)[i].val = result.records[frecno][i];
         (*edit_object)[i].val = result.records[frecno][i];
       }
+      qWarning("FILLED FIELDS FIN");
     } else
       for (int i = 0; i < header_size; i++) {
         (*fields_object)[i].val = "";

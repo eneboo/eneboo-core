@@ -110,7 +110,7 @@ public:
 
 protected:
 
-  QVariant data(int);
+  QVariant data1(int);
   bool reset(const QString &query);
   bool fetch(int);
   bool fetchFirst();

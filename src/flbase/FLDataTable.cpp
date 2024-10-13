@@ -456,7 +456,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
-  //row = 0;
+  row = 0;
   //if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
     if (!cursor_->QSqlCursor::seek(row)) {
 #ifdef FL_DEBUG
