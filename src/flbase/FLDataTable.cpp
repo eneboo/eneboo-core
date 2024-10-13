@@ -1138,6 +1138,7 @@ QString FLDataTable::fieldName(int col) const
 {
   if (!cursor_ || cursor_->aqWasDeleted())
     return QString::null;
+  qWarning("AY %d", col);
   QSqlField *field = cursor_->field(indexOf(col));
   if (!field)
     return QString::null;
@@ -1205,8 +1206,10 @@ void FLDataTable::repaintViewportSlot()
 {
   QWidget *vw = viewport();
   setUpdatesEnabled(true);
-  if (vw && !vw->aqWasDeleted())
+  if (vw && !vw->aqWasDeleted()) {
+    qWarning("FLDataTable::repaintViewportSlot!");
     vw->repaint(false);
+  }
 }
 
 void FLDataTable::cursorDestroyed(QObject *obj)

@@ -988,7 +988,7 @@ void FLTableDB::showWidget()
     if (useFirstRefresh_) {
       if (!initSearch_.isEmpty()) {
         refresh(true, true);
-        QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
+        //QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
       } else {
         refresh(true);
         if (tableRecords_->numRows() <= 0) {
@@ -1011,7 +1011,7 @@ void FLTableDB::showWidget()
       }
       if (!initSearch_.isEmpty()) {
         refresh(true, true);
-        QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
+        //QTimer::singleShot(0, tableRecords_, SLOT(ensureRowSelectedVisible()));
       } else {
         refresh(true);
         if (tableRecords_->numRows() <= 0){

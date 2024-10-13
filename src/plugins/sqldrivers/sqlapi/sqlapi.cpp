@@ -1219,7 +1219,6 @@ QVariant SqliteResult::data(int i)
     } else {
       qWarning("FIXME2. tipo no convertido " + QString::number(type));
     } 
-    qWarning("FIN DATA");
     return v;
 }
 
