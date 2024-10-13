@@ -441,10 +441,6 @@ bool FLDataTable::getCellStyle(QBrush &brush, QPen &pen,
 void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
                             bool selected, const QColorGroup &cg)
 {
-  // Prueba
-  row = 0;
-  col = 0;
-
   FLTableMetaData *tMD;
   if (!cursor_ || cursor_->aqWasDeleted() || !(tMD = cursor_->metadata()))
     return;
@@ -461,8 +457,8 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     return;
   }
 
-  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
-    if (!cursor_->QSqlCursor::seek(row)) {
+  if (0 != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+    if (!cursor_->QSqlCursor::seek(0)) {
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
