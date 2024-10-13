@@ -466,6 +466,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
   }
 
+  return;
 
   int window_offset2 = verticalHeader()->offset();
 int cell_top = cr.top();
