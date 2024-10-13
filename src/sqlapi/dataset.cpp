@@ -307,11 +307,13 @@ const field_value Dataset::get_field_value(const char *f_name) {
 			}
 
        }
-    else
-      for (unsigned int i=0; i < fields_object->size(); i++) 
-			if (str_compare((*fields_object)[i].props.name.c_str(), f_name)==0) {
-	  			return (*fields_object)[i].val;
-			}
+    else{
+        qWarning("Dataset::get_field_value " + f_name);
+        for (unsigned int i=0; i < result.record_header.size(); i++) 
+          if (str_compare(result.record_header[i].name, f_name)==0) {
+              return (*fields_object)[i].val;
+          }
+        }
        }
   field_value fv;
   return fv;

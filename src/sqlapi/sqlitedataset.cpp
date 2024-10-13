@@ -1201,7 +1201,6 @@ bool SqliteDataset::fetch_rows(int pos) {
 
   bool SqliteDataset::seek(int pos)
   {
-    qWarning("Haciendo seek de " + QString::number(pos));
     if (ds_state == dsSelect) {
       if (fetch_rows(pos)) {
         Dataset::seek(pos);
