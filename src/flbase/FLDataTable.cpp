@@ -592,11 +592,12 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     return;
 
   QString text;
-
+  qWarning("FLDataTable::paintField A %d", type);
   switch (type)
   {
   case QVariant::Double:
   {
+    qWarning("DOUBLE %d", type);
     double fValue = field->value().toDouble();
     text = aqApp->localeSystem().toString(fValue, 'f', fieldTMD->partDecimal());
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
@@ -606,6 +607,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 
   case FLFieldMetaData::Unlock:
   {
+    qWarning("UNLOCK %d", type);
     if (field->value().toBool())
     {
       p->drawPixmap((cr.width() - pixOk_.width()) / 2, 2, pixOk_,
@@ -622,9 +624,8 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
   case QVariant::DateTime:
   case QVariant::String:
   {
-    qWarning("RTEXTO");
+    qWarning("STRING %d", type);
     text = field->value().toString();
-    qWarning("RTEXTO2");
     if (fieldTMD->hasOptionsList())
     {
       QStringList ol(fieldTMD->optionsList());
@@ -644,6 +645,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 
   case QVariant::Int:
   {
+    qWarning("INT %d", type);
     int fValue = field->value().toInt();
     text = aqApp->localeSystem().toString(fValue);
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
@@ -653,13 +655,17 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 
   case FLFieldMetaData::Serial:
   case QVariant::UInt:
+    {
+      qWarning("UINT %d", type);
     text = aqApp->localeSystem().toString(field->value().toUInt());
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
+    }
     break;
 
   case QVariant::Pixmap:
   {
+    qWarning("PIXMAP %d", type);
     QCString cs = cursor_->db()->manager()->fetchLargeValue(field->value().toString()).toCString();
     if (cs.isEmpty())
       return;
@@ -678,12 +684,16 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
   break;
 
   case QVariant::ByteArray:
+  {
+    qWarning("BA %d", type);
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignAuto | Qt::AlignTop, QString::fromLatin1("ByteArray"));
+  }
     break;
 
   case QVariant::Date:
   {
+    qWarning("DATE %d", type);
     QDate d = field->value().toDate();
 
     text = d.toString("dd-MM-yyyy");
@@ -694,6 +704,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 
   case QVariant::Time:
   {
+    qWarning("TIME %d", type);
     QTime t = field->value().toTime();
 
     text = t.toString("hh:mm:ss");
@@ -702,14 +713,17 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
   }
   break;
 
-  case QVariant::StringList:
+  case QVariant::StringList: {
+    qWarning("STRINGLIST %d", type);
     text = field->value().toString();
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignAuto | Qt::AlignTop, text.left(255) + "...");
+  }
     break;
 
   case QVariant::Bool:
   {
+    qWarning("BOOL %d", type);
     if (fieldTMD->isCheck())
     {
       int row = rowAt(cr.center().y()), col = columnAt(cr.center().x());
