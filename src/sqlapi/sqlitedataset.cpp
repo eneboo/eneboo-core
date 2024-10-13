@@ -1228,7 +1228,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     //Filling result
     if (num_rows() != 0) {      
       for (int i = 0; i < header_size; i++) {
-        query_data qD = result.records[frecno];
+        query_data *qD = &result.records[frecno];
         (*fields_object)[i].val = qD[i];
         (*edit_object)[i].val = qD[i];
       }
