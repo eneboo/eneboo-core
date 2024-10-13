@@ -602,7 +602,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     text = aqApp->localeSystem().toString(fValue, 'f', fieldTMD->partDecimal());
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -619,7 +619,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
       p->drawPixmap((cr.width() - pixNo_.width()) / 2, 2, pixNo_,
                     0, 0, cr.width() - 4, cr.height() - 4);
     }
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -642,7 +642,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
       text = FLUtil::translate("MetaData", text);
     }
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4, fieldAlignment(field), text);
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -654,7 +654,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
 
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -666,7 +666,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
 
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
     }
     break;
 
@@ -687,7 +687,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     if (!pix.isNull())
       p->drawPixmap(2, 2, pix, 0, 0, cr.width() - 4,
                     cr.height() - 4);
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -696,7 +696,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     qWarning("BA %d", type);
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignAuto | Qt::AlignTop, QString::fromLatin1("ByteArray"));
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
     break;
 
@@ -708,7 +708,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     text = d.toString("dd-MM-yyyy");
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 fieldAlignment(field), text);
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -720,7 +720,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     text = t.toString("hh:mm:ss");
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 fieldAlignment(field), text);
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
   break;
 
@@ -729,7 +729,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     text = field->value().toString();
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignAuto | Qt::AlignTop, text.left(255) + "...");
-    qWarning("BR %d", type)
+    qWarning("BR %d", type);
   }
     break;
 
