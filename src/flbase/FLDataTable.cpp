@@ -457,14 +457,14 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     return;
   }
   //row = 0;
-  //if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
     if (!cursor_->QSqlCursor::seek(row)) {
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
-  //}
+  }
 
   qWarning("FLDataTable::paintCell(row:%d, col:%d)", row, col);
 
@@ -580,12 +580,13 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 {
   if (!field)
     return;
-  qWarning("FLDataTable::paintField");
+  qWarning("FLDataTable::paintFields de %s", field->name());
   FLTableMetaData *tMD = cursor_->metadata();
   FLFieldMetaData *fieldTMD = paintFieldMtd(field->name(), tMD);
-  if (!fieldTMD || !fieldTMD->visible())
+  if (!fieldTMD || !fieldTMD->visible()) {
+    qWarning("FLDataTable::paintFields %s no valido", field->name());
     return;
-
+  }
   int type = fieldTMD->type();
 
   if (field->isNull() && type != QVariant::Bool)
@@ -1006,11 +1007,13 @@ void FLDataTable::refresh()
     {
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
+      qWarning("AAAA");
       cursor_->QSqlCursor::seek(cursor_->atFrom());
       selectRow();
     }
     else
     {
+      qWarning("BBB");
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
       selectRow();
