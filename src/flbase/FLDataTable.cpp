@@ -456,17 +456,16 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
-  //row = 0;
-  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+
+/*   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
     if (!cursor_->QSqlCursor::seek(row)) {
 #ifdef FL_DEBUG
       qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
-  }
+  } */
 
-  qWarning("FLDataTable::paintCell(row:%d, col:%d)", row, col);
 
   int window_offset2 = verticalHeader()->offset();
   int cell_top = cr.top();
@@ -580,36 +579,32 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 {
   if (!field)
     return;
-  qWarning("FLDataTable::paintFields");
+
   FLTableMetaData *tMD = cursor_->metadata();
   FLFieldMetaData *fieldTMD = paintFieldMtd(field->name(), tMD);
-  if (!fieldTMD || !fieldTMD->visible()) {
-    qWarning("FLDataTable::paintFields no valido");
+  if (!fieldTMD || !fieldTMD->visible())
     return;
-  }
+
   int type = fieldTMD->type();
 
   if (field->isNull() && type != QVariant::Bool)
     return;
 
   QString text;
-  qWarning("FLDataTable::paintField A %d", type);
+
   switch (type)
   {
   case QVariant::Double:
   {
-    qWarning("DOUBLE %d", type);
     double fValue = field->value().toDouble();
     text = aqApp->localeSystem().toString(fValue, 'f', fieldTMD->partDecimal());
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
-    qWarning("BR %d", type);
   }
   break;
 
   case FLFieldMetaData::Unlock:
   {
-    qWarning("UNLOCK %d", type);
     if (field->value().toBool())
     {
       p->drawPixmap((cr.width() - pixOk_.width()) / 2, 2, pixOk_,
@@ -620,14 +615,12 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
       p->drawPixmap((cr.width() - pixNo_.width()) / 2, 2, pixNo_,
                     0, 0, cr.width() - 4, cr.height() - 4);
     }
-    qWarning("BR %d", type);
   }
   break;
 
   case QVariant::DateTime:
   case QVariant::String:
   {
-    qWarning("STRING %d", type);
     text = field->value().toString();
     if (fieldTMD->hasOptionsList())
     {
@@ -643,37 +636,27 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
       text = FLUtil::translate("MetaData", text);
     }
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4, fieldAlignment(field), text);
-    qWarning("BR %d", type);
   }
   break;
 
   case QVariant::Int:
   {
-    qWarning("INT %d", type);
     int fValue = field->value().toInt();
     text = aqApp->localeSystem().toString(fValue);
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
-
-    qWarning("BR %d", type);
   }
   break;
 
   case FLFieldMetaData::Serial:
   case QVariant::UInt:
-    {
-      qWarning("UINT %d", type);
     text = aqApp->localeSystem().toString(field->value().toUInt());
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignRight | Qt::AlignVCenter, text);
-
-    qWarning("BR %d", type);
-    }
     break;
 
   case QVariant::Pixmap:
   {
-    qWarning("PIXMAP %d", type);
     QCString cs = cursor_->db()->manager()->fetchLargeValue(field->value().toString()).toCString();
     if (cs.isEmpty())
       return;
@@ -688,55 +671,42 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     if (!pix.isNull())
       p->drawPixmap(2, 2, pix, 0, 0, cr.width() - 4,
                     cr.height() - 4);
-    qWarning("BR %d", type);
   }
   break;
 
   case QVariant::ByteArray:
-  {
-    qWarning("BA %d", type);
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignAuto | Qt::AlignTop, QString::fromLatin1("ByteArray"));
-    qWarning("BR %d", type);
-  }
     break;
 
   case QVariant::Date:
   {
-    qWarning("DATE %d", type);
     QDate d = field->value().toDate();
 
     text = d.toString("dd-MM-yyyy");
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 fieldAlignment(field), text);
-    qWarning("BR %d", type);
   }
   break;
 
   case QVariant::Time:
   {
-    qWarning("TIME %d", type);
     QTime t = field->value().toTime();
 
     text = t.toString("hh:mm:ss");
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 fieldAlignment(field), text);
-    qWarning("BR %d", type);
   }
   break;
 
-  case QVariant::StringList: {
-    qWarning("STRINGLIST %d", type);
+  case QVariant::StringList:
     text = field->value().toString();
     p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                 Qt::AlignAuto | Qt::AlignTop, text.left(255) + "...");
-    qWarning("BR %d", type);
-  }
     break;
 
   case QVariant::Bool:
   {
-    qWarning("BOOL %d", type);
     if (fieldTMD->isCheck())
     {
       int row = rowAt(cr.center().y()), col = columnAt(cr.center().x());
@@ -762,12 +732,10 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);
     }
-    qWarning("BR %d", type);
   }
   break;
   }
   lastTextPainted_ = text;
-  qWarning("FLDataTable::FIN paintField");
 }
 
 bool FLDataTable::eventFilter(QObject *o, QEvent *e)
@@ -1007,13 +975,11 @@ void FLDataTable::refresh()
     {
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
-      qWarning("AAAA");
       cursor_->QSqlCursor::seek(cursor_->atFrom());
       selectRow();
     }
     else
     {
-      qWarning("BBB");
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
       selectRow();
@@ -1171,7 +1137,6 @@ QString FLDataTable::fieldName(int col) const
 {
   if (!cursor_ || cursor_->aqWasDeleted())
     return QString::null;
-  qWarning("AY %d", col);
   QSqlField *field = cursor_->field(indexOf(col));
   if (!field)
     return QString::null;
@@ -1239,10 +1204,8 @@ void FLDataTable::repaintViewportSlot()
 {
   QWidget *vw = viewport();
   setUpdatesEnabled(true);
-  if (vw && !vw->aqWasDeleted()) {
-    qWarning("FLDataTable::repaintViewportSlot!");
+  if (vw && !vw->aqWasDeleted())
     vw->repaint(false);
-  }
 }
 
 void FLDataTable::cursorDestroyed(QObject *obj)

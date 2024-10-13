@@ -1202,11 +1202,9 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      qWarning("SEEK de %d", pos);
       if (fetch_rows(pos)) {
         Dataset::seek(pos);
         fill_fields();
-        qWarning("F1 SEEK de %d", pos);
         return true;
       }
     }
@@ -1229,12 +1227,10 @@ bool SqliteDataset::fetch_rows(int pos) {
 
     //Filling result
     if (num_rows() != 0) {      
-      qWarning("FILLING FIELDS");
       for (int i = 0; i < header_size; i++) {
         (*fields_object)[i].val = result.records[frecno][i];
         (*edit_object)[i].val = result.records[frecno][i];
       }
-      qWarning("FILLED FIELDS FIN");
     } else
       for (int i = 0; i < header_size; i++) {
         (*fields_object)[i].val = "";

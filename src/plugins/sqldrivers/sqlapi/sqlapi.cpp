@@ -1177,7 +1177,7 @@ QVariant SqliteResult::data(int i)
 #endif
     return QVariant();
   }
-  qWarning("DATA DE %d", i);
+  
   field_value fV = dataSet->fv(dataSet->fieldName(i));
 
   if (qstrcmp(dataSet->fieldName(i), "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
@@ -1219,6 +1219,7 @@ QVariant SqliteResult::data(int i)
     } else {
       qWarning("FIXME2. tipo no convertido " + QString::number(type));
     } 
+
     return v;
 }
 
@@ -1247,7 +1248,6 @@ bool SqliteResult::isNull(int i)
 {
   if (!dataSet)
     return false;
-  qWarning("ISNULL DE %d", i);
   return dataSet->fv(dataSet->fieldName(i)).get_isNull();
 }
 
