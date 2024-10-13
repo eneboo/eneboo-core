@@ -580,11 +580,11 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 {
   if (!field)
     return;
-  qWarning("FLDataTable::paintFields de %s", field->name());
+  qWarning("FLDataTable::paintFields");
   FLTableMetaData *tMD = cursor_->metadata();
   FLFieldMetaData *fieldTMD = paintFieldMtd(field->name(), tMD);
   if (!fieldTMD || !fieldTMD->visible()) {
-    qWarning("FLDataTable::paintFields %s no valido", field->name());
+    qWarning("FLDataTable::paintFields no valido");
     return;
   }
   int type = fieldTMD->type();
