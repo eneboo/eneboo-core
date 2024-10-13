@@ -444,16 +444,6 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
   FLTableMetaData *tMD;
   if (!cursor_ || cursor_->aqWasDeleted() || !(tMD = cursor_->metadata()))
     return;
-
-  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
-    if (!cursor_->QSqlCursor::seek(row)) {
-      #ifdef FL_DEBUG
-            qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
-      #endif
-      return;
-    }
-  }
-
   QSqlField *field = cursor_->field(indexOf(col));
   QString fName(field->name());
   FLFieldMetaData *fieldTMD = paintFieldMtd(fName, tMD);
@@ -466,6 +456,17 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
+
+  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+    if (!cursor_->QSqlCursor::seek(row)) {
+#ifdef FL_DEBUG
+      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+#endif
+      return;
+    }
+  }
+
+  qWarning("FLDataTable::paintCell(row:%d, col:%d)", row, col);
 
   int window_offset2 = verticalHeader()->offset();
   int cell_top = cr.top();
