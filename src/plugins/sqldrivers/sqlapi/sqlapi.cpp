@@ -1166,7 +1166,7 @@ bool SqliteResult::reset(const QString &q)
     return false;
 }
 
-QVariant SqliteResult::data1(int i)
+QVariant SqliteResult::data(int i)
 {
   if (!dataSet)
     return QVariant();
