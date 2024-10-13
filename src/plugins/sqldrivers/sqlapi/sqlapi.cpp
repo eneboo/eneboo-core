@@ -1178,8 +1178,10 @@ QVariant SqliteResult::data(int i)
     return QVariant();
   }
 
+  field_value fV = dataSet->fv(dataSet->fieldName(i));
+
   if (qstrcmp(dataSet->fieldName(i), "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
-    QString str(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str());
+    QString str(fV.get_asString().c_str());
     QByteArray ba;
     QDataStream dts(ba, IO_WriteOnly);
     uint pos = 0;
@@ -1190,8 +1192,8 @@ QVariant SqliteResult::data(int i)
     return ba;
   }
 
-  QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
-  fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
+  QVariant v = QVariant(QString(fV.get_asString().c_str()));
+  fType type = fV.get_fType();
   
   if (v.toString().isEmpty()) {
     QVariant vv;
