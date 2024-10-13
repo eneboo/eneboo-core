@@ -580,6 +580,9 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
   if (!field)
     return;
 
+  //Test
+  p->drawText(2, 2, cr.width() - 4, cr.height() - 4, fieldAlignment(field), "O");
+
   FLTableMetaData *tMD = cursor_->metadata();
   FLFieldMetaData *fieldTMD = paintFieldMtd(field->name(), tMD);
   if (!fieldTMD || !fieldTMD->visible())
