@@ -454,9 +454,12 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
   }
 
-  qWarning("FLDataTable::paintCell() row: %d, col: %d", row, col);
+  qWarning("FLDataTable::paintCell() PASO 1 row: %d, col: %d", row, col);
 
   QSqlField *field = cursor_->field(indexOf(col));
+
+  qWarning("FLDataTable::paintCell() PASO 2 row: %d, col: %d", row, col);
+
   QString fName(field->name());
   FLFieldMetaData *fieldTMD = paintFieldMtd(fName, tMD);
   if (!fieldTMD)
@@ -468,7 +471,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
-
+  qWarning("FLDataTable::paintCell() PASO 3 row: %d, col: %d", row, col);
   int window_offset2 = verticalHeader()->offset();
   int cell_top = cr.top();
   bool in_range2 = cell_top + 20 > window_offset2 && cell_top < window_offset2 + 1000;
@@ -504,7 +507,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     paintField(p, field, cr, selected);
     return;
   }
-
+  qWarning("FLDataTable::paintCell() PASO 4 row: %d, col: %d", row, col);
   QBrush bB(p->brush());
   QPen bP(p->pen());
   QBrush stBru(bB);
@@ -531,7 +534,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
   paintField(p, field, cr, selected);
   p->setBrush(bB);
   p->setPen(bP);
-
+  qWarning("FLDataTable::paintCell() PASO 5 row: %d, col: %d", row, col);
   if (!widthCols_.isEmpty()) {
     QMap<QString, int>::const_iterator it(widthCols_.find(fName));
     if (it != widthCols_.end()) {
@@ -574,6 +577,8 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     }
     delayedViewportRepaint();
   }
+
+  qWarning("FLDataTable::paintCell() PASO 6 row: %d, col: %d", row, col);
 }
 
 void FLDataTable::paintField(QPainter *p, const QSqlField *field,
