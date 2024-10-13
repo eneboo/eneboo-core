@@ -441,6 +441,10 @@ bool FLDataTable::getCellStyle(QBrush &brush, QPen &pen,
 void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
                             bool selected, const QColorGroup &cg)
 {
+  // Prueba
+  row = 0;
+  col = 0;
+
   FLTableMetaData *tMD;
   if (!cursor_ || cursor_->aqWasDeleted() || !(tMD = cursor_->metadata()))
     return;
@@ -579,10 +583,6 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
 {
   if (!field)
     return;
-
-  //Test
-  p->drawText(2, 2, cr.width() - 4, cr.height() - 4, fieldAlignment(field), "O");
-  return;
 
   FLTableMetaData *tMD = cursor_->metadata();
   FLFieldMetaData *fieldTMD = paintFieldMtd(field->name(), tMD);
