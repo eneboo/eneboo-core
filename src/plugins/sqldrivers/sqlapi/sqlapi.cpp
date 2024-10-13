@@ -1247,6 +1247,7 @@ bool SqliteResult::isNull(int i)
 {
   if (!dataSet)
     return false;
+  qWarning("ISNULL DE %d", i);
   return dataSet->fv(dataSet->fieldName(i)).get_isNull();
 }
 
