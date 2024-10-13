@@ -1202,7 +1202,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   bool SqliteDataset::seek(int pos)
   {
     if (ds_state == dsSelect) {
-      if (frecno > pos || fetch_rows(pos)) {
+      if (fetch_rows(pos)) {
         Dataset::seek(pos);
         fill_fields();
         return true;
@@ -1228,9 +1228,8 @@ bool SqliteDataset::fetch_rows(int pos) {
     //Filling result
     if (num_rows() != 0) {      
       for (int i = 0; i < header_size; i++) {
-        query_data *qD = &result.records[frecno];
-        (*fields_object)[i].val = qD[i];
-        (*edit_object)[i].val = qD[i];
+        (*fields_object)[i].val = result.records[frecno][i];
+        (*edit_object)[i].val = result.records[frecno][i];
       }
     } else
       for (int i = 0; i < header_size; i++) {
