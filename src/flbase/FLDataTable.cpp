@@ -139,7 +139,9 @@ void FLDataTable::selectRow(int r, int c)
       }
     }
     syncNumRows();
+    qWarning("TEST4");
     cursor_->seek(rowSelected);
+    qWarning("FIN TEST4");
   }
   setCurrentCell(rowSelected, colSelected);
 }
@@ -457,14 +459,14 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     return;
   }
 
-/*   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
-    if (!cursor_->QSqlCursor::seek(row)) {
-#ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
-#endif
-      return;
+  if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
+      if (!cursor_->QSqlCursor::seek(row)) {
+  #ifdef FL_DEBUG
+        qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+  #endif
+        return;
+      }
     }
-  } */
 
 
   int window_offset2 = verticalHeader()->offset();
@@ -973,16 +975,20 @@ void FLDataTable::refresh()
     FLSqlCursor *sndCursor = ::qt_cast<FLSqlCursor *>(sender());
     if (sndCursor)
     {
+      qWarning("TEST2");
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
       cursor_->QSqlCursor::seek(cursor_->atFrom());
       selectRow();
+      qWarning("FIN TEST2");
     }
     else
     {
+      qWarning("TEST3");
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
       selectRow();
+      qWarning("FIN TEST3");
     }
   }
   refreshing_ = false;

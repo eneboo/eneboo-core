@@ -308,7 +308,6 @@ const field_value Dataset::get_field_value(const char *f_name) {
 
        }
     else {
-        qWarning("Dataset: get_field_value: field_name: %s ,ds_state = %d", f_name , ds_state);
           for (unsigned int i=0; i < fields_object->size(); i++) 
           if (str_compare((*fields_object)[i].props.name.c_str(), f_name)==0) {
               return (*fields_object)[i].val;

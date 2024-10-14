@@ -1177,7 +1177,7 @@ QVariant SqliteResult::data(int i)
 #endif
     return QVariant();
   }
-  
+  qWarning("DATA DE %d", i);
   field_value fV = dataSet->fv(dataSet->fieldName(i));
 
   if (qstrcmp(dataSet->fieldName(i), "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
