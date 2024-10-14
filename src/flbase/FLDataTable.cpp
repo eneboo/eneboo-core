@@ -141,7 +141,7 @@ void FLDataTable::selectRow(int r, int c)
     syncNumRows();
     qWarning("TEST4");
     cursor_->seek(rowSelected);
-    qWarning("FIN TEST4");
+    qWarning("FIN TEST");
   }
   setCurrentCell(rowSelected, colSelected);
 }
@@ -458,6 +458,8 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     QTable::paintCell(p, row, col, cr, selected, cg);
     return;
   }
+
+  qWarning("PAINTCELL col: %d, row: %d", col, row);
 
   if (row != cursor_->QSqlCursor::at() || !cursor_->isValid()) {
       if (!cursor_->QSqlCursor::seek(row)) {
