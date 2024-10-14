@@ -1440,13 +1440,13 @@ void QSqlCursor::sync()
 	    if ( !haveCalculatedFields && d->infoBuffer[i].isCalculated() ) {
 		haveCalculatedFields = TRUE;
 	    }
-        bool pre_checked_null = FALSE;
+        bool pre_checked_null = false;
 	    if ( QSqlRecord::isGenerated( i ) ) {
         #ifdef FL_QUICK_CLIENT
         // Salida rápida experimental! 
         if ( QSqlQuery::isNull( j ) ) {
 		    QSqlRecord::field( i )->setNull();
-            pre_checked_null = TRUE;
+            pre_checked_null = true;
         }
         #endif
 
@@ -1470,8 +1470,9 @@ void QSqlCursor::sync()
 	}
 	if ( haveCalculatedFields ) {
 	    for ( i = 0; i < count(); ++i ) {
-		if ( d->infoBuffer[i].isCalculated() )
+		if ( d->infoBuffer[i].isCalculated() ) {
 		    //QSqlRecord::setValue( i, calculateField( fieldName( i ) ) );
+            }
 	    }
 	}
     }
