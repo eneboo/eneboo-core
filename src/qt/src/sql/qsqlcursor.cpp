@@ -1470,7 +1470,7 @@ void QSqlCursor::sync()
 	if ( haveCalculatedFields ) {
 	    for ( i = 0; i < count(); ++i ) {
 		if ( d->infoBuffer[i].isCalculated() )
-		    QSqlRecord::setValue( i, calculateField( fieldName( i ) ) );
+		    //QSqlRecord::setValue( i, calculateField( fieldName( i ) ) );
 	    }
 	}
     }
