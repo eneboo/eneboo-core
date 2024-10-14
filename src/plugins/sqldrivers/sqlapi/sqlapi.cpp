@@ -1177,7 +1177,7 @@ QVariant SqliteResult::data(int i)
     #endif
     return QVariant();
   } */
-  Fields field_object = dataSet->get_fields_object();
+  Fields *field_object = dataSet->get_fields_object();
   const char *fieldName = fields_object[i].props.name.c_str();
   field_value fV = field_object[i].val;
 
