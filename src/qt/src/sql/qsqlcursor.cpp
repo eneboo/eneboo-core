@@ -1452,6 +1452,7 @@ void QSqlCursor::sync()
 
         if (!pre_checked_null) {
             QVariant v = QSqlQuery::value( j );
+            qWarning("Noooooo");
             if ( ( v.type() == QVariant::String || v.type() == QVariant::CString ) &&
                 d->infoBuffer[ i ].isTrim() ) {
                 v = qTrim( v.toString() );
