@@ -1447,8 +1447,8 @@ void QSqlCursor::sync()
 		    v = qTrim( v.toString() );
 		}
 		QSqlRecord::setValue( i, v );
-		if ( QSqlQuery::isNull( j ) )
-		    QSqlRecord::field( i )->setNull();
+/* 		if ( QSqlQuery::isNull( j ) )
+		    QSqlRecord::field( i )->setNull(); */
 		j++;
 	    }
 	}
