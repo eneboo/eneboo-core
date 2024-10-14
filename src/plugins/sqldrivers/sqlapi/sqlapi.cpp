@@ -1179,7 +1179,7 @@ QVariant SqliteResult::data(int i)
   }
   qWarning("DATA DE %d", i);
   if (i = 52) {
-    throw ("ATPC!");
+    i = 100;
   }
   field_value fV = dataSet->fv(dataSet->fieldName(i));
 
