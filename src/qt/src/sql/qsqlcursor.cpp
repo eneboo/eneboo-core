@@ -1440,20 +1440,30 @@ void QSqlCursor::sync()
 	    if ( !haveCalculatedFields && d->infoBuffer[i].isCalculated() ) {
 		haveCalculatedFields = TRUE;
 	    }
+        bool pre_checked_null = FALSE;
 	    if ( QSqlRecord::isGenerated( i ) ) {
-
+        #ifdef FL_QUICK_CLIENT
+        // Salida rápida experimental! 
         if ( QSqlQuery::isNull( j ) ) {
 		    QSqlRecord::field( i )->setNull();
-            continue;
+            pre_checked_null = TRUE;
         }
+        #endif
 
-
-		QVariant v = QSqlQuery::value( j );
-		if ( ( v.type() == QVariant::String || v.type() == QVariant::CString ) &&
-			d->infoBuffer[ i ].isTrim() ) {
-		    v = qTrim( v.toString() );
-		}
-		QSqlRecord::setValue( i, v );
+        if (!pre_checked_null) {
+            QVariant v = QSqlQuery::value( j );
+            if ( ( v.type() == QVariant::String || v.type() == QVariant::CString ) &&
+                d->infoBuffer[ i ].isTrim() ) {
+                v = qTrim( v.toString() );
+            }
+            QSqlRecord::setValue( i, v );
+            #ifndef FL_QUICK_CLIENT
+                if ( QSqlQuery::isNull( j ) ) {
+                    QSqlRecord::field( i )->setNull();
+                    continue;
+                }
+            #endif
+        }
 		j++;
 	    }
 	}
