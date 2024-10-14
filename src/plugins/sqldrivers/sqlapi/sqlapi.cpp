@@ -1038,7 +1038,12 @@ QSqlRecordInfo SqlApiDriver::recordInfo(const QSqlQuery &query) const
     Dataset *ds = result->dataSet;
     for (int i = 0; i < ds->fieldCount(); ++i) {
       QString fName(ds->fieldName(i));
-      fType type = ds->fv(fName).get_fType();
+      //fType type = ds->fv(fName).get_fType();
+      Fields *fields_object = ds->get_fields_object();
+      field_value fV = (*fields_object)[i].val;
+      fType type = fV.get_fType();
+
+
       info.append(QSqlFieldInfo(fName, qDecodeSqliteType(type)));
     }
     return info;
@@ -1247,7 +1252,10 @@ bool SqliteResult::isNull(int i)
 {
   if (!dataSet)
     return false;
-  return dataSet->fv(dataSet->fieldName(i)).get_isNull();
+
+  Fields *fields_object = dataSet->get_fields_object();
+  field_value fV = (*fields_object)[i].val;
+  return fV.get_isNull();
 }
 
 bool SqliteResult::fetchFirst()
