@@ -1210,10 +1210,12 @@ void FLDataTable::delayedViewportRepaint()
 
 void FLDataTable::repaintViewportSlot()
 {
+  qWarning("FLDataTable::repaintViewportSlot");
   QWidget *vw = viewport();
   setUpdatesEnabled(true);
   if (vw && !vw->aqWasDeleted())
     vw->repaint(false);
+  qWarning("FLDataTable::repaintViewportSlot FIN");
 }
 
 void FLDataTable::cursorDestroyed(QObject *obj)

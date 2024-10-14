@@ -1178,7 +1178,7 @@ QVariant SqliteResult::data(int i)
     return QVariant();
   }
   qWarning("DATA DE %d", i);
-  if (i = 52) {
+  if (i == 52) {
     i = 100;
   }
   field_value fV = dataSet->fv(dataSet->fieldName(i));
