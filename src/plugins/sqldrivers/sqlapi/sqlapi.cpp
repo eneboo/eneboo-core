@@ -1171,14 +1171,15 @@ QVariant SqliteResult::data(int i)
   if (!dataSet)
     return QVariant();
 
-  if (i >= dataSet->fieldCount()) {
-#ifdef FL_DEBUG
-    qWarning("SqliteResult::data: column %d out of range", i);
-#endif
+/*   if (i >= dataSet->fieldCount()) {
+    #ifdef FL_DEBUG
+        qWarning("SqliteResult::data: column %d out of range", i);
+    #endif
     return QVariant();
-  }
+  } */
   const char *fieldName = dataSet->fieldName(i);
-  field_value fV = dataSet->fv(fieldName);
+  //field_value fV = dataSet->fv(fieldName);
+  field_value fV = dataSet->(*fields_object)[i].val
 
   if (qstrcmp(fieldName, "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
     QString str(fV.get_asString().c_str());
@@ -1191,11 +1192,11 @@ QVariant SqliteResult::data(int i)
     }
     return ba;
   }
-
-  QVariant v = QVariant(QString(fV.get_asString().c_str()));
+  QString str_val = fV.get_asString();
+  QVariant v = QVariant(str_val);
   fType type = fV.get_fType();
   
-  if (v.toString().isEmpty()) {
+  if (str_val.isEmpty()) {
     QVariant vv;
     if (!type)
       vv.cast(QVariant::String);
@@ -1212,11 +1213,9 @@ QVariant SqliteResult::data(int i)
         v.cast(QVariant::Bool);
     } else if (type == ft_Double || type == ft_Float) {
         v.cast(QVariant::Double);
-    } else if (type == ft_Long) {
+    } else if (type == ft_Long || type == ft_ULong) {
         v.cast(QVariant::Int);
-    } else if (type == ft_ULong) {
-        v.cast(QVariant::Int);
-    }  else {
+    } else {
       qWarning("FIXME2. tipo no convertido " + QString::number(type));
     } 
 
