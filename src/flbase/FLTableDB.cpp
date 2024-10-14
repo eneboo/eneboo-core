@@ -521,9 +521,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
       return;
     }
   #endif
-    qWarning("TEST1");
     tableRecords_->refresh();
-    qWarning("FIN TEST1");
   }
 
   if (!initSearch_.isEmpty()) {

@@ -139,9 +139,7 @@ void FLDataTable::selectRow(int r, int c)
       }
     }
     syncNumRows();
-    qWarning("TEST4");
     cursor_->seek(rowSelected);
-    qWarning("FIN TEST");
   }
   setCurrentCell(rowSelected, colSelected);
 }
@@ -977,20 +975,16 @@ void FLDataTable::refresh()
     FLSqlCursor *sndCursor = ::qt_cast<FLSqlCursor *>(sender());
     if (sndCursor)
     {
-      qWarning("TEST2");
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
       cursor_->QSqlCursor::seek(cursor_->atFrom());
       selectRow();
-      qWarning("FIN TEST2");
     }
     else
     {
-      qWarning("TEST3");
       setFilter(cursor_->curFilter());
       QDataTable::refresh();
       selectRow();
-      qWarning("FIN TEST3");
     }
   }
   refreshing_ = false;
@@ -1210,12 +1204,10 @@ void FLDataTable::delayedViewportRepaint()
 
 void FLDataTable::repaintViewportSlot()
 {
-  qWarning("FLDataTable::repaintViewportSlot");
   QWidget *vw = viewport();
   setUpdatesEnabled(true);
   if (vw && !vw->aqWasDeleted())
     vw->repaint(false);
-  qWarning("FLDataTable::repaintViewportSlot FIN");
 }
 
 void FLDataTable::cursorDestroyed(QObject *obj)

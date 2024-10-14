@@ -1352,7 +1352,7 @@ bool FLSqlCursor::seek(int i, bool relative, bool emite)
 
 void FLSqlCursor::afterSeek()
 {
-  QSqlCursor::afterSeek();
+  //QSqlCursor::afterSeek();
   d->doAcl();
 }
 
