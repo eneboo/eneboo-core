@@ -1177,11 +1177,10 @@ QVariant SqliteResult::data(int i)
 #endif
     return QVariant();
   }
-  //qWarning("DATA DE %d", i);
-  QString fieldName = dataSet->fieldName(i);
-  field_value fV = dataSet->fv(fieldName);
 
-  if (qstrcmp(fieldName, "binario") == 0) { // <- esto es un hack para guardar hexadecimal e interpretar binario.
+  field_value fV = dataSet->fv(dataSet->fieldName(i));
+
+  if (qstrcmp(dataSet->fieldName(i), "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
     QString str(fV.get_asString().c_str());
     QByteArray ba;
     QDataStream dts(ba, IO_WriteOnly);
@@ -1191,38 +1190,37 @@ QVariant SqliteResult::data(int i)
       pos += 2;
     }
     return ba;
-  } else {
+  }
 
-    QVariant v = QVariant(QString(fV.get_asString().c_str()));
-    fType type = fV.get_fType();
-    
-    if (v.toString().isEmpty()) {
-      QVariant vv;
-      if (!type)
-        vv.cast(QVariant::String);
-      else if (type == ft_Boolean) {
-        vv.cast(QVariant::Bool);
-      } else {
-        vv.cast(QVariant::Double);
-      }
-      return vv;
-    } else
-      if (type == ft_String) {
-        // No hacemos nada
-      } else if (type == ft_Double || type == ft_Float) {
-          v.cast(QVariant::Double);
-      } else if (type == ft_Long) {
-          v.cast(QVariant::Int);
-      } else if (type == ft_ULong) {
-          v.cast(QVariant::Int);
-      } else if (type == ft_Boolean) {
-          v.cast(QVariant::Bool);
-      } else {
-        qWarning("FIXME2. tipo no convertido " + QString::number(type));
-      } 
-
-      return v;
+  QVariant v = QVariant(QString(fV.get_asString().c_str()));
+  fType type = fV.get_fType();
+  
+  if (v.toString().isEmpty()) {
+    QVariant vv;
+    if (!type)
+      vv.cast(QVariant::String);
+    else if (type == ft_Boolean) {
+      vv.cast(QVariant::Bool);
+    } else {
+      vv.cast(QVariant::Double);
     }
+    return vv;
+  } else
+    if (type == ft_Boolean) {
+        v.cast(QVariant::Bool);
+    } else if (type == ft_Double || type == ft_Float) {
+        v.cast(QVariant::Double);
+    } else if (type == ft_Long) {
+        v.cast(QVariant::Int);
+    } else if (type == ft_ULong) {
+        v.cast(QVariant::Int);
+    } else if (type == ft_String) {
+      // No hacemos nada
+    } else {
+      qWarning("FIXME2. tipo no convertido " + QString::number(type));
+    } 
+
+    return v;
 }
 
 bool SqliteResult::fetch(int i)

@@ -1440,27 +1440,22 @@ void QSqlCursor::sync()
 	    if ( !haveCalculatedFields && d->infoBuffer[i].isCalculated() ) {
 		haveCalculatedFields = TRUE;
 	    }
-
 	    if ( QSqlRecord::isGenerated( i ) ) {
-
-        QVariant v = QSqlQuery::value( j );
-        if ( ( v.type() == QVariant::String || v.type() == QVariant::CString ) &&
-            d->infoBuffer[ i ].isTrim() ) {
-            v = qTrim( v.toString() );
-        }
-        QSqlRecord::setValue( i, v );
-        if ( QSqlQuery::isNull( j ) ) {
-            QSqlRecord::field( i )->setNull();
-            continue;
-        }
+		QVariant v = QSqlQuery::value( j );
+		if ( ( v.type() == QVariant::String || v.type() == QVariant::CString ) &&
+			d->infoBuffer[ i ].isTrim() ) {
+		    v = qTrim( v.toString() );
+		}
+		QSqlRecord::setValue( i, v );
+		if ( QSqlQuery::isNull( j ) )
+		    QSqlRecord::field( i )->setNull();
 		j++;
 	    }
 	}
 	if ( haveCalculatedFields ) {
 	    for ( i = 0; i < count(); ++i ) {
-		if ( d->infoBuffer[i].isCalculated() ) {
+		if ( d->infoBuffer[i].isCalculated() )
 		    QSqlRecord::setValue( i, calculateField( fieldName( i ) ) );
-            }
 	    }
 	}
     }
