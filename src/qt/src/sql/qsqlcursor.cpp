@@ -1442,14 +1442,6 @@ void QSqlCursor::sync()
 	    }
 
 	    if ( QSqlRecord::isGenerated( i ) ) {
-        #ifdef FL_QUICK_CLIENT
-        // Salida rápida experimental! 
-        if ( QSqlQuery::isNull( j ) ) {
-		    QSqlRecord::field( i )->setNull();
-            j++;
-            continue;
-        }
-        #endif
 
         QVariant v = QSqlQuery::value( j );
         if ( ( v.type() == QVariant::String || v.type() == QVariant::CString ) &&
@@ -1457,12 +1449,10 @@ void QSqlCursor::sync()
             v = qTrim( v.toString() );
         }
         QSqlRecord::setValue( i, v );
-        #ifndef FL_QUICK_CLIENT
-            if ( QSqlQuery::isNull( j ) ) {
-                QSqlRecord::field( i )->setNull();
-                continue;
-            }
-        #endif
+        if ( QSqlQuery::isNull( j ) ) {
+            QSqlRecord::field( i )->setNull();
+            continue;
+        }
 		j++;
 	    }
 	}
