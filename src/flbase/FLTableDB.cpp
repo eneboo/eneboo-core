@@ -504,7 +504,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     }
     horizHeader->show();
   }
-
+  bool do_refresh = true;
   if (refreshData || sender()) {
     QString finalFilter = filter_;
     if (!tdbFilterLastWhere_.isEmpty()) {
@@ -515,13 +515,17 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     }
     tableRecords()->setPersistentFilter(finalFilter);
 
+  
   #ifdef FL_QUICK_CLIENT
     if (!showed) {
       qWarning("FLTableDB : No se pueden refrescar los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
-      return;
+      do_refresh = false;
     }
   #endif
+  if (do_refresh) {
     tableRecords_->refresh();
+  }
+    
   }
 
   if (!initSearch_.isEmpty()) {
@@ -530,7 +534,10 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     connect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
     lineEditSearch->selectAll();
     initSearch_ = QString::null;
-    seekCursor();
+    if (do_refresh) {
+      seekCursor();
+    }
+    
   }
 
   if (readonly_ != reqReadOnly_ ||
