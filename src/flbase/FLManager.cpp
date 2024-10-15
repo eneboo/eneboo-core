@@ -1882,7 +1882,7 @@ void FLManager::initCacheLite() {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
-  QStringList *queryParts = QStringList::split(',',query);
+  QStringList queryParts = QStringList::split(',',query);
   if (queryParts.size() > 6 || (queryParts.length() > 8 && query.contains("1 = 1"))) {
     QString *valor1 = queryParts[0];
     QString *valor2 = queryParts[2];
