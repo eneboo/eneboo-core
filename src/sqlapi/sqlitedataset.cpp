@@ -39,7 +39,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
-#include "FLSqlConnections.h"
+#include "../flbase/FLSqlConnections.h"
 
 #define LIMIT_RESULT 1000
 
