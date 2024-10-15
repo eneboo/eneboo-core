@@ -1788,7 +1788,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       fieldsCachedNames.append(pkName);
 
       // Sacamos el nombre de los campos existentes.
-      QStringList fieldsNamesList = tmd->fieldsNames().split(",");
+      QStringList fieldsNamesList = QStringList::split(',',tmd->fieldsNames());
       bool isPermanent = false;
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
 
@@ -1884,10 +1884,10 @@ bool FLManager::isMandatoryQuery(QString &query)
 {
   QStringList *queryParts = query.split(" ");
   if (queryParts.count() > 6 || (queryParts.count() > 8 && query.contains("1 = 1"))) {
-    QString valor1 = queryParts[0];
-    QString valor2 = queryParts[2];
+    QString *valor1 = queryParts[0];
+    QString *valor2 = queryParts[2];
     if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
-      QString tableName = queryParts[3];
+      QString *tableName = queryParts[3];
       FLTableMetaData *tmd = metadata(tableName);
       if (!tmd) {
         return false;
@@ -1900,7 +1900,7 @@ bool FLManager::isMandatoryQuery(QString &query)
 
 QString FLManager::resolveMandatoryValues(QString &query)
 {
-    QStringList queryParts = query.split(" ");
+    QStringList queryParts = QStringList::split(',',query);
     QString tableName = queryParts[3];
     queryParts[3] += "_cachelite";
     FLTableMetaData *tmd = metadata(tableName);
@@ -1915,7 +1915,7 @@ QString FLManager::resolveMandatoryValues(QString &query)
       QString separador_lineas = "|^^|";
       QString separador_total = "@";
       result += q->size() + separador_total;
-      QStringList fieldsNamesList = tmd->fieldsNames().split(",");
+      QStringList fieldsNamesList = QStringList::split(',',tmd->fieldsNames());
       // Nombre de campos separados por |^|
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
         QString fieldNameOrig = *it;
