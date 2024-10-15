@@ -1754,8 +1754,10 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     FLFieldMetaData *fieldTabla = new FLFieldMetaData("tablename", "tabla", false, true, QVariant::String, 50);
 
     FLFieldMetaData *fieldTimestamp = new FLFieldMetaData("timestamp", "timestamp", true, false, QVariant::String, 50);
+    FLFieldMetaData *fieldPermanent = new FLFieldMetaData("permanent", "permanent", true, false, QVariant::Bool);
     cacheMtd->addFieldMD(fieldTabla);
     cacheMtd->addFieldMD(fieldTimestamp);
+    cacheMtd->addFieldMD(fieldPermanent);
 
     cacheMetaData_->insert(cacheTableName, cacheMtd);
     dbCache_->manager()->insertMetadataCache(cacheTableName ,cacheMtd);
@@ -1787,12 +1789,16 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
       // Sacamos el nombre de los campos existentes.
       QStrinList fieldsNamesList = tmd->fieldsNames().split(",");
+      bool isPermanent = false;
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
 
         QString fieldNameOrig = *it;
         bool found = false;
         for (QStringList::Iterator it2 = fieldsCachedNames.begin(); it2 != fieldsCachedNames.end(); ++it2) {
           QString fieldNameCache = *it2;
+          if (fieldNameCache == "*") {
+            isPermanent = true;
+          }
           if (fieldNameCache == "*" || fieldNameCache == fieldNameOrig) {
             found = true;
             break;
@@ -1827,7 +1833,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           }
 
       qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando en tabla %1 registro %2").arg(cacheTableName).arg(tableName));
-      if(!FLUtil::sqlInsert(cacheTableName,"tablename",tmd->name(),"cachelite")) {
+      if(!FLUtil::sqlInsert(cacheTableName,"tablename,permanent",tmd->name() +"," + (isPermanent ? "1" : "0") ,"cachelite")) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al insertar en %1").arg(cacheTableName));
         return;
       }

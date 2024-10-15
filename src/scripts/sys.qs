@@ -3339,7 +3339,8 @@ function updateCachedTables(tableNames)
   if (tableNames != undefined) {
     whereCache = "tablename in ('";  
     whereCache += tableNames.join("','");
-    whereCache += "')";
+
+    whereCache += "') OR permanent = 1";
 
   }
 
