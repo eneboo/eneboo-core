@@ -1877,3 +1877,55 @@ void FLManager::initCacheLite() {
     return;
   }
 }
+
+
+bool FLManager::isMandatoryQuery(QString &query)
+{
+  QStringList queryParts = query.split(" ");
+  if (queryParts.count() > 6 || (queryParts.count() > 8 && query.contains("1 = 1"))) {
+    if (queryParts[0].toUpper() == "SELECT" && queryParts[2].toUpper() == "FROM") {
+      FLTableMetaData *tmd = metatada(queryParts[3]);
+      if (!tmd) {
+        return false;
+      }
+      return tmd->useCachedFields();
+    }
+  }
+  return false;
+}
+
+QString FLManager::resolveMandatoryValues(QString &query)
+{
+    QStringList queryParts = query.split(" ");
+    QString tableName = queryParts[3];
+    queryParts[3] += "_cachelite";
+    FLTableMetaData *tmd = metatada(tableName);
+    QString newQuery = queryParts.join(" ");
+    q = new FLSqlQuery(parent, "cachelite");
+    q->setForwardOnly(true);
+    
+    QString result = "";
+
+    if (q->exec(newQuery)) {
+      QString separador_campos = "|^|";
+      QString separador_lineas = "|^^|";
+      QString separador_total = "@";
+      result += q->size() + separador_total;
+      QStringList fieldsNames = tmd->fieldsNames().split(",");
+      // Nombre de campos separados por |^|
+      for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
+        QString fieldNameOrig = *it;
+        result += fieldNameOrig + separador_campos;
+      }
+      result += separador_lineas;
+      int countCampos = count(fieldsNames);
+      while (q->next()) {
+        for (int i = 0; i < countCampos; i++) {
+          result += q->value(i).toString() + separador_campos;
+        }
+        result += separador_lineas;
+      }
+    }
+
+    return result;
+}

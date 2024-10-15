@@ -556,7 +556,7 @@ namespace dbiplus
       int x = 0;
       while (QFile::exists(fichero_tmp)) {
           // Este espera a que el fichero tmp este libre.
-          if (nuevo) { //Si es la primera vez sí intento borrar el fichero tmp.
+          if (nuevo) { //Si es la primera vez s? intento borrar el fichero tmp.
             QFile::remove(fichero_tmp);
           }
 
@@ -585,7 +585,7 @@ namespace dbiplus
 
         while (QFile::exists(fichero)) {
           //Este espera hasta que la consulta sea leida por aqextension ...
-          if (nuevo) { //Si es la primera llamada, sí tengo que borrarlo yo.
+          if (nuevo) { //Si es la primera llamada, s? tengo que borrarlo yo.
             QFile::remove(fichero);
           }
 
@@ -802,14 +802,24 @@ namespace dbiplus
 
     close();
     sql = query;
-    
+
     result.record_header.clear();
     result.records.clear();
     result.total_records = 0;
     pila_paginacion.clear();
     lista_bloques.clear();
     bool res = true;
-    res = gestionar_consulta_paginada(0); 
+
+    if ((SqliteDatabase *)db->manager()->isMandatoryQuery(sql)) {
+      QString salida = db->manager()->resolveMandatoryValues(sql);
+      res = procesa_datos_cadena_recibida(salida, 0);  
+    } else {
+      res = gestionar_consulta_paginada(0);
+    }
+  
+    
+
+     
     if (!res) {
       db->setErr(SQLITE_ERROR,sql);
       return false;
@@ -1039,9 +1049,6 @@ bool SqliteDataset::fetch_rows(int pos) {
         folder = folder.replace("\\","/") + "/";
       }
 
-    QString separador_campos = "|^|";
-    QString separador_lineas = "|^^|";
-    QString separador_total = "@";
 
 
     QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz");
@@ -1058,7 +1065,17 @@ bool SqliteDataset::fetch_rows(int pos) {
     qWarning("Procesando respuesta");
   }
   
+  
+  return procesa_datos_cadena_recibida(salida, offset);
+}
+
+bool SqliteDataset::procesa_datos_cadena_recibida(const String &salida, const int offset) {
+  QString separador_campos = "|^|";
+  QString separador_lineas = "|^^|";
+  QString separador_total = "@";
   QString salida_datos = salida.right(salida.length() - (salida.find(separador_total) + 1));
+
+
 
   if (result.total_records == 0) {
     QStringList lista_arrobas = QStringList::split(separador_total, salida);
@@ -1135,16 +1152,16 @@ bool SqliteDataset::fetch_rows(int pos) {
     int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
+      qWarning("Error de integridad de datos. El n?mero de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Fichero salida: " + QString(fichero_salida));
       for (int x = 0; x < result.record_header.size(); x++) {
         qWarning("Col : " + QString::number(x) + " : " + result.record_header[x].name + x == 0 ? "(* Omitida)": "");
       }
       return false;
     }
 
-    //qWarning("PROCESANDO VALORES LINEA Nº %d", sz);
+    //qWarning("PROCESANDO VALORES LINEA N? %d", sz);
 
-    //qWarning("PROCESANDO VALORES LINEA Nº %d" , sz);
+    //qWarning("PROCESANDO VALORES LINEA N? %d" , sz);
     // Creamos listado con valores
     sql_record rec;
     for (int i = 0; i < lista_size; i++) {  

@@ -391,6 +391,10 @@ public:
 
   FLTableMetaData *getMetadataCache(const QString &name);
 
+  bool isMandatoryQuery(QString &query);
+
+  QString resolveMandatoryValues(QString &query);
+
 private:
 
   /**
