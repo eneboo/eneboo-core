@@ -1788,7 +1788,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       fieldsCachedNames.append(pkName);
 
       // Sacamos el nombre de los campos existentes.
-      QStrinList fieldsNamesList = tmd->fieldsNames().split(",");
+      QStringList fieldsNamesList = tmd->fieldsNames()->split(",");
       bool isPermanent = false;
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
 
@@ -1881,10 +1881,10 @@ void FLManager::initCacheLite() {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
-  QStringList queryParts = query.split(" ");
+  QStringList queryParts = query->split(" ");
   if (queryParts.count() > 6 || (queryParts.count() > 8 && query.contains("1 = 1"))) {
-    if (queryParts[0].toUpper() == "SELECT" && queryParts[2].toUpper() == "FROM") {
-      FLTableMetaData *tmd = metatada(queryParts[3]);
+    if (toupper(queryParts[0]) == "SELECT" && toupper(queryParts[2]) == "FROM") {
+      FLTableMetaData *tmd = metadata(queryParts[3]);
       if (!tmd) {
         return false;
       }
@@ -1896,12 +1896,12 @@ bool FLManager::isMandatoryQuery(QString &query)
 
 QString FLManager::resolveMandatoryValues(QString &query)
 {
-    QStringList queryParts = query.split(" ");
+    QStringList queryParts = query->plit(" ");
     QString tableName = queryParts[3];
     queryParts[3] += "_cachelite";
-    FLTableMetaData *tmd = metatada(tableName);
+    FLTableMetaData *tmd = metadata(tableName);
     QString newQuery = queryParts.join(" ");
-    q = new FLSqlQuery(parent, "cachelite");
+    FLSqlQuery *q = new FLSqlQuery(0, "cachelite");
     q->setForwardOnly(true);
 
     QString result = "";
@@ -1911,14 +1911,14 @@ QString FLManager::resolveMandatoryValues(QString &query)
       QString separador_lineas = "|^^|";
       QString separador_total = "@";
       result += q->size() + separador_total;
-      QStringList fieldsNames = tmd->fieldsNames().split(",");
+      QStringList fieldsNamesList = tmd->fieldsNames().split(",");
       // Nombre de campos separados por |^|
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
         QString fieldNameOrig = *it;
         result += fieldNameOrig + separador_campos;
       }
       result += separador_lineas;
-      int countCampos = count(fieldsNames);
+      int countCampos = fieldsNamesList.length;
       while (q->next()) {
         for (int i = 0; i < countCampos; i++) {
           result += QString(q->value(i)) + separador_campos;
