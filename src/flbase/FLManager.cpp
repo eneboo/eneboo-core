@@ -1785,17 +1785,29 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       QString pkName = tmd->primaryKey();
       fieldsCachedNames.append(pkName);
 
-      for (QStringList::Iterator it = fieldsCachedNames.begin(); it != fieldsCachedNames.end(); ++it) {
-        FLFieldMetaData *fieldOriginal = tmd->field(*it);
-          // Eliminados relaciones...
-          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añdiendo %1 a la tabla %2").arg(fieldOriginal->name()).arg(tableName));
-          FLFieldMetaData *fieldCached = new FLFieldMetaData(fieldOriginal);
+      // Sacamos el nombre de los campos existentes.
+      QStrinList fieldsNamesList = tmd->fieldsNames().split(",");
+      for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
+
+        QString fieldNameOrig = *it;
+        bool found = false;
+        for (QStringList::Iterator it2 = fieldsCachedNames.begin(); it2 != fieldsCachedNames.end(); ++it2) {
+          QString fieldNameCache = *it2;
+          if (fieldNameCache == "*" || fieldNameCache == fieldNameOrig) {
+            found = true;
+            break;
+          }
+        }
+
+        if (found)
+          FLFieldMetaData *fieldCached = new FLFieldMetaData(tmd->field(fieldNameOrig));
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añdiendo %1 a la tabla %2").arg(fieldCached->name()).arg(tableName));
           fieldCached->clearRelationList();
-          if (fieldOriginal->name() == pkName) {
+          if (fieldCached->name() == pkName) {
             fieldCached->setIsPrimaryKey(true);
           }
           newMtd->addFieldMD(fieldCached);
-        }
+      }
       
       qWarning( QApplication::tr("FLManager::checkTablaCache : REGISTRANDO: %1").arg(tableName));
       cacheMetaData_->insert(tableName, newMtd); 
