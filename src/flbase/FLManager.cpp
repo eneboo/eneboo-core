@@ -1882,13 +1882,13 @@ void FLManager::initCacheLite() {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
-  QStringList *queryParts = query.split(" ");
-  if (queryParts.count() > 6 || (queryParts.count() > 8 && query.contains("1 = 1"))) {
+  QStringList *queryParts = QStringList::split(',',query);
+  if (queryParts.size() > 6 || (queryParts.length() > 8 && query.contains("1 = 1"))) {
     QString *valor1 = queryParts[0];
     QString *valor2 = queryParts[2];
     if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
       QString *tableName = queryParts[3];
-      FLTableMetaData *tmd = metadata(tableName);
+      FLTableMetaData *tmd = metadata(QString(tableName));
       if (!tmd) {
         return false;
       }
