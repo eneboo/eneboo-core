@@ -925,7 +925,7 @@ bool FLUtil::writeDBSettingEntry(const QString &key, const QString &value)
   }
 
   if (tmd->useCachedFields()) {
-    aqApp->call("sys.updateCachedTables",QSArgumentList());
+    aqApp->call("sys.updateCachedTables",QSArgumentList(), 0);
   }
 
   return result;

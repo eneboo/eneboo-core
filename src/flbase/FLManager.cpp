@@ -1788,7 +1788,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
       fieldsCachedNames.append(pkName);
 
       // Sacamos el nombre de los campos existentes.
-      QStringList fieldsNamesList = tmd->fieldsNames()->split(",");
+      QStringList fieldsNamesList = tmd->fieldsNames().split(",");
       bool isPermanent = false;
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
 
@@ -1805,14 +1805,15 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           }
         }
 
-        if (found)
-          FLFieldMetaData *fieldCached = new FLFieldMetaData(tmd->field(fieldNameOrig));
-          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añdiendo %1 a la tabla %2").arg(fieldCached->name()).arg(tableName));
-          fieldCached->clearRelationList();
-          if (fieldCached->name() == pkName) {
-            fieldCached->setIsPrimaryKey(true);
+        if (found) {
+            FLFieldMetaData *fieldCached = new FLFieldMetaData(tmd->field(fieldNameOrig));
+            qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añdiendo %1 a la tabla %2").arg(fieldCached->name()).arg(tableName));
+            fieldCached->clearRelationList();
+            if (fieldCached->name() == pkName) {
+              fieldCached->setIsPrimaryKey(true);
+            }
+            newMtd->addFieldMD(fieldCached);
           }
-          newMtd->addFieldMD(fieldCached);
       }
       
       qWarning( QApplication::tr("FLManager::checkTablaCache : REGISTRANDO: %1").arg(tableName));
@@ -1881,7 +1882,7 @@ void FLManager::initCacheLite() {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
-  QStringList queryParts = query->split(" ");
+  QStringList *queryParts = query.split(" ");
   if (queryParts.count() > 6 || (queryParts.count() > 8 && query.contains("1 = 1"))) {
     if (toupper(queryParts[0]) == "SELECT" && toupper(queryParts[2]) == "FROM") {
       FLTableMetaData *tmd = metadata(queryParts[3]);
@@ -1896,7 +1897,7 @@ bool FLManager::isMandatoryQuery(QString &query)
 
 QString FLManager::resolveMandatoryValues(QString &query)
 {
-    QStringList queryParts = query->plit(" ");
+    QStringList queryParts = query.plit(" ");
     QString tableName = queryParts[3];
     queryParts[3] += "_cachelite";
     FLTableMetaData *tmd = metadata(tableName);
@@ -1918,10 +1919,10 @@ QString FLManager::resolveMandatoryValues(QString &query)
         result += fieldNameOrig + separador_campos;
       }
       result += separador_lineas;
-      int countCampos = fieldsNamesList.length;
+      int countCampos = fieldsNamesList.size();
       while (q->next()) {
         for (int i = 0; i < countCampos; i++) {
-          result += QString(q->value(i)) + separador_campos;
+          result += (q->value(i).toString() + separador_campos;
         }
         result += separador_lineas;
       }
