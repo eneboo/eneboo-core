@@ -40,6 +40,7 @@
 #include <math.h>
 #include <time.h>
 #include "../flbase/FLSqlConnections.h"
+#include "../flbase/FLSqlDatabase.h"
 
 #define LIMIT_RESULT 1000
 
