@@ -36,7 +36,7 @@ TARGET = sqlapi
 
 LIBS += -L$$PREFIX/lib
 
-INCLUDEPATH += $$ROOT/src/qt/include ./
+INCLUDEPATH += $$ROOT/src/qt/include ./$$ROOT/src/flbase
 
 VERSION = 1.00
 

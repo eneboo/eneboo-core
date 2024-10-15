@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
+#include "FLSqlConnections.h"
 
 #define LIMIT_RESULT 1000
 
@@ -810,8 +811,8 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    if ((SqliteDatabase *)db->manager()->isMandatoryQuery(sql)) {
-      QString salida = db->manager()->resolveMandatoryValues(sql);
+    if (FLSqlConnections::database()->manager()->isMandatoryQuery(sql)) {
+      QString salida = FLSqlConnections::database()->manager()->resolveMandatoryValues(sql);
       res = procesa_datos_cadena_recibida(salida, 0);  
     } else {
       res = gestionar_consulta_paginada(0);
@@ -1069,7 +1070,7 @@ bool SqliteDataset::fetch_rows(int pos) {
   return procesa_datos_cadena_recibida(salida, offset);
 }
 
-bool SqliteDataset::procesa_datos_cadena_recibida(const String &salida, const int offset) {
+bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const int offset) {
   QString separador_campos = "|^|";
   QString separador_lineas = "|^^|";
   QString separador_total = "@";
