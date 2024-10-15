@@ -1922,7 +1922,7 @@ QString FLManager::resolveMandatoryValues(QString &query)
       int countCampos = fieldsNamesList.size();
       while (q->next()) {
         for (int i = 0; i < countCampos; i++) {
-          result += (q->value(i).toString() + separador_campos;
+          result += q->value(i).toString() + separador_campos;
         }
         result += separador_lineas;
       }
