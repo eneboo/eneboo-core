@@ -1884,8 +1884,11 @@ bool FLManager::isMandatoryQuery(QString &query)
 {
   QStringList *queryParts = query.split(" ");
   if (queryParts.count() > 6 || (queryParts.count() > 8 && query.contains("1 = 1"))) {
-    if (toupper(queryParts[0]) == "SELECT" && toupper(queryParts[2]) == "FROM") {
-      FLTableMetaData *tmd = metadata(queryParts[3]);
+    QString valor1 = queryParts[0];
+    QString valor2 = queryParts[2];
+    if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
+      QString tableName = queryParts[3];
+      FLTableMetaData *tmd = metadata(tableName);
       if (!tmd) {
         return false;
       }
