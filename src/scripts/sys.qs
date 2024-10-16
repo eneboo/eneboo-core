@@ -18,8 +18,12 @@ var form = this;
  ***************************************************************************/
 
 function init() {
-
+  // Para inicializar cacheLite.
   aqApp.db().manager().initCacheLite();
+  aqApp.db().manager().metadata("flsettings");
+  sys.updateCachedTables(["flareas"]);
+  // Para inicializar cacheLite.
+
   var settings = new AQSettings;
 
   if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
@@ -3344,7 +3348,7 @@ function updateCachedTables(tableNames)
 
   }
 
-  //debug("Consulta " + whereCache);
+  debug("Consulta " + whereCache);
   var qryCachesFields = new FLSqlQuery(null, "cachelite");
   qryCachesFields.setSelect("tablename,timestamp");
   qryCachesFields.setFrom("timestamps_cachelite");

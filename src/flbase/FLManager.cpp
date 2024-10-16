@@ -1736,7 +1736,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   if (!tmd) {
     return;
   }
-  if (!tmd->useCachedFields() && tmd->name() != "flsettings") {
+  if (!tmd->useCachedFields()) {
     //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
@@ -1796,7 +1796,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
         bool found = false;
         for (QStringList::Iterator it2 = fieldsCachedNames.begin(); it2 != fieldsCachedNames.end(); ++it2) {
           QString fieldNameCache = *it2;
-          if (fieldNameCache == "*" || tmd->name() == "flsettings") {
+          if (fieldNameCache == "*") {
             isPermanent = true;
           }
           if (fieldNameCache == "*" || fieldNameCache == fieldNameOrig) {
@@ -1883,6 +1883,7 @@ void FLManager::initCacheLite() {
 bool FLManager::isMandatoryQuery(QString &query)
 {
   QStringList queryParts = QStringList::split(',',query);
+  qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | "));
   if (queryParts.size() > 6 || (queryParts.size() > 8 && query.contains("1 = 1"))) {
     QString valor1 = queryParts[0];
     QString valor2 = queryParts[2];
@@ -1905,6 +1906,7 @@ QString FLManager::resolveMandatoryValues(QString &query)
     queryParts[3] += "_cachelite";
     FLTableMetaData *tmd = metadata(tableName);
     QString newQuery = queryParts.join(" ");
+    qWarning("FLManager::resolveMandatoryValues : New Query: " + newQuery);
     FLSqlQuery *q = new FLSqlQuery(0, "cachelite");
     q->setForwardOnly(true);
 
