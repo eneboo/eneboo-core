@@ -1883,7 +1883,7 @@ void FLManager::initCacheLite() {
 bool FLManager::isMandatoryQuery(QString &query)
 {
   QStringList queryParts = QStringList::split(',',query);
-  qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | "));
+  qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | ") + "Size:%d", queryParts.size());
   if (queryParts.size() == 6 || (queryParts.size() == 8 && query.contains("1 = 1"))) {
     qWarning("FLManager::isMandatoryQuery : PASO1");
     QString valor1 = queryParts[0];
