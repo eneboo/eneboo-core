@@ -1934,15 +1934,19 @@ QString FLManager::resolveMandatoryValues(QString &query)
         if (lineas != "") {
           lineas += separador_campos;
         }
-          QString new_value = q->value(0).toString();
-          if (new_value == "") {
+          QString new_value = q->value(0);
+          
+          if (new_value.isEmpty()) {
             new_value = "|^V^|";
-          }
+          } 
+          
           if (q->value(0).isNull()) {
             new_value = "|^N^|";
           }
+          
           lineas += new_value;
       }
+      result += lineas;
     }
       
     qWarning("FLManager::resolveMandatoryValues : Result: " + result); 
