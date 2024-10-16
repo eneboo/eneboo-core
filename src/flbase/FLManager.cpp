@@ -1884,18 +1884,23 @@ bool FLManager::isMandatoryQuery(QString &query)
 {
   QStringList queryParts = QStringList::split(',',query);
   qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | "));
-  if (queryParts.size() > 6 || (queryParts.size() > 8 && query.contains("1 = 1"))) {
+  if (queryParts.size() == 6 || (queryParts.size() == 8 && query.contains("1 = 1"))) {
+    qWarning("FLManager::isMandatoryQuery : PASO1");
     QString valor1 = queryParts[0];
     QString valor2 = queryParts[2];
     if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
+      qWarning("FLManager::isMandatoryQuery : PASO2");
       QString tableName = queryParts[3];
       FLTableMetaData *tmd = metadata(tableName);
       if (!tmd) {
+        qWarning("FLManager::isMandatoryQuery : PASO3 NO");
         return false;
       }
+      qWarning("FLManager::isMandatoryQuery : PASO4 %s" , tmd->useCachedFields() ? "SI" : "NO");
       return tmd->useCachedFields();
     }
   }
+  qWarning("FLManager::isMandatoryQuery : PASO5 NO");
   return false;
 }
 
