@@ -1893,12 +1893,11 @@ bool FLManager::isMandatoryQuery(QString &query)
     }
     size++;
   } */
-  qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | ") + "Size:%d", queryParts.size());
+  qWarning("FLManager::isMandatoryQuery : Size:%d", queryParts.size());
   if (queryParts.size() == 6 || (queryParts.size() == 8 && query.contains("1 = 1"))) {
     qWarning("FLManager::isMandatoryQuery : PASO1");
-    QString valor1 = queryParts[0];
     QString valor2 = queryParts[2];
-    if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
+    if (valor2.lower() == "from") {
       qWarning("FLManager::isMandatoryQuery : PASO2");
       QString tableName = queryParts[3];
       FLTableMetaData *tmd = metadata(tableName);
