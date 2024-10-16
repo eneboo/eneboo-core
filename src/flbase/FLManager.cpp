@@ -1922,13 +1922,48 @@ QString FLManager::resolveMandatoryValues(QString &query)
     q->setForwardOnly(true);
 
     QString result = "";
+    QString tipoCampo = "<class 'str'>";
+    int fltype = tmd->field(fieldName).type();
+    switch (fltype) {
+      case QVariant::Int:
+        tipoCampo = "<class 'int'>";
+        break;
+      case FLFieldMetaData::Serial:
+      case QVariant::UInt:
+        tipoCampo = "<class 'int'>";
+        break;
+      case QVariant::Bool:
+      case FLFieldMetaData::Unlock:
+        tipoCampo = "<class 'bool'>";
+        break;
+      case QVariant::Double:
+        tipoCampo = "<class 'double'>";
+        break;
+      case QVariant::Time:
+        tipoCampo = "<class 'datetime.time'>";
+        break;
+      case QVariant::Date:
+        tipoCampo = "<class 'datetime.date'>";
+        break;
+/*       case QVariant::String:
+      case QVariant::Pixmap:
+      case QVariant::StringList:
+        tipoCampo = "<class 'str'>";
+        break; */
+/*       case QVariant::ByteArray:
+        type = QVariant::ByteArray;
+        break;
+      case QVariant::DateTime:
+        type=QVariant::DateTime;
+        break; */
+  }
 
     if (q->exec(newQuery)) {
       QString separador_campos = "|^|";
       QString separador_lineas = "|^^|";
       QString separador_total = "@";
       result = "1" + separador_total;
-      result += fieldName + separador_lineas;
+      result += fieldName + ":" +tipoCampo + separador_lineas;
       QString lineas = "";
       while (q->next()) {
         if (lineas != "") {
