@@ -1895,21 +1895,17 @@ bool FLManager::isMandatoryQuery(QString &query)
   } */
   qWarning("FLManager::isMandatoryQuery : Size:%d", queryParts.size());
   if (queryParts.size() == 6 || (queryParts.size() == 8 && query.contains("1 = 1"))) {
-    qWarning("FLManager::isMandatoryQuery : PASO1");
-    QString valor2 = queryParts[2];
-    if (valor2.lower() == "from") {
-      qWarning("FLManager::isMandatoryQuery : PASO2");
+    QString fields = queryParts[1];
+    QString from_ = queryParts[2];
+    if (from_.lower() == "from" && !fields.contains(",")) {
       QString tableName = queryParts[3];
       FLTableMetaData *tmd = metadata(tableName);
       if (!tmd) {
-        qWarning("FLManager::isMandatoryQuery : PASO3 NO");
         return false;
       }
-      qWarning("FLManager::isMandatoryQuery : PASO4 %s" , tmd->useCachedFields() ? "SI" : "NO");
       return tmd->useCachedFields();
     }
   }
-  qWarning("FLManager::isMandatoryQuery : PASO5 NO");
   return false;
 }
 
@@ -1917,6 +1913,7 @@ QString FLManager::resolveMandatoryValues(QString &query)
 {
     QStringList queryParts = QStringList::split(' ',query);
     QString tableName = queryParts[3];
+    QString fieldName = queryParts[1];
     queryParts[3] += "_cachelite";
     FLTableMetaData *tmd = metadata(tableName);
     QString newQuery = queryParts.join(" ");
@@ -1935,7 +1932,9 @@ QString FLManager::resolveMandatoryValues(QString &query)
       // Nombre de campos separados por |^|
       for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
         QString fieldNameOrig = *it;
-        result += fieldNameOrig + separador_campos;
+        if (fieldNameOrig == fieldName) {
+            result += fieldNameOrig + separador_campos;
+        }
       }
       result += separador_lineas;
       int countCampos = fieldsNamesList.size();
