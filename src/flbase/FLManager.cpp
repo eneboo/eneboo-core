@@ -1886,11 +1886,14 @@ bool FLManager::isMandatoryQuery(QString &query)
   int size = 0;
   QString valor1;
   QString valor2;
+  QString tableName;
   for (QStringList::Iterator it = queryParts.begin(); it != queryParts.end(); ++it) {
     if (size == 0) {
       valor1 = *it;
      } else if (size == 2) {
       valor2 = *it;
+    } else if (size == 3) {
+      tableName = *it;
     }
     size++;
   }
@@ -1898,9 +1901,8 @@ bool FLManager::isMandatoryQuery(QString &query)
   if (size == 6 || (size == 8 && query.contains("1 = 1"))) {
     qWarning("FLManager::isMandatoryQuery : PASO1");
 
-    if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
+    if (valor1.lower() == "select" && valor2.lower() == "from") {
       qWarning("FLManager::isMandatoryQuery : PASO2");
-      QString tableName = queryParts[3];
       FLTableMetaData *tmd = metadata(tableName);
       if (!tmd) {
         qWarning("FLManager::isMandatoryQuery : PASO3 NO");
