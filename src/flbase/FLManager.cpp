@@ -1893,7 +1893,7 @@ bool FLManager::isMandatoryQuery(QString &query)
     }
     size++;
   } */
-  qWarning("FLManager::isMandatoryQuery : Size:%d", queryParts.size());
+  //qWarning("FLManager::isMandatoryQuery : Size:%d", queryParts.size());
   if (queryParts.size() == 6 || (queryParts.size() == 8 && query.contains("1 = 1"))) {
     QString fields = queryParts[1];
     QString from_ = queryParts[2];
