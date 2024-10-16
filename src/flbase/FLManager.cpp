@@ -1882,12 +1882,8 @@ void FLManager::initCacheLite() {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
-  QStringList queryParts = QStringList::split(',',query);
-  int size = 0;
-  QString valor1;
-  QString valor2;
-  QString tableName;
-  for (QStringList::Iterator it = queryParts.begin(); it != queryParts.end(); ++it) {
+  QStringList queryParts = QStringList::split(' ',query);
+/*   for (QStringList::Iterator it = queryParts.begin(); it != queryParts.end(); ++it) {
     if (size == 0) {
       valor1 = *it;
      } else if (size == 2) {
@@ -1896,13 +1892,15 @@ bool FLManager::isMandatoryQuery(QString &query)
       tableName = *it;
     }
     size++;
-  }
-  qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | ") + "", queryParts.size());
-  if (size == 6 || (size == 8 && query.contains("1 = 1"))) {
+  } */
+  qWarning("FLManager::isMandatoryQuery : " + queryParts.join(" | ") + "Size:%d", queryParts.size());
+  if (queryParts.size() == 6 || (queryParts.size() == 8 && query.contains("1 = 1"))) {
     qWarning("FLManager::isMandatoryQuery : PASO1");
-
-    if (valor1.lower() == "select" && valor2.lower() == "from") {
+    QString valor1 = queryParts[0];
+    QString valor2 = queryParts[2];
+    if (valor1.lower() == "SELECT" && valor2.lower() == "FROM") {
       qWarning("FLManager::isMandatoryQuery : PASO2");
+      QString tableName = queryParts[3];
       FLTableMetaData *tmd = metadata(tableName);
       if (!tmd) {
         qWarning("FLManager::isMandatoryQuery : PASO3 NO");
