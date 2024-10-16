@@ -1934,9 +1934,9 @@ QString FLManager::resolveMandatoryValues(QString &query)
         if (lineas != "") {
           lineas += separador_campos;
         }
-          QString new_value = q->value(0);
+          QString new_value = q->value(0).toString();
           
-          if (new_value.isEmpty()) {
+          if (new_value == "") {
             new_value = "|^V^|";
           } 
           
