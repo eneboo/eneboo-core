@@ -528,8 +528,11 @@ class MainWindow
     
     connect(tw, "selected(const QString&)", this, "tabChanged");
   
-    if (tw.count == 1 && this.twCorner_ != undefined)
+    if (tw.count == 1 && this.twCorner_ != undefined) {
       this.twCorner_.show();
+    }
+
+    return fm;
   }
 
   function addRecent(action)
@@ -1004,6 +1007,7 @@ function aqAppScriptMain()
 function triggerAction(signature)
 {
   var mw = this.mainWindow_;
+  var tw = this.tw_;
   var sgt = signature.split(":");
   var ok = true;
 
@@ -1033,7 +1037,9 @@ function triggerAction(signature)
 
     case "openDefaultForm()":
       if (ok) {
-        mw.addForm(ac.name);
+        var fm = mw.addForm(ac.name);
+        var idx = tw.indexOf(fm);
+        tw.setCurrentPage(idx);
         mw.addRecent(ac);
       }
       break;
