@@ -1929,12 +1929,12 @@ QString FLManager::resolveMandatoryValues(QString &query)
       QString separador_total = "@";
       result += q->size() + separador_total;
       result += fieldNameOrig + separador_lineas;
-      }
       while (q->next()) {
           result += q->value(0).toString() + separador_campos;
         result += separador_lineas;
       }
     }
+      
     qWarning("FLManager::resolveMandatoryValues : Result: " + result); 
     return result;
 }
