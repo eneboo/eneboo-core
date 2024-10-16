@@ -1928,23 +1928,13 @@ QString FLManager::resolveMandatoryValues(QString &query)
       QString separador_lineas = "|^^|";
       QString separador_total = "@";
       result += q->size() + separador_total;
-      QStringList fieldsNamesList = QStringList::split(',',tmd->fieldsNames());
-      // Nombre de campos separados por |^|
-      for (QStringList::Iterator it = fieldsNamesList.begin(); it != fieldsNamesList.end(); ++it) {
-        QString fieldNameOrig = *it;
-        if (fieldNameOrig == fieldName) {
-            result += fieldNameOrig + separador_campos;
-        }
+      result += fieldNameOrig + separador_lineas;
       }
-      result += separador_lineas;
-      int countCampos = fieldsNamesList.size();
       while (q->next()) {
-        for (int i = 0; i < countCampos; i++) {
-          result += q->value(i).toString() + separador_campos;
-        }
+          result += q->value(0).toString() + separador_campos;
         result += separador_lineas;
       }
     }
-
+    qWarning("FLManager::resolveMandatoryValues : Result: " + result); 
     return result;
 }
