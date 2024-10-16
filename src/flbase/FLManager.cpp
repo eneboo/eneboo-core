@@ -1927,11 +1927,21 @@ QString FLManager::resolveMandatoryValues(QString &query)
       QString separador_campos = "|^|";
       QString separador_lineas = "|^^|";
       QString separador_total = "@";
-      result += q->size() + separador_total;
+      result = "1" + separador_total;
       result += fieldName + separador_lineas;
+      QString lineas = "";
       while (q->next()) {
-          result += q->value(0).toString() + separador_campos;
-        result += separador_lineas;
+        if (lineas != "") {
+          lineas += separador_campos;
+        }
+          QString new_value = q->value(0).toString();
+          if (new_value == "") {
+            new_value = "|^V^|";
+          }
+          if (q->value(0).isNull()) {
+            new_value = "|^N^|";
+          }
+          lineas += new_value;
       }
     }
       
