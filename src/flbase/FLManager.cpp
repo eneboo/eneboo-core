@@ -1736,7 +1736,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
   if (!tmd) {
     return;
   }
-  if (!tmd->useCachedFields()) {
+  if (!tmd->useCachedFields() && tmd->name() != "flsettings") {
     //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
@@ -1796,7 +1796,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
         bool found = false;
         for (QStringList::Iterator it2 = fieldsCachedNames.begin(); it2 != fieldsCachedNames.end(); ++it2) {
           QString fieldNameCache = *it2;
-          if (fieldNameCache == "*") {
+          if (fieldNameCache == "*" || tmd->name() == "flsettings") {
             isPermanent = true;
           }
           if (fieldNameCache == "*" || fieldNameCache == fieldNameOrig) {
