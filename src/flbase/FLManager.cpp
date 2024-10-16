@@ -1916,7 +1916,7 @@ bool FLManager::isMandatoryQuery(QString &query)
 
 QString FLManager::resolveMandatoryValues(QString &query)
 {
-    QStringList queryParts = QStringList::split(',',query);
+    QStringList queryParts = QStringList::split(' ',query);
     QString tableName = queryParts[3];
     queryParts[3] += "_cachelite";
     FLTableMetaData *tmd = metadata(tableName);
