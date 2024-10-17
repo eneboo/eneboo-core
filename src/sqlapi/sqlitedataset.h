@@ -99,7 +99,7 @@ public:
   QString tokenApi;
   QString userIdApi;
   QString databaseApi;
-  FLSqlDriver driver_;
+  FLSqlDriver *driver_;
   int counter_qry;
 };
 

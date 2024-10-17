@@ -812,8 +812,8 @@ namespace dbiplus
 
     
 
-   if (driver_->db()->manager()->isMandatoryQuery(sql)) {
-      if (driver_->db()->manager()->initCacheLite(true)) {
+   if (db->driver_->db()->manager()->isMandatoryQuery(sql)) {
+      if (db->driver_->db()->manager()->initCacheLite(true)) {
         QString salida = driver_->db()->manager()->resolveMandatoryValues(sql);
         res = procesa_datos_cadena_recibida(salida, 0); 
       } else {
