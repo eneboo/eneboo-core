@@ -819,7 +819,7 @@ namespace dbiplus
       } else {
         res = false;
       } 
-    } else { */
+    } else { 
       res = gestionar_consulta_paginada(0);
  //   }
   
