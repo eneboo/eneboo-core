@@ -383,7 +383,7 @@ public:
     return initCount_;
   }
 
-  bool initCacheLite(const bool force = false);
+  bool initCacheLite(bool force = false);
 
   void checkTablaCache(FLTableMetaData *tmd);
 

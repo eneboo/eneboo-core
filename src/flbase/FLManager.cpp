@@ -1862,7 +1862,7 @@ void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
   }
 
-bool FLManager::initCacheLite(const bool force) {
+bool FLManager::initCacheLite(bool force) {
   if (db_->driverName() != "FLsqlapi" && !force) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("El driver %1 no es FLsqlapi").arg(db_->driverName()));
     return false;
