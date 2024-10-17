@@ -821,7 +821,7 @@ namespace dbiplus
       } 
     } else { 
       res = gestionar_consulta_paginada(0);
- //   }
+    }
   
     
 
