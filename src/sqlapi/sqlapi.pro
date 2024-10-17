@@ -13,7 +13,7 @@ CONFIG += warn_off create_prl link_prl
 !mac:CONFIG += plugin
 
 win32 {
-	CONFIG += dll exceptions shared
+	CONFIG += dll exceptions 
 	DLLDESTDIR = $$PREFIX/bin
 	DEFINES += OS_WIN=1
 	enable_win64:DEFINES += _OFF_T_DEFINED
