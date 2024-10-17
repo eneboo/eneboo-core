@@ -34,7 +34,7 @@ DESTDIR = $$PREFIX/lib
 
 TARGET = sqlapi
 
-LIBS += -L$$PREFIX/lib
+LIBS += -L$$PREFIX/lib -lflbase
 
 INCLUDEPATH += $$ROOT/src/qt/include ./$$ROOT/src/flbase
 
@@ -51,8 +51,3 @@ HEADERS += aqsqliteglobal.h \
            opcodes.h \
            config_sqlite.h \
  	         dataset.h qry_dat.h sqlitedataset.h
-
-win32 {
-	HEADERS += $$ROOT/src/flbase/FLSqlDatabase.h \
-			   $$ROOT/src//flbase/FLManager.h
-}
