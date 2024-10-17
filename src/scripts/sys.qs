@@ -19,7 +19,9 @@ var form = this;
 
 function init() {
 
-  aqApp.db().manager().initCacheLite()
+  if (aqApp.db().manager().initCacheLite()) {
+    sys.updateCachedTables(["flsettings"]);
+  }
 
   var settings = new AQSettings;
 

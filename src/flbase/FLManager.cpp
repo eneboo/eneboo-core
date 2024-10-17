@@ -1985,7 +1985,7 @@ QString FLManager::resolveMandatoryValues(QString &query)
       result += fieldName + ":" +tipoCampo + separador_lineas;
       QString lineas = "";
       while (q->next()) {
-        qWarning("Recogiendo linea");
+        //qWarning("Recogiendo linea");
         if (lineas != "") {
           lineas += separador_lineas;
         }
