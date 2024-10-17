@@ -34,7 +34,11 @@ DESTDIR = $$PREFIX/lib
 
 TARGET = sqlapi
 
-LIBS += -L$$PREFIX/lib -lflbase
+LIBS += -L$$PREFIX/lib
+
+win32 {
+	LIBS += -lflbase
+}
 
 INCLUDEPATH += $$ROOT/src/qt/include ./$$ROOT/src/flbase
 
