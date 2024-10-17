@@ -813,9 +813,9 @@ namespace dbiplus
     bool res = true;
 
     SqliteDatabase _db = *((SqliteDatabase *)db);
-    FLSqlDriver _driver = *((FLSqlDriver *)_db->driver());
-    FLSqlDatabase _db2 = *((FLSqlDatabase *)_driver->db());
-    FLManager _manager = *((FLManager *)_db2->manager());
+    FLSqlDriver _driver = *((FLSqlDriver *)_db.driver());
+    FLSqlDatabase _db2 = *((FLSqlDatabase *)_driver.db());
+    FLManager _manager = *((FLManager *)_db2.manager());
 
    if (manager->isMandatoryQuery(sql)) {
       if (manager->initCacheLite(true)) {
