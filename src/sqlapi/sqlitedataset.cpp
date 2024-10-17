@@ -39,10 +39,6 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
-#include "../flbase/FLSqlConnections.h"
-#include "../flbase/FLSqlDatabase.h"
-#include "../flbase/FLManager.h"
-
 #define LIMIT_RESULT 1000
 
 namespace dbiplus
@@ -813,9 +809,10 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    if (FLSqlConnections::database()->manager()->isMandatoryQuery(sql)) {
-      if (FLSqlConnections::database()->manager()->initCacheLite(true)) {
-        QString salida = FLSqlConnections::database()->manager()->resolveMandatoryValues(sql);
+
+    if (((SqliteDatabase *)db)->manager()->isMandatoryQuery(sql)) {
+      if (((SqliteDatabase *)db)->manager()->initCacheLite(true)) {
+        QString salida = ((SqliteDatabase *)db)->manager()->resolveMandatoryValues(sql);
         res = procesa_datos_cadena_recibida(salida, 0); 
       } else {
         res = false;
