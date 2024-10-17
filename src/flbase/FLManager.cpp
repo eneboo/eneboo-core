@@ -1864,6 +1864,7 @@ void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
 
 bool FLManager::initCacheLite() {
   if (db_->driverName() != "FLsqlapi") {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("La base de datos %1 no es FLsqlapi").arg(db_->database()));
     return false;
   }
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Inicializando cache lite"));
@@ -1968,12 +1969,14 @@ QString FLManager::resolveMandatoryValues(QString &query)
       QString separador_campos = "|^|";
       QString separador_lineas = "|^^|";
       QString separador_total = "@";
-      result = "1" + separador_total;
+      result = QString::number(q->size());
+      result += separador_total;
       result += fieldName + ":" +tipoCampo + separador_lineas;
       QString lineas = "";
       while (q->next()) {
+        qWarning("Recogiendo linea");
         if (lineas != "") {
-          lineas += separador_campos;
+          lineas += separador_lineas;
         }
           QString new_value = q->value(0).toString();
           
