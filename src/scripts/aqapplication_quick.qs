@@ -684,22 +684,22 @@ class MainWindow
     for (var i = 0; i < areas.length; ++i) {
       var ag = new QActionGroup(agm);
       ag.name = areas[i];
-      if (!sys.isDebuggerEnabled() && ag.name == "sys") break;
+      //if (!sys.isDebuggerEnabled() && ag.name == "sys") break; //
       ag.menuText = ag.text = mng.idAreaToDescription(ag.name);
       ag.usesDropDown = true;
       ag.setIconSet(new QIconSet(AQS.Pixmap_fromMimeSource("folder.png")));
 
       var modules = mng.listIdModules(ag.name);
       for (var j = 0; j < modules.length; ++j) {
-        if (modules[j] == "sys" && sys.isUserBuild())//
-          continue;//
+        //if (modules[j] == "sys" && sys.isUserBuild())//
+        //  continue;//
         var ac = new QActionGroup(ag);
         ac.name = modules[j];
-         if (sys.isQuickBuild()) { //
-            if (ac.name == "sys") {//
-                continue;//
-            }//
-         }//
+        // if (sys.isQuickBuild()) { //
+        //    if (ac.name == "sys") {//
+        //        continue;//
+        //    }//
+        // }//
 
         var actions = this.widgetActions(ac.name + ".ui", ac);
         if (actions == undefined) {
@@ -717,8 +717,8 @@ class MainWindow
         this.actSigMap_.setMapping(ac, "activated():initModule():" + ac.name);
         if (ac.name == "sys" && ag.name == "sys")
           {
-            if (sys.isDebuggerMode()) //
-              { //
+          //  if (sys.isDebuggerMode()) //
+          //    { //
     		
       var staticLoad = new QAction(ag);
       staticLoad.name = "staticLoaderSetupAction";
@@ -737,7 +737,7 @@ class MainWindow
 
 
 
-              } //
+      //        } //
             }
       }
    }           
