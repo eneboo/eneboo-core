@@ -98,7 +98,7 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   dataBase_->databaseApi = databaseApi;
   dataBase_->AQProc = AQProc;
   dataBase_->setDatabase(db);
-  dataBase_->driver_ = this;
+  dataBase_->db_ = db_;
 
   if (dataBase_->connect() != DB_CONNECTION_OK) {
 #ifdef FL_DEBUG
