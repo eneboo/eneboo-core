@@ -3385,7 +3385,7 @@ function updateCachedTables(tableNames)
 
 
 
-  if ("result" in res["salida"] && res["salida"]["result"] == "ok") {
+  if ("salida" in res && "result" in res["salida"] && res["salida"]["result"] == "ok") {
     const timestamp_server = res["salida"]["timestamp"];
     const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
     

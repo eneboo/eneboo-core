@@ -1867,6 +1867,18 @@ bool FLManager::initCacheLite(const bool force) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("El driver %1 no es FLsqlapi").arg(db_->driverName()));
     return false;
   }
+
+  QDict<FLSqlDatabase> *dictDb = FLSqlConnections::dictDatabases();
+  QDictIterator<FLSqlDatabase> it(*dictDb);
+
+  while (it.current())
+    {
+      if ("cachelite" == it.current()->connectionName()) {
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("La conexión cachelite ya está inicializada"));
+        return true;
+      }
+      ++it;
+    }
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Inicializando cache lite"));
   QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
   QDir dir(dbFolder);
@@ -1877,7 +1889,6 @@ bool FLManager::initCacheLite(const bool force) {
   }
   dbFolder = dir.absPath();
   QString fileCache = dbFolder + "/" + db_->database() + "_cachelite.sqlite3db";
-
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
     return false;
