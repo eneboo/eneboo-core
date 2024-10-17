@@ -818,11 +818,11 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    FLManager *manager = ((Database *)db)->manager();
+    FLSqlDatabase *db_ = FLSqlConnections::database();
 
-    if (FLSqlConnections::database()->manager()->isMandatoryQuery(sql)) {
-      if (FLSqlConnections::database()->manager()->initCacheLite(true)) {
-        QString salida = FLSqlConnections::database()->manager()->resolveMandatoryValues(sql);
+    if (db_->manager()->isMandatoryQuery(sql)) {
+      if (db_->manager()->initCacheLite(true)) {
+        QString salida = db_->manager()->resolveMandatoryValues(sql);
         res = procesa_datos_cadena_recibida(salida, 0); 
       } else {
         res = false;
