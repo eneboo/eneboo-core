@@ -18,7 +18,7 @@ enable_digidoc:SUBDIRS += libdigidoc/openssl/crypto libdigidoc/openssl/ssl libdi
 
 SUBDIRS += libxslt
 SUBDIRS += kudesigner teddy
-SUBDIRS += lrelease barcode kugar advance flmail libpq sqlite libmysql dbf flbase sqlapi plugins
+SUBDIRS += lrelease barcode kugar advance flmail flbase libpq sqlite libmysql dbf sqlapi plugins
 enable_flfcgi:SUBDIRS += flfcgi
 SUBDIRS += fllite
 
