@@ -13,7 +13,7 @@ CONFIG += warn_off create_prl link_prl
 !mac:CONFIG += plugin
 
 win32 {
-	CONFIG += dll exceptions 
+	CONFIG += dll exceptions shared
 	DLLDESTDIR = $$PREFIX/bin
 	DEFINES += OS_WIN=1
 	enable_win64:DEFINES += _OFF_T_DEFINED
@@ -52,3 +52,7 @@ HEADERS += aqsqliteglobal.h \
            config_sqlite.h \
  	         dataset.h qry_dat.h sqlitedataset.h
 
+win32 {
+	HEADERS += $$ROOT/src/flbase/FLSqlDatabase.h \
+			   $$ROOT/src//flbase/FLManager.h
+}
