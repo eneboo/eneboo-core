@@ -36,6 +36,7 @@
 #include "aqsqliteglobal.h"
 #include <qapplication.h>
 #include <qprocess.h>
+#include "../flbase/FLSqlConnections.h"
 
 namespace dbiplus
 {
