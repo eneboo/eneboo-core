@@ -383,7 +383,7 @@ public:
     return initCount_;
   }
 
-  void initCacheLite();
+  bool initCacheLite();
 
   void checkTablaCache(FLTableMetaData *tmd);
 

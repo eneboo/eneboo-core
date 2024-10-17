@@ -19,9 +19,10 @@ var form = this;
 
 function init() {
   // Para inicializar cacheLite.
-  aqApp.db().manager().initCacheLite();
-  aqApp.db().manager().metadata("flsettings");
-  sys.updateCachedTables(["flareas"]);
+  if (aqApp.db().manager().initCacheLite()) {
+    aqApp.db().manager().metadata("flsettings");
+    sys.updateCachedTables(["flareas"]);
+  }
   // Para inicializar cacheLite.
 
   var settings = new AQSettings;

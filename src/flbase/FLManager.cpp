@@ -1862,7 +1862,11 @@ void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
     cacheMetaData_->insert(name, tmd);
   }
 
-void FLManager::initCacheLite() {
+bool FLManager::initCacheLite() {
+  if (db_->driverName() != "FLsqlapi") {
+    return false;
+  }
+  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Inicializando cache lite"));
   QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
   QDir dir(dbFolder);
   
@@ -1877,6 +1881,8 @@ void FLManager::initCacheLite() {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
     return;
   }
+
+  return true;
 }
 
 
@@ -1923,7 +1929,7 @@ QString FLManager::resolveMandatoryValues(QString &query)
 
     QString result = "";
     QString tipoCampo = "<class 'str'>";
-    int fltype = tmd->field(fieldName).type();
+    int fltype = tmd->field(fieldName)->type();
     switch (fltype) {
       case QVariant::Int:
         tipoCampo = "<class 'int'>";
