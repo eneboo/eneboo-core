@@ -39,15 +39,10 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
-#ifdef Q_WS_WIN32
 #include "../flbase/FLSqlConnections.h"
-#include "../flbase/FLSqlDatabase.h"
-#include "../flbase/FLManager.h"
-#else
-#include "../flbase/FLSqlConnections.h"
-#include "../flbase/FLSqlDatabase.h"
-#include "../flbase/FLManager.h"
-#endif
+//#include "../flbase/FLSqlDatabase.h"
+//#include "../flbase/FLManager.h"
+
 #define LIMIT_RESULT 1000
 
 namespace dbiplus
@@ -818,18 +813,18 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    FLSqlDatabase *db_ = FLSqlConnections::database();
+    FLSqlDatabase *db_ = FLSqlConnections::database("default");
 
-    if (db_->manager()->isMandatoryQuery(sql)) {
+/*     if (db_->manager()->isMandatoryQuery(sql)) {
       if (db_->manager()->initCacheLite(true)) {
         QString salida = db_->manager()->resolveMandatoryValues(sql);
         res = procesa_datos_cadena_recibida(salida, 0); 
       } else {
         res = false;
       } 
-    } else {
+    } else { */
       res = gestionar_consulta_paginada(0);
-    }
+ //   }
   
     
 
