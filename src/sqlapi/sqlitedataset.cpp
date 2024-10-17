@@ -811,7 +811,7 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    FLManager _manager = *((FLManager *)db_.manager());
+    FLManager _manager = *((FLManager *)((SqliteDatabase *)db)->db_->manager());
 
    if (manager->isMandatoryQuery(sql)) {
       if (manager->initCacheLite(true)) {
