@@ -1889,6 +1889,11 @@ bool FLManager::initCacheLite() {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
+
+  if (!initCacheLite()) {
+    return false;
+  }
+
   QStringList queryParts = QStringList::split(' ',query);
 /*   for (QStringList::Iterator it = queryParts.begin(); it != queryParts.end(); ++it) {
     if (size == 0) {
