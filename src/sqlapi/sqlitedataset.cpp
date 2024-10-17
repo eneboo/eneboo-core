@@ -812,11 +812,14 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    
+    SqliteDatabase _db = *((SqliteDatabase *)db);
+    FLSqlDriver _driver = _db.((FLSqlDriver *)driver());
+    FLSqlDatabase _db2 = _driver.((FLSqlDatabase *)db());
+    FLManager _manager = _db2.((FLManager *)manager());
 
-   if (((SqliteDatabase *)db)->driver_->db()->manager()->isMandatoryQuery(sql)) {
-      if (((SqliteDatabase *)db)->driver_->db()->manager()->initCacheLite(true)) {
-        QString salida = ((SqliteDatabase *)db)->driver_->db()->manager()->resolveMandatoryValues(sql);
+   if (manager->isMandatoryQuery(sql)) {
+      if (manager->initCacheLite(true)) {
+        QString salida = manager->resolveMandatoryValues(sql);
         res = procesa_datos_cadena_recibida(salida, 0); 
       } else {
         res = false;
