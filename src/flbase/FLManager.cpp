@@ -1889,11 +1889,6 @@ bool FLManager::initCacheLite(const bool force) {
 
 bool FLManager::isMandatoryQuery(QString &query)
 {
-
-  if (!initCacheLite(true)) {
-    return false;
-  }
-
   QStringList queryParts = QStringList::split(' ',query);
 /*   for (QStringList::Iterator it = queryParts.begin(); it != queryParts.end(); ++it) {
     if (size == 0) {
@@ -1923,6 +1918,9 @@ bool FLManager::isMandatoryQuery(QString &query)
 
 QString FLManager::resolveMandatoryValues(QString &query)
 {
+    if (!initCacheLite(true)) {
+      return false;
+  }
     QStringList queryParts = QStringList::split(' ',query);
     QString tableName = queryParts[3];
     QString fieldName = queryParts[1];
