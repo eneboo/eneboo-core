@@ -814,8 +814,12 @@ namespace dbiplus
     bool res = true;
 
     if (FLSqlConnections::database()->manager()->isMandatoryQuery(sql)) {
-      QString salida = FLSqlConnections::database()->manager()->resolveMandatoryValues(sql);
-      res = procesa_datos_cadena_recibida(salida, 0);  
+      if (initCacheLite(true)) {
+        QString salida = FLSqlConnections::database()->manager()->resolveMandatoryValues(sql);
+        res = procesa_datos_cadena_recibida(salida, 0); 
+      } else {
+        res = false;
+      } 
     } else {
       res = gestionar_consulta_paginada(0);
     }
