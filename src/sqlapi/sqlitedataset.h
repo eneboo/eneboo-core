@@ -30,8 +30,8 @@
 #define _SQLITEDATASET_H
 
 #include <stdio.h>
-#include <dataset.h>
-#include <sqlite3.h>
+#include "dataset.h"
+#include "sqlite3.h"
 #include <qstringlist.h>
 #include "aqsqliteglobal.h"
 #include <qapplication.h>
