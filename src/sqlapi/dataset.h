@@ -34,7 +34,7 @@
 #include <string>
 #include <map>
 #include <list>
-#include <qry_dat.h>
+#include "qry_dat.h"
 #include <stdarg.h>
 
 #include "aqsqliteglobal.h"
