@@ -39,7 +39,6 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
-#include "../flbase/FLSqlDatabase.h"
 #include "../flbase/FLManager.h"
 
 #define LIMIT_RESULT 1000
@@ -812,10 +811,7 @@ namespace dbiplus
     lista_bloques.clear();
     bool res = true;
 
-    SqliteDatabase _db = *((SqliteDatabase *)db);
-    FLSqlDriver _driver = *((FLSqlDriver *)_db.driver());
-    FLSqlDatabase _db2 = *((FLSqlDatabase *)_driver.db());
-    FLManager _manager = *((FLManager *)_db2.manager());
+    FLManager _manager = *((FLManager *)db_.manager());
 
    if (manager->isMandatoryQuery(sql)) {
       if (manager->initCacheLite(true)) {

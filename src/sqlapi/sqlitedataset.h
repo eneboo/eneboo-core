@@ -36,7 +36,7 @@
 #include "aqsqliteglobal.h"
 #include <qapplication.h>
 #include <qprocess.h>
-#include "../flbase/FLSqlDriver.h"
+#include "../flbase/FLSqlDatabase.h"
 
 namespace dbiplus
 {
@@ -99,7 +99,7 @@ public:
   QString tokenApi;
   QString userIdApi;
   QString databaseApi;
-  FLSqlDriver *driver_;
+  FLSqlDatabase *db_;
   int counter_qry;
 };
 
