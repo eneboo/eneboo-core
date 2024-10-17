@@ -813,9 +813,9 @@ namespace dbiplus
 
     FLManager _manager = *((FLManager *)((SqliteDatabase *)db)->db_->manager());
 
-   if (manager->isMandatoryQuery(sql)) {
-      if (manager->initCacheLite(true)) {
-        QString salida = manager->resolveMandatoryValues(sql);
+   if (_manager->isMandatoryQuery(sql)) {
+      if (_manager->initCacheLite(true)) {
+        QString salida = _manager->resolveMandatoryValues(sql);
         res = procesa_datos_cadena_recibida(salida, 0); 
       } else {
         res = false;
