@@ -1879,7 +1879,7 @@ bool FLManager::initCacheLite() {
 
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
-    return;
+    return false;
   }
 
   return true;
