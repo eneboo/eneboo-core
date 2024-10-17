@@ -40,6 +40,7 @@
 #include <math.h>
 #include <time.h>
 #include "../flbase/FLManager.h"
+#include "../flbase/FLSqlDatabase.h"
 
 #define LIMIT_RESULT 1000
 
@@ -810,8 +811,8 @@ namespace dbiplus
     pila_paginacion.clear();
     lista_bloques.clear();
     bool res = true;
-
-    FLManager _manager = *((FLManager *)((SqliteDatabase *)db)->db_->manager());
+    FLSqlDatabase *_db = ((SqliteDatabase *)db)->db_;
+    FLManager *_manager = db_->manager();
 
    if (_manager->isMandatoryQuery(sql)) {
       if (_manager->initCacheLite(true)) {
