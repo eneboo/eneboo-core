@@ -1187,11 +1187,9 @@ QVariant SqliteResult::data(int i)
   const char *fieldName = (*fields_object)[i].props.name.c_str();
   field_value fV = (*fields_object)[i].val;
   
-  QString str_val = fV.get_asString();
+  QString str_val = fV.get_asString().c_str();
 
-  if (qstrcmp(fieldName, "binario") == 0 || str_val.startsWith("|M^B|")) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
-    QString str(str_val.c_str());
-    
+  if (qstrcmp(fieldName, "binario") == 0 || str_val.startsWith("|M^B|")) { // <- esto es un hack para guardar hexadecimal y interpretar binario. 
 
     if (str_val.startsWith("|M^B|")) {
       str.remove(0, 5);
