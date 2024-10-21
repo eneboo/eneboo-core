@@ -1203,7 +1203,11 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
             v.set_asBool(valor == "True");
           } else if (tipos_columnas[i] == "<class 'NoneType'>") {
             v.set_asString(valor);
-          } else {
+          } else if (tipos_columnas[i] == "<class 'memoryview'>") {
+            v.set_asString("|M^B|" + valor);
+          }
+          
+          else {
             qWarning("TOFIX TYPO:" + QString(tipos_columnas[i]));
             v.set_asString(valor); // entra siempre como string ...
           }
