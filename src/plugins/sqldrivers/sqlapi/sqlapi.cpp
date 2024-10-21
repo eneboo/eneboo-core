@@ -1190,9 +1190,9 @@ QVariant SqliteResult::data(int i)
   QString str_val = fV.get_asString().c_str();
 
   if (qstrcmp(fieldName, "binario") == 0 || str_val.startsWith("|M^B|")) { // <- esto es un hack para guardar hexadecimal y interpretar binario. 
-
+    QString str;
     if (str_val.startsWith("|M^B|")) {
-      str.remove(0, 5);
+      str = str_val.remove(0, 5);
     }
 
     QByteArray ba;
