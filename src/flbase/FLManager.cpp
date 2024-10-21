@@ -1740,7 +1740,9 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
     //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no usa cache").arg(tmd->name()));
     return;
   }
-  initCacheLite();
+  if (!initCacheLite()) {
+    return;
+  }
   //qWarning("FLManager::checkTablaCache : " + QApplication::tr("Generando cache de datos para %1").arg(tmd->name()));
   // Recogemos conexión cache.
 
