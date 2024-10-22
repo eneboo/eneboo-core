@@ -813,15 +813,20 @@ namespace dbiplus
     bool res = true;
     FLSqlDatabase *_db = ((SqliteDatabase *)db)->db_;
     FLManager *_manager = ((FLSqlDatabase*)_db)->manager();
+    bool use_cache = false;
 
    if (_manager->isMandatoryQuery(sql)) {
-      if (_manager->initCacheLite(true)) {
-        QString salida = _manager->resolveMandatoryValues(sql);
+    if (_manager->initCacheLite(true)) {
+      QString salida = _manager->resolveMandatoryValues(sql);
+      use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
+      if (use_cache) {
         res = procesa_datos_cadena_recibida(salida, 0); 
-      } else {
-        res = false;
-      } 
-    } else { 
+      }
+    } 
+  } 
+  
+  if (!use_cache)
+    { 
       res = gestionar_consulta_paginada(0);
     }
   
