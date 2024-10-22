@@ -3415,7 +3415,7 @@ function updateCachedTables(tableNames)
   }
     
   } else {
-    debug("ERROR devuelto " + res["salida"]["data"]);
+    debug("ERROR devuelto: " + ("salida" in res ? res["salida"]["data"]: ""));
     result = true;
   } 
 
@@ -3445,7 +3445,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
       //debug("?? Campo: " + field);
       var found = false;
       for (var i=0; i<array_fields.length; i++) {
-        if (array_fields[i] == field) {
+        if (array_fields[i] == "*" || array_fields[i] == field) {
           found = true;
           break;
         }
