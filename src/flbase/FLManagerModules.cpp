@@ -418,8 +418,9 @@ void FLManagerModules::init()
     cursor.commitBuffer();
   }
 
-  staticBdInfo_ = new AQStaticBdInfo(db_->database());
 #endif
+
+  staticBdInfo_ = new AQStaticBdInfo(db_->database());
 
   readState();
 }
@@ -519,7 +520,7 @@ QString FLManagerModules::content(const QString &n, const bool only_fs)
     return QString::null;
   }
 
-  if (notSysTable) {
+  if (notSysTable && ((dictKeyFiles && dictKeyFiles->find(n)) || !dictKeyFiles)) { // Si existe en flfiles ....
     QString formatVal(db_->manager()->formatAssignValue("nombre", QVariant::String, n, true));
     QSqlQuery q(QString::null, db_->dbAux());
     q.setForwardOnly(true);
@@ -560,6 +561,8 @@ QString FLManagerModules::content(const QString &n, const bool only_fs)
       }
       return ret;
     }
+  } else {
+    qWarning("FLManagerModules::Content: flfiles not contains: " + n + ". SKiping ...");
   }
 
   return QString::null;
@@ -945,12 +948,18 @@ QStringList FLManagerModules::listAllIdModules()
   if (!db_->dbAux())
     return ret;
 
+  listAllIdModules_ = new QStringList();
+  listAllIdModules_->append("sys");
   ret << "sys";
   QSqlQuery q(QString::null, db_->dbAux());
   q.setForwardOnly(true);
   q.exec("SELECT idmodulo FROM flmodules WHERE idmodulo <> 'sys'");
-  while (q.next())
-    ret << q.value(0).toString();
+  while (q.next()) {
+    QString idModulo = q.value(0).toString();
+    ret << idModulo;
+    listAllIdModules_->append(idModulo);
+    }
+
 
   return ret;
 }

@@ -98,6 +98,7 @@ bool SqlApiDriver::open(const QString &db, const QString &, const QString &, con
   dataBase_->databaseApi = databaseApi;
   dataBase_->AQProc = AQProc;
   dataBase_->setDatabase(db);
+  dataBase_->db_ = db_;
 
   if (dataBase_->connect() != DB_CONNECTION_OK) {
 #ifdef FL_DEBUG
@@ -1038,7 +1039,12 @@ QSqlRecordInfo SqlApiDriver::recordInfo(const QSqlQuery &query) const
     Dataset *ds = result->dataSet;
     for (int i = 0; i < ds->fieldCount(); ++i) {
       QString fName(ds->fieldName(i));
-      fType type = ds->fv(fName).get_fType();
+      //fType type = ds->fv(fName).get_fType();
+      Fields *fields_object = ds->get_fields_object();
+      field_value fV = (*fields_object)[i].val;
+      fType type = fV.get_fType();
+
+
       info.append(QSqlFieldInfo(fName, qDecodeSqliteType(type)));
     }
     return info;
@@ -1171,16 +1177,26 @@ QVariant SqliteResult::data(int i)
   if (!dataSet)
     return QVariant();
 
-  if (i >= dataSet->fieldCount()) {
-#ifdef FL_DEBUG
-    qWarning("SqliteResult::data: column %d out of range", i);
-#endif
+/*   if (i >= dataSet->fieldCount()) {
+    #ifdef FL_DEBUG
+        qWarning("SqliteResult::data: column %d out of range", i);
+    #endif
     return QVariant();
-  }
+  } */
+  Fields *fields_object = dataSet->get_fields_object();
+  const char *fieldName = (*fields_object)[i].props.name.c_str();
+  field_value fV = (*fields_object)[i].val;
+  
+  QString str_val = fV.get_asString().c_str();
 
-  if (qstrcmp(dataSet->fieldName(i), "binario") == 0) { // <- esto es un hack para guardar hexadecimal y interpretar binario.
-    QString str(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str());
+  if (qstrcmp(fieldName, "binario") == 0 || str_val.startsWith("|M^B|")) { // <- esto es un hack para guardar hexadecimal y interpretar binario. 
+    QString str;
+    if (str_val.startsWith("|M^B|")) {
+      str = str_val.remove(0, 5);
+    }
+
     QByteArray ba;
+    
     QDataStream dts(ba, IO_WriteOnly);
     uint pos = 0;
     while (pos < str.length()) {
@@ -1189,11 +1205,11 @@ QVariant SqliteResult::data(int i)
     }
     return ba;
   }
-
-  QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
-  fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
   
-  if (v.toString().isEmpty()) {
+  QVariant v = QVariant(str_val);
+  fType type = fV.get_fType();
+  
+  if (str_val.isEmpty()) {
     QVariant vv;
     if (!type)
       vv.cast(QVariant::String);
@@ -1204,19 +1220,17 @@ QVariant SqliteResult::data(int i)
     }
     return vv;
   } else
-    if (type == ft_Boolean) {
+    if (type == ft_String) {
+      // No hacemos nada
+    } else if (type == ft_Boolean) {
         v.cast(QVariant::Bool);
     } else if (type == ft_Double || type == ft_Float) {
         v.cast(QVariant::Double);
-    } else if (type == ft_Long) {
+    } else if (type == ft_Long || type == ft_ULong) {
         v.cast(QVariant::Int);
-    } else if (type == ft_ULong) {
-        v.cast(QVariant::Int);
-    } else if (type == ft_String) {
-      // No hacemos nada
     } else {
       qWarning("FIXME2. tipo no convertido " + QString::number(type));
-    }
+    } 
 
     return v;
 }
@@ -1246,7 +1260,10 @@ bool SqliteResult::isNull(int i)
 {
   if (!dataSet)
     return false;
-  return dataSet->fv(dataSet->fieldName(i)).get_isNull();
+
+  Fields *fields_object = dataSet->get_fields_object();
+  field_value fV = (*fields_object)[i].val;
+  return fV.get_isNull();
 }
 
 bool SqliteResult::fetchFirst()

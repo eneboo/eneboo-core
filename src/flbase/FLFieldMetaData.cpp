@@ -205,6 +205,10 @@ QVariant::Type FLFieldMetaData::flDecodeType(int fltype)
   return type;
 }
 
+void FLFieldMetaData::clearRelationList() {
+  d->clearRelationList();
+}
+
 void FLFieldMetaData::copy(const FLFieldMetaData *other)
 {
   if (other == this)

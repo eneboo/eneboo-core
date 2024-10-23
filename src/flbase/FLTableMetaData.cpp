@@ -436,6 +436,7 @@ void FLTableMetaData::copy(const FLTableMetaData *other)
   d->primaryKey_ = od->primaryKey_;
   d->concurWarn_ = od->concurWarn_;
   d->detectLocks_ = od->detectLocks_;
+  d->cF_ = od->cF_;
 
   QDictIterator<FLFieldMetaData> it2(*d->fieldList_);
   while ((field = it2.current()) != 0) {

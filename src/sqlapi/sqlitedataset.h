@@ -30,12 +30,13 @@
 #define _SQLITEDATASET_H
 
 #include <stdio.h>
-#include <dataset.h>
-#include <sqlite3.h>
+#include "dataset.h"
+#include "sqlite3.h"
 #include <qstringlist.h>
 #include "aqsqliteglobal.h"
 #include <qapplication.h>
 #include <qprocess.h>
+#include "../flbase/FLSqlDatabase.h"
 
 namespace dbiplus
 {
@@ -98,6 +99,7 @@ public:
   QString tokenApi;
   QString userIdApi;
   QString databaseApi;
+  FLSqlDatabase *db_;
   int counter_qry;
 };
 
@@ -153,6 +155,7 @@ or insert() operations default = false) */
   bool fetch_rows(int pos);
   bool seek(int pos=0);
   bool gestionar_consulta_paginada(const int offset);
+  bool procesa_datos_cadena_recibida(const QString &salida, const int offset);
   int resuelve_bloque(const int posicion);
   void lista_bloques_pila_paginacion();
   
@@ -169,6 +172,7 @@ or insert() operations default = false) */
   int bloque_last;
   int consulta_id;
   QStringList tipos_columnas;
+  QStringList nombres_columnas;
 
 
 

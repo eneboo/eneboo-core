@@ -485,38 +485,62 @@ class MainWindow
 
   function formClosed(fm)
   {
+
+    var tw = this.tw_;
+    var idx = tw.indexOf(fm);
+    if (idx > 0) {
+      this.initForm(idx -1);
+    }
     if (this.tw_.count == 1 && this.twCorner_ != undefined)
       this.twCorner_.hide();
   }
 
+  function initModuleAction(actionName) {
+    const action = this.agMenu_.child(actionName, "QAction");
+      if (action) 
+        {
+        const moduleName = aqApp.db().managerModules().idModuleOfFile(action.name + ".ui");
+        if (moduleName != undefined && moduleName != "")
+          {
+            //debug("Inicializando módulo " + moduleName);
+            this.initModule(moduleName);
+          }
+        }
+  }
+
+  function initForm(idx) {
+    var tw = this.tw_;
+    const actionName = tw.page(idx).idMDI();
+      this.initModuleAction(actionName);
+      var fm = tw.page(idx);
+      //debug("1 " + fm.size + ", parent: " + fm.parentWidget().size + "sP:" + fm.width);
+      //fm.setFixedSize(fm.parentWidget().size);
+      fm.show();
+      //debug("2 " + fm.size);
+      fm.installEventFilter(this.w_);
+  }
+
+
   function tabChanged(actionName) {
+    //debug("tabChanged!!");
     var tw = this.tw_;
     const current_idx = tw.currentPageIndex();
-    const current_action_name = tw.page(current_idx).idMDI();
-
-        action = this.agMenu_.child(current_action_name, "QAction");
-        if (action) {
-          moduleName = aqApp.db().managerModules().idModuleOfFile(action.name + ".ui");
-          if (moduleName != undefined && moduleName != "")
-            {
-              this.initModule(moduleName);
-            }
-            var fm = tw.page(current_idx);
-            fm.installEventFilter(this.w_);
-            fm.show();
-        }
+    this.initForm(current_idx);
     return true;
   }
 
   function addForm(actionName)
   {
     var tw = this.tw_;
-
+    var existe = false;
     for (var i = 0; i < tw.count; ++i) {
       if (tw.page(i).idMDI() == actionName) {
-        tw.page(i).close();
+        tw.setCurrentPage(i);
+        return;
       }
     }
+    
+
 
     var fm = new AQFormDB(actionName, tw, 0);
     tw.addTab(fm, this.agMenu_.child(actionName).iconSet(), fm.caption);
@@ -528,8 +552,11 @@ class MainWindow
     
     connect(tw, "selected(const QString&)", this, "tabChanged");
   
-    if (tw.count == 1 && this.twCorner_ != undefined)
+    if (tw.count == 1 && this.twCorner_ != undefined) {
       this.twCorner_.show();
+    }
+
+    return fm;
   }
 
   function addRecent(action)
@@ -657,22 +684,22 @@ class MainWindow
     for (var i = 0; i < areas.length; ++i) {
       var ag = new QActionGroup(agm);
       ag.name = areas[i];
-      if (!sys.isDebuggerEnabled() && ag.name == "sys") break;
+      //if (!sys.isDebuggerEnabled() && ag.name == "sys") break; //
       ag.menuText = ag.text = mng.idAreaToDescription(ag.name);
       ag.usesDropDown = true;
       ag.setIconSet(new QIconSet(AQS.Pixmap_fromMimeSource("folder.png")));
 
       var modules = mng.listIdModules(ag.name);
       for (var j = 0; j < modules.length; ++j) {
-        if (modules[j] == "sys" && sys.isUserBuild())
-          continue;
+        //if (modules[j] == "sys" && sys.isUserBuild())//
+        //  continue;//
         var ac = new QActionGroup(ag);
         ac.name = modules[j];
-        if (sys.isQuickBuild()) {
-            if (ac.name == "sys") {
-                continue;
-            }
-        }
+        // if (sys.isQuickBuild()) { //
+        //    if (ac.name == "sys") {//
+        //        continue;//
+        //    }//
+        // }//
 
         var actions = this.widgetActions(ac.name + ".ui", ac);
         if (actions == undefined) {
@@ -690,8 +717,8 @@ class MainWindow
         this.actSigMap_.setMapping(ac, "activated():initModule():" + ac.name);
         if (ac.name == "sys" && ag.name == "sys")
           {
-            if (sys.isDebuggerMode())
-              {
+          //  if (sys.isDebuggerMode()) //
+          //    { //
     		
       var staticLoad = new QAction(ag);
       staticLoad.name = "staticLoaderSetupAction";
@@ -710,7 +737,7 @@ class MainWindow
 
 
 
-              }
+      //        } //
             }
       }
    }           
@@ -1004,6 +1031,7 @@ function aqAppScriptMain()
 function triggerAction(signature)
 {
   var mw = this.mainWindow_;
+  var tw = mw.tw_;
   var sgt = signature.split(":");
   var ok = true;
 
@@ -1032,8 +1060,14 @@ function triggerAction(signature)
       break;
 
     case "openDefaultForm()":
+      debug("Open default form!");
       if (ok) {
-        mw.addForm(ac.name);
+        var fm = mw.addForm(ac.name);
+        var idx = tw.indexOf(fm);
+        const actionName = tw.page(idx).idMDI();
+        mw.initModuleAction(actionName);
+        fm.show();
+        tw.setCurrentPage(idx);
         mw.addRecent(ac);
       }
       break;

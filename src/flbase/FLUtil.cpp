@@ -914,12 +914,22 @@ bool FLUtil::writeDBSettingEntry(const QString &key, const QString &value)
   int size;
   bool result;
   QString where(QString::fromLatin1("flkey='") + key + QString::fromLatin1("'"));
-  sqlSelect("flsettings", "valor", where, "flsettings", &size);
+
+  bool use_cache = FLSqlConnections::database()->manager()->initCacheLite();
+
+  FLTableMetaData *tmd = FLSqlConnections::database()->manager()->metadata("flsettings");
+  
+  sqlSelect("flsettings", "valor", where, "flsettings", &size, use_cache && tmd->useCachedFields() ? "cachelite": "default");
   if (size > 0) {
     result = sqlUpdate("flsettings", "valor", value, where);
   } else {
     result = sqlInsert("flsettings", "flkey,valor", key + QString::fromLatin1(",") + value);
   }
+
+  if (use_cache && tmd->useCachedFields()) {
+    aqApp->call("sys.updateCachedTables",QSArgumentList(), 0);
+  }
+
   return result;
 }
 

@@ -252,10 +252,23 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
   if (!name.isEmpty())
   {
-    if (!d->db_->manager()->existsTable(name))
-      d->metadata_ = d->db_->manager()->createTable(name);
-    else
-      d->metadata_ = d->db_->manager()->metadata(name);
+    if (!d->db_->manager()->existsTable(name)) {
+        d->metadata_ = d->db_->manager()->createTable(name);
+      }
+    else{
+
+        if (d->metadata_) {
+          // Ya existe metadata previo
+          qWarning(tr("FLSqlCursor::init: metadata %1 ya existe cuando se declara %2").arg(d->metadata_->name()).arg(name));
+
+        }
+
+        d->metadata_ = d->db_->manager()->metadata(name);
+        if (!d->metadata_) {
+            qWarning(tr("FLSqlCursor::init: metadata %1 no encontrado").arg(name));
+            
+        }
+    }
   }
 
   d->cursorRelation_ = cR;

@@ -857,8 +857,14 @@ void FLFieldDB::initCursor()
 #endif
     }
 
-    cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,
-                              this);
+    if (tMD->useCachedFields()) {
+        QString cachedTableName = tableName_ + "_cachelite";
+        qWarning("FLFieldDB::initCursor() : Cachelite " + cachedTableName + ", fieldName: " + fieldName_);
+        cursor_ = new FLSqlCursor(cachedTableName, false, "cachelite", cursorAux, rMD,this);
+        qWarning("FLFieldDB::initCursor() : Cachelite " + cachedTableName + " FIN!!");
+      } else {
+        cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
+      }
     if (!cursor_) {
       cursor_ = cursorAux;
       if (showed) {
@@ -891,8 +897,14 @@ void FLFieldDB::initCursor()
             SLOT(refreshQuick(const QString &)));
 
     cursorAuxInit = true;
-    cursor_->append(cursor_->db()->db()->recordInfo(tableName_).find(fieldName_));
-    cursor_->append(cursor_->db()->db()->recordInfo(tableName_).find(fieldRelation_));
+    QString cachedTableName = tMD->useCachedFields() ? tableName_ + "_cachelite" : tableName_;
+    cursor_->append(cursor_->db()->db()->recordInfo(cachedTableName).find(fieldName_));
+    cursor_->append(cursor_->db()->db()->recordInfo(cachedTableName).find(fieldRelation_));
+
+    if (tMD->useCachedFields()) {
+      cursor_->refresh();
+    }
+
     if (tMD && !tMD->inCache()) {
       delete tMD;
     }

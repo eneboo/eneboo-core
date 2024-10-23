@@ -26,6 +26,7 @@
 #include <qguardedptr.h>
 #include <qvaluestack.h>
 #include "AQGlobal.h"
+#include "qdict.h"
 
 class FLTableMetaData;
 class FLSqlCursor;

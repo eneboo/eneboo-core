@@ -28,13 +28,19 @@ unix {
 	DEFINES += OS_UNIX=1
 }
 
+DEFINES += SQLITE_THREADSAFE=1
+
 DESTDIR = $$PREFIX/lib
 
 TARGET = sqlapi
 
 LIBS += -L$$PREFIX/lib
 
-INCLUDEPATH += $$ROOT/src/qt/include ./
+win32 {
+	LIBS += -lflbase
+}
+
+INCLUDEPATH += $$ROOT/src/qt/include ./$$ROOT/src/flbase
 
 VERSION = 1.00
 
@@ -49,4 +55,3 @@ HEADERS += aqsqliteglobal.h \
            opcodes.h \
            config_sqlite.h \
  	         dataset.h qry_dat.h sqlitedataset.h
-

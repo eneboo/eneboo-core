@@ -19,9 +19,12 @@ email                : mail@infosial.com
  ***************************************************************************/
 
 #include <qlabel.h>
+#include <qframe.h>
+#include "qlayout.h"
 #include <qclipboard.h>
 #include <qapplication.h> /// qapp
 #include "FLAbout.h"
+#include "FLUtil.h"
 #include "AQConfig.h"
 
 FLAbout::FLAbout(const QString &v,
@@ -38,6 +41,7 @@ FLAbout::FLAbout(const QString &v,
                        "<b>sin garantías de ninguna clase</b><br>"
                        );
  lblCompilacion->setText(ENB_DATOS_COMP);
+ mostrarKitDigital();
 }
 
 FLAbout::~FLAbout() {}
@@ -46,5 +50,21 @@ void FLAbout::copy2Clipboard()
 {
 QClipboard *clipboard = QApplication::clipboard();
 clipboard->setText(ENB_DATOS_COMP);
+}
+
+
+void FLAbout::mostrarKitDigital()
+{
+  QFrame *frameKD = static_cast<QFrame * >(child("frameKitDigital", "QFrame"));
+  frameKD->isShown(); // Evita un segFault...
+  
+  if (FLUtil::readDBSettingEntry("kit_digital") == "1")
+  {
+    qWarning( "FLAbout::mostrarKitDigital(): habilitado" );
+    frameKD->show();
+  } else {
+    qWarning( "FLAbout::mostrarKitDigital(): NO habilitado" );
+    frameKD->hide();
+  }
 }
 

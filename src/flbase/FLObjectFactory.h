@@ -5615,27 +5615,27 @@ public slots:
   }
 	
   /**
-  dpinelo: Este mÃ©todo es una extensiÃ³n de nextCounter pero permitiendo la introducciÃ³n de una primera
-  secuencia de caracteres. Es Ãºtil cuando queremos mantener diversos contadores dentro de una misma tabla.
-  Ejemplo, Tabla Grupo de clientes: Agregamos un campo prefijo, que serÃ¡ una letra: A, B, C, D.
-  Queremos que la numeraciÃ³n de los clientes sea del tipo A00001, o B000023. Con esta funciÃ³n, podremos
-  seguir usando los mÃ©todos counter cuando agregamos esa letra.
+  dpinelo: Este método es una extensión de nextCounter pero permitiendo la introducción de una primera
+  secuencia de caracteres. Es útil cuando queremos mantener diversos contadores dentro de una misma tabla.
+  Ejemplo, Tabla Grupo de clientes: Agregamos un campo prefijo, que será una letra: A, B, C, D.
+  Queremos que la numeración de los clientes sea del tipo A00001, o B000023. Con esta función, podremos
+  seguir usando los métodos counter cuando agregamos esa letra.
   
   Este metodo devuelve el siguiente valor de un campo tipo contador de una tabla para una serie determinada.
 
   Este metodo es muy util cuando se insertan registros en los que
-  la referencia es secuencial segÃºn una secuencia y no nos acordamos de cual fue el Ãºltimo
+  la referencia es secuencial según una secuencia y no nos acordamos de cual fue el último
   numero usado. El valor devuelto es un QVariant del tipo de campo es
-  el que se busca la ultima referencia. Lo mÃ¡s aconsejable es que el tipo
-  del campo sea 'String' porque asÃ­ se le puede dar formato y ser
-  usado para generar un cÃ³digo de barras. De todas formas la funciÃ³n
+  el que se busca la ultima referencia. Lo más aconsejable es que el tipo
+  del campo sea 'String' porque así se le puede dar formato y ser
+  usado para generar un código de barras. De todas formas la función
   soporta tanto que el campo sea de tipo 'String' como de tipo 'double'.
 
   @param serie serie que diferencia los contadores
   @param name Nombre del campo
   @param cursor_ Cursor a la tabla donde se encuentra el campo.
   @return Qvariant con el numero siguiente.
-  @author AndrÃ©s OtÃ³n Urbano.
+  @author Andrés Otón Urbano.
    */
   QVariant nextCounterSerial( const QString &serie, const QString & name, FLSqlCursorInterface * cursor_ ) {
 	  return FLUtil::nextCounter( serie, name, cursor_->obj() );

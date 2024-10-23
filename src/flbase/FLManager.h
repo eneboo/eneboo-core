@@ -383,9 +383,20 @@ public:
     return initCount_;
   }
 
+  bool initCacheLite(bool force = false);
+
+  void checkTablaCache(FLTableMetaData *tmd);
+
+  void insertMetadataCache(QString &name, FLTableMetaData *tmd);
+
+  FLTableMetaData *getMetadataCache(const QString &name);
+
+  bool isMandatoryQuery(QString &query);
+
+  QString resolveMandatoryValues(QString &query);
+
 private:
 
-#ifndef FL_QUICK_CLIENT
   /**
   Lista de las tablas de la base de datos, para optimizar lecturas
   */
@@ -395,7 +406,7 @@ private:
   Diccionario de claves de metadatos, para optimizar lecturas
   */
   QDict<QString> *dictKeyMetaData_;
-#endif
+
 
   /**
   Caché de metadatos, para optimizar lecturas

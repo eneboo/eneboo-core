@@ -351,6 +351,13 @@ public:
   QString FTSFunction();
   void setFTSFunction(QString ftsfun);
 
+    /**
+  Establece los campos que serán cacheados
+  */
+  bool useCachedFields();
+  QStringList cachedFields();
+  void setCachedFields(QString cachedFields);
+
   /**
   Indica si lo metadatos están en caché (FLManager::cacheMetaData_)
   */
@@ -477,6 +484,11 @@ public:
   Indica el nombre de función a llamar para la búsqueda con Full Text Search
   */
   QString ftsfun_;
+
+  /**
+  Indica los campos que serán cacheados
+  */
+  QStringList cF_;
   
   /**
   Indica si lo metadatos están en caché (FLManager::cacheMetaData_)
@@ -552,6 +564,21 @@ inline bool FLTableMetaData::detectLocks() const
 inline void FLTableMetaData::setDetectLocks(bool b)
 {
   d->detectLocks_ = b;
+}
+
+inline bool FLTableMetaData::useCachedFields()
+{
+  return d->cF_.count() > 0;
+}
+
+inline QStringList FLTableMetaData::cachedFields()
+{
+  return d->cF_;
+}
+
+inline void FLTableMetaData::setCachedFields(QString cachedFields)
+{
+   d->cF_ = QStringList::split(",", cachedFields);
 }
 
 inline bool FLTableMetaData::inCache() const

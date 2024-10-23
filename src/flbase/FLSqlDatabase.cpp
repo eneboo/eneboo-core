@@ -268,7 +268,12 @@ void FLSqlDatabase::closeDB()
 
 bool FLSqlDatabase::createTable(FLTableMetaData *tmd)
 {
-#ifndef FL_QUICK_CLIENT
+
+#ifdef FL_QUICK_CLIENT
+  if (driverName_ != "FLsqlite") {
+      return true;
+  }
+#endif
   if (driverName_.isEmpty() || !tmd || !dbAux_)
     return false;
 
@@ -286,7 +291,7 @@ bool FLSqlDatabase::createTable(FLTableMetaData *tmd)
 
     return false;
   }
-#endif
+
   return true;
 }
 

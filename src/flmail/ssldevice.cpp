@@ -660,7 +660,7 @@ bool SSLDevice::saveCertificate(const QString &path)
 
     if (!filePath.isEmpty()) {
       fpTest = fopen(filePath.ascii(), "w");
-      if (fpTest > 0) {
+      if (fpTest) {
         int len = 0;
 
         len = d->sslBase->PEM_write_X509(fpTest, d->x509);

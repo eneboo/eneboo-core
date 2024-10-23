@@ -143,6 +143,14 @@ bool FLSqlDriver::mismatchedTable(const QString &table,
 
 bool FLSqlDriver::existsTable(const QString &n) const
 {
+
+#ifdef FL_QUICK_CLIENT
+   if (db_->driverName() != "FLsqlite") {
+    qWarning("FLSqlDatabase::existsTable: QUICK TRUE!!!");
+    return true;
+   }
+#endif 
+
   return tables("").contains(n);
 }
 

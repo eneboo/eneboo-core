@@ -19,12 +19,17 @@ var form = this;
 
 function init() {
 
-  
+  if (aqApp.db().manager().initCacheLite()) {
+    sys.updateCachedTables(["flsettings"]);
+  }
+
   var settings = new AQSettings;
 
   if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
     sys.keepAlive();
   }
+
+  
   
   if (isLoadedModule("flfactppal")) {
     var util: FLUtil = new FLUtil();
@@ -3329,3 +3334,155 @@ function keepAlive()
 
  sys.AQTimer.singleShot(60000, sys.keepAlive);
 }
+
+function updateCachedTables(tableNames)
+{
+  // Recojemos el timestamp de la tabla
+  var whereCache = "1=1";
+  if (tableNames != undefined) {
+    whereCache = "tablename in ('";  
+    whereCache += tableNames.join("','");
+
+    whereCache += "') OR permanent = 1";
+
+  }
+
+  debug("Consulta " + whereCache);
+  var qryCachesFields = new FLSqlQuery(null, "cachelite");
+  qryCachesFields.setSelect("tablename,timestamp");
+  qryCachesFields.setFrom("timestamps_cachelite");
+  qryCachesFields.setWhere(whereCache);
+  if (!qryCachesFields.exec()) {
+    debug("Error ejecutando consulta");
+    return false;
+  }
+  
+  const llamada: String = "delegate_qry";
+  var result = true;
+  var tablesPayload = [];
+  var tableNames = [];
+
+  // Generando payload ....
+  while(qryCachesFields.next()) {
+    var tableName = qryCachesFields.value("tablename");
+    tableNames.push(tableName);
+    const currentTableName = tableName.split("_cachelite")[0];
+    const metatable = aqApp.db().manager().metadata(currentTableName);
+    var timestamp = qryCachesFields.value("timestamp");
+  // LLamada a aqextensi?n solicitando datos.
+  var cachedFields = metatable.cachedFields();
+  cachedFields.push(metatable.primaryKey());
+  tablesPayload.push({"tablename": currentTableName, "cachedfields": cachedFields.join(","), "timestamp": timestamp});
+  }
+
+
+
+  //debug("Lanzando llamada --> " + llamada);
+  // var error = "Servidor no encontrado";
+  var str_json = formUTIL.jsonToString(tablesPayload);
+  var ba = new QByteArray;
+  ba.string = str_json;
+  const json64 = AQS.toBase64(ba);
+  var res = formHTTP.iface.get(llamada, {"payload" : json64});
+
+
+
+  if ("salida" in res && "result" in res["salida"] && res["salida"]["result"] == "ok") {
+    const timestamp_server = res["salida"]["timestamp"];
+    const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
+    
+    for (var i=0; i<data.length; i++) {
+    
+      const linea = data[i];
+
+      const modo = linea["mode"];
+      const fields = linea["fields"];
+      const pkField = linea["pk"];
+      const tableName_cachelite = linea["tablename"];
+      const tableName_= tableName_cachelite.split("_cachelite")[0];
+      if (updateCachedFields(tableName_cachelite, modo, pkField, fields)) {
+        const whereUpdate = "tablename='" + tableName_ +"'";
+        AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", timestamp_server , whereUpdate, "cachelite");
+      } else {
+        result = false;
+        break;
+      }
+    }
+  
+  if (data.length == 0) {
+    const whereCacheTables = "tablename in ('" + tableNames.join("', '") + "')";
+    AQUtil.sqlUpdate("timestamps_cachelite", "timestamp", timestamp_server , whereCacheTables, "cachelite");
+  }
+    
+  } else {
+    debug("ERROR devuelto: " + ("salida" in res ? res["salida"]["data"]: ""));
+    result = true;
+  } 
+
+  return result;
+}
+
+
+
+function updateCachedFields(tableName, mode, pkField,fields) {
+  manager = aqApp.db().manager();
+  metaTable = manager.metadata(tableName);
+  const tableName_cachelite = tableName + "_cachelite";
+  metaField = metaTable.field(pkField);
+  var array_fields = metaTable.cachedFields();
+  array_fields.push(pkField);
+  //debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
+  debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
+  const where = pkField + " = " + AQUtil.formatValue(metaField, fields[pkField]);
+  //debug("** where: " + where);
+
+  if (mode == "Delete") {
+    return AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
+  } else {
+    const fieldsNames = [];
+    const fieldsValues = [];
+    for (var field in fields) {
+      //debug("?? Campo: " + field);
+      var found = false;
+      for (var i=0; i<array_fields.length; i++) {
+        if (array_fields[i] == "*" || array_fields[i] == field) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        continue;
+      }
+
+      fieldsNames.push(field);
+      fieldsValues.push(fields[field]);
+    }
+    var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
+
+    cursor.select(where);
+
+    if (mode == "Update") {
+      if (!cursor.first()) {
+        debug("Error en posicionamiento");
+        return false;
+      }
+    }
+
+    cursor.setActivatedCheckIntegrity(false);
+    cursor.setActivatedCommitActions(false);
+    
+    cursor.setModeAccess(mode== "Insert" ? cursor.Insert: cursor.Edit);
+    cursor.refreshBuffer();
+
+    for (var i=0; i<fieldsNames.length; i++) {
+      //debug("\n* Campo: " + fieldsNames[i] + " = " + fieldsValues[i]);
+      cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
+    }
+    return cursor.commitBuffer();
+  }
+
+  return true;
+
+}
+

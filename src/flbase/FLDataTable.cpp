@@ -982,7 +982,9 @@ void FLDataTable::contentsMouseDoubleClickEvent(QMouseEvent *e)
 void FLDataTable::refresh()
 {
   if (popup_)
+    {
     QDataTable::refresh();
+    }
   if (!refreshing_ && cursor_ && !cursor_->aqWasDeleted() && cursor_->metadata())
   {
     refreshing_ = true;
@@ -1012,7 +1014,12 @@ void FLDataTable::setFocus()
   if (!hasFocus())
   {
     setPaletteBackgroundColor(qApp->palette().color(QPalette::Active, QColorGroup::Base));
-    QDataTable::refresh();
+    if (cursor_->db()->driverName() == "FLsqlapi") {
+      qWarning("FLDataTable::setFocus: Ignorando ....");
+    } else {
+      QDataTable::refresh();
+    }
+
   }
   else
     syncNumRows();
