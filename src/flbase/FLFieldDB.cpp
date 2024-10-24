@@ -2677,8 +2677,11 @@ void FLFieldDB::toggleAutoCompletion()
           }
           delete l;
 
-          if (fdb && !fdb->filter().isEmpty())
+          if (fdb && !fdb->filter().isEmpty()) {
+            qWarning("FLFieldDB::toggleAutoCompletion: ANTERIOR");
             cur->setMainFilter(fdb->filter());
+            qWarning("FLFieldDB::toggleAutoCompletion: POSTERIOR");
+          }
         }
         autoComPopup_->setFLSqlCursor(cur);
         autoComPopup_->setTopMargin(0);
