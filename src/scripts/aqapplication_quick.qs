@@ -1063,13 +1063,17 @@ function triggerAction(signature)
       break;
 
     case "openDefaultForm()":
-      debug("Open default form!");
       if (ok) {
         var fm = mw.addForm(ac.name);
-        var idx = tw.indexOf(fm);
-        const actionName = tw.page(idx).idMDI();
-        mw.initModuleAction(actionName);
-        fm.show();
+        var idx;
+        if (isNaN(fm)) {
+          idx = tw.indexOf(fm);
+          const actionName = tw.page(idx).idMDI();
+          mw.initModuleAction(actionName);
+          fm.show();
+        } else {
+          idx = fm;
+        }
         tw.setCurrentPage(idx);
         mw.addRecent(ac);
       }
