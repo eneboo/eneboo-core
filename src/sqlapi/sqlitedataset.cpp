@@ -333,7 +333,7 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     debug_sql = false;
-    debug_paginacion = true;
+    debug_paginacion = false;
     debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
@@ -350,7 +350,7 @@ namespace dbiplus
     errmsg = NULL;
     autorefresh = false;
     debug_sql = false;
-    debug_paginacion = true;
+    debug_paginacion = false;
     debug_aqextension = false;
     last_pos_fetched = 0;
     last_invalid_pos = 0;
@@ -1171,7 +1171,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size));
+      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Omitiendo registro ...");
       pos++;
       continue;
     }
