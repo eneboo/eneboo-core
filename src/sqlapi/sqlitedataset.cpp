@@ -1126,6 +1126,8 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     qWarning("Registros recibidos %d", lista_registros.size() -1 );
   }
 
+  int pos = 0;
+
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
@@ -1225,7 +1227,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
        rec[i] = v;
  
       }
-
+    pos++
     result.records[posicion_idx] = rec;
     posicion_idx += 1;
     }
