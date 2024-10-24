@@ -1120,6 +1120,12 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     result.record_header.clear();
   }
 
+  if (debug_paginacion) {
+    qWarning("Offset: %d", offset);
+    qWarning("Total registros: %d", result.total_records);
+    qWarning("Registros recibidos %d", lista_registros.size() -1 );
+  }
+
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
