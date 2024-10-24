@@ -2721,7 +2721,9 @@ void FLFieldDB::toggleAutoCompletion()
       if (frameWidth < autoComFrame_->width())
         frameWidth = autoComFrame_->width();
       autoComFrame_->setGeometry(tmpPoint.x(), tmpPoint.y(), frameWidth, 300);
+      qWarning("P3");
       autoComFrame_->show();
+      qWarning("P4");
       autoComFrame_->setFocus();
     } else if (autoComFrame_->isVisible() && cur->size() == 1)
       autoComFrame_->hide();
