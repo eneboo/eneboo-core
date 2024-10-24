@@ -1125,7 +1125,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     qWarning("Total registros: %d", result.total_records);
     qWarning("Registros recibidos %d", lista_registros.size() -1 );
   }
-
+  int pos =0;
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
     
@@ -1134,10 +1134,10 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
 
     QStringList lista_columnas(QStringList::split(separador_campos, registro));
 
-    if (primero_registro == true) { //cabecera ...
+    if (primero_registro) { //cabecera ...
       for (QStringList::Iterator it2 = lista_columnas.begin(); it2 != lista_columnas.end(); ++it2) {
         if (posicion_idx != 0) { // Si el offset no es cero, ya tengo cabecera ....
-            continue;
+            break;
           }
         const int col_numero = result.record_header.size() + 1;
         //const QString datos_columna = *it2;
@@ -1171,7 +1171,10 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size));
+      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size));
+      if (debug_paginacion) {
+        qWarning("Registro: %s", registro);
+      }
       for (int x = 0; x < result.record_header.size(); x++) {
         //qWarning("Col : " + QString::number(x) + " : " + result.record_header[x].name + x == 0 ? "(* Omitida)": "");
       }
@@ -1230,6 +1233,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
 
     result.records[posicion_idx] = rec;
     posicion_idx += 1;
+    pos++;
     }
 
   }
