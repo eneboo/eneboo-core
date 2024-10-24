@@ -232,8 +232,8 @@ class MainWindow
             this.w_.setDisabled(false);
           return true;
         }
-        if (o.rtti() == "FormDB")
-          this.formClosed(o);
+        //if (o.rtti() == "FormDB")
+        //  this.formClosed(o);
         break;
       }
 
