@@ -1171,11 +1171,9 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size));
-      for (int x = 0; x < result.record_header.size(); x++) {
-        //qWarning("Col : " + QString::number(x) + " : " + result.record_header[x].name + x == 0 ? "(* Omitida)": "");
-      }
-      return false;
+      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Omitiendo registro ...");
+      pos++;
+      continue;
     }
 
     //qWarning("PROCESANDO VALORES LINEA N? %d", sz);
