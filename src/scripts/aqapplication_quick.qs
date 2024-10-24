@@ -371,8 +371,11 @@ class MainWindow
 
                  }
       
-      if (idx >= 0 && idx < tw.count)
+      if (idx >= 0 && idx < tw.count) {
+        tw.page(idx).show();
         tw.setCurrentPage(idx);
+      }
+        
 
       var recentActions = settings.readListEntry(key + "recentActions");
       for (var i = recentActions.length - 1; i >= 0; --i)
