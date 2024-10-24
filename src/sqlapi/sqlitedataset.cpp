@@ -1227,7 +1227,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
        rec[i] = v;
  
       }
-    pos++
+    pos++;
     result.records[posicion_idx] = rec;
     posicion_idx += 1;
     }
