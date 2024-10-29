@@ -2020,13 +2020,13 @@ void FLFieldDB::refresh(const QString &fN)
 
       if (!field->relationM1()) {
 #ifdef FL_DEBUG
-        qWarning("FLFieldDB : " + tr("El campo de la relaci?n debe estar relacionado en M1"));
+        qWarning("FLFieldDB : " + tr("El campo de la relación debe estar relacionado en M1"));
 #endif
         if (tmd && !tmd->inCache())
           delete tmd;
         return;
       }
-
+#ifndef FL_QUICK_CLIENT
       QVariant v(cursor_->valueBuffer(fieldRelation_));
       FLSqlQuery q(0, cursor_->db()->connectionName());
       q.setForwardOnly(true);
@@ -2059,6 +2059,9 @@ void FLFieldDB::refresh(const QString &fN)
       }
       if (tmd && !tmd->inCache())
         delete tmd;
+#else
+ qWarning("Omitida comprobación integridad valor %s con relación al hacer refresh", fN.lower());
+#endif
     }
     return;
   }
@@ -2702,9 +2705,7 @@ void FLFieldDB::toggleAutoCompletion()
       cur->setFilter(filter);
       autoComPopup_->setFilter(filter);
       autoComPopup_->setSort(QStringList() << autoComFieldName_ + " ASC");
-      qWarning("P1");
       autoComPopup_->QDataTable::refresh();
-      qWarning("P2");
     }
 
     if (!autoComFrame_->isVisible() && cur->size() > 1) {
@@ -2729,9 +2730,7 @@ void FLFieldDB::toggleAutoCompletion()
       autoComFrame_->hide();
     }
       
-    qWarning("P3");
     cur->first();
-    qWarning("P4");
   }
 }
 
