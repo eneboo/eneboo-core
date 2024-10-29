@@ -2060,7 +2060,7 @@ void FLFieldDB::refresh(const QString &fN)
       if (tmd && !tmd->inCache())
         delete tmd;
 #else
- qWarning("Omitida comprobación integridad valor %s con relación al hacer refresh", fN.lower());
+ qWarning("Omitida comprobación integridad valor " + fN.lower() + " con relación al hacer refresh");
 #endif
     }
     return;
