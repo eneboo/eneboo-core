@@ -3488,7 +3488,6 @@ function updateCachedFields(tableName, mode, pkField,fields) {
 
 function controlDatosCacheo(cursor)
 {
-  const _i = this.iface;
   var modoAcceso;    
   if (!cursor.metadata().usedCachedFields()) {
     return true;
@@ -3517,10 +3516,14 @@ function controlDatosCacheo(cursor)
       modoAcceso = "Insert";
   } else if(cursor.modeAccess() == cursor.Del) {
       modoAcceso = "Delete";
-  }   
+  } 
+  
+  const tabla = cursor.metadata().name();
+  const pk = cursor.valueBuffer(cursor.metadata().primaryKey());
 
   if (!AQUtil.execSql("INSERT INTO fldatatables_cache(mode,tablename,pk_value,timestamp) VALUES ('" + modoAcceso + "', '" + tabla + "', '" + pk + "',CURRENT_TIMESTAMP)")) {
       debug("Ha fallado el insert");
+      return false;
   }    
   return true;
 }
