@@ -2026,7 +2026,9 @@ void FLFieldDB::refresh(const QString &fN)
           delete tmd;
         return;
       }
-
+    if (cursor_->db()->driverName() == "FLsqlapi") {
+      qWarning("FLFieldDB : refresh().FLsqlapi Omitida comprobación integridad valor " + fN.lower() + " con relación al hacer refresh");
+    } else {
       QVariant v(cursor_->valueBuffer(fieldRelation_));
       FLSqlQuery q(0, cursor_->db()->connectionName());
       q.setForwardOnly(true);
@@ -2057,9 +2059,11 @@ void FLFieldDB::refresh(const QString &fN)
         if (v1 != v)
           cursor_->setValueBuffer(fieldRelation_, v1);
       }
+
       if (tmd && !tmd->inCache())
         delete tmd;
     }
+  }
     return;
   }
 
