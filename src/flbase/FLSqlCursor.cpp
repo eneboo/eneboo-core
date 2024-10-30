@@ -1299,6 +1299,18 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
 
   if (updated)
   {
+    bool result_ = false;
+    QString fun_name_ = "sys.controlDatosCacheo";
+    FLSqlCursorInterface *cI = FLSqlCursorInterface::sqlCursorInterface(this);
+    QVariant v = aqApp->call(fun_name_, QSArgumentList(cI), 0).variant();
+    if (v.isValid())
+      {
+        QString label_ = "FLSqlCursor::commitBuffer(" + metadata()->name() + "): ";
+        result_ = v.toBool();
+        qWarning(label_ + fun_name_ + " retorna " + (result_ ? "true" : "false"));
+      }
+
+
     if (!fieldNameCheck.isEmpty())
     {
       d->buffer_->setGenerated(fieldNameCheck, true);

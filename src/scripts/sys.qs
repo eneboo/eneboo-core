@@ -3486,3 +3486,41 @@ function updateCachedFields(tableName, mode, pkField,fields) {
 
 }
 
+function controlDatosCacheo(cursor)
+{
+  const _i = this.iface;
+  var modoAcceso;    
+  if (!cursor.metadata().usedCachedFields()) {
+    return true;
+  }
+
+  if (cursor.modeAccess() == cursor.Edit) {
+      modoAcceso = "Update";
+        const registros = cursor.metadata().cachedFields();
+        if (registros != "*") {
+          var camposCacheados = cursor.metadata().cachedFields().split(",");
+          var cambios = false;
+          for (var i=0; i<camposCacheados.length; i++) {
+            if (cursor.valueBuffer(camposCacheados[i]) != cursor.valueBufferCopy(camposCacheados[i])) {
+              cambios = true;
+              break;
+            }
+          }
+          if (!cambios) {
+            return true;
+          }
+        }
+
+
+     
+  } else if(cursor.modeAccess() == cursor.Insert) {
+      modoAcceso = "Insert";
+  } else if(cursor.modeAccess() == cursor.Del) {
+      modoAcceso = "Delete";
+  }   
+
+  if (!AQUtil.execSql("INSERT INTO fldatatables_cache(mode,tablename,pk_value,timestamp) VALUES ('" + modoAcceso + "', '" + tabla + "', '" + pk + "',CURRENT_TIMESTAMP)")) {
+      debug("Ha fallado el insert");
+  }    
+  return true;
+}
