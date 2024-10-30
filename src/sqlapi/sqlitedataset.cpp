@@ -1104,7 +1104,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
       result.total_records = total_records;
       // TODO: forwardonly.
       if (debug_sql) {
-        qWarning("PAGINACIÓN: TOTAL RECORDS: %d", result.total_records);
+        qWarning("PAGINACIÃ“N: TOTAL RECORDS: %d", result.total_records);
       }
       break;
     }
@@ -1125,6 +1125,8 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     qWarning("Total registros: %d", result.total_records);
     qWarning("Registros recibidos %d", lista_registros.size() -1 );
   }
+
+  int pos = 0;
 
   //qWarning("PROCESANDO LINEAS RECIBIDAS (%d)", lista_registros.count());
   for (QStringList::Iterator it = lista_registros.begin(); it != lista_registros.end(); ++it) {
@@ -1171,7 +1173,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
 
     if (lista_size > 0 && lista_size != cabecera_size) {
-      qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Omitiendo registro ...");
+      qWarning("Error de integridad de datos. El nÃºmero de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Omitiendo registro ...");
       pos++;
       continue;
     }
@@ -1225,14 +1227,14 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
        rec[i] = v;
  
       }
-
+    pos++;
     result.records[posicion_idx] = rec;
     posicion_idx += 1;
     }
 
   }
   if (debug_sql) {
-    qWarning("PAGINACIÓN: CURRENT:" + QString::number(result.records.size()));
+    qWarning("PAGINACIÃ“N: CURRENT:" + QString::number(result.records.size()));
   }
   return true;
   }
