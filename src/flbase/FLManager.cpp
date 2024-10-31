@@ -1886,7 +1886,8 @@ bool FLManager::initCacheLite(bool force) {
   QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
   QString separator = "/";
   #if defined(Q_OS_WIN32)
-    dbFolder = getenv("TMPDIR") + "\\cachelite";
+    dbFolder = getenv("TMPDIR");
+    dbFolder = dbFolder + "\\cachelite";
     separator = "\\";
   #endif
 
