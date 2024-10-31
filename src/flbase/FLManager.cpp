@@ -1908,7 +1908,7 @@ bool FLManager::initCacheLite(bool force) {
   
  #if defined(Q_OS_WIN32)
   //Reemplazar "/" por "\\" en el path
-  fileCache = absPath + separator + db_->database() + ".3db";
+  fileCache = absPath + separator + db_->database() + ".s3db";
   #endif 
 
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
