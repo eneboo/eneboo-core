@@ -1885,11 +1885,9 @@ bool FLManager::initCacheLite(bool force) {
 
   QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
   QString separator = "/";
-  QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
   #if defined(Q_OS_WIN32)
     dbFolder = getenv("TMPDIR") + "\\cachelite";
     separator = "\\";
-    fileCache = dbFolder + separator + db_->database() + "_cachelite.sqlite3db";
   #endif
 
   QDir dir(dbFolder);
@@ -1905,11 +1903,12 @@ bool FLManager::initCacheLite(bool force) {
     }
   }
 
+  QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
   
-/*   #if defined(Q_OS_WIN32)
+ #if defined(Q_OS_WIN32)
   //Reemplazar "/" por "\\" en el path
-  fileCache = fileCache.replace("/", "\\");
-  #endif */
+  fileCache = absPath + separator + db_->database() + ".3db";
+  #endif 
 
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
