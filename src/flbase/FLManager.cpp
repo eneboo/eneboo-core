@@ -1882,10 +1882,20 @@ bool FLManager::initCacheLite(bool force) {
       ++it;
     }
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Inicializando cache lite"));
+
   QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
+  QString separator = "/";
+  QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
+  #if defined(Q_OS_WIN32)
+    dbFolder = getenv("TMPDIR") + "\\cachelite";
+    separator = "\\";
+    fileCache = dbFolder + separator + db_->database() + "_cachelite.sqlite3db";
+  #endif
+
   QDir dir(dbFolder);
 
   QString absPath = dir.absPath();
+
   
   if (!dir.exists()) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(absPath));
@@ -1895,11 +1905,11 @@ bool FLManager::initCacheLite(bool force) {
     }
   }
 
-  QString fileCache = absPath + "/" + db_->database() + "_cachelite.sqlite3db";
-  #if defined(Q_OS_WIN32)
+  
+/*   #if defined(Q_OS_WIN32)
   //Reemplazar "/" por "\\" en el path
   fileCache = fileCache.replace("/", "\\");
-  #endif
+  #endif */
 
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
