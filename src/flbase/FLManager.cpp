@@ -1883,27 +1883,27 @@ bool FLManager::initCacheLite(bool force) {
     }
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Inicializando cache lite"));
 
-  QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
-  QString separator = "/";
-  QDir dir(dbFolder);
+  //QString dbFolder =  AQ_DISKCACHE_DIRPATH + "/../cachelite";
+  //QString separator = "/";
+  //QDir dir(dbFolder);
 
-  QString absPath = dir.absPath();
+  //QString absPath = dir.absPath();
 
   
-  if (!dir.exists()) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(absPath));
-    if (!dir.mkdir(absPath)) {
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear el directorio %1").arg(absPath));
-      return false;
-    }
-  }
+  //if (!dir.exists()) {
+  //  qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando directorio %1").arg(absPath));
+  //  if (!dir.mkdir(absPath)) {
+  //    qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear el directorio %1").arg(absPath));
+  //    return false;
+  //  }
+  //}
   // Reemplazamos / por \\ en absPath
-  absPath = absPath.replace("/", separator);
+  //absPath = absPath.replace("/", separator);
   
-  QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
-  #if defined(Q_OS_WIN32)
-    fileCache = db_->database() + "_cachelite.sqlite3db";
-  #endif
+  //QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
+  //#if defined(Q_OS_WIN32)
+  QString fileCache = db_->database() + "_cachelite.s3db";
+  //#endif
   
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
     qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al añdir la base de datos %1").arg(fileCache));
