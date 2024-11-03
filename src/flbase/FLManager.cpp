@@ -1835,7 +1835,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
             qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
           }
 
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando en tabla %1 registro %2").arg(cacheTableName).arg(tableName));
+      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando %2 en %1").arg(cacheTableName).arg(tableName));
       if(!FLUtil::sqlInsert(cacheTableName,"tablename,permanent",tmd->name() +"," + (isPermanent ? "1" : "0") ,"cachelite")) {
         qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al insertar en %1").arg(cacheTableName));
         return;
@@ -1902,7 +1902,7 @@ bool FLManager::initCacheLite(bool force) {
   
   //QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
   //#if defined(Q_OS_WIN32)
-  QString fileCache = db_->database() + "_cachelite.s3db";
+  QString fileCache = db_->database() + "_cachelite.sqlite3db";
   //#endif
   
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
