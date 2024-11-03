@@ -3488,8 +3488,15 @@ function updateCachedFields(tableName, mode, pkField,fields) {
 
 function controlDatosCacheo(cursor)
 {
+  const tableName = cursor.table();
+
+  debug("controlDatosCacheo " + tableName);
+
+  if (tableName.endsWith("_cachelite")) {
+    return true;
+  } 
+
   
-  debug("controlDatosCacheo " + cursor.table());
 
   const meta_fldatatables_cache = aqApp.db().manager().metadata("fldatatables_cache");
   
@@ -3497,7 +3504,7 @@ function controlDatosCacheo(cursor)
     return true;
   }
 
-  var metadata = aqApp.db().manager().metadata(cursor.table()); 
+  var metadata = aqApp.db().manager().metadata(tableName); 
   if (!metadata.useCachedFields()) {
     return true;
   }
