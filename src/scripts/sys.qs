@@ -3488,13 +3488,21 @@ function updateCachedFields(tableName, mode, pkField,fields) {
 
 function controlDatosCacheo(cursor)
 {
-  var modoAcceso;   
+  
   debug("controlDatosCacheo " + cursor.table());
-  var metadata = aqApp.db().manager().metadata(cursor.table()); 
-  if (!metadata.usedCachedFields()) {
+
+  const meta_fldatatables_cache = aqApp.db().manager().metadata("fldatatables_cache");
+  
+  if (!meta_fldatatables_cache) {
     return true;
   }
 
+  var metadata = aqApp.db().manager().metadata(cursor.table()); 
+  if (!metadata.useCachedFields()) {
+    return true;
+  }
+
+  var modoAcceso;   
   if (cursor.modeAccess() == cursor.Edit) {
       modoAcceso = "Update";
         const registros = metadata.cachedFields();
