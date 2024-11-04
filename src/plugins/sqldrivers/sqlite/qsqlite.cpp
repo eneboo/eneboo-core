@@ -1012,7 +1012,7 @@ QVariant SqliteResult::data(int i)
 
   QString valorUTF8 = dataSet->fv(dataSet->fieldName(i)).get_asString();
   QString valorLatin1 = valorUTF8.latin1();
-  qWarning("SqliteResult::data latin1: %s,  data utf8: %s", valorLatin1, valorUTF8);
+  qWarning("SqliteResult::data latin1: " + valorLatin1 + ", data utf8:" + valorUTF8);
   
   QVariant v = QVariant(valorLatin1);
   if (v.toString().isEmpty()) {
