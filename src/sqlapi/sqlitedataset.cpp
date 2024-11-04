@@ -821,6 +821,8 @@ namespace dbiplus
       use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
       if (use_cache) {
         res = procesa_datos_cadena_recibida(salida, 0); 
+      } else {
+        qWarning("Lanzando llamada a servidor (No se encuentra en cache): " + salida);
       }
     } 
   } 
