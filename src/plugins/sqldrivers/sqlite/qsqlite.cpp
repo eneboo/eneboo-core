@@ -1010,7 +1010,9 @@ QVariant SqliteResult::data(int i)
     return ba;
   }
 
-  QVariant v = QVariant(QString(dataSet->fv(dataSet->fieldName(i)).get_asString().c_str()));
+  QString valorUTF8 = dataSet->fv(dataSet->fieldName(i)).get_asString();
+  qWarning("SqliteResult::data latin1: %s,  data utf8: %s", valorUTF8.latin1(), valorUTF8);
+  QVariant v = QVariant(valorUTF8);
   if (v.toString().isEmpty()) {
     QVariant vv;
     fType type = dataSet->fv(dataSet->fieldName(i)).get_fType();
