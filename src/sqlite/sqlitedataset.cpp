@@ -207,9 +207,6 @@ namespace dbiplus
     if (sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,NULL) != SQLITE_OK) {
         return DB_CONNECTION_NONE;
       }
-    if (sqlite3_exec(getHandle(),"PRAGMA encoding=ISO-8859-1",NULL,NULL,NULL) != SQLITE_OK) {
-        return DB_CONNECTION_NONE;
-      }
     active = true;
     return DB_CONNECTION_OK;
 
