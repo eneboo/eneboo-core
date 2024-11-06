@@ -3492,7 +3492,7 @@ function controlDatosCacheo(cursor)
 
   debug("controlDatosCacheo " + tableName);
 
-  const metaFldatatablesCache = aqApp.db().manager().metadata("fldatatables_cache");
+  const metaFldatatablesCache = cursor.db().manager().metadata("fldatatables_cache");
   
   if (!metaFldatatablesCache) {
     return true;
@@ -3502,7 +3502,7 @@ function controlDatosCacheo(cursor)
     return true;
   } 
 
-  var metadata = aqApp.db().manager().metadata(tableName); 
+  var metadata = cursor.db().manager().metadata(tableName); 
   if (!metadata.useCachedFields()) {
     return true;
   }
@@ -3512,7 +3512,7 @@ function controlDatosCacheo(cursor)
       modoAcceso = "Update";
         const registros = metadata.cachedFields();
         if (registros != "*") {
-          var camposCacheados = metadata.cachedFields().split(",");
+          var camposCacheados = registros.split(",");
           var cambios = false;
           for (var i=0; i<camposCacheados.length; i++) {
             if (cursor.valueBuffer(camposCacheados[i]) != cursor.valueBufferCopy(camposCacheados[i])) {
