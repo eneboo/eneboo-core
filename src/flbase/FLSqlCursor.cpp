@@ -1295,8 +1295,6 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
   if (savePoint)
     delete savePoint;
 
-  d->modeAccess_ = BROWSE;
-
   if (updated)
   {
     bool result_ = false;
@@ -1309,7 +1307,12 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
         result_ = v.toBool();
         qWarning(label_ + fun_name_ + " retorna " + (result_ ? "true" : "false"));
       }
+  }
 
+  d->modeAccess_ = BROWSE;
+
+  if (updated) 
+  {
 
     if (!fieldNameCheck.isEmpty())
     {
@@ -1320,6 +1323,8 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
     setFilter("");
     clearMapCalcFields();
   }
+
+  
 
   if (updated && emite)
     emit cursorUpdated();
