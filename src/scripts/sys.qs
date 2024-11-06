@@ -3489,29 +3489,46 @@ function updateCachedFields(tableName, mode, pkField,fields) {
 function controlDatosCacheo(cursor)
 {
   const tableName = cursor.table();
+  var modo = "Browse";
+  if (cursor.modeAccess() == cursor.Edit) {
+    modo = "Update";
+  } else if(cursor.modeAccess() == cursor.Insert) {
+    modo = "Insert";
+  } else if(cursor.modeAccess() == cursor.Del) {
+    modo = "Delete";
+  }
 
-  debug("controlDatosCacheo " + tableName);
-
-  const metaFldatatablesCache = cursor.db().manager().metadata("fldatatables_cache");
-  
-  if (!metaFldatatablesCache) {
+  if (cursor.modeAccess() == cursor.Browse) {
     return true;
   }
 
+  debug("controlDatosCacheo " + tableName + ", modo:" + modo );
+
   if (tableName.endsWith("_cachelite")) {
+    //debug("DESCARTADO: Termina en _cachelite");
     return true;
   } 
 
-  var metadata = cursor.db().manager().metadata(tableName); 
+  const metaFldatatablesCache = aqApp.db().manager().metadata("fldatatables_cache");
+  
+  if (!metaFldatatablesCache) {
+    //debug("DESCARTADO: no hay metadata fldatatables_cache");
+    return true;
+  }
+
+  var metadata = aqApp.db().manager().metadata(tableName); 
   if (!metadata.useCachedFields()) {
+    //debug("DESCARTADO: no usa cachedfields");
     return true;
   }
 
   var modoAcceso;   
   if (cursor.modeAccess() == cursor.Edit) {
       modoAcceso = "Update";
-        const registros = metadata.cachedFields();
+        const registros = metadata.cachedFields().toString();
+        //debug("cachedfields: " + registros);
         if (registros != "*") {
+          //debug("Es igual '" + registros + "' a '*'" + (registros == "*" ? "SI":"NO"));
           var camposCacheados = registros.split(",");
           var cambios = false;
           for (var i=0; i<camposCacheados.length; i++) {
@@ -3521,6 +3538,7 @@ function controlDatosCacheo(cursor)
             }
           }
           if (!cambios) {
+            //debug("DESCARTADO: no hay campos alterados");
             return true;
           }
         }
@@ -3533,12 +3551,13 @@ function controlDatosCacheo(cursor)
       modoAcceso = "Delete";
   } 
   
-  const tabla = cursor.metadata().name();
-  const pk = cursor.valueBuffer(cursor.metadata().primaryKey());
+  
+  const pk = cursor.valueBuffer(cursor.primaryKey());
 
-  if (!AQUtil.execSql("INSERT INTO fldatatables_cache(mode,tablename,pk_value,timestamp) VALUES ('" + modoAcceso + "', '" + tabla + "', '" + pk + "',CURRENT_TIMESTAMP)")) {
+  if (!AQUtil.execSql("INSERT INTO fldatatables_cache(mode,tablename,pk_value,timestamp) VALUES ('" + modoAcceso + "', '" + tableName + "', '" + pk + "',CURRENT_TIMESTAMP)")) {
       debug("Ha fallado el insert");
       return false;
   }    
+  //debug("OK");
   return true;
 }
