@@ -73,6 +73,8 @@ void FLFormRecordDB::initForm()
     if (caption.isEmpty())
       caption = cursor_->metadata()->alias();
 
+    cursor_->activateDelegateCommit();
+
     switch (cursor_->modeAccess())
     {
     case FLSqlCursor::INSERT:
