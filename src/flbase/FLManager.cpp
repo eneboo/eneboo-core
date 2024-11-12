@@ -1902,7 +1902,7 @@ bool FLManager::initCacheLite(bool force) {
   
   //QString fileCache = absPath + separator + db_->database() + "_cachelite.sqlite3db";
   //#if defined(Q_OS_WIN32)
-  QString fileCache = db_->database() + "_cachelite.sqlite3db";
+  QString fileCache = "../"  + db_->database() + "_cachelite.sqlite3db";
   //#endif
   
   if (!FLSqlConnections::addDatabase("FLsqlite", fileCache, "", "","",0,"cachelite","")) {
