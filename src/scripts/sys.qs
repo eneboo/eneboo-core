@@ -3433,7 +3433,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   array_fields.push(pkField);
   //debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
   debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
-  const where = pkField + " = " + AQUtil.formatValue(metaField, fields[pkField]);
+  const where = pkField + " = " + manager.formatValue(metaField, fields[pkField]);
   //debug("** where: " + where);
 
   if (mode == "Delete") {
