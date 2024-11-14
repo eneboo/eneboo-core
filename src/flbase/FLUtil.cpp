@@ -919,7 +919,7 @@ bool FLUtil::writeDBSettingEntry(const QString &key, const QString &value)
 
   FLTableMetaData *tmd = FLSqlConnections::database()->manager()->metadata("flsettings");
   
-  sqlSelect("flsettings", "valor", where, "flsettings", &size, use_cache && tmd->useCachedFields() ? "cachelite": "default");
+  sqlSelect("flsettings", "flkey,valor", where, "flsettings", &size); // Al llevar coma el select preguntamos fuera...
   if (size > 0) {
     result = sqlUpdate("flsettings", "valor", value, where);
   } else {
