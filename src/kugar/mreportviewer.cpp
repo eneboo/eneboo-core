@@ -144,8 +144,10 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   // Render the report
   report = rptEngine->renderReport(initRow, initCol, report, flags);
   insertChild(report);
-  if (displayReport)
+  if (displayReport) {
     printToPos_ = report->printToPos();
+    qWarning("printToPos es " + (printToPos_ ? "SI" : "NO"));
+  }
   if (progress) {
     progress->deleteLater();
     progress = 0;
@@ -741,9 +743,10 @@ bool MReportViewer::printReport()
 
   report->setPrintToPos(printToPos_);
 
-  if (report->printToPos())
+  if (report->printToPos()) {
+    qWarning("printReport --> PrintToPos");
     return printPosReport();
-
+  }
 #if defined(Q_OS_WIN32)
   bool gsOk = false;
   QProcess *procTemp = new QProcess();
@@ -754,6 +757,8 @@ bool MReportViewer::printReport()
   if (gsOk) {
     if (printGhostReport())
       return true;
+  } else {
+    qWarning("Ghostscript not found");
   }
 
   QMessageBox *m = new QMessageBox(tr("Sugerencia"),
@@ -787,17 +792,24 @@ bool MReportViewer::printReport()
   printer->setColorMode((QPrinter::ColorMode) colorMode_);
   printer->setNumCopies(numCopies_);
   printer->setResolution(dpi_);
-  if (!printerName_.isEmpty())
+  if (!printerName_.isEmpty()) {
     printer->setPrinterName(printerName_);
+    qWarning("printReport --> PrinterName: %s", printerName_);
+  }
   QString printProg(aqApp->printProgram());
-  if (!printProg.isEmpty())
+  if (!printProg.isEmpty()) {
+    qWarning("printReport --> PrintProgram: %s", printProg);
     printer->setPrintProgram(aqApp->printProgram());
+
+  }
 
   bool printNow = true;
   if (!printerName_.isNull())
     printNow = true;
   else
     printNow = printer->setup(qApp->focusWidget());
+
+  qWarning("printReport --> PrintNow: %s, printName: %s", printNow ? "true" : "false", printerName_);
 
   if (printNow) {
     QPicture *page;

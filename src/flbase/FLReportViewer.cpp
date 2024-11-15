@@ -488,11 +488,14 @@ void FLReportViewer::slotPrintReportToPDF(const QString &outPdfFile)
 
 void FLReportViewer::slotPrintReport()
 {
-  if (slotsPrintDisabled_)
+  if (slotsPrintDisabled_) {
+    qWarning("Print report desactivado");
     return;
+  }
   setDisabled(true);
   printing_ = true;
   reportPrinted_ = rptViewer_->printReport();
+  qWarning("Report impreso " + (reportPrinted_ ? "SI" : "NO"));
   if (reportPrinted_ && autoClose_)
     QTimer::singleShot(0, this, SLOT(slotExit()));
   printing_ = false;
