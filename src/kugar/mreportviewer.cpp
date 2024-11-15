@@ -146,7 +146,7 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   insertChild(report);
   if (displayReport) {
     printToPos_ = report->printToPos();
-    qWarning("printToPos es " + (printToPos_ ? "SI" : "NO"));
+    qWarning("printToPos es %s", (printToPos_ ? "SI" : "NO"));
   }
   if (progress) {
     progress->deleteLater();
@@ -794,11 +794,11 @@ bool MReportViewer::printReport()
   printer->setResolution(dpi_);
   if (!printerName_.isEmpty()) {
     printer->setPrinterName(printerName_);
-    qWarning("printReport --> PrinterName: %s", printerName_);
+    qWarning("printReport --> PrinterName: " + printerName_);
   }
   QString printProg(aqApp->printProgram());
   if (!printProg.isEmpty()) {
-    qWarning("printReport --> PrintProgram: %s", printProg);
+    qWarning("printReport --> PrintProgram: " + printProg);
     printer->setPrintProgram(aqApp->printProgram());
 
   }
@@ -809,7 +809,7 @@ bool MReportViewer::printReport()
   else
     printNow = printer->setup(qApp->focusWidget());
 
-  qWarning("printReport --> PrintNow: %s, printName: %s", printNow ? "true" : "false", printerName_);
+  qWarning("printReport --> PrintNow: %s, printName: " + printerName_, printNow ? "true" : "false");
 
   if (printNow) {
     QPicture *page;
