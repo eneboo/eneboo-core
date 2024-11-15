@@ -495,7 +495,7 @@ void FLReportViewer::slotPrintReport()
   setDisabled(true);
   printing_ = true;
   reportPrinted_ = rptViewer_->printReport();
-  qWarning("Report impreso " + (reportPrinted_ ? "SI" : "NO"));
+  qWarning("Report impreso %s" , reportPrinted_ ? "SI" : "NO");
   if (reportPrinted_ && autoClose_)
     QTimer::singleShot(0, this, SLOT(slotExit()));
   printing_ = false;
