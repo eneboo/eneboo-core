@@ -239,7 +239,7 @@ bool MReportViewer::printGhostReport()
 
     if (fileSetup.open(IO_WriteOnly)) {
       QTextStream stream(&fileSetup);
-      stream << "mark" << "\n";
+      stream << "<<" << "\n";
       stream << "  /NoCancel      true" << "\n";
       if (!printerName_.isEmpty()) {
         QString pName("  /OutputFile      (%printer%");
@@ -255,8 +255,8 @@ bool MReportViewer::printGhostReport()
       stream << QString("      /MaxResolution %1").arg(dpi_) << "\n";
       stream << QString("      /Copies %1").arg(numCopies_) << "\n";
       stream << "    >>" << "\n";
-      stream << "  (mswinpr2) finddevice" << "\n";
-      stream << "  putdeviceprops" << "\n";
+      stream << "  /OutputDevice /mswinpr2" << "\n";
+      stream << ">> setpagedevice" << "\n";
       stream << "setdevice" << "\n";
       if ((QPrinter::PageSize) report->pageSize() == QPrinter::Custom) {
         QSize sz(report->pageDimensions());
