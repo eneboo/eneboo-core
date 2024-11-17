@@ -272,6 +272,7 @@ bool MReportViewer::printGhostReport()
     proc->addArgument("-q");
     proc->addArgument("-dBATCH");
     proc->addArgument("-dNOPAUSE");
+    proc->addArgument("-DNOSAFER"); // Si no pongo esto me da error al cargar el dialogo de impresión
     proc->addArgument("-dNODISPLAY");
     proc->addArgument(QString("-r%1").arg(dpi_));
 
