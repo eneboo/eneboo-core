@@ -331,13 +331,12 @@ bool MReportViewer::printGhostReport()
     proc->addArgument(setupPsFile);
     proc->addArgument(outPsFile);
   }
-
+  QStringList argumentos = proc->arguments();
   QString comando = "";
-  for (int i = 0; i < proc->arguments().count(); i++) {
-    comando += proc->arguments().at(i) + " ";
+  for (list<string>::iterator i = argumentos.begin(); i != argumentos.end(); i++) {
+      comando += *i + " ";
   }
-
-
+  
   qWarning("Lanzando : %s", comando);
   if (!proc->start()) {
     qWarning("Error al lanzar el proceso de impresión: %s", proc->readStderr().data());
