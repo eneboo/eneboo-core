@@ -256,6 +256,7 @@ bool MReportViewer::printGhostReport()
       stream << QString("      /Copies %1").arg(numCopies_) << "\n";
       stream << "    >>";
       stream << "  /OutputDevice /mswinpr2" << "\n";
+      stream << ">>";
       if ((QPrinter::PageSize) report->pageSize() == QPrinter::Custom) {
         QSize sz(report->pageDimensions());
         stream << QString("<< /PageSize [%1 %2] /ImagingBBox null >>")
