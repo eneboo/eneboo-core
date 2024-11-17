@@ -333,11 +333,11 @@ bool MReportViewer::printGhostReport()
   }
   QStringList argumentos = proc->arguments();
   QString comando = "";
-  for (list<string>::iterator i = argumentos.begin(); i != argumentos.end(); i++) {
+  for (QStringList::Iterator i = argumentos.begin(); i != argumentos.end(); i++) {
       comando += *i + " ";
   }
-  
-  qWarning("Lanzando : %s", comando);
+
+  qWarning("Lanzando :" + comando);
   if (!proc->start()) {
     qWarning("Error al lanzar el proceso de impresión: %s", proc->readStderr().data());
     delete proc;
@@ -354,7 +354,7 @@ bool MReportViewer::printGhostReport()
     // step = 0;
   }
   //QApplication::restoreOverrideCursor();
-  qWarning("Proceso terminado.")
+  qWarning("Proceso terminado.");
   delete proc;
   //delete pd;
 
