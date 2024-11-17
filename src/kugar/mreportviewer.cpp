@@ -332,7 +332,15 @@ bool MReportViewer::printGhostReport()
     proc->addArgument(outPsFile);
   }
 
+  QString comando = "";
+  for (int i = 0; i < proc->arguments().count(); i++) {
+    comando += proc->arguments().at(i) + " ";
+  }
+
+
+  qWarning("Lanzando : %s", comando);
   if (!proc->start()) {
+    qWarning("Error al lanzar el proceso de impresión: %s", proc->readStderr().data());
     delete proc;
     return false;
   }
@@ -347,7 +355,7 @@ bool MReportViewer::printGhostReport()
     // step = 0;
   }
   //QApplication::restoreOverrideCursor();
-
+  qWarning("Proceso terminado.")
   delete proc;
   //delete pd;
 
