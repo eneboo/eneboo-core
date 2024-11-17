@@ -254,25 +254,26 @@ bool MReportViewer::printGhostReport()
       stream << QString("      /SelectedRange [1 %1]").arg(cnt) << "\n";
       stream << QString("      /MaxResolution %1").arg(dpi_) << "\n";
       stream << QString("      /Copies %1").arg(numCopies_) << "\n";
-      stream << "    >>" << "\n";
+      stream << "    >>";
       stream << "  /OutputDevice /mswinpr2" << "\n";
-      stream << ">> setpagedevice" << "\n";
-      stream << "setdevice" << "\n";
       if ((QPrinter::PageSize) report->pageSize() == QPrinter::Custom) {
         QSize sz(report->pageDimensions());
-        stream << QString("<< /PageSize [%1 %2] /ImagingBBox null >> setpagedevice")
+        stream << QString("<< /PageSize [%1 %2] /ImagingBBox null >>")
                .arg(sz.width())
                .arg(sz.height())
                << "\n";
       }
+      stream << " setpagedevice" << "\n";
       fileSetup.close();
     }
+
+    
 
     proc->addArgument(aqApp->gsExecutable());
     proc->addArgument("-q");
     proc->addArgument("-dBATCH");
     proc->addArgument("-dNOPAUSE");
-    proc->addArgument("-DNOSAFER"); // Si no pongo esto me da error al cargar el dialogo de impresión
+    proc->addArgument("-DNOSAFER"); // Si no pongo esto me da error al cargar el
     proc->addArgument("-dNODISPLAY");
     proc->addArgument(QString("-r%1").arg(dpi_));
 
