@@ -3132,9 +3132,11 @@ bool FLSqlCursor::doCommitBuffer()
 
     if (result_) // Si sys.delegateCommit devuelve ok.
     {
-      QString pKN = mtd->primaryKey();
-      QString pKWhere = d->db_->manager()->formatAssignValue(mtd->field(pKN), valueBuffer(pKN));
-      setPersistentFilterDelegate(pKWhere);
+      if (d->modeAccess_ != EDIT) { // Si el nivel actual no es modo edit ... Porque si es modo Insert si tengo que meterlo
+        QString pKN = mtd->primaryKey();
+        QString pKWhere = d->db_->manager()->formatAssignValue(mtd->field(pKN), valueBuffer(pKN));
+        setPersistentFilterDelegate(pKWhere);
+      }
 
       if (d->cursorRelation_)
       {
