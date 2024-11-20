@@ -3451,7 +3451,9 @@ function updateCachedFields(tableName, mode, pkField,fields) {
             found = true;
             break;
           }
-        }      if (!found) {
+        }      
+        
+        if (!found) {
           continue;
         }
     
