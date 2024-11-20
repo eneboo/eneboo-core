@@ -652,7 +652,10 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   tmd->setFTSFunction(ftsfun);
   tmd->setConcurWarn(cw);
   tmd->setDetectLocks(dl);
-  tmd->setCachedFields(cF);
+
+  if(db_->driverName() == "FLsqlapi") {
+    tmd->setCachedFields(cF);
+  }
   no = mtd->firstChild();
 
   while (!no.isNull()) {
