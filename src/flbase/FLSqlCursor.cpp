@@ -1945,12 +1945,8 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
     }
   }
 
-  
-
   if (!refreshBuffer())
     return;
-
-  int initialPos = at();
 
   QWidget *activeWid = aqApp->mainWidget();
   if (!activeWid)
@@ -1967,20 +1963,13 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
                                          activeWid, cont);
   if (refreshBuffer())
   {
-    if (useDelegateCommit() && m == EDIT) {
-      if (initialPos != at()) {
-        qWarning(tr("FLSqlCursor::openFormInMode :: initialPos != at(). Lanzando cursorUpdated para seleccionar columna correcta."));
-        emit cursorUpdated();
-      }
-    }
     f->setMainWidget();
     f->setFocus();
     f->show();
     updateBufferCopy();
   }
-  else {
+  else
     f->close();
-  }
 }
 
 void FLSqlCursor::chooseRecord()
