@@ -3344,7 +3344,9 @@ function updateCachedTables(tableNames)
     whereCache += tableNames.join("','");
 
     whereCache += "') OR permanent = 1";
-
+    for (var i = 0; i < tableNames.length; i++) {
+    	const meta_fake = aqApp.db().manager().metadata(tableNames[i]);
+    }
   }
 
   debug("Consulta " + whereCache);
