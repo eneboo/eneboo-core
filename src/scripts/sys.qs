@@ -3434,58 +3434,46 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   var array_fields = metaTable.cachedFields();
   array_fields.push(pkField);
   //debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
-  debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
+  //debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
   const where = pkField + " = " + manager.formatValue(metaField, fields[pkField]);
-  //debug("** where: " + where);
-
+  //debug("** where: " + where);  
   if (mode == "Delete") {
     return AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
   } else {
-    const fieldsNames = [];
-    const fieldsValues = [];
-    for (var field in fields) {
-      //debug("?? Campo: " + field);
-      var found = false;
-      for (var i=0; i<array_fields.length; i++) {
-        if (array_fields[i] == "*" || array_fields[i] == field) {
-          found = true;
-          break;
+      const fieldsNames = [];
+      const fieldsValues = [];
+      for (var field in fields) {
+        //debug("?? Campo: " + field);
+        var found = false;
+        for (var i=0; i<array_fields.length; i++) {
+          if (array_fields[i] == "*" || array_fields[i] == field) {
+            //debug("encontrado");
+            found = true;
+            break;
+          }
+        }      if (!found) {
+          continue;
         }
-      }
-
-      if (!found) {
-        continue;
-      }
-
-      fieldsNames.push(field);
-      fieldsValues.push(fields[field]);
-    }
-    var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
-
-    cursor.select(where);
-
-    if (mode == "Update") {
-      if (!cursor.first()) {
-        debug("Error en posicionamiento");
-        return false;
-      }
-    }
-
-    cursor.setActivatedCheckIntegrity(false);
-    cursor.setActivatedCommitActions(false);
     
-    cursor.setModeAccess(mode== "Insert" ? cursor.Insert: cursor.Edit);
-    cursor.refreshBuffer();
-
-    for (var i=0; i<fieldsNames.length; i++) {
-      //debug("\n* Campo: " + fieldsNames[i] + " = " + fieldsValues[i]);
-      cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
-    }
-    return cursor.commitBuffer();
-  }
-
-  return true;
-
+        fieldsNames.push(field);
+        fieldsValues.push(fields[field]);
+      }
+      var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");    
+      if (mode == "Update") {
+        //no lo buscamos, directamente borramos si lo encuentra
+        AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
+      }
+      //ponemos modo Insert, porque si era Update hemos borrado y queremos insertar
+      cursor.setActivatedCheckIntegrity(false);
+      cursor.setActivatedCommitActions(false); 
+         
+      cursor.setModeAccess(cursor.Insert);
+      cursor.refreshBuffer();    
+      for (var i=0; i<fieldsNames.length; i++) {
+        cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
+      }
+      return cursor.commitBuffer();
+    }  
 }
 
 function controlDatosCacheo(cursor)
