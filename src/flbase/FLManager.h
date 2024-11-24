@@ -383,7 +383,7 @@ public:
     return initCount_;
   }
 
-  FLTableMetaData checkFLLarge(const QString &tableLarge);
+  FLTableMetaData *checkFLLarge(const QString &tableLarge);
 
   bool initCacheLite(bool force = false);
 
