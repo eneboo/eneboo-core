@@ -1707,9 +1707,9 @@ FLTableMetaData *FLManager::checkFLLarge(const QString &tableLarge) {
         mtdLarge->setCachedFields(QString("*"));
     }
 
-    if (!cacheMetaData_->find(tableLarge)) { // Lo cargamos en cache normal...
-        cacheMetaData_->insert(tableLarge, mtdLarge);
-        dbCache_->manager()->insertMetadataCache(tableLarge ,mtdLarge);
+    if (!cacheMetaDataSys_->find(tableLarge)) { // Lo cargamos en cache normal...
+        qWarning("FLManager::checkFLLarge: REGISTRANDO " + tableLarge);
+        cacheMetaDataSys_->insert(tableLarge, mtdLarge);
     }
 
 

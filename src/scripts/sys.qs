@@ -3445,7 +3445,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
   }
 
 
-  metaTable = manager.metadata(tableName);
+  metaTable = manager.metadata(tableName, true);
   const tableName_cachelite = tableName + "_cachelite";
   metaField = metaTable.field(pkField);
   var array_fields = metaTable.cachedFields();
