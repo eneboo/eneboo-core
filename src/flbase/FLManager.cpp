@@ -1718,7 +1718,7 @@ QString tableLarge;
   if (!existsTable(tableLarge))
     return QVariant();
 
-  bool use_cache_lite = db_->db()->manager()->initCacheLite();
+  bool use_cache_lite = aqApp->db()->manager()->initCacheLite();
 
   tableLarge = use_cache_lite ? tableLarge + "_cachelite" : tableLarge;
 
