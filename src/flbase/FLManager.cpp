@@ -1640,14 +1640,20 @@ QString tableLarge;
          else
   	{
   	tableLarge = QString::fromLatin1("fllarge_") + tableName;
+    FLTableMetaData *mtdLarge = new FLTableMetaData(tableLarge, tableLarge);
+    FLFieldMetaData *fieldLarge = new FLFieldMetaData("refkey", "refkey", false, true, QVariant::String, 100);
+    mtdLarge->addFieldMD(fieldLarge);
+    fieldLarge = new FLFieldMetaData("sha", "sha", true, false, QVariant::String, 50);
+    mtdLarge->addFieldMD(fieldLarge);
+    fieldLarge = new FLFieldMetaData("contenido", "contenido", true, false, QVariant::StringList);
+    mtdLarge->addFieldMD(fieldLarge);
+    if(db_->driverName() == "FLsqlapi") {
+        mtdLarge->setCachedFields(QString("*"));
+    }
+
+    checkTablaCache(mtdLarge);
+    
   	if (!existsTable(tableLarge)) {
-    		FLTableMetaData *mtdLarge = new FLTableMetaData(tableLarge, tableLarge);
-    		FLFieldMetaData *fieldLarge = new FLFieldMetaData("refkey", "refkey", false, true, QVariant::String, 100);
-    		mtdLarge->addFieldMD(fieldLarge);
-    		fieldLarge = new FLFieldMetaData("sha", "sha", true, false, QVariant::String, 50);
-    		mtdLarge->addFieldMD(fieldLarge);
-    		fieldLarge = new FLFieldMetaData("contenido", "contenido", true, false, QVariant::StringList);
-    		mtdLarge->addFieldMD(fieldLarge);
     		FLTableMetaData *mtdAux = createTable(mtdLarge);
     		mtd->insertChild(mtdLarge);
     		if (!mtdAux)
@@ -1707,12 +1713,15 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
 // --> FLLarge único
 QString tableLarge;
 QString connName;
+QString tableName;
 
-  if (aqApp->singleFLLarge())
-  tableLarge = QString::fromLatin1("fllarge");
-  else
-  tableLarge = QString::fromLatin1("fllarge_") + refKey.section('@', 1, 1);
-
+  if (aqApp->singleFLLarge()) {
+    tableLarge = QString::fromLatin1("fllarge");
+  } else {
+    tableName = refKey.section('@', 1, 1);
+    tableLarge = QString::fromLatin1("fllarge_") + tableName;
+  }
+    
   
 //<-- FLLarge único
 
@@ -1720,6 +1729,22 @@ QString connName;
     return QVariant();
 
   bool use_cache_lite = aqApp->db()->manager()->initCacheLite();
+
+  if (use_cache_lite) {
+    FLTableMetaData *mtdLarge = new FLTableMetaData(tableLarge, tableLarge);
+    FLFieldMetaData *fieldLarge = new FLFieldMetaData("refkey", "refkey", false, true, QVariant::String, 100);
+    mtdLarge->addFieldMD(fieldLarge);
+    fieldLarge = new FLFieldMetaData("sha", "sha", true, false, QVariant::String, 50);
+    mtdLarge->addFieldMD(fieldLarge);
+    fieldLarge = new FLFieldMetaData("contenido", "contenido", true, false, QVariant::StringList);
+    mtdLarge->addFieldMD(fieldLarge);
+    if(db_->driverName() == "FLsqlapi") {
+        mtdLarge->setCachedFields(QString("*"));
+    }
+    checkTablaCache(mtdLarge);
+  }
+
+    
 
   tableLarge = use_cache_lite ? tableLarge + "_cachelite" : tableLarge;
   connName = use_cache_lite ? "cachelite" : db_->database();
