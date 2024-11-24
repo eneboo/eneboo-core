@@ -801,7 +801,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
     if (stream.isEmpty()) {
 #ifdef FL_DEBUG
       qWarning("FLManager : " +
-               QApplication::tr("Error al cargar los metadatos para la tabla %1")
+               QApplication::tr("(1) Error al cargar los metadatos para la tabla %1")
                .arg(n));
 #endif
       return 0;
@@ -823,7 +823,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
       if (stream.isEmpty()) {
 #ifdef FL_DEBUG
         qWarning("FLManager : " +
-                 QApplication::tr("Error al cargar los metadatos para la tabla %1")
+                 QApplication::tr("(3) Error al cargar los metadatos para la tabla %1")
                  .arg(n));
 #endif
         return 0;
@@ -834,7 +834,7 @@ if (db_->database().find("_cachelite.sqlite3db") >= 0) {
     if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
       qWarning("FLManager : " +
-               QApplication::tr("Error al cargar los metadatos para la tabla %1")
+               QApplication::tr("(4) Error al cargar los metadatos para la tabla %1")
                .arg(n));
 #endif
       return 0;
@@ -998,7 +998,7 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
 
   if (!FLUtil::domDocumentSetContent(doc, stream)) {
 #ifdef FL_DEBUG
-    qWarning("FLManager : " + QApplication::tr("Error al cargar los metadatos para la tabla %1").arg(n));
+    qWarning("FLManager : " + QApplication::tr("(2) Error al cargar los metadatos para la tabla %1").arg(n));
 #endif
     if (quick)
       delete dictKey;
