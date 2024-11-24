@@ -1709,6 +1709,7 @@ FLTableMetaData *FLManager::checkFLLarge(const QString &tableLarge) {
 
     if (!cacheMetaData_->find(tableLarge)) { // Lo cargamos en cache normal...
         cacheMetaData_->insert(tableLarge, mtdLarge);
+        dbCache_->manager()->insertMetadataCache(tableLarge ,mtdLarge);
     }
 
 
