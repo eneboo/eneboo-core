@@ -1640,7 +1640,7 @@ QString tableLarge;
          else
   	{
   	tableLarge = QString::fromLatin1("fllarge_") + tableName;
-    FLTableMetaData mtdLarge = aqApp->db()->manager()->checkFLLarge(tableLarge);
+    FLTableMetaData *mtdLarge = aqApp->db()->manager()->checkFLLarge(tableLarge);
     if (!existsTable(tableLarge)) {
     		FLTableMetaData *mtdAux = createTable(mtdLarge);
         mtd->insertChild(mtdLarge);
