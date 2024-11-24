@@ -975,6 +975,7 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
     dictKey = new QString(key);
 #endif //FL_QUICK_CLIENT
   if (dictKey) {
+    qWarning("FLManager::metadataDev: dictKey is " + dictKey);
     if (cacheMetaData_ && notSysTable) {
       qWarning("FLManager::metadataDev: cacheMetaData_");
       ret = cacheMetaData_->find(*dictKey);
@@ -1711,9 +1712,9 @@ FLTableMetaData *FLManager::checkFLLarge(const QString &tableLarge) {
         mtdLarge->setCachedFields(QString("*"));
     }
 
-    if (!cacheMetaDataSys_->find(tableLarge)) { // Lo cargamos en cache normal...
+    if (!cacheMetaData_->find(tableLarge)) { // Lo cargamos en cache normal...
         qWarning("FLManager::checkFLLarge: REGISTRANDO " + tableLarge);
-        cacheMetaDataSys_->insert(tableLarge, mtdLarge);
+        cacheMetaData_->insert(tableLarge, mtdLarge);
     }
 
 
