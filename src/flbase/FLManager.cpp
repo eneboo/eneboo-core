@@ -1695,7 +1695,7 @@ QString tableLarge;
 }
 
 
-FLTableMetaData FLManager::checkFLLarge(const QString &tableLarge) {
+FLTableMetaData *FLManager::checkFLLarge(const QString &tableLarge) {
     FLTableMetaData *mtdLarge = new FLTableMetaData(tableLarge, tableLarge);
     FLFieldMetaData *fieldLarge = new FLFieldMetaData("refkey", "refkey", false, true, QVariant::String, 100);
     mtdLarge->addFieldMD(fieldLarge);
