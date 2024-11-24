@@ -975,12 +975,9 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
     dictKey = new QString(key);
 #endif //FL_QUICK_CLIENT
   if (dictKey) {
-    qWarning("FLManager::metadataDev: dictKey is %s", dictKey);
     if (cacheMetaData_ && notSysTable) {
-      qWarning("FLManager::metadataDev: cacheMetaData_");
       ret = cacheMetaData_->find(*dictKey);
     } else if (cacheMetaDataSys_ && !notSysTable) {
-      qWarning("FLManager::metadataDev: cacheMetaDataSys_");
       ret = cacheMetaDataSys_->find(*dictKey);
     }
     if (ret) {
@@ -993,8 +990,6 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
         delete dictKey;
       return ret;
     }
-  } else {
-    qWarning("FLManager::metadataDev: dictKey is null");
   }
 
   if (!readStream) {
@@ -1753,7 +1748,7 @@ QString tableName;
     
 
   tableLarge = use_cache_lite ? tableLarge + "_cachelite" : tableLarge;
-  connName = use_cache_lite ? "cachelite" : db_->database();
+  connName = use_cache_lite ? "cachelite" : "default";
 
   QSqlQuery qryLarge(QString::null, FLSqlConnections::database(connName)->db());
   if (qryLarge.exec(QString::fromLatin1("SELECT contenido FROM ") + tableLarge +
