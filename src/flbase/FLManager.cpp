@@ -1640,14 +1640,13 @@ QString tableLarge;
          else
   	{
   	tableLarge = QString::fromLatin1("fllarge_") + tableName;
-    aqApp->db()->manager()->checkFLLarge(tableLarge);
-    
-  	if (!existsTable(tableLarge)) {
+    FLTableMetaData mtdLarge = aqApp->db()->manager()->checkFLLarge(tableLarge);
+    if (!existsTable(tableLarge)) {
     		FLTableMetaData *mtdAux = createTable(mtdLarge);
-    		mtd->insertChild(mtdLarge);
-    		if (!mtdAux)
-      			return QString::null;
-  					}
+        mtd->insertChild(mtdLarge);
+    	  if (!mtdAux)
+      		return QString::null;
+  	    }
   	}
 
 
@@ -1696,7 +1695,7 @@ QString tableLarge;
 }
 
 
-void FLManager::checkFLLarge(const QString &tableLarge) {
+FLTableMetaData FLManager::checkFLLarge(const QString &tableLarge) {
     FLTableMetaData *mtdLarge = new FLTableMetaData(tableLarge, tableLarge);
     FLFieldMetaData *fieldLarge = new FLFieldMetaData("refkey", "refkey", false, true, QVariant::String, 100);
     mtdLarge->addFieldMD(fieldLarge);
@@ -1708,6 +1707,7 @@ void FLManager::checkFLLarge(const QString &tableLarge) {
         mtdLarge->setCachedFields(QString("*"));
     }
     checkTablaCache(mtdLarge);
+    return mtdLarge;
 }
 
 QVariant FLManager::fetchLargeValue(const QString &refKey) const
