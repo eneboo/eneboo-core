@@ -976,8 +976,10 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
 #endif //FL_QUICK_CLIENT
   if (dictKey) {
     if (cacheMetaData_ && notSysTable) {
+      qWarning("FLManager::metadataDev: cacheMetaData_");
       ret = cacheMetaData_->find(*dictKey);
     } else if (cacheMetaDataSys_ && !notSysTable) {
+      qWarning("FLManager::metadataDev: cacheMetaDataSys_");
       ret = cacheMetaDataSys_->find(*dictKey);
     }
     if (ret) {
@@ -990,6 +992,8 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
         delete dictKey;
       return ret;
     }
+  } else {
+    qWarning("FLManager::metadataDev: dictKey is null");
   }
 
   if (!readStream) {
