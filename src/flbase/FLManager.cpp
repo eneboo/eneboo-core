@@ -1706,6 +1706,7 @@ QVariant FLManager::fetchLargeValue(const QString &refKey) const
     return QVariant();
 // --> FLLarge único
 QString tableLarge;
+QString db_name;
 
   if (aqApp->singleFLLarge())
   tableLarge = QString::fromLatin1("fllarge");
@@ -1721,8 +1722,9 @@ QString tableLarge;
   bool use_cache_lite = aqApp->db()->manager()->initCacheLite();
 
   tableLarge = use_cache_lite ? tableLarge + "_cachelite" : tableLarge;
+  db_name = use_cache_lite ? "cachelite" : db_->database();
 
-  QSqlQuery qryLarge(QString::null, use_cache_lite ? FLSqlConnections::database(QString('cachelite'))->db() : db_->db());
+  QSqlQuery qryLarge(QString::null, db_name);
   if (qryLarge.exec(QString::fromLatin1("SELECT contenido FROM ") + tableLarge +
                     QString::fromLatin1(" WHERE refkey='") + refKey + QString::fromLatin1("'")) &&
       qryLarge.next()) {
