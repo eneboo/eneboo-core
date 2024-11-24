@@ -975,7 +975,7 @@ FLTableMetaData *FLManager::metadataDev(const QString &n, bool quick)
     dictKey = new QString(key);
 #endif //FL_QUICK_CLIENT
   if (dictKey) {
-    qWarning("FLManager::metadataDev: dictKey is " + dictKey);
+    qWarning("FLManager::metadataDev: dictKey is %s", dictKey);
     if (cacheMetaData_ && notSysTable) {
       qWarning("FLManager::metadataDev: cacheMetaData_");
       ret = cacheMetaData_->find(*dictKey);
