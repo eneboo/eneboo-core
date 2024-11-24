@@ -1706,6 +1706,12 @@ FLTableMetaData *FLManager::checkFLLarge(const QString &tableLarge) {
     if(db_->driverName() == "FLsqlapi") {
         mtdLarge->setCachedFields(QString("*"));
     }
+
+    if (!cacheMetaData_->find(tableLarge)) { // Lo cargamos en cache normal...
+        cacheMetaData_->insert(tableLarge, mtdLarge);
+    }
+
+
     checkTablaCache(mtdLarge);
     return mtdLarge;
 }
