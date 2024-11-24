@@ -56,6 +56,7 @@ public slots:
   QString storeLargeValue(FLTableMetaData *, const QString &);
   QVariant fetchLargeValue(const QString &) const;
   bool initCacheLite(bool force = false);
+  void checkFLLarge(const QString &tableLarge);
 protected:
   static void *construct(const QSArgumentList &args) {
     return 0;
@@ -152,6 +153,13 @@ inline bool AQSManager::initCacheLite(bool force)
 {
   AQ_CALL_RET_V(initCacheLite(force), bool);
 }
+
+inline void AQSManager::checkFLLarge(const QString &tableLarge)
+{
+  AQ_CALL_VOID(checkFLLarge(tableLarge));
+}
+
+
 inline void AQSManager::cleanupMetaData()
 {
   AQ_CALL_VOID(cleanupMetaData());

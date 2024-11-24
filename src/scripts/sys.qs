@@ -20,7 +20,7 @@ var form = this;
 function init() {
 
   if (aqApp.db().manager().initCacheLite()) {
-    sys.updateCachedTables(["flsettings","fllarge"]);
+    sys.updateCachedTables();
   }
 
   var settings = new AQSettings;
@@ -3372,8 +3372,14 @@ function updateCachedTables(tableNames)
     const metatable = aqApp.db().manager().metadata(currentTableName);
     var timestamp = qryCachesFields.value("timestamp");
   // LLamada a aqextensi?n solicitando datos.
-  var cachedFields = metatable.cachedFields();
-  cachedFields.push(metatable.primaryKey());
+  var cachedFields;
+  if (currentTableName.startsWith('fllarge')) {
+    cachedFields = ["*","refkey"];
+  } else {
+    cachedFields = metatable.cachedFields();
+    cachedFields.push(metatable.primaryKey());
+  }
+  debug("*PREGUNTANDO POR " + currentTableName);
   tablesPayload.push({"tablename": currentTableName, "cachedfields": cachedFields.join(","), "timestamp": timestamp});
   }
 
@@ -3433,6 +3439,12 @@ function updateCachedTables(tableNames)
 
 function updateCachedFields(tableName, mode, pkField,fields) {
   manager = aqApp.db().manager();
+
+  if (tableName.startsWith('fllarge')) {
+    aqApp.db().manager().checkFLLarge(tableName);
+  }
+
+
   metaTable = manager.metadata(tableName);
   const tableName_cachelite = tableName + "_cachelite";
   metaField = metaTable.field(pkField);
@@ -3465,7 +3477,9 @@ function updateCachedFields(tableName, mode, pkField,fields) {
         fieldsNames.push(field);
         fieldsValues.push(fields[field]);
       }
-      var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");    
+
+      var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
+
       if (mode == "Update") {
         //no lo buscamos, directamente borramos si lo encuentra
         AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");

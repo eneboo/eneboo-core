@@ -2,7 +2,6 @@
 <TMD>
 	<name>fllarge</name>
 	<alias>QT_TRANSLATE_NOOP("MetaData","Ficheros de gran tamaño")</alias>
-	<cachedfields>*</cachedfields>
 
 	<field>
 		<name>refkey</name>
