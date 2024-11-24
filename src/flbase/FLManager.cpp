@@ -1741,7 +1741,7 @@ QString tableName;
     if(db_->driverName() == "FLsqlapi") {
         mtdLarge->setCachedFields(QString("*"));
     }
-    checkTablaCache(mtdLarge);
+    aqApp->db()->manager()->checkTablaCache(mtdLarge);
   }
 
     
