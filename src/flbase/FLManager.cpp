@@ -1718,7 +1718,11 @@ QString tableLarge;
   if (!existsTable(tableLarge))
     return QVariant();
 
-  QSqlQuery qryLarge(QString::null, db_->db());
+  bool use_cache_lite = initCacheLite();
+
+  tableLarge = use_cache_lite ? tableLarge + "_cachelite" : tableLarge;
+
+  QSqlQuery qryLarge(QString::null, use_cache_lite ? FLSqlConnections::database('cachelite')->db() : db_->db());
   if (qryLarge.exec(QString::fromLatin1("SELECT contenido FROM ") + tableLarge +
                     QString::fromLatin1(" WHERE refkey='") + refKey + QString::fromLatin1("'")) &&
       qryLarge.next()) {

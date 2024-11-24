@@ -20,7 +20,7 @@ var form = this;
 function init() {
 
   if (aqApp.db().manager().initCacheLite()) {
-    sys.updateCachedTables(["flsettings"]);
+    sys.updateCachedTables(["flsettings","fllarge"]);
   }
 
   var settings = new AQSettings;
@@ -3391,7 +3391,12 @@ function updateCachedTables(tableNames)
 
   if ("salida" in res && "result" in res["salida"] && res["salida"]["result"] == "ok") {
     const timestamp_server = res["salida"]["timestamp"];
-    const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
+
+    var ba = new QByteArray;
+    ba.string = res["salida"]["data"];
+    const json_str = AQS.fromBase64(ba);
+    //debug("Recibido: " + json_str + "-->" + res["salida"]["data"]);
+    const data = formUTIL.stringToJson(json_str);
     
     for (var i=0; i<data.length; i++) {
     
