@@ -20,7 +20,7 @@ var form = this;
 function init() {
 
   if (aqApp.db().manager().initCacheLite()) {
-    sys.updateCachedTables(["flsettings"]);
+    sys.updateCachedTables();
   }
 
   var settings = new AQSettings;
@@ -3344,7 +3344,9 @@ function updateCachedTables(tableNames)
     whereCache += tableNames.join("','");
 
     whereCache += "') OR permanent = 1";
-
+    for (var i = 0; i < tableNames.length; i++) {
+    	const meta_fake = aqApp.db().manager().metadata(tableNames[i]);
+    }
   }
 
   debug("Consulta " + whereCache);
@@ -3370,8 +3372,14 @@ function updateCachedTables(tableNames)
     const metatable = aqApp.db().manager().metadata(currentTableName);
     var timestamp = qryCachesFields.value("timestamp");
   // LLamada a aqextensi?n solicitando datos.
-  var cachedFields = metatable.cachedFields();
-  cachedFields.push(metatable.primaryKey());
+  var cachedFields;
+  if (currentTableName.startsWith('fllarge')) {
+    cachedFields = ["*","refkey"];
+  } else {
+    cachedFields = metatable.cachedFields();
+    cachedFields.push(metatable.primaryKey());
+  }
+  debug("*PREGUNTANDO POR " + currentTableName);
   tablesPayload.push({"tablename": currentTableName, "cachedfields": cachedFields.join(","), "timestamp": timestamp});
   }
 
@@ -3389,7 +3397,12 @@ function updateCachedTables(tableNames)
 
   if ("salida" in res && "result" in res["salida"] && res["salida"]["result"] == "ok") {
     const timestamp_server = res["salida"]["timestamp"];
-    const data = res["salida"]["data"]; // Lista con datos ... (linea y modo)
+
+    var ba = new QByteArray;
+    ba.string = res["salida"]["data"];
+    const json_str = AQS.fromBase64(ba);
+    //debug("Recibido: " + json_str + "-->" + res["salida"]["data"]);
+    const data = formUTIL.stringToJson(json_str);
     
     for (var i=0; i<data.length; i++) {
     
@@ -3426,64 +3439,62 @@ function updateCachedTables(tableNames)
 
 function updateCachedFields(tableName, mode, pkField,fields) {
   manager = aqApp.db().manager();
-  metaTable = manager.metadata(tableName);
+
+  if (tableName.startsWith('fllarge')) {
+    aqApp.db().manager().checkFLLarge(tableName);
+  }
+
+
+  metaTable = manager.metadata(tableName, true);
   const tableName_cachelite = tableName + "_cachelite";
   metaField = metaTable.field(pkField);
   var array_fields = metaTable.cachedFields();
   array_fields.push(pkField);
   //debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
-  debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
+  //debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);
   const where = pkField + " = " + manager.formatValue(metaField, fields[pkField]);
-  //debug("** where: " + where);
-
+  //debug("** where: " + where);  
   if (mode == "Delete") {
     return AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
   } else {
-    const fieldsNames = [];
-    const fieldsValues = [];
-    for (var field in fields) {
-      //debug("?? Campo: " + field);
-      var found = false;
-      for (var i=0; i<array_fields.length; i++) {
-        if (array_fields[i] == "*" || array_fields[i] == field) {
-          found = true;
-          break;
+      const fieldsNames = [];
+      const fieldsValues = [];
+      for (var field in fields) {
+        //debug("?? Campo: " + field);
+        var found = false;
+        for (var i=0; i<array_fields.length; i++) {
+          if (array_fields[i] == "*" || array_fields[i] == field) {
+            //debug("encontrado");
+            found = true;
+            break;
+          }
+        }      
+        
+        if (!found) {
+          continue;
         }
-      }
-
-      if (!found) {
-        continue;
-      }
-
-      fieldsNames.push(field);
-      fieldsValues.push(fields[field]);
-    }
-    var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
-
-    cursor.select(where);
-
-    if (mode == "Update") {
-      if (!cursor.first()) {
-        debug("Error en posicionamiento");
-        return false;
-      }
-    }
-
-    cursor.setActivatedCheckIntegrity(false);
-    cursor.setActivatedCommitActions(false);
     
-    cursor.setModeAccess(mode== "Insert" ? cursor.Insert: cursor.Edit);
-    cursor.refreshBuffer();
+        fieldsNames.push(field);
+        fieldsValues.push(fields[field]);
+      }
 
-    for (var i=0; i<fieldsNames.length; i++) {
-      //debug("\n* Campo: " + fieldsNames[i] + " = " + fieldsValues[i]);
-      cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
-    }
-    return cursor.commitBuffer();
-  }
+      var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
 
-  return true;
-
+      if (mode == "Update") {
+        //no lo buscamos, directamente borramos si lo encuentra
+        AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
+      }
+      //ponemos modo Insert, porque si era Update hemos borrado y queremos insertar
+      cursor.setActivatedCheckIntegrity(false);
+      cursor.setActivatedCommitActions(false); 
+         
+      cursor.setModeAccess(cursor.Insert);
+      cursor.refreshBuffer();    
+      for (var i=0; i<fieldsNames.length; i++) {
+        cursor.setValueBuffer(fieldsNames[i], fieldsValues[i]);
+      }
+      return cursor.commitBuffer();
+    }  
 }
 
 function controlDatosCacheo(cursor)
