@@ -715,7 +715,12 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
     }
     else
     {
-      if (!cursor_->useDelegateCommit())
+      if (cursor_->useDelegateCommit())
+      {
+        // Se pasa a modo browse automaticamente
+        cursor_->setModeAccess(FLSqlCursor::BROWSE);
+      } 
+      else
       {
         if (!cursor_->rollback())
           return;
