@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  t?rminos  de  la  Licencia  P?blica General de GNU   en  su
+   versi?n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include "FLDataTable.h"
@@ -463,7 +463,7 @@ void FLDataTable::paintCell(QPainter *p, int row, int col, const QRect &cr,
     if (!cursor_->QSqlCursor::seek(row))
     {
 #ifdef FL_DEBUG
-      qWarning(tr("FLDataTable::paintCell() : Posición no válida %1 %2").arg(row).arg(tMD->name()));
+      qWarning(tr("FLDataTable::paintCell() : Posici?n no v?lida %1 %2").arg(row).arg(tMD->name()));
 #endif
       return;
     }
@@ -747,7 +747,7 @@ void FLDataTable::paintField(QPainter *p, const QSqlField *field,
     }
     else
     {
-      text = field->value().toBool() ? tr("Sí") : tr("No");
+      text = field->value().toBool() ? tr("S?") : tr("No");
       p->drawText(2, 2, cr.width() - 4, cr.height() - 4,
                   fieldAlignment(field), text);
     }
@@ -1015,8 +1015,7 @@ void FLDataTable::setFocus()
   {
     setPaletteBackgroundColor(qApp->palette().color(QPalette::Active, QColorGroup::Base));
     if (cursor_->db()->driverName() == "FLsqlapi") {
-      qWarning("FLDataTable::setFocus: Ignorando refreshData ( solo columns)....");
-      QDataTable::refresh(QDataTable::RefreshColumns);
+      qWarning("FLDataTable::setFocus: Ignorando ....");
     } else {
       QDataTable::refresh();
     }

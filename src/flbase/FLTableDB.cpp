@@ -336,7 +336,7 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
   QString bfilter = filter_;
   if (!timer)
     return;
-
+  qWarning("FLTableDB::refreshDelayed");
   timer->stop();
 
   const QObject *obj = sender();
@@ -353,8 +353,10 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
   if (cursor_->modeAccess() != FLSqlCursor::BROWSE)
     return;
   if (refreshData) {
+    qWarning("FLTableDB::refreshDelayed. refreshData!");
     refresh(false, true);
   }
+  qWarning("FLTableDB::refreshDelayed. seekCursor");
   seekCursor();
 }
 
@@ -523,6 +525,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     }
   #endif
   if (do_refresh) {
+    qWarning("VAMOOOOOOS");
     tableRecords_->refresh();
   }
     
@@ -563,7 +566,7 @@ void FLTableDB::filterRecords(const QString &p)
 {
   if (!topWidget || !cursor_ || (p.isEmpty() && filter_.isEmpty()))
     return;
-
+  qWarning(tr("FLTableDB::filterRecords %1").arg(p));
   if (!sortField_) {
     FLTableMetaData *tMD = cursor_->metadata();
     if (!tMD)
