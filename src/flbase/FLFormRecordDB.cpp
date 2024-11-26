@@ -720,7 +720,8 @@ void FLFormRecordDB::closeEvent(QCloseEvent *e)
         if (!cursor_->rollback())
           return;
       } else {
-        cursor_->setModeAccess(initialModeAccess);
+        qWarning("Pasando a modo BROWSE el cursor");
+        cursor_->setModeAccess(FLSqlCursor::BROWSE);
       }
 
       cursor_->QSqlCursor::select();
