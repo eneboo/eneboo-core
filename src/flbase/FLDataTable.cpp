@@ -1015,7 +1015,8 @@ void FLDataTable::setFocus()
   {
     setPaletteBackgroundColor(qApp->palette().color(QPalette::Active, QColorGroup::Base));
     if (cursor_->db()->driverName() == "FLsqlapi") {
-      qWarning("FLDataTable::setFocus: Ignorando ....");
+      qWarning("FLDataTable::setFocus: Ignorando refreshData ( solo columns)....");
+      QDataTable::refresh(QDataTable::RefreshColumns);
     } else {
       QDataTable::refresh();
     }
