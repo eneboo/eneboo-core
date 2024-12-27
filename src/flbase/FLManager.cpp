@@ -1911,7 +1911,7 @@ bool FLManager::initCacheLite(bool force) {
   while (it.current())
     {
       if ("cachelite" == it.current()->connectionName()) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("La conexión cachelite ya está inicializada"));
+        //qWarning("FLManager::checkTablaCache : " + QApplication::tr("La conexión cachelite ya está inicializada"));
         return true;
       }
       ++it;

@@ -34,7 +34,7 @@ FLFormRecordDB::FLFormRecordDB(FLSqlCursor *cursor, const QString &actionName, Q
                                                                                                                         : FLSqlCursor::BROWSE)
 {
   setFocusPolicy(QWidget::NoFocus);
-
+  debug_ = false;
   if (actionName.isEmpty())
     action_ = 0;
   else if (cursor)
@@ -915,7 +915,9 @@ void FLFormRecordDB::disablePushButtonCancel()
 
 void FLFormRecordDB::checkPushButtonsAccept(const QString &fN)
 {
-  qWarning("** checkPushButtonsAccept **");
+  if (debug_) {
+    qWarning("** checkPushButtonsAccept **");
+  }
   if (!cursor_)
     return;
 
@@ -926,10 +928,14 @@ void FLFormRecordDB::checkPushButtonsAccept(const QString &fN)
       bool enable = false;
 
       if (cursor_->modeAccess() == cursor_->Insert) {
-        qWarning("** Insert mode");
+        if (debug_) {
+          qWarning("** Insert mode");
+        }
         enable = true;
       } else if (cursor_->isModifiedBuffer()) {
-        qWarning("** Modified buffer");
+        if (debug_) {
+          qWarning("** Modified buffer");
+        }
         enable = true;
       }
 

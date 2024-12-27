@@ -283,6 +283,13 @@ private:
   Registra el nivel de anidamiento de transacciones en el que se entra al iniciar el formulario
   */
   int initTransLevel;
+
+  /**
+  Indica si se muestra información de debug
+  */
+
+ bool debug_;
+
 };
 
 #endif

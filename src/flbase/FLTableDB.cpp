@@ -516,12 +516,12 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     tableRecords()->setPersistentFilter(finalFilter);
 
   
-  #ifdef FL_QUICK_CLIENT
-    if (!showed) {
-      qWarning("FLTableDB : No se pueden refrescar los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
-      do_refresh = false;
-    }
-  #endif
+
+  if (!showed && cursor_->db()->driverName() == "FLsqlapi") {
+    qWarning("FLTableDB (FLSqlApi) : No se refrescan los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
+    do_refresh = false;
+  }
+
   if (do_refresh) {
     tableRecords_->refresh();
   }
