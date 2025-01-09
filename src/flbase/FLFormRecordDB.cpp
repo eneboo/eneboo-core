@@ -633,6 +633,7 @@ void FLFormRecordDB::acceptContinue()
     }
     cursor_->refreshBuffer();
     initScript();
+    accepting = false;
     return;
   } 
 
