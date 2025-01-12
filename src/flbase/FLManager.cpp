@@ -1868,7 +1868,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           int db_fields_count = 0;
           QSqlQuery qryCurrent(QString::null, FLSqlConnections::database("cachelite")->db());
           if (qryCurrent.exec(QString::fromLatin1("SELECT COUNT(*) FROM pragma_table_info('" + tableName +"')")) && qryCurrent.next()) {
-              db_fields_count = qryCurrent.value(0);
+              db_fields_count = qryCurrent.value(0).toInt();
               qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 tiene %2 campos actualmente").arg(tableName).arg(db_fields_count));
           }
           
