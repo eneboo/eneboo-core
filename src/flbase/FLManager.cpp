@@ -1853,30 +1853,62 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
           }
       }
       
+      
       qWarning( QApplication::tr("FLManager::checkTablaCache : REGISTRANDO: %1").arg(tableName));
       cacheMetaData_->insert(tableName, newMtd); 
       dbCache_->manager()->insertMetadataCache(tableName, newMtd);
 
-      if (!dbCache_->existsTable(tableName)) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1").arg(tableName));
-        // Montar newMtd.
+      int create_table_name = 0;
 
+      if (!dbCache_->existsTable(tableName)) {
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Creando tabla %1. (No existe)").arg(tableName));
+        // Montar newMtd.
+        create_table_name = 1;
+      } else { // Comprobar si tiene misma cantidad de campos.
+          int db_fields_count = 0;
+          QSqlQuery qryCurrent(QString::null, FLSqlConnections::database("cachelite")->db());
+          if (qryCurrent.exec(QString::fromLatin1("SELECT COUNT(*) FROM pragma_table_info('" + tableName +"')")) && qryCurrent.next()) {
+              db_fields_count = qryCurrent.value(0);
+              qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 tiene %2 campos actualmente").arg(tableName).arg(db_fields_count));
+          }
           
-          if (!dbCache_->createTable(newMtd)) {
+          int mtd_count = newMtd->fieldList()->count();
+          if (mtd_count != db_fields_count) {
+            qWarning("FLManager::checkTablaCache : " + QApplication::tr("La tabla %1 no tiene la misma cantidad de campos que la original. current: %2, nuevos: %3").arg(tableName).arg(db_fields_count).arg(mtd_count));
+            create_table_name = 2;
+          }
+
+          if (create_table_name == 2) {
+            // Borrar tabla.
+            QSqlQuery qryDelete(QString::null, FLSqlConnections::database("cachelite")->db());
+            if (!qryDelete.exec(QString::fromLatin1("DROP TABLE " + tableName))) {
+              qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al borrar la tabla %1").arg(tableName));
+              return;
+            }
+            // Borrar registro de timestamps_cachelite.
+            if(!FLUtil::sqlDelete(cacheTableName,"tablename",tmd->name())) {
+              qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al borrar el existente registro %1 de la tabla %2").arg(tmd->name()).arg(cacheTableName));
+              return;
+            } else {
+              qWarning("FLManager::checkTablaCache : " + QApplication::tr("Registro %1 borrado de la tabla %2").arg(tmd->name()).arg(cacheTableName));
+            }
+          }
+      }
+
+      if (create_table_name > 0) { // Si hay que crear la tabla se crea
+        if (!dbCache_->createTable(newMtd)) {
             qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al crear la tabla %1").arg(tableName));
             return;
           } else {
-            
             qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 creada correctamente").arg(tableName));
           }
+        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando %1 en %2").arg(tmd->name()).arg(cacheTableName));
+        if(!FLUtil::sqlInsert(cacheTableName,"tablename,permanent",tmd->name() +"," + (isPermanent ? "1" : "0") ,"cachelite")) {
+          qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al insertar %1 en %2").arg(tmd->name()).arg(cacheTableName));
+          return;
+        }
 
-      qWarning("FLManager::checkTablaCache : " + QApplication::tr("Insertando %2 en %1").arg(cacheTableName).arg(tableName));
-      if(!FLUtil::sqlInsert(cacheTableName,"tablename,permanent",tmd->name() +"," + (isPermanent ? "1" : "0") ,"cachelite")) {
-        qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al insertar en %1").arg(cacheTableName));
-        return;
-      }
-
-  }
+    }
 
   qWarning("FLManager::checkTablaCache : " + QApplication::tr("Tabla %1 procesada.").arg(tableName));
     
@@ -2048,6 +2080,10 @@ QString FLManager::resolveMandatoryValues(QString &query)
           
           if (q->value(0).isNull()) {
             new_value = "|^N^|";
+          } 
+          
+          if (fltype == QVariant::Bool || fltype == FLFieldMetaData::Unlock) {
+            new_value = new_value == "1" ? "true" : "false";
           }
           
           lineas += new_value;
