@@ -1886,7 +1886,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
               return;
             }
             // Borrar registro de timestamps_cachelite.
-            if(!FLUtil::sqlDelete(cacheTableName,"tablename",tmd->name())) {
+            if(!FLUtil::sqlDelete(cacheTableName,"tablename ='" +tmd->name() + "'","cachelite")) {
               qWarning("FLManager::checkTablaCache : " + QApplication::tr("Error al borrar el existente registro %1 de la tabla %2").arg(tmd->name()).arg(cacheTableName));
               return;
             } else {
