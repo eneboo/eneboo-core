@@ -822,7 +822,7 @@ bool AQOdsGenerator::generateOds(const QString &fileNameOut)
     		to_pos = pos_final - pos_inicial;
         if (to_pos < 0) {
           qWarning("Final huerfano encontrado. Eliminando...");
-          cntAux.remove(pos_final + 10);
+          cntAux = cntAux.remove(pos_final + 10);
           continue;
         }
 
