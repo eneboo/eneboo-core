@@ -2016,6 +2016,9 @@ QString FLManager::resolveMandatoryValues(QString &query)
     QString tableName = queryParts[3];
     QString fieldName = queryParts[1];
     queryParts[3] += "_cachelite";
+    if (queryParts[5].contains(tableName + ".")) {
+      queryParts[5] = queryParts[5].replace(tableName + ".", tableName + "_cachelite.");
+    }
     FLTableMetaData *tmd = metadata(tableName);
     QString newQuery = queryParts.join(" ");
     qWarning("FLManager::resolveMandatoryValues : New Query: " + newQuery);
