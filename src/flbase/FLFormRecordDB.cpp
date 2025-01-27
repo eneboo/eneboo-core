@@ -20,6 +20,7 @@
 #include "FLObjectFactory.h"
 #include "FLSqlCursor.h"
 #include "FLTableMetaData.h"
+#include "FLFieldMetaData.h"
 #include "FLAction.h"
 #include "FLManager.h"
 #include "FLApplication.h"
