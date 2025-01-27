@@ -539,6 +539,34 @@ bool FLFormRecordDB::validateForm()
       return false;
   }
 
+  //Si el driver es FLSqlApi y es modo insert/edit , repasamos campos para avisar de que hay campos sin informar.
+  if (cursor_->db()->driverName() == "FLSqlApi" && (cursor_->modeAccess() == FLSqlCursor::INSERT ||
+                cursor_->modeAccess() == FLSqlCursor::EDIT))
+  {
+    const FLTableMetaData::FLFieldMetaDataList *fieldList = mtd->fieldList();
+    QString fiName, fiAlias, msg;
+    FLFieldMetaData *field;
+    
+
+    QDictIterator<FLFieldMetaData> it(*fieldList);
+
+    while ((field = it.current()) != 0)
+    {
+      ++it;
+      fiName = field->name();
+      fiAlias = field->alias();
+      if (!field->allowNull() && (cursor_->valueBuffer(fiName).isNull() || cursor_->valueBuffer(fiName) == ""))
+      {
+        msg += QString::fromLatin1("\n") + fiName + QString::fromLatin1(":") + fiAlias + tr(" : No puede estar vacio.");
+      }
+    }
+    if (msg != "")
+    {
+      QMessageBox::warning(qApp->focusWidget(), tr("Aviso"), tr("Los siguientes campos son obligatorios:") + msg, QMessageBox::Ok);
+      return false;
+    }
+  }
+
   return true;
 }
 
