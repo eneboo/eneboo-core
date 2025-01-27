@@ -562,7 +562,7 @@ bool FLFormRecordDB::validateForm()
     }
     if (msg != "")
     {
-      QMessageBox::warning(qApp->focusWidget(), tr("Aviso"), tr("Los siguientes campos son obligatorios:") + msg, QMessageBox::Ok);
+      QMessageBox::warning(qApp->focusWidget(), tr("Aviso"), tr("Los siguientes campos son obligatorios:") + msg);
       return false;
     }
   }
