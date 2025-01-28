@@ -540,6 +540,7 @@ bool FLFormRecordDB::validateForm()
       return false;
   }
 
+  qWarning("FLFormRecordDB::validateForm() - Validando campos. Driver:" + cursor_->db()->driverName());
   //Si el driver es FLSqlApi y es modo insert/edit , repasamos campos para avisar de que hay campos sin informar.
   if (cursor_->db()->driverName() == "FLSqlApi" && (cursor_->modeAccess() == FLSqlCursor::INSERT ||
                 cursor_->modeAccess() == FLSqlCursor::EDIT))
@@ -556,6 +557,7 @@ bool FLFormRecordDB::validateForm()
       ++it;
       fiName = field->name();
       fiAlias = field->alias();
+      qWarning("FLFormRecordDB::validateForm() - Validando campo:" + fiName + ", nullable: " + (field->allowNull() ? "SI" : "NO"));
       if (!field->allowNull() && (cursor_->valueBuffer(fiName).isNull() || cursor_->valueBuffer(fiName) == ""))
       {
         msg += QString::fromLatin1("\n") + fiName + QString::fromLatin1(":") + fiAlias + tr(" : No puede estar vacio.");
