@@ -541,7 +541,7 @@ bool FLFormRecordDB::validateForm()
   }
 
   //Si el driver es FLSqlApi y es modo insert/edit , repasamos campos para avisar de que hay campos sin informar.
-  if (cursor_->db()->driverName() == "FLSqlApi" && (cursor_->modeAccess() == FLSqlCursor::INSERT ||
+  if (cursor_->db()->driverName().lower() == "flsqlapi" && (cursor_->modeAccess() == FLSqlCursor::INSERT ||
                 cursor_->modeAccess() == FLSqlCursor::EDIT))
   {
     const FLTableMetaData::FLFieldMetaDataList *fieldList = mtd->fieldList();
