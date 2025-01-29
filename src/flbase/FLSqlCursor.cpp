@@ -387,7 +387,7 @@ void FLSqlCursor::refreshDelayed(int msec)
   }
   else
   {
-    if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata())
+    if (d->cursorRelation_ && d->relation_ && d->cursorRelation_->metadata() && !d->isQuery_)
     {
       QVariant v(valueBuffer(d->relation_->field()));
       if (d->cursorRelation_->valueBuffer(d->relation_->foreignField()) != v)
