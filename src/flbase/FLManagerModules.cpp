@@ -520,7 +520,7 @@ QString FLManagerModules::content(const QString &n, const bool only_fs)
     return QString::null;
   }
 
-  if (notSysTable && ((dictKeyFiles && dictKeyFiles->find(n)) || !dictKeyFiles)) { // Si existe en flfiles ....
+  if (notSysTable && ((dictKeyFiles && dictKeyFiles->find(n)) || !dictKeyFiles || n.contains("altered"))) { // Si existe en flfiles ....
     QString formatVal(db_->manager()->formatAssignValue("nombre", QVariant::String, n, true));
     QSqlQuery q(QString::null, db_->dbAux());
     q.setForwardOnly(true);
