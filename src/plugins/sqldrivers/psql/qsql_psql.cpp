@@ -1445,8 +1445,11 @@ QString QPSQLDriver::sqlCreateTable(const FLTableMetaData *tmd)
         QSqlQuery *q = new QSqlQuery(new QPSQLResult(this, d));
         q->setForwardOnly(true);
         q->exec("SELECT relname FROM pg_class WHERE relname='" + seq + "';");
-        if (!q->next())
+        if (!q->next()) {
           q->exec("CREATE SEQUENCE " + seq + ";");
+        } else {
+          q->exec("ALTER SEQUENCE " + seq + " OWNED BY NONE;");
+        }
         sql += " INT4 DEFAULT NEXTVAL('" + seq + "')";
         delete q;
       }
