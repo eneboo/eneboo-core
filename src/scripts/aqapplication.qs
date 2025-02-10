@@ -738,17 +738,17 @@ class MainWindow
     try {
       connect(w.child("tabWidget"), "currentChanged(QString)", this, "PageChanged" );
     } catch (e) {
-      debug("Falla1");
+      debug("Falla1" + e);
     }
     try {
       connect(w.child("tabWidget"), "currentChanged(int)", this, "PageChanged" );
     } catch (e) {
-      debug("Falla2");
+      debug("Falla2" + e);
     }
     try {
       connect(w.child("tabWidget"), "currentChanged(QWidget *)", this, "PageChanged" );
     } catch (e) {
-      debug("Falla3");
+      debug("Falla3" + e);
     }
     debug("OK");
     tb.hide();
