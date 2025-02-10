@@ -250,11 +250,6 @@ class MainWindow
         }
         break;
       }
-      default: {
-        // Buscamos evento de que ha cambiado el tab
-        debug("EVENTO ES" + e.type);
-
-      }
     }
 
     return false;
@@ -265,6 +260,7 @@ class MainWindow
     var mng = aqApp.db().managerModules();
     this.w_ = mng.createUI(uiFile);
     this.w_.name = "container";
+    this.w_.initialized_ = false;
   }
 
   function exit()
@@ -391,6 +387,7 @@ class MainWindow
       for (var i = 0; i < markActions.length; ++i)
         this.addMark(this.agMenu_.child(markActions[i], "QAction"));
     }
+    this.w_.initialized_ = true;
   }
 
   function init()
@@ -735,34 +732,34 @@ class MainWindow
     connect(tb, "clicked()", this, "removeCurrentPage()");
     tw.setCornerWidget(tb, AQS.TopRight);
     AQS.ToolTip_add(tb, sys.translate("Cerrar pestaña"));
-    try {
-      connect(w.child("tabWidget"), "currentChanged(QString)", this, "PageChanged" );
-    } catch (e) {
-      debug("Falla1" + e);
-    }
-    try {
-      connect(w.child("tabWidget"), "currentChanged(int)", this, "PageChanged" );
-    } catch (e) {
-      debug("Falla2" + e);
-    }
-    try {
-      connect(w.child("tabWidget"), "currentChanged(QWidget *)", this, "PageChanged" );
-    } catch (e) {
-      debug("Falla3" + e);
-    }
-    try {
-      connect(w.child("tabWidget"), "selected(const QString&)", this, "PageChanged");
-    } catch (e) {
-      debug("Falla4" + e);
-    }
 
-    debug("OK");
+    // Si en driver usado es FLsqlapi
+    //if (aqApp.db().driverName() == "FLsqlapi") {
+      connect(w.child("tabWidget"), "selected(const QString&)", this, "PageChanged");
+    //}
+
     tb.hide();
   }
 
   function PageChanged(value)
   {
-    debug("Tab Cambia" + value);
+    var tw = this.tw_;
+    //debug("AA");
+    if (!this.w_.initialized_) {
+      return;
+    }
+      var page = tw.currentPage();
+      if (page != undefined) {
+        var list = new AQObjectQueryList(page, "FLTableDB", "", true, true);
+        var obj = list.current();
+        //debug("BBB");
+        while (obj != undefined) {
+          //debug("Referescando!!! " + obj);
+          obj.refresh();
+          obj = list.next();
+        }
+        //debug("Fin!");
+      }
   }
 
   function initHelpMenu()
@@ -1116,6 +1113,4 @@ function triggerAction(signature)
       break;
   }
 }
-
-
 
