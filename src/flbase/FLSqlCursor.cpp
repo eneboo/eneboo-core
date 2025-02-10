@@ -294,12 +294,14 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
   if (d->isQuery_)
   {
-    FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
-    d->query_ = qry->sql();
-    if (qry && !d->query_.isEmpty())
-      exec(d->query_);
-    if (qry)
-      qry->deleteLater();
+    if (db()->driverName() != "FLsqlapi") {
+      FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
+      d->query_ = qry->sql();
+      if (qry && !d->query_.isEmpty())
+        exec(d->query_);
+      if (qry)
+        qry->deleteLater();
+    }
   }
   else
     QSqlCursor::setName(d->metadata_->name(), autopopulate);

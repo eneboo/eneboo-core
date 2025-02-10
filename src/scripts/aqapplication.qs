@@ -1114,14 +1114,16 @@ function triggerAction(signature)
     case "deleteCache()":
       if (ok) {
         // Borrar una carpeta
-        var file_name = Dir.home.toString() + "/.eneboocache/" + sys.nameBD() + "_cachelite.sqlite3db";
+        var file_name = Dir.home.toString() + "/.eneboocache/" + sys.nameBD() + "/" + sys.nameBD() + "_cachelite.sqlite3db";
         debug("Cerrando conexión");
         sys.removeDatabase("cachelite");
         debug("Borrando cache");
         if (File.exists(file_name)) {
           File.remove(file_name);
           debug("El fichero " + file_name + " ha sido borrado.");
-          mw.close();
+          mw.writeState();
+          mw.w_.removeEventFilter(mw.w_);
+          aqApp.generalExit(false);
         } else {
           debug("El fichero " + file_name + " no existe.");
         }
