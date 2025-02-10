@@ -735,7 +735,7 @@ class MainWindow
     connect(tb, "clicked()", this, "removeCurrentPage()");
     tw.setCornerWidget(tb, AQS.TopRight);
     AQS.ToolTip_add(tb, sys.translate("Cerrar pestaña"));
-    connect(this.tw_, "currentChanged(QString)", this, "PageChanged" );
+    connect(tw, "currentChanged(QString)", this, "PageChanged" );
     tb.hide();
   }
 
