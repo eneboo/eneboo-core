@@ -750,13 +750,19 @@ class MainWindow
     } catch (e) {
       debug("Falla3" + e);
     }
+    try {
+      connect(w.child("tabWidget"), "selected(const QString&)", this, "PageChanged");
+    } catch (e) {
+      debug("Falla4" + e);
+    }
+
     debug("OK");
     tb.hide();
   }
 
-  function PageChanged(page)
+  function PageChanged(value)
   {
-    debug("Tab Cambia" + page);
+    debug("Tab Cambia" + value);
   }
 
   function initHelpMenu()
