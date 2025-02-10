@@ -250,6 +250,11 @@ class MainWindow
         }
         break;
       }
+      default: {
+        // Buscamos evento de que ha cambiado el tab
+        debug("EVENTO ES" + e.type);
+
+      }
     }
 
     return false;
