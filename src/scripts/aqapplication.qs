@@ -707,6 +707,15 @@ class MainWindow
     connect(shConsole, "activated()", this.actSigMap_, "map()");
     this.actSigMap_.setMapping(shConsole, "activated():shConsole():" + shConsole.name);
 
+    if (aqApp.db().driverName() == "FLsqlapi") {
+      var deleteCache = new QAction(agm);
+      deleteCache.name = "deleteCacheAction";
+      deleteCache.menuText = sys.translate("Borrar cache");
+      deleteCache.setIconSet(new QIconSet(AQS.Pixmap_fromMimeSource("eraser.png")));
+      connect(deleteCache, "activated()", this.actSigMap_, "map()");
+      this.actSigMap_.setMapping(deleteCache, "activated():deleteCache():" + deleteCache.name);
+    }
+
     agm.addSeparator();
 
     var exit = new QAction(agm);
@@ -1100,6 +1109,24 @@ function triggerAction(signature)
     case "shConsole()":
       if (ok)
         aqApp.showConsole();
+      break;
+
+    case "deleteCache()":
+      if (ok) {
+        // Borrar una carpeta
+        var file_name = Dir.home.toString() + "/.eneboocache/" + sys.nameBD() + "_cachelite.sqlite3db";
+        debug("Cerrando conexión");
+        sys.removeDatabase("cachelite");
+        debug("Borrando cache");
+        if (File.exists(file_name)) {
+          File.remove(file_name);
+          debug("El fichero " + file_name + " ha sido borrado.");
+          mw.close();
+        } else {
+          debug("El fichero " + file_name + " no existe.");
+        }
+        
+      }
       break;
 
     case "exit()":
