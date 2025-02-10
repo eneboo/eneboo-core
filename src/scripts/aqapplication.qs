@@ -734,9 +734,9 @@ class MainWindow
     AQS.ToolTip_add(tb, sys.translate("Cerrar pestaña"));
 
     // Si en driver usado es FLsqlapi
-    //if (aqApp.db().driverName() == "FLsqlapi") {
+    if (aqApp.db().driverName() == "FLsqlapi") {
       connect(w.child("tabWidget"), "selected(const QString&)", this, "PageChanged");
-    //}
+    }
 
     tb.hide();
   }
