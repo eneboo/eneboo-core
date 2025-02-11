@@ -284,9 +284,9 @@ QString SqliteDriver::formatValue(int t, const QVariant &v, const bool upper)
       QString s(v.toString().left(1).upper());
 
       if (s == QApplication::tr("Sí").left(1).upper() || s=="T")
-        res = "0";
-      else if (s == QApplication::tr("No").left(1).upper() || s=="F")
         res = "1";
+      else if (s == QApplication::tr("No").left(1).upper() || s=="F")
+        res = "0";
       else
         res = nullText();
     }
