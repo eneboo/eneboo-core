@@ -423,19 +423,19 @@ void FLSqlCursor::refresh(const QString &fN)
     int pos2 = atFrom();
     QSqlCursor::select();
     int pos = atFrom();
-    qWarning("FLSqlCursor::refresh(%s): A prev: %d, next: %d", d->curName_, pos2, pos);
+    qWarning(tr("FLSqlCursor::refresh(%1): A prev: %2, next: %3").arg(d->curName_).arg(pos2).arg(pos));
 
     if (pos >= size())
       pos = size() - 1;
-      qWarning("FLSqlCursor::refresh(%s): B prev: %d, next: %d", d->curName_, pos2, pos);
+      qWarning(tr("FLSqlCursor::refresh(%1): B prev: %2, next: %3").arg(d->curName_).arg(pos2).arg(pos));
     if (!seek(pos, false, true))
     {
-      qWarning("FLSqlCursor::refresh(%s): C NOT SEEK!!!!", d->curName_);
+      qWarning(tr("FLSqlCursor::refresh(%1): C NOT SEEK!!!!").arg(d->curName_));
       d->buffer_ = 0;
       emit newBuffer();
     }
     int pos3 = atFrom();
-    qWarning("FLSqlCursor::refresh(%s): D prev: %d, next: %d, now: %d", d->curName_, pos2, pos, pos3);
+    qWarning(tr("FLSqlCursor::refresh(%1): D prev: %2, next: %3, now: %4").arg(d->curName_).arg(pos2).arg(pos).arg(pos3));
   }
 }
 
