@@ -764,7 +764,7 @@ class MainWindow
         //debug("BBB");
         while (obj != undefined) {
           //debug("Referescando!!! " + obj);
-          obj.refresh();
+          obj.refresh(false, true);
           obj = list.next();
         }
         //debug("Fin!");
