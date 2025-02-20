@@ -2847,12 +2847,10 @@ public slots:
    Actualiza el conjunto de registros.
    */
   void refresh() {
-    qWarning("Paso 0 A");
     obj_->refresh(false, true);
   }
 
   void refresh(const bool refreshHead, const bool refreshData) {
-    qWarning("Paso 0 B");
     obj_->refresh(refreshHead, refreshData);
   }
 

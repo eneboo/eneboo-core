@@ -360,14 +360,13 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
 
 void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
 {
-  qWarning(tr("Refresh paso 1: head:%1, data:%2").arg(refreshHead ? "SI" : "NO").arg(refreshData ? "SI" : "NO"));
   if (!lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_ || (topWidget && !topWidget->isShown()))
     return;
-  qWarning("Refresh paso 2");
+
   FLTableMetaData *tMD = cursor_->metadata();
   if (!tMD)
     return;
-  qWarning("Refresh paso 3");
+
   if (tableName_.isEmpty())
     tableName_ = tMD->name();
 
@@ -506,7 +505,6 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     horizHeader->show();
   }
   bool do_refresh = true;
-  qWarning("Refresh paso 4");
   if (refreshData || sender()) {
     QString finalFilter = filter_;
     if (!tdbFilterLastWhere_.isEmpty()) {
@@ -523,13 +521,12 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     qWarning("FLTableDB (FLSqlApi) : No se refrescan los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
     do_refresh = false;
   }
-  qWarning("Refresh paso 5");
+
   if (do_refresh) {
     tableRecords_->refresh();
   }
     
   }
-  qWarning("Refresh paso 6");
 
   if (!initSearch_.isEmpty()) {
     disconnect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
@@ -542,7 +539,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     }
     
   }
-  qWarning("Refresh paso 7");
+
   if (readonly_ != reqReadOnly_ ||
       (tableRecords_ && readonly_ != tableRecords_->flReadOnly()))
     setReadOnly(reqReadOnly_);
