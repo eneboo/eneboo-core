@@ -360,7 +360,7 @@ void FLTableDB::refreshDelayed(int msec, const bool refreshData)
 
 void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
 {
-  qWarning("Refresh paso 1");
+  qWarning("Refresh paso 1: head:" + (refreshHead ? "SI" : "NO") + ", data:" + (refreshData ? "SI" : "NO") );
   if (!lineEditSearch || !comboBoxFieldToSearch || !comboBoxFieldToSearch2 || !cursor_ || (topWidget && !topWidget->isShown()))
     return;
   qWarning("Refresh paso 2");
