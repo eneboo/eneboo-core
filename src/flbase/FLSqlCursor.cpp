@@ -2591,19 +2591,23 @@ int FLSqlCursor::atFrom()
     else
       sqlWhere = "1=1";
 
-    if (field && db()->driverName() != "FLsqlapi")
+    if (field)
     {
       sqlPriKeyValue = d->db_->manager()->formatAssignValue(field, pKValue);
       if (!cFilter.isEmpty())
         sqlIn = sql + " AND " + sqlPriKeyValue;
       else
         sqlIn = sql + " WHERE " + sqlPriKeyValue;
-      q.exec(sqlIn);
-      if (!q.next())
-      {
-        QSqlCursor::seek(at());
-        pos = isValid() ? at() : 0;
-        return pos;
+      if (d->db_->driverName() == "FLsqlapi") {
+          qWarning(tr("FLSqlCursor::atFrom: Ingnorando consulta ... %1").arg(sqlIn));
+      } else {
+        q.exec(sqlIn);
+        if (!q.next())
+        {
+          QSqlCursor::seek(at());
+          pos = isValid() ? at() : 0;
+          return pos;
+        }
       }
     }
 
@@ -2645,40 +2649,37 @@ int FLSqlCursor::atFrom()
       }
     }
 
-    bool found = db()->driverName() == "FLsqlapi";
-    if (!found) {
-      q.exec(sql);
-       pos = 0;
-        if (q.first())
+    bool found = false;
+    q.exec(sql);
+
+    pos = 0;
+    if (q.first())
+    {
+      if (q.value(0) != pKValue)
+      {
+        pos = q.size();
+        if (q.last() && pos > 1)
         {
+          --pos;
           if (q.value(0) != pKValue)
           {
-            pos = q.size();
-            if (q.last() && pos > 1)
+            while (q.prev() && pos > 1)
             {
               --pos;
-              if (q.value(0) != pKValue)
+              if (q.value(0) == pKValue)
               {
-                while (q.prev() && pos > 1)
-                {
-                  --pos;
-                  if (q.value(0) == pKValue)
-                  {
-                    found = true;
-                    break;
-                  }
-                }
-              }
-              else
                 found = true;
+                break;
+              }
             }
           }
           else
             found = true;
         }
-      } else {
-        qWarning(tr("FLSqlCursor::atFrom Consulta omitida por FLSqlapi: %1").arg(sql));
       }
+      else
+        found = true;
+    }
 
     if (!found)
     {
