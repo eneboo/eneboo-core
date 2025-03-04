@@ -757,6 +757,14 @@ class MainWindow
     if (!this.w_.initialized_) {
       return;
     }
+
+    if (value) {
+      //debug("Lanzando con aqtimer");
+      sys.AQTimer.singleShot(10, this.PageChanged);
+      return;
+    } 
+
+
       var page = tw.currentPage();
       if (page != undefined) {
         var list = new AQObjectQueryList(page, "FLTableDB", "", true, true);
