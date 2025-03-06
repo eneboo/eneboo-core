@@ -671,7 +671,8 @@ namespace dbiplus
       QByteArray byteCode;
       QDataStream dt(&fi_salida);
       dt >> byteCode;
-      salida = byteCodeToStr(byteCode);
+      QTextCodec codecByte = QTextCodec::codecForName("ISO8859-15");
+      salida = codecByte->toUnicode(QString(byteCode));
       leido = true;
     } else {
       intentos++;
@@ -694,38 +695,7 @@ namespace dbiplus
   return salida;
 }
 
-QString SqliteDataset::byteCodeToStr(const QByteArray &byteCode)
-{
-  QDataStream in(byteCode, IO_ReadOnly);
-  uint size = byteCode.size();
-  QString strOut;
-  QTextStream out(&strOut, IO_WriteOnly);
-  Q_UINT8 c1;
-  Q_UINT8 c2;
-  while (size > 0) {
-    in >> c1;
-    //AQ_CIN(c1);
-    --size;
-    if (size <= 0) {
-      if (c1)
-        out << QChar((Q_UINT16)c1);
-      break;
-    }
-    in >> c2;
-    //AQ_CIN(c2);
-    --size;
-    if (c2 & 0x80) {
-      out << QChar(c2, c1);
-    } else {
-      if (c1)
-        out << QChar((Q_UINT16)c1);
-      if (c2)
-        out << QChar((Q_UINT16)c2);
-    }
-  }
-  QTextCodec *codecByte = QTextCodec::codecForName("ISO8859-15");
-  return codecByte->toUnicode(strOut);
-}
+
 
   //--------- protected functions implementation -----------------//
 
