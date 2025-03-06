@@ -663,15 +663,10 @@ namespace dbiplus
   while (!leido && intentos < 10) {
     
     if (fi_salida.open(IO_ReadOnly)) {
-      QByteArray ba;
-      //QTextStream t(&fi_salida);
+      QTextStream t(&fi_salida);
+      //t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
       //t.setEncoding(QTextStream::Latin1);
-      //salida = QString::fromLatin1(t.read());
-      QDataStream dat(&fi_salida);
-      dat >> ba;
-      salida = QString(ba);
-      // Detectar character 0xA4
-      //salida = salida.replace("\xA4", "\xA4¤");
+      salida = QString(t.read());
       fi_salida.close();
 
       leido = true;
