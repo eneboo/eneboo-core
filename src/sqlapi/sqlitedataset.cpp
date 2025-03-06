@@ -663,11 +663,14 @@ namespace dbiplus
   while (!leido && intentos < 10) {
     
     if (fi_salida.open(IO_ReadOnly)) {
-      QTextStream t;
-      t.setCodec(QTextCodec::codecForName("ISO8859-15", 0)); // Lee en iso-8859-15
-      t.setDevice(&fi_salida);
+      QTextStream t(&fi_salida);
+      //t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
+      t.setEncoding(QTextStream::Latin1);
       salida = t.read();
       fi_salida.close();
+
+      qWarning("Leido fichero salida " + fichero_salida + ", texto: " + salida);
+
       leido = true;
     } else {
       intentos++;
