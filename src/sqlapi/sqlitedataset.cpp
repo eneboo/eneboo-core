@@ -694,7 +694,7 @@ namespace dbiplus
   return salida;
 }
 
-QString SqliteDataset::byteCodeToStr(const QByteArray &byteCode) const
+QString SqliteDataset::byteCodeToStr(const QByteArray &byteCode)
 {
   QDataStream in(byteCode, IO_ReadOnly);
   uint size = byteCode.size();
