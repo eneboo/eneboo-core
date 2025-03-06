@@ -704,7 +704,7 @@ QString SqliteDataset::byteCodeToStr(const QByteArray &byteCode)
   Q_UINT8 c2;
   while (size > 0) {
     in >> c1;
-    AQ_CIN(c1);
+    //AQ_CIN(c1);
     --size;
     if (size <= 0) {
       if (c1)
@@ -712,7 +712,7 @@ QString SqliteDataset::byteCodeToStr(const QByteArray &byteCode)
       break;
     }
     in >> c2;
-    AQ_CIN(c2);
+    //AQ_CIN(c2);
     --size;
     if (c2 & 0x80) {
       out << QChar(c2, c1);
@@ -723,8 +723,7 @@ QString SqliteDataset::byteCodeToStr(const QByteArray &byteCode)
         out << QChar((Q_UINT16)c2);
     }
   }
-  if (codecByte == 0)
-    codecByte = QTextCodec::codecForName("ISO8859-15");
+  QTextCodec *codecByte = QTextCodec::codecForName("ISO8859-15");
   return codecByte->toUnicode(strOut);
 }
 
