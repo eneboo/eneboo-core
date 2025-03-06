@@ -667,9 +667,10 @@ namespace dbiplus
       //t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
       t.setEncoding(QTextStream::Latin1);
       salida = t.read();
+      QTextCodec *codec = QTextCodec::codecForName("ISO8859-15"); 
+      QCString ret_latin = codec->fromUnicode( salida );
+      salida = ret_latin.data();
       fi_salida.close();
-
-      qWarning("Leido fichero salida " + fichero_salida + ", texto: " + salida);
 
       leido = true;
     } else {
