@@ -669,8 +669,8 @@ namespace dbiplus
       salida = t.read();
       fi_salida.close();
       // Reemplazar char 0xA4 por ¤
-      salida = salida.replace(QChar(0xA4), "¤");
-      
+      salida = salida.replace("?", "¤");
+
       leido = true;
     } else {
       intentos++;
