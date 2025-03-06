@@ -671,7 +671,7 @@ namespace dbiplus
       QByteArray byteCode;
       QDataStream dt(&fi_salida);
       dt >> byteCode;
-      QTextCodec codecByte = QTextCodec::codecForName("ISO8859-15");
+      static QTextCodec codecByte = QTextCodec::codecForName("ISO8859-15");
       salida = codecByte->toUnicode(QString(byteCode));
       leido = true;
     } else {
