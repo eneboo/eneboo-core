@@ -668,7 +668,8 @@ namespace dbiplus
       //salida = QString::fromLatin1(t.read());
       salida = t.read();
       // Detectar character 0xA4
-      salida = QString(salida.replace("\xA4", "¤?" + QString::fromUtf8("\u20AC"));
+      salida = QString(salida.replace("\xA4", "¤?" + QString::fromUtf8("\u20AC")));
+      qWarning("Prueba ¤?" + QString::fromUtf8("\u20AC"));
       fi_salida.close();
 
       leido = true;
