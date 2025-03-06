@@ -664,9 +664,10 @@ namespace dbiplus
     
     if (fi_salida.open(IO_ReadOnly)) {
       QTextStream t(&fi_salida);
-      t.setCodec(QTextCodec::codecForName("UTF-8", 0));
-      //t.setEncoding(QTextStream::Latin1);
-      salida = QString::fromUtf8(t.read());
+      t.setEncoding(QTextStream::Latin1);
+      salida = QString::fromLatin1(t.read());
+      // Detectar character 0xA4
+      salida = salida.replace("\xA4", "");
       fi_salida.close();
 
       leido = true;
@@ -1025,7 +1026,7 @@ bool SqliteDataset::fetch_rows(int pos) {
     cadena += "},\n";
     cadena += "\"headers\": { \"Authorization\": \"Token " + token + "\"},\n";
     cadena += "\"prefix_pipe\":\"aqextension_pipe_sql_api_" +  QString::number(getpid()) + "\",\n"; 
-    cadena += "\"codificacion\": \"UTF-8\",\n";
+    // cadena += "\"codificacion\": \"UTF-8\",\n";
     //cadena += "\"tipo_payload\": \"STRING\",\n";
     cadena += "\"fsalida\":\"" + fichero_salida + "\",\n";
     cadena += "\"enable_debug\":" + QString( debug_aqextension ? "true" : "false") +",\n";
