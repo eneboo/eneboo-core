@@ -667,7 +667,7 @@ namespace dbiplus
       t.setEncoding(QTextStream::Latin1);
       salida = QString::fromLatin1(t.read());
       // Detectar character 0xA4
-      salida = salida.replace("\xA4", "");
+      salida = salida.replace("\xA4", "¤?");
       fi_salida.close();
 
       leido = true;
