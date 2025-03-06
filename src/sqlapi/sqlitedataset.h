@@ -120,7 +120,7 @@ protected:
   char* errmsg;
   
   sqlite3 *handle();
-  byteCodeToStr(const QByteArray &byteCode);
+  QString byteCodeToStr(const QByteArray &byteCode);
 
 /* Makes direct queries to database */
   virtual void make_query(StringList &_sql);
