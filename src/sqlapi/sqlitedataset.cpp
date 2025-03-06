@@ -666,10 +666,14 @@ namespace dbiplus
       QTextStream t(&fi_salida);
       //t.setCodec(QTextCodec::codecForName("ISO8859-15", 0));
       t.setEncoding(QTextStream::Latin1);
-      salida = t.read();
-      QTextCodec *codec = QTextCodec::codecForName("ISO8859-15"); 
-      QCString ret_latin = codec->fromUnicode( salida );
-      salida = ret_latin.data();
+      salida = QString::fromLatin1(t.read());
+      //Convertir iso8859-1 en iso8859-15
+      // Si existe "?" en salida , reemplazar
+      if (salida.contains("?")) {
+        qWarning("Reemplazando ? por ¤");
+        salida = salida.replace("?", "¤");
+      }
+      
       fi_salida.close();
 
       leido = true;
