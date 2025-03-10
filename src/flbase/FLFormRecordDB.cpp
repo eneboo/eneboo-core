@@ -559,7 +559,7 @@ bool FLFormRecordDB::validateForm()
       if (!field->allowNull() && (cursor_->valueBuffer(fiName).isNull() || cursor_->valueBuffer(fiName) == ""))
       {
         QVariant defVal = field->defaultValue();
-        QVariant currrentValue = cursor_->valueBuffer(fiName);
+        QVariant currentValue = cursor_->valueBuffer(fiName);
         if (defVal.isValid()) {
           qWarning("FLFormRecordDB::validateForm(" + fiName + ") - Valor por defecto:" + defVal.toString() + ". Omitiendo...");
           continue;
