@@ -566,7 +566,7 @@ bool FLFormRecordDB::validateForm()
         } else if (currentValue.toString() == "0" || currentValue.toString() == "0.00") {
           continue;
         } else {
-          qWarning("FLFormRecordDB::validateForm(" + fiName + ") - Valor actual:" + currrentValue.toString() + ".");
+          qWarning("FLFormRecordDB::validateForm(" + fiName + ") - Valor actual:" + currentValue.toString() + ".");
         }
         msg += QString::fromLatin1("\n") + fiName + QString::fromLatin1(":") + fiAlias + tr(" : No puede estar vacio.");
       }
