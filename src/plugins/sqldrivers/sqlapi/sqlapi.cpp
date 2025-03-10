@@ -1188,6 +1188,9 @@ QVariant SqliteResult::data(int i)
   field_value fV = (*fields_object)[i].val;
   
   QString str_val = QString::fromLatin1(fV.get_asString().c_str());
+  if (str_val.contains("\xA4")) {
+    str_val = str_val.replace("\xA4", "?¤");
+  }
 
   if (qstrcmp(fieldName, "binario") == 0 || str_val.startsWith("|M^B|")) { // <- esto es un hack para guardar hexadecimal y interpretar binario. 
     QString str;
