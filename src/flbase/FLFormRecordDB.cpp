@@ -559,9 +559,14 @@ bool FLFormRecordDB::validateForm()
       if (!field->allowNull() && (cursor_->valueBuffer(fiName).isNull() || cursor_->valueBuffer(fiName) == ""))
       {
         QVariant defVal = field->defaultValue();
+        QVariant currrentValue = cursor_->valueBuffer(fiName);
         if (defVal.isValid()) {
-          qWarning("FLFormRecordDB::validateForm() - Valor por defecto:" + defVal.toString() + ". Omitiendo...");
+          qWarning("FLFormRecordDB::validateForm(" + fiName + ") - Valor por defecto:" + defVal.toString() + ". Omitiendo...");
           continue;
+        } else if (currentValue.toString() == "0" || currentValue.toString() == "0.00") {
+          continue;
+        } else {
+          qWarning("FLFormRecordDB::validateForm(" + fiName + ") - Valor actual:" + currrentValue.toString() + ".");
         }
         msg += QString::fromLatin1("\n") + fiName + QString::fromLatin1(":") + fiAlias + tr(" : No puede estar vacio.");
       }
