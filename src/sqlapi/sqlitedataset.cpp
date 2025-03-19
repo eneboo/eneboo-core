@@ -1165,7 +1165,9 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
           }
           
           result.record_header[col_numero].name = nombre_columna.find(".") ? nombre_columna.right(nombre_columna.length() - (nombre_columna.find(".") + 1)).utf8() :  nombre_columna.utf8();
-        //}
+          qWarning("Especificando nombre col : %d", col_numero);
+          qWarning(result.record_header[col_numero].name);
+          //}
         
       }
       //qWarning("CABECERA CARGADA" + QString::number(cabecera_size));
