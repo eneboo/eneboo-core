@@ -745,6 +745,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
       }
       qry->deleteLater();
     }
+    qWarning("CHECK QUERY2!" + tmd->fieldsNames());
   }
   FLAccessControlLists *acl = aqApp->acl();
   if (acl)
