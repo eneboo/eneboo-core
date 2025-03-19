@@ -476,7 +476,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
       field = tMD->field(tMD->fieldAliasToName(horizHeader->label(i)));
       qWarning("FLTableDB : " + tableName_ + " ALIAS:" + horizHeader->label(i) + ", NAME:" + tMD->fieldAliasToName(horizHeader->label(i)));
       if (!field) {
-        qWarning("NOT FOUND!");
+        qWarning("NOT FOUND! en " + tMD->fieldsNames());
         continue;
       }
       if (i == sortColumn_)
