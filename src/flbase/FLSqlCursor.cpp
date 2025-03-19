@@ -2622,7 +2622,7 @@ int FLSqlCursor::atFrom()
       sqlOrderBy = sort().toString();
       sql += " ORDER BY " + sqlOrderBy;
     } else {
-      sqlOrderBy = pKN;
+      sqlOrderBy = pKN + " ASC";
       sql += " ORDER BY " + sqlOrderBy;
     }
 
