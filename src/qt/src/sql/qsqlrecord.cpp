@@ -294,7 +294,6 @@ QString QSqlRecord::fieldName( int i ) const
 int QSqlRecord::position( const QString& name ) const
 {
     for ( uint i = 0; i < count(); ++i ) {
-        qWarning("Comparando " + fieldName(i).upper() + " con " + name.upper());
 	if ( fieldName(i).upper() == name.upper() || fieldName(i).upper().endsWith("." + name.upper()))
 	    return i;
     }
