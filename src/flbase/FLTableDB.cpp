@@ -523,6 +523,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   }
 
   if (do_refresh) {
+    qWarning("FLTableDB: Refrescando FLDatatable " + tableName_);
     tableRecords_->refresh();
   }
     
@@ -553,8 +554,11 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
       (tableRecords_ && onlyTable_ != tableRecords_->onlyTable()))
     setOnlyTable(reqOnlyTable_);
 
-  if (showed && tableRecords_ && tableRecords_->isHidden())
+  if (showed && tableRecords_ && tableRecords_->isHidden()) {
+    qWarning("FLTableDB: Mostrando FLDatatable " + tableName_);
     tableRecords_->show();
+  }
+    
 
   emit refreshed();
 }
