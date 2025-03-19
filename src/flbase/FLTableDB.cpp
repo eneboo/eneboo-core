@@ -472,9 +472,13 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     tableRecords_->QDataTable::refresh(QDataTable::RefreshColumns);
     comboBoxFieldToSearch->clear();
     for (int i = sortColumn_; i < tableRecords_->numCols(); ++i) {
+
       field = tMD->field(tMD->fieldAliasToName(horizHeader->label(i)));
-      if (!field)
+      qWarning("FLTableDB : " + tableName_ + " ALIAS:" + horizHeader->label(i) + ", NAME:" + tMD->fieldAliasToName(horizHeader->label(i)));
+      if (!field) {
+        qWarning("NOT FOUND!");
         continue;
+      }
       if (i == sortColumn_)
         sortField_ = field;
       if (comboBoxFieldToSearch->count() == (i - sortColumn_))
