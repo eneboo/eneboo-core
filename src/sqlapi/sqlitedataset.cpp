@@ -1144,7 +1144,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
         if (posicion_idx != 0) { // Si el offset no es cero, ya tengo cabecera ....
             continue;
           }
-        const int col_numero = result.record_header.size();
+        const int col_numero = result.record_header.size() + 1;
         //const QString datos_columna = *it2;
         //QStringList columna = QStringList::split("|", datos_columna);
 
