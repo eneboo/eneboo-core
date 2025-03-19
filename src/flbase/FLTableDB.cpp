@@ -921,7 +921,7 @@ void FLTableDB::initCursor()
     }
 #endif
   }
-
+  qWarning("INITTTTT DE " + tableName_);
   cursor_ = new FLSqlCursor(tableName_, true, cursor_->db()->connectionName(), cursorAux, rMD, this);
 
   if (!cursor_) {
