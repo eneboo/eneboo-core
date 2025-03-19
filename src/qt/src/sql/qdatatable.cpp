@@ -2055,6 +2055,7 @@ void QDataTable::sortDescending( int col )
 
 void QDataTable::refresh( QDataTable::Refresh mode )
 {
+    qWarning("QDataTable::refresh: Entra refresh");
     QSqlCursor* cur = sqlCursor();
     if ( !cur )
 	return;
@@ -2075,8 +2076,18 @@ void QDataTable::refresh( QDataTable::Refresh mode )
 	d->lastAt = -1;
     }
     if ( refreshCol ) {
+     qWarning("QDataTable::refresh: Entra refreshCol");   
 	setNumCols( 0 );
 	d->colIndex.clear();
+    if (!d->fld.count()) {
+        qWarning("QDataTable::refresh: No hay campos en el fldatatable. FIX para vistas");
+        setSqlCursor(cur);
+    }
+
+
+
+
+
 	if ( d->fld.count() ) {
         qWarning("QDataTable::refresh: Entra bucle refreshCol");
 	    QSqlField* field = 0;
@@ -2111,7 +2122,9 @@ void QDataTable::refresh( QDataTable::Refresh mode )
             qWarning("QDataTable::refresh: No existe el campo " + d->fld[ i ]);
         }
 	    }
-	}
+	} else {
+        qWarning("QDataTable::refresh: El fldatatable no tiene campos");
+    }
     }
     viewport()->setUpdatesEnabled( TRUE );
     viewport()->repaint( FALSE );
