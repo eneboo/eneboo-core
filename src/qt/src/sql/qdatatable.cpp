@@ -2078,10 +2078,12 @@ void QDataTable::refresh( QDataTable::Refresh mode )
 	setNumCols( 0 );
 	d->colIndex.clear();
 	if ( d->fld.count() ) {
+        qWarning("QDataTable::refresh: Entra bucle refreshCol");
 	    QSqlField* field = 0;
 	    int i;
 	    int fpos = -1;
 	    for ( i = 0; i < (int)d->fld.count(); ++i ) {
+            qWarning("QDataTable::refresh: Comparando " +  cur->field( i )->name() + " VS " + d->fld[ i ]);
 		if ( cur->field( i ) && cur->field( i )->name() == d->fld[ i ] )
 		    // if there is a field with the desired name on the desired position
 		    // then we take that
@@ -2105,7 +2107,9 @@ void QDataTable::refresh( QDataTable::Refresh mode )
 		    }
 		    if ( d->fldWidth[ i ] > -1 )
 			QTable::setColumnWidth( i, d->fldWidth[i] );
-		}
+		} else {
+            qWarning("QDataTable::refresh: No existe el campo " + d->fld[ i ]);
+        }
 	    }
 	}
     }
