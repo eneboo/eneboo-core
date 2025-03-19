@@ -712,6 +712,9 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
           continue;
         }
         qWarning("W1 " + field.lower());
+        if (fields.find(field.lower()) >= 0) {
+          continue;
+        }
 
         FLTableMetaData *mtdAux = metadata(table, true);
         if (mtdAux) {
