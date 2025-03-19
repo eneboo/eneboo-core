@@ -303,6 +303,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
         qry->deleteLater();
     } else {
       qWarning(tr("FLSqlCursor::init: No se ejecuta exec de vista en el cursor %1 cuando se usa FLsqlapi").arg(name));
+      QSqlCursor::setName(d->metadata_->name(), autopopulate);
     }
   }
   else
