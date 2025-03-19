@@ -695,6 +695,7 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
   }
 
   if (!q.isEmpty() && !quick) {
+    qWarning("CHECK QUERY!" + tmd->fieldsNames());
     FLSqlQuery *qry = query(q, tmd);
 
     if (qry) {
@@ -707,14 +708,10 @@ FLTableMetaData *FLManager::metadata(QDomElement *mtd, bool quick)
         table = (*it).section('.', 0, 0);
         field = (*it).section('.', 1, 1);
 
-        if (!fieldsEmpty && fields.find(field.lower()) != fields.end()) {
+        if (!fieldsEmpty && table == name && fields.find(field.lower()) != fields.end()) {
           continue;
         }
-
-        /* if (!fieldsEmpty && table == name && fields.find(field.lower()) != fields.end()) {
-          continue;
-        } */
-          
+        qWarning("W1 " + field.lower());
 
         FLTableMetaData *mtdAux = metadata(table, true);
         if (mtdAux) {
