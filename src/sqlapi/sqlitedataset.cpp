@@ -1164,7 +1164,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
             nombre_columna = nombre_columna.left(nombre_columna.length() - 1);
           }
           
-          result.record_header[col_numero].name = nombre_columna.find(".") ? nombre_columna.right(nombre_columna.length() - nombre_columna.find(".")).utf8() :  nombre_columna.utf8();
+          result.record_header[col_numero].name = nombre_columna.find(".") ? nombre_columna.right(nombre_columna.length() - (nombre_columna.find(".") + 1)).utf8() :  nombre_columna.utf8();
         //}
         
       }
