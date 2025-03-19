@@ -475,9 +475,9 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     for (int i = sortColumn_; i < tableRecords_->numCols(); ++i) {
 
       field = tMD->field(tMD->fieldAliasToName(horizHeader->label(i)));
-      qWarning("FLTableDB : " + tableName_ + ", META_NAME:" + tMD->name() +", ALIAS:" + horizHeader->label(i) + ", NAME:" + tMD->fieldAliasToName(horizHeader->label(i)));
+      //qWarning("FLTableDB : " + tableName_ + ", META_NAME:" + tMD->name() +", ALIAS:" + horizHeader->label(i) + ", NAME:" + tMD->fieldAliasToName(horizHeader->label(i)));
       if (!field) {
-        qWarning("NOT FOUND! en " + tMD->fieldsNames());
+        //qWarning("NOT FOUND! en " + tMD->fieldsNames());
         continue;
       }
       if (i == sortColumn_)
@@ -529,7 +529,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   }
 
   if (do_refresh) {
-    qWarning("FLTableDB: Refrescando FLDatatable " + tableName_);
+    //qWarning("FLTableDB: Refrescando FLDatatable " + tableName_);
     tableRecords_->refresh();
   }
     
@@ -561,7 +561,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     setOnlyTable(reqOnlyTable_);
 
   if (showed && tableRecords_ && tableRecords_->isHidden()) {
-    qWarning("FLTableDB: Mostrando FLDatatable " + tableName_);
+    //qWarning("FLTableDB: Mostrando FLDatatable " + tableName_);
     tableRecords_->show();
   }
     
