@@ -925,6 +925,7 @@ void FLTableDB::initCursor()
   cursor_ = new FLSqlCursor(tableName_, true, cursor_->db()->connectionName(), cursorAux, rMD, this);
 
   if (!cursor_) {
+    qWarning("FLTableDB::initCursor: cursor_ is null");
     cursor_ = cursorAux;
     cursorAux = 0;
   } else {
@@ -942,6 +943,7 @@ void FLTableDB::initCursor()
   if (ownTMD && tMD && !tMD->inCache()) {
     delete tMD;
   }
+  qWarning("INITTTTT 2 " + tableName_ + " -- " + cursor_->metadata()->name());
 }
 
 void FLTableDB::showEvent(QShowEvent *e)
