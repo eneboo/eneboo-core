@@ -367,8 +367,9 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   if (!tMD)
     return;
 
-  if (tableName_.isEmpty())
+  if (tableName_.isEmpty()) {
     tableName_ = tMD->name();
+  }
 
   if (checkColumnEnabled_) {
     if (!checkColumnVisible_) {
@@ -474,7 +475,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     for (int i = sortColumn_; i < tableRecords_->numCols(); ++i) {
 
       field = tMD->field(tMD->fieldAliasToName(horizHeader->label(i)));
-      qWarning("FLTableDB : " + tableName_ + " ALIAS:" + horizHeader->label(i) + ", NAME:" + tMD->fieldAliasToName(horizHeader->label(i)));
+      qWarning("FLTableDB : " + tableName_ + ", ACTION:" + cursor_->action()->name() + ", META_NAME:" + tMD->name() +", ALIAS:" + horizHeader->label(i) + ", NAME:" + tMD->fieldAliasToName(horizHeader->label(i)));
       if (!field) {
         qWarning("NOT FOUND! en " + tMD->fieldsNames());
         continue;
