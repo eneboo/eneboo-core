@@ -294,6 +294,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
   if (d->isQuery_)
   {
+    qWarning("INITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT "  + d->metadata_->name());
     //if (db()->driverName() != "FLsqlapi") {
       FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
       d->query_ = qry->sql();
