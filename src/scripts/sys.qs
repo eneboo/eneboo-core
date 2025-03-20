@@ -3407,7 +3407,7 @@ function updateCachedTables(tableNames, excluirPermanentes)
     ba.string = res["salida"]["data"];
     const json_str = AQS.fromBase64(ba);
     //debug("Recibido: " + json_str + "-->" + res["salida"]["data"]);
-    const data = formUTIL.stringToJson(json_str);
+    const data = sys.toUnicode(formUTIL.stringToJson(json_str));
     
     for (var i=0; i<data.length; i++) {
     
@@ -3480,7 +3480,7 @@ function updateCachedFields(tableName, mode, pkField,fields) {
         }
     
         fieldsNames.push(field);
-        fieldsValues.push(fields[field]);
+        fieldsValues.push(AQUtil.utf8(fields[field]));
       }
 
       var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
