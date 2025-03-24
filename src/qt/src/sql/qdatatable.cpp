@@ -1852,7 +1852,7 @@ void QDataTable::setSqlCursor( QSqlCursor* cursor, bool autoPopulate, bool autoD
 	    d->fldIcon.clear();
 	    d->fldHidden.clear();
 	    for ( uint i = 0; i < sqlCursor()->count(); ++i ) {
-        qWarning("QDATATABLE ADDING " + sqlCursor()->field( i )->name());
+        //qWarning("QDATATABLE ADDING " + sqlCursor()->field( i )->name());
 		addColumn( sqlCursor()->field( i )->name(), sqlCursor()->field( i )->name() );
 		setColumnReadOnly( i, sqlCursor()->field( i )->isReadOnly() );
 	    }
