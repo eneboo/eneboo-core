@@ -2026,7 +2026,7 @@ void FLFieldDB::refresh(const QString &fN)
           delete tmd;
         return;
       }
-    if (cursor_->db()->driverName() == "FLsqlapi") {
+    if (cursor_->db()->driverName() == "FLsqlapi" && !tableName_.isEmpty()) {
       qWarning("FLFieldDB : refresh().FLsqlapi Omitida comprobación integridad valor " + fN.lower() + " con relación al hacer refresh");
     } else {
       QVariant v(cursor_->valueBuffer(fieldRelation_));
