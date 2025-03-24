@@ -418,7 +418,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   }
 
   if (refreshHead) {
-    qWarning("Refrescando head" + tableName_);
+    //qWarning("Refrescando head" + tableName_);
     QHeader *horizHeader = tableRecords()->horizontalHeader();
     horizHeader->hide();
     tableRecords_->QDataTable::refresh(QDataTable::RefreshColumns);

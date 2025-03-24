@@ -294,7 +294,7 @@ void FLSqlCursor::init(const QString &name, bool autopopulate,
 
   if (d->isQuery_)
   {
-    qWarning("INITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT "  + d->metadata_->name());
+    //qWarning("INITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT "  + d->metadata_->name());
     //if (db()->driverName() != "FLsqlapi") {
       FLSqlQuery *qry = d->db_->manager()->query(d->metadata_->query(), this);
       d->query_ = qry->sql();
@@ -421,22 +421,19 @@ void FLSqlCursor::refresh(const QString &fN)
   }
   else
   {
-    int pos2 = atFrom();
     QSqlCursor::select();
     int pos = atFrom();
-    qWarning(tr("FLSqlCursor::refresh(%1): A prev: %2, next: %3").arg(d->curName_).arg(pos2).arg(pos));
 
-    if (pos >= size())
+    if (pos >= size()) {
       pos = size() - 1;
-      qWarning(tr("FLSqlCursor::refresh(%1): B prev: %2, next: %3").arg(d->curName_).arg(pos2).arg(pos));
+    }
+
     if (!seek(pos, false, true))
     {
-      qWarning(tr("FLSqlCursor::refresh(%1): C NOT SEEK!!!!").arg(d->curName_));
       d->buffer_ = 0;
       emit newBuffer();
     }
-    int pos3 = atFrom();
-    qWarning(tr("FLSqlCursor::refresh(%1): D prev: %2, next: %3, now: %4").arg(d->curName_).arg(pos2).arg(pos).arg(pos3));
+    
   }
 }
 
