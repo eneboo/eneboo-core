@@ -1121,21 +1121,30 @@ function triggerAction(signature)
 
     case "deleteCache()":
       if (ok) {
-        // Borrar una carpeta
-        var file_name = Dir.home.toString() + "/.eneboocache/" + sys.nameBD() + "/" + sys.nameBD() + "_cachelite.sqlite3db";
-        debug("Cerrando conexión");
-        sys.removeDatabase("cachelite");
-        debug("Borrando cache");
-        if (File.exists(file_name)) {
-          File.remove(file_name);
-          debug("El fichero " + file_name + " ha sido borrado.");
+        var res = MessageBox.information(
+          sys.translate("Al borrar la caché el programa se cerrará automáticamente. ¿Continuar?"),
+          MessageBox.Yes, MessageBox.No,
+          MessageBox.NoButton, "Eneboo"
+          );
+        
+        var doExit = (MessageBox.Yes == res);
+        if (doExit) {
           mw.writeState();
           mw.w_.removeEventFilter(mw.w_);
+          mw.removeAllPages();
+          
+
+          // Borrar una carpeta
+          var file_name = Dir.home.toString() + "/.eneboocache/" + sys.nameBD() + "/" + sys.nameBD() + "_cachelite.sqlite3db";
+          
+          //debug("Borrando cache");
+          if (File.exists(file_name)) {
+            File.remove(file_name);
+            debug("El fichero " + file_name + " ha sido borrado.");
+            
+          }
           aqApp.generalExit(false);
-        } else {
-          debug("El fichero " + file_name + " no existe.");
-        }
-        
+        } 
       }
       break;
 
