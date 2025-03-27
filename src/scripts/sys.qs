@@ -3335,15 +3335,15 @@ function keepAlive()
  sys.AQTimer.singleShot(60000, sys.keepAlive);
 }
 
-function updateCachedTables(tableNames)
+function updateCachedTables(tableNames, excluirPermanentes)
 {
   // Recojemos el timestamp de la tabla
   var whereCache = "1=1";
   if (tableNames != undefined) {
-    whereCache = "tablename in ('";  
-    whereCache += tableNames.join("','");
-
-    whereCache += "') OR permanent = 1";
+    whereCache = "tablename IN ('" + tableNames.join("','") + "')";
+    if (!excluirPermanentes) {
+      whereCache = "(" + whereCache + " OR permanent = 1)";
+    }
     for (var i = 0; i < tableNames.length; i++) {
     	const meta_fake = aqApp.db().manager().metadata(tableNames[i]);
     }
@@ -3357,6 +3357,10 @@ function updateCachedTables(tableNames)
   if (!qryCachesFields.exec()) {
     debug("Error ejecutando consulta");
     return false;
+  }
+  if (!qryCachesFields.size()) {
+    debug("No hay datos");
+    return true;
   }
   
   const llamada: String = "delegate_qry";
@@ -3475,15 +3479,13 @@ function updateCachedFields(tableName, mode, pkField,fields) {
         }
     
         fieldsNames.push(field);
-        fieldsValues.push(fields[field]);
+        fieldsValues.push(AQUtil.utf8(fields[field]));
       }
 
       var cursor = new FLSqlCursor(tableName_cachelite, "cachelite");
 
-      if (mode == "Update") {
-        //no lo buscamos, directamente borramos si lo encuentra
-        AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
-      }
+      AQUtil.quickSqlDelete(tableName_cachelite, where, "cachelite");
+
       //ponemos modo Insert, porque si era Update hemos borrado y queremos insertar
       cursor.setActivatedCheckIntegrity(false);
       cursor.setActivatedCommitActions(false); 

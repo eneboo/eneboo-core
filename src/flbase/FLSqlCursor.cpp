@@ -2583,16 +2583,21 @@ int FLSqlCursor::atFrom()
     if (field)
     {
       sqlPriKeyValue = d->db_->manager()->formatAssignValue(field, pKValue);
-      if (!cFilter.isEmpty())
+      if (!cFilter.isEmpty()) {
         sqlIn = sql + " AND " + sqlPriKeyValue;
-      else
+      } else {
         sqlIn = sql + " WHERE " + sqlPriKeyValue;
-      q.exec(sqlIn);
-      if (!q.next())
-      {
-        QSqlCursor::seek(at());
-        pos = isValid() ? at() : 0;
-        return pos;
+      }
+      if (d->db_->driverName() == "FLsqlapi") {
+          qWarning(tr("FLSqlCursor::atFrom: Ingnorando consulta ... %1").arg(sqlIn));
+      } else {
+        q.exec(sqlIn);
+        if (!q.next())
+        {
+          QSqlCursor::seek(at());
+          pos = isValid() ? at() : 0;
+          return pos;
+        }
       }
     }
 
@@ -2604,6 +2609,9 @@ int FLSqlCursor::atFrom()
     else if (sort().count() > 0)
     {
       sqlOrderBy = sort().toString();
+      sql += " ORDER BY " + sqlOrderBy;
+    } else {
+      sqlOrderBy = pKN + " ASC";
       sql += " ORDER BY " + sqlOrderBy;
     }
 

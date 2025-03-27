@@ -556,14 +556,16 @@ bool FLFormRecordDB::validateForm()
       ++it;
       fiName = field->name();
       fiAlias = field->alias();
-      if (!field->allowNull() && (cursor_->valueBuffer(fiName).isNull() || cursor_->valueBuffer(fiName) == ""))
+      if (!field->allowNull() && cursor_->bufferIsNull(fiName))
       {
         QVariant defVal = field->defaultValue();
         if (defVal.isValid()) {
-          qWarning("FLFormRecordDB::validateForm() - Valor por defecto:" + defVal.toString() + ". Omitiendo...");
+          qWarning("FLFormRecordDB::validateForm(" + fiName + ") - Valor por defecto:" + defVal.toString() + ". Omitiendo...");
           continue;
         }
+        
         msg += QString::fromLatin1("\n") + fiName + QString::fromLatin1(":") + fiAlias + tr(" : No puede estar vacio.");
+        
       }
     }
     if (msg != "")

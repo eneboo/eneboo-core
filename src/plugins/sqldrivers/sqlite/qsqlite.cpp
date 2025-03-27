@@ -250,9 +250,9 @@ QString SqliteDriver::formatValueLike(int t, const QVariant &v, const bool upper
   switch (t) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
+      if (s == QApplication::tr("Sí").left(1).upper() || s=="T")
         res = "=1";
-      else if (s == QApplication::tr("No").left(1).upper())
+      else if (s == QApplication::tr("No").left(1).upper() || s=="F")
         res = "=0";
     }
     break;
@@ -282,10 +282,11 @@ QString SqliteDriver::formatValue(int t, const QVariant &v, const bool upper)
   switch (FLFieldMetaData::flDecodeType(t)) {
     case QVariant::Bool: {
       QString s(v.toString().left(1).upper());
-      if (s == QApplication::tr("Sí").left(1).upper())
-        res = "0";
-      else if (s == QApplication::tr("No").left(1).upper())
+
+      if (s == QApplication::tr("Sí").left(1).upper() || s=="T")
         res = "1";
+      else if (s == QApplication::tr("No").left(1).upper() || s=="F")
+        res = "0";
       else
         res = nullText();
     }

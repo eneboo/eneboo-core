@@ -1819,7 +1819,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
   if (!cacheMetaData_->find(tableName)) {
       FLTableMetaData *newMtd =  new FLTableMetaData(tableName, QString::null, QString::null);
-      // Añdimos el mdt a los mtds conocidos...
+      // Añadimos el mdt a los mtds conocidos...
       QStringList fieldsCachedNames = tmd->cachedFields();
       QString pkName = tmd->primaryKey();
       fieldsCachedNames.append(pkName);

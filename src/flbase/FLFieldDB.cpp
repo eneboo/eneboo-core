@@ -857,14 +857,10 @@ void FLFieldDB::initCursor()
 #endif
     }
 
-    if (tMD->useCachedFields()) {
-        QString cachedTableName = tableName_ + "_cachelite";
-        qWarning("FLFieldDB::initCursor() : Cachelite " + cachedTableName + ", fieldName: " + fieldName_);
-        cursor_ = new FLSqlCursor(cachedTableName, false, "cachelite", cursorAux, rMD,this);
-        qWarning("FLFieldDB::initCursor() : Cachelite " + cachedTableName + " FIN!!");
-      } else {
-        cursor_ = new FLSqlCursor(tableName_, false, cursor_->db()->connectionName(), cursorAux, rMD,this);
-      }
+    QString tableName = tMD->useCachedFields() ? tableName_ + "_cachelite" : tableName_;
+    QString connectionName = tMD->useCachedFields() ? "cachelite" : cursor_->db()->connectionName();
+    cursor_ = new FLSqlCursor(tableName, false, connectionName, cursorAux, rMD,this);
+
     if (!cursor_) {
       cursor_ = cursorAux;
       if (showed) {
@@ -2026,15 +2022,18 @@ void FLFieldDB::refresh(const QString &fN)
           delete tmd;
         return;
       }
-    if (cursor_->db()->driverName() == "FLsqlapi") {
+    if (cursor_->db()->driverName() == "FLsqlapi" && !(tableName_.isEmpty() && !foreignField_.isEmpty() && !fieldRelation_.isEmpty())) {
       qWarning("FLFieldDB : refresh().FLsqlapi Omitida comprobación integridad valor " + fN.lower() + " con relación al hacer refresh");
     } else {
       QVariant v(cursor_->valueBuffer(fieldRelation_));
-      FLSqlQuery q(0, cursor_->db()->connectionName());
+      QString connectionName = tmd->useCachedFields() ? "cachelite"  : cursor_->db()->connectionName();
+      QString foreignTable = field->relationM1()->foreignTable() + (tmd->useCachedFields() ? "_cachelite" : "");
+      FLSqlQuery q(0, connectionName);
+
       q.setForwardOnly(true);
-      q.setTablesList(field->relationM1()->foreignTable());
+      q.setTablesList(foreignTable);
       q.setSelect(foreignField_ + "," + field->relationM1()->foreignField());
-      q.setFrom(field->relationM1()->foreignTable());
+      q.setFrom(foreignTable);
 
       QString where(mng->formatAssignValue(field->relationM1()->foreignField(),
                                            field, v, true));

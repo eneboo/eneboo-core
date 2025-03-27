@@ -260,6 +260,7 @@ class MainWindow
     var mng = aqApp.db().managerModules();
     this.w_ = mng.createUI(uiFile);
     this.w_.name = "container";
+    this.w_.initialized_ = false;
   }
 
   function exit()
@@ -386,6 +387,7 @@ class MainWindow
       for (var i = 0; i < markActions.length; ++i)
         this.addMark(this.agMenu_.child(markActions[i], "QAction"));
     }
+    this.w_.initialized_ = true;
   }
 
   function init()
@@ -705,6 +707,15 @@ class MainWindow
     connect(shConsole, "activated()", this.actSigMap_, "map()");
     this.actSigMap_.setMapping(shConsole, "activated():shConsole():" + shConsole.name);
 
+    if (aqApp.db().driverName() == "FLsqlapi") {
+      var deleteCache = new QAction(agm);
+      deleteCache.name = "deleteCacheAction";
+      deleteCache.menuText = sys.translate("Borrar cache");
+      deleteCache.setIconSet(new QIconSet(AQS.Pixmap_fromMimeSource("eraser.png")));
+      connect(deleteCache, "activated()", this.actSigMap_, "map()");
+      this.actSigMap_.setMapping(deleteCache, "activated():deleteCache():" + deleteCache.name);
+    }
+
     agm.addSeparator();
 
     var exit = new QAction(agm);
@@ -730,7 +741,37 @@ class MainWindow
     connect(tb, "clicked()", this, "removeCurrentPage()");
     tw.setCornerWidget(tb, AQS.TopRight);
     AQS.ToolTip_add(tb, sys.translate("Cerrar pestaña"));
+
+    // Si en driver usado es FLsqlapi
+    if (aqApp.db().driverName() == "FLsqlapi") {
+      connect(w.child("tabWidget"), "selected(const QString&)", this, "PageChanged");
+    }
+
     tb.hide();
+  }
+
+  function PageChanged(value)
+  {
+    var tw = this.tw_;
+    if (!this.w_.initialized_) {
+      return;
+    }
+
+    if (value) {
+      sys.AQTimer.singleShot(10, this.PageChanged);
+      return;
+    } 
+
+
+      var page = tw.currentPage();
+      if (page != undefined) {
+        var list = new AQObjectQueryList(page, "FLTableDB", "", true, true);
+        var obj = list.current();
+        while (obj != undefined) {
+          obj.refresh(false, true);
+          obj = list.next();
+        }
+      }
   }
 
   function initHelpMenu()
@@ -1071,6 +1112,35 @@ function triggerAction(signature)
     case "shConsole()":
       if (ok)
         aqApp.showConsole();
+      break;
+
+    case "deleteCache()":
+      if (ok) {
+        var res = MessageBox.information(
+          sys.translate("Al borrar la caché el programa se cerrará automáticamente. ¿Continuar?"),
+          MessageBox.Yes, MessageBox.No,
+          MessageBox.NoButton, "Eneboo"
+          );
+        
+        var doExit = (MessageBox.Yes == res);
+        if (doExit) {
+          mw.writeState();
+          mw.w_.removeEventFilter(mw.w_);
+          mw.removeAllPages();
+          
+
+          // Borrar una carpeta
+          var file_name = Dir.home.toString() + "/.eneboocache/" + sys.nameBD() + "/" + sys.nameBD() + "_cachelite.sqlite3db";
+          
+          //debug("Borrando cache");
+          if (File.exists(file_name)) {
+            File.remove(file_name);
+            debug("El fichero " + file_name + " ha sido borrado.");
+            
+          }
+          aqApp.generalExit(false);
+        } 
+      }
       break;
 
     case "exit()":

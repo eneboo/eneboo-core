@@ -1143,7 +1143,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
         if (posicion_idx != 0) { // Si el offset no es cero, ya tengo cabecera ....
             continue;
           }
-        const int col_numero = result.record_header.size() + 1;
+        const int col_numero = result.record_header.size();
         //const QString datos_columna = *it2;
         //QStringList columna = QStringList::split("|", datos_columna);
 
@@ -1163,8 +1163,8 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
             nombre_columna = nombre_columna.left(nombre_columna.length() - 1);
           }
           
-          result.record_header[col_numero].name = nombre_columna.utf8();
-        //}
+          result.record_header[col_numero].name = nombre_columna.find(".") ? nombre_columna.right(nombre_columna.length() - (nombre_columna.find(".") + 1)).utf8() :  nombre_columna.utf8();
+          //}
         
       }
       //qWarning("CABECERA CARGADA" + QString::number(cabecera_size));
@@ -1172,7 +1172,7 @@ bool SqliteDataset::procesa_datos_cadena_recibida(const QString &salida, const i
     } else { // valores ...
 
     int lista_size = lista_columnas.size();
-    int cabecera_size = result.record_header.size() - (offset == 0 ? 0 :  1);
+    int cabecera_size = result.record_header.size();
 
     if (lista_size > 0 && lista_size != cabecera_size) {
       qWarning("Error de integridad de datos. El número de columnas no coincide. offset:" + QString::number(offset) + ", linea: " + QString::number(pos) + ", Cabecera: " + QString::number(cabecera_size) + ", Valores: " + QString::number(lista_size) + ". Omitiendo registro ...");
