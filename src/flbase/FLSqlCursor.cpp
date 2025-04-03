@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <qsqldriver.h>
@@ -339,10 +339,10 @@ FLSqlCursor::~FLSqlCursor()
   {
     QString t(d->metadata_ ? d->metadata_->name() : QString(QObject::name()));
     rollbackOpened(
-        -1, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+        -1, tr("Se han detectado transacciones no finalizadas en la ï¿½ltima operaciï¿½n.\n"
                "Se van a cancelar las transacciones pendientes.\n"
-               "Los últimos datos introducidos no han sido guardados, por favor\n"
-               "revise sus últimas acciones y repita las operaciones que no\n"
+               "Los ï¿½ltimos datos introducidos no han sido guardados, por favor\n"
+               "revise sus ï¿½ltimas acciones y repita las operaciones que no\n"
                "se han guardado.\n") +
                 QString("SqlCursor::~SqlCursor: %1\n").arg(t));
   }
@@ -656,7 +656,7 @@ QString FLSqlCursor::msgCheckIntegrity()
 
   if (!d->buffer_ || !d->metadata_)
   {
-    msg += QString::fromLatin1("\n") + tr("Buffer vacío o no hay metadatos");
+    msg += QString::fromLatin1("\n") + tr("Buffer vacï¿½o o no hay metadatos");
     return msg;
   }
 
@@ -698,7 +698,7 @@ QString FLSqlCursor::msgCheckIntegrity()
         {
           msg += QString::fromLatin1("\n") +
                  tr(
-                     "FLSqlCursor : Error en metadatos, el campo %1 tiene un campo asociado pero no existe relación muchos a uno")
+                     "FLSqlCursor : Error en metadatos, el campo %1 tiene un campo asociado pero no existe relaciï¿½n muchos a uno")
                      .arg(d->metadata_->name() + QString::fromLatin1(":") + fiName);
           continue;
         }
@@ -771,7 +771,7 @@ QString FLSqlCursor::msgCheckIntegrity()
           if (q.next())
             msg += QString::fromLatin1("\n") + d->metadata_->name() + QString::fromLatin1(":") + field->alias() +
                    tr(
-                       " : Requiere valores únicos, y ya hay otro registro con el valor %1 en este campo")
+                       " : Requiere valores ï¿½nicos, y ya hay otro registro con el valor %1 en este campo")
                        .arg(s.toString());
         }
       }
@@ -788,7 +788,7 @@ QString FLSqlCursor::msgCheckIntegrity()
         if (q.next())
           msg += QString::fromLatin1("\n") + d->metadata_->name() + QString::fromLatin1(":") + field->alias() +
                  tr(
-                     " : Es clave primaria y requiere valores únicos, y ya hay otro registro con el valor %1 en este campo")
+                     " : Es clave primaria y requiere valores ï¿½nicos, y ya hay otro registro con el valor %1 en este campo")
                      .arg(s.toString());
       }
 
@@ -853,7 +853,7 @@ QString FLSqlCursor::msgCheckIntegrity()
           q.exec();
           if (q.next())
             msg += QString::fromLatin1("\n") + fields +
-                   tr(" : Requiere valor único, y ya hay otro registro con el valor %1").arg(valuesFields);
+                   tr(" : Requiere valor ï¿½nico, y ya hay otro registro con el valor %1").arg(valuesFields);
           checkedCK = true;
         }
       }
@@ -931,7 +931,7 @@ QString FLSqlCursor::msgCheckIntegrity()
           else
           {
             msg += QString::fromLatin1("\n") +
-                   tr("FLSqlCursor : Error en metadatos, %1.%2 no es válido.\n"
+                   tr("FLSqlCursor : Error en metadatos, %1.%2 no es vï¿½lido.\n"
                       "Campo relacionado con %3.%4.")
                        .arg(mtd->name())
                        .arg(r->foreignField())
@@ -1040,7 +1040,7 @@ void FLSqlCursor::checkRisksLocks(bool terminate)
         if (!d->inRisksLocks_)
         {
           QString msgLock(tr("<p><img source=\"locked.png\" align=\"right\"><b><u>Sin Riesgo de Bloqueo</u></b><br><br>"
-                             "Ya no existe riesgo de bloqueo puede continuar con la transacción actual."));
+                             "Ya no existe riesgo de bloqueo puede continuar con la transacciï¿½n actual."));
           QMap<QString, QSArgumentList> scrCall;
           aqApp->popupWarn(msgLock, scrCall);
         }
@@ -1050,13 +1050,13 @@ void FLSqlCursor::checkRisksLocks(bool terminate)
         disconnect(QApplication::eventLoop(), SIGNAL(aboutToBlock()), this, SLOT(checkRisksLocks()));
 
         QString msgLock(tr("<p><img source=\"locked.png\" align=\"right\"><b><u>Riesgo de Bloqueo Detectado</u></b><br><br>"
-                           "Va a acceder a datos que están siendo modificados por otro usuario en este momento, "
-                           "es muy probable que su conexión y la aplicación queden congeladas hasta que el "
-                           "otro usuario termine su transacción.<br><br>Si le es posible postponer la operación "
-                           "que está realizando se recomienda cancelar los cambios actuales y esperar "
+                           "Va a acceder a datos que estï¿½n siendo modificados por otro usuario en este momento, "
+                           "es muy probable que su conexiï¿½n y la aplicaciï¿½n queden congeladas hasta que el "
+                           "otro usuario termine su transacciï¿½n.<br><br>Si le es posible postponer la operaciï¿½n "
+                           "que estï¿½ realizando se recomienda cancelar los cambios actuales y esperar "
                            "unos segundos antes de continuar."
                            "<br><br><em><a href=\"sys.terminateChecksLocks\">Cerrar sistema antibloqueos</a></em></p>"
-                           "<<br><em><a href=\"sys.statusDbLocksDialog\">Más información</a></em></p>"));
+                           "<<br><em><a href=\"sys.statusDbLocksDialog\">Mï¿½s informaciï¿½n</a></em></p>"));
 
         QMap<QString, QSArgumentList> scrCall;
         scrCall["sys.terminateChecksLocks"] = QSArgumentList(FLSqlCursorInterface::sqlCursorInterface(this));
@@ -1085,10 +1085,10 @@ bool FLSqlCursor::commitBuffer(bool emite, bool checkLocks)
         QMessageBox::No ==
             QMessageBox::warning(
                 0, tr("Bloqueo inminente"),
-                tr("Los registros que va a modificar están bloqueados actualmente,\n"
-                   "si continua hay riesgo de que su conexión quede congelada hasta "
+                tr("Los registros que va a modificar estï¿½n bloqueados actualmente,\n"
+                   "si continua hay riesgo de que su conexiï¿½n quede congelada hasta "
                    "finalizar el bloqueo.\n\n"
-                   "¿ Desa continuar aunque exista riesgo de bloqueo ?"),
+                   "ï¿½ Desa continuar aunque exista riesgo de bloqueo ?"),
                 QMessageBox::Yes,
                 QMessageBox::No | QMessageBox::Default | QMessageBox::Escape))
     {
@@ -1548,7 +1548,7 @@ void FLSqlCursor::setAtomicValueBuffer(const QString &fN, const QString &functio
   else
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor : No se puede actualizar el campo de forma atómica, porque no existe clave primaria"));
+    qWarning(tr("FLSqlCursor : No se puede actualizar el campo de forma atï¿½mica, porque no existe clave primaria"));
 #endif
   }
 
@@ -1757,7 +1757,7 @@ void FLSqlCursor::deleteRecord()
 void FLSqlCursor::browseRecord()
 {
 #ifdef AQ_MD5_CHECK
-  // ### Ver refresco buffer dos usuarios ¿es necesario forzar refresco?
+  // ### Ver refresco buffer dos usuarios ï¿½es necesario forzar refresco?
   if (d->needUpdate())
   {
     QString pKN(d->metadata_->primaryKey());
@@ -1801,7 +1801,7 @@ void FLSqlCursor::copyRecord()
   {
     QMessageBox::warning(qApp->focusWidget(),
                          tr("Aviso"),
-                         tr("No hay ningún registro seleccionado"),
+                         tr("No hay ningï¿½n registro seleccionado"),
                          QMessageBox::Ok, 0, 0);
     return;
   }
@@ -1848,7 +1848,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if ((!isValid() || size() <= 0) && m != INSERT)
   {
     QMessageBox::warning(qApp->focusWidget(), tr("Aviso"),
-                         tr("No hay ningún registro seleccionado"),
+                         tr("No hay ningï¿½n registro seleccionado"),
                          QMessageBox::Ok, 0, 0);
     return;
   }
@@ -1857,7 +1857,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   {
     int res = QMessageBox::information(
         qApp->focusWidget(), tr("Borrar registro"),
-        tr("El registro activo será borrado. ¿ Está seguro ?"),
+        tr("El registro activo serï¿½ borrado. ï¿½ Estï¿½ seguro ?"),
         QMessageBox::Yes,
         QMessageBox::No | QMessageBox::Default | QMessageBox::Escape);
     if (res == QMessageBox::No)
@@ -1913,7 +1913,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   if (!d->action_)
   {
 #ifdef FL_DEBUG
-    qWarning("FLSqlCursor : Para poder abrir un registro de edición se necesita una acción asociada al cursor, o una acción definida con el mismo nombre que la tabla de la que procede el cursor.");
+    qWarning("FLSqlCursor : Para poder abrir un registro de ediciï¿½n se necesita una acciï¿½n asociada al cursor, o una acciï¿½n definida con el mismo nombre que la tabla de la que procede el cursor.");
 #endif
     return;
   }
@@ -1922,7 +1922,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
   {
     QMessageBox::warning(
         qApp->focusWidget(), tr("Aviso"),
-        tr("No hay definido ningún formulario para manejar "
+        tr("No hay definido ningï¿½n formulario para manejar "
            "registros de esta tabla : %1")
             .arg(d->action_->name()),
         QMessageBox::Ok, 0, 0);
@@ -1937,9 +1937,9 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
     {
       QMessageBox::warning(
           qApp->focusWidget(), tr("Aviso"),
-          tr("Ya hay abierto un formulario de edición de registros para esta "
-             "tabla.\nNo se abrirán más para evitar ciclos repetitivos de "
-             "edición de registros."),
+          tr("Ya hay abierto un formulario de ediciï¿½n de registros para esta "
+             "tabla.\nNo se abrirï¿½n mï¿½s para evitar ciclos repetitivos de "
+             "ediciï¿½n de registros."),
           QMessageBox::Ok, 0, 0);
       return;
     }
@@ -1974,7 +1974,7 @@ void FLSqlCursor::openFormInMode(int m, bool cont)
 
 void FLSqlCursor::chooseRecord()
 {
-  // --> Aulla Desactiva edición con doble click
+  // --> Aulla Desactiva ediciï¿½n con doble click
   if (!FLSettings::readBoolEntry("ebcomportamiento/FLTableDoubleClick", false))
   {
     if (d->edition_)
@@ -1988,7 +1988,7 @@ void FLSqlCursor::chooseRecord()
       browseRecord();
   }
 
-  // <-- Aulla Desactiva edición con doble click
+  // <-- Aulla Desactiva ediciï¿½n con doble click
   emit recordChoosed();
 }
 
@@ -2014,7 +2014,7 @@ bool FLSqlCursor::transaction(bool /*lock*/)
   if (!d->db_ && !d->db_->db())
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor::transaction() : No hay conexión con la base de datos"));
+    qWarning(tr("FLSqlCursor::transaction() : No hay conexiï¿½n con la base de datos"));
 #endif
     return false;
   }
@@ -2027,7 +2027,7 @@ bool FLSqlCursor::rollback()
   if (!d->db_ && !d->db_->db())
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor::rollback() : No hay conexión con la base de datos"));
+    qWarning(tr("FLSqlCursor::rollback() : No hay conexiï¿½n con la base de datos"));
 #endif
     return false;
   }
@@ -2040,7 +2040,7 @@ bool FLSqlCursor::commit(bool notify)
   if (!d->db_ && !d->db_->db())
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor::commit() : No hay conexión con la base de datos"));
+    qWarning(tr("FLSqlCursor::commit() : No hay conexiï¿½n con la base de datos"));
 #endif
     return false;
   }
@@ -2422,7 +2422,7 @@ void FLSqlCursor::setUnLock(const QString &fN, bool v)
   if (d->metadata_->fieldType(fN) != FLFieldMetaData::Unlock)
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor::setUnLock sólo permite modificar campos del tipo Unlock"));
+    qWarning(tr("FLSqlCursor::setUnLock sï¿½lo permite modificar campos del tipo Unlock"));
 #endif
     return;
   }
@@ -2589,7 +2589,7 @@ int FLSqlCursor::atFrom()
         sqlIn = sql + " WHERE " + sqlPriKeyValue;
       }
       if (d->db_->driverName() == "FLsqlapi") {
-          qWarning(tr("FLSqlCursor::atFrom: Ingnorando consulta ... %1").arg(sqlIn));
+          //qWarning(tr("FLSqlCursor::atFrom: Ingnorando consulta ... %1").arg(sqlIn));
       } else {
         q.exec(sqlIn);
         if (!q.next())
@@ -2895,7 +2895,7 @@ void FLSqlCursor::rollbackOpened(int count, const QString &msg)
   for (int i = 0; i < ct; ++i)
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor : Deshaciendo transacción abierta %1").arg(transactionLevel()));
+    qWarning(tr("FLSqlCursor : Deshaciendo transacciï¿½n abierta %1").arg(transactionLevel()));
 #endif
     rollback();
   }
@@ -2923,7 +2923,7 @@ void FLSqlCursor::commitOpened(int count, const QString &msg)
   for (int i = 0; i < ct; ++i)
   {
 #ifdef FL_DEBUG
-    qWarning(tr("FLSqlCursor : Terminando transacción abierta %1").arg(transactionLevel()));
+    qWarning(tr("FLSqlCursor : Terminando transacciï¿½n abierta %1").arg(transactionLevel()));
 #endif
     commit();
   }
@@ -3016,10 +3016,10 @@ void FLSqlCursor::changeConnection(const QString &connName)
     FLTableMetaData *mtd = d->metadata_;
     QString t(mtd ? mtd->name() : QString(QObject::name()));
     rollbackOpened(
-        -1, tr("Se han detectado transacciones no finalizadas en la última operación.\n"
+        -1, tr("Se han detectado transacciones no finalizadas en la ï¿½ltima operaciï¿½n.\n"
                "Se van a cancelar las transacciones pendientes.\n"
-               "Los últimos datos introducidos no han sido guardados, por favor\n"
-               "revise sus últimas acciones y repita las operaciones que no\n"
+               "Los ï¿½ltimos datos introducidos no han sido guardados, por favor\n"
+               "revise sus ï¿½ltimas acciones y repita las operaciones que no\n"
                "se han guardado.\n") +
                 QString("SqlCursor::changeConnection: %1\n").arg(t));
   }
