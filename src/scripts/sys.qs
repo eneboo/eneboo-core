@@ -3444,15 +3444,16 @@ function updateCachedTables(tableNames, excluirPermanentes)
 function updateCachedFields(tableName, mode, pkField,fields) {
   manager = aqApp.db().manager();
 
+  var tableMetaName = tableName;
   if (tableName.startsWith('fllarge')) {
     aqApp.db().manager().checkFLLarge(tableName);
+    tableMetaName = "fllarge";
   }
 
-
-  metaTable = manager.metadata(tableName, true);
+  metaTable = manager.metadata(tableMetaName, true);
   const tableName_cachelite = tableName + "_cachelite";
   metaField = metaTable.field(pkField);
-  var array_fields = metaTable.cachedFields();
+  var array_fields = tableMetaName == "fllarge" ? ["*"] : metaTable.cachedFields();
   array_fields.push(pkField);
   //debug("array_fields: " + array_fields.join(", ") + ", length:" + array_fields.length);
   //debug("updateCachedFields: tablename: " + tableName_cachelite + ", mode: " + mode);

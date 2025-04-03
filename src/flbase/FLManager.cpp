@@ -1844,7 +1844,7 @@ void FLManager::checkTablaCache(FLTableMetaData *tmd)
 
         if (found) {
             FLFieldMetaData *fieldCached = new FLFieldMetaData(tmd->field(fieldNameOrig));
-            qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añdiendo %1 a la tabla %2").arg(fieldCached->name()).arg(tableName));
+            qWarning("FLManager::checkTablaCache : " + QApplication::tr("Añadiendo %1 a la tabla %2").arg(fieldCached->name()).arg(tableName));
             fieldCached->clearRelationList();
             if (fieldCached->name() == pkName) {
               fieldCached->setIsPrimaryKey(true);
