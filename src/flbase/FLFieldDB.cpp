@@ -2560,6 +2560,10 @@ void FLFieldDB::setMapValue()
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
     qWarning("Un mapping , NMV:" + nextMapValue_);
+    if (nextMapValue_ == value().toString()) {
+      qWarning("Discarting nextMapValue");
+      nextMapValue_ = "";
+    }
     mappingValue_ = false;
   }
 }
