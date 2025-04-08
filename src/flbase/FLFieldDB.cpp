@@ -2496,13 +2496,16 @@ void FLFieldDB::setMapValue()
 
   if (!field || !fieldSender)
     return;
-
-  while (mappingValue_) {
-      qApp->processEvents();
+  if (cursor_->db()->driverName() == "FLsqlapi") {
+    qWarning("Checking previously mapping");
+    while (mappingValue_) {
+        qApp->processEvents();
+    }
+    mappingValue_ = true;
+    qWarning("mapping ...");
   }
   
-  mappingValue_ = true;
-  qWarning("mapping ...");
+
   if (field->relationM1()) {
     if (field->relationM1()->foreignTable() != tMD->name()) {
       FLManager *mng = cursor_->db()->manager();
@@ -2538,7 +2541,10 @@ void FLFieldDB::setMapValue()
       }
     }
   }
-  mappingValue_ = false;
+  if (cursor_->db()->driverName() == "FLsqlapi") {
+    qWarning("Unmapping");
+    mappingValue_ = false;
+  }
 }
 
 void FLFieldDB::emitKeyF2Pressed()
