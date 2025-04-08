@@ -2500,13 +2500,11 @@ void FLFieldDB::setMapValue()
   if (cursor_->db()->driverName() == "FLsqlapi") {
 
     qWarning("Checking previously mapping. PREV:" + QString(mappingValue_ ? "TRUE" : "FALSE"));
-    while (true) {
-      if (!mappingValue_) {
-        break;
-      }
-      qApp->processEvents();
+    if (mappingValue_) {
+      qWarning("See you later!");
+      QTimer::singleShot(100, this, SLOT(setMapValue()));
+      return;
     }
-
     qWarning("mapping ...");
     mappingValue_ = true;
   }
