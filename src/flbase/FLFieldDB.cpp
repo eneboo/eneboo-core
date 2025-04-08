@@ -2497,7 +2497,7 @@ void FLFieldDB::setMapValue()
   if (!field || !fieldSender)
     return;
   if (cursor_->db()->driverName() == "FLsqlapi") {
-    qWarning("Checking previously mapping");
+    qWarning("Checking previously mapping. PREV:" + (mappingValue_ ? "TRUE" : "FALSE"));
     while (mappingValue_) {
         qApp->processEvents();
     }
