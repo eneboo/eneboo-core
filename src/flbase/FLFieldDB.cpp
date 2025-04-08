@@ -2500,7 +2500,7 @@ void FLFieldDB::setMapValue()
   if (cursor_->db()->driverName() == "FLsqlapi") {
 
   if (mappingValue_) {
-    if (!nextMapValue_.isEmpty() && nextMapValue_ != mapValue_) {
+    if (!nextMapValue_.isEmpty() && nextMapValue_ == mapValue_) {
       qWarning("Already exists nextMapValue " + nextMapValue_ + ". discarting " + mapValue_);
       return;
     }
