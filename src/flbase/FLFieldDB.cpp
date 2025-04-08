@@ -2496,14 +2496,19 @@ void FLFieldDB::setMapValue()
 
   if (!field || !fieldSender)
     return;
+
   if (cursor_->db()->driverName() == "FLsqlapi") {
 
     qWarning("Checking previously mapping. PREV:" + QString(mappingValue_ ? "TRUE" : "FALSE"));
-    while (mappingValue_) {
-        qApp->processEvents();
+    while (true) {
+      if (!mappingValue_) {
+        break;
+      }
+      qApp->processEvents();
     }
-    mappingValue_ = true;
+
     qWarning("mapping ...");
+    mappingValue_ = true;
   }
   
 
@@ -2543,7 +2548,7 @@ void FLFieldDB::setMapValue()
     }
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
-    qWarning("Unmapping");
+    qWarning("Un mapping");
     mappingValue_ = false;
   }
 }
