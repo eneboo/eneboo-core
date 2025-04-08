@@ -273,7 +273,7 @@ FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
   showEditor_(true), fieldMapValue_(0), autoCompMode_(OnDemandF4), timerAutoComp_(0),
-  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0)
+  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0), nextMapValue_(QString::null)
 {
 
   pushButtonDB->setFlat(true);
@@ -2505,6 +2505,11 @@ void FLFieldDB::setMapValue()
       nextMapValue_ = mapValue_;
       QTimer::singleShot(100, this, SLOT(setMapValue()));
       return;
+    }
+    if (!nextMapValue_.isEmpty()) {
+      qWarning("Restoring PREV!");
+      mapValue_ = nextMapValue_;
+      nextMapValue_ = QString::null;
     }
     qWarning("mapping ..." + mapValue_);
     mappingValue_ = true;
