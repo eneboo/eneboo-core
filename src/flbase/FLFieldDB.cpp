@@ -2498,7 +2498,7 @@ void FLFieldDB::setMapValue()
     return;
 
   while (mappingValue_) {
-      qApp->processEvents()
+      qApp->processEvents();
   }
   
   mappingValue_ = true;
