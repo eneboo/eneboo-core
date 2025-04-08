@@ -2499,26 +2499,24 @@ void FLFieldDB::setMapValue()
 
   if (cursor_->db()->driverName() == "FLsqlapi") {
 
-    qWarning("Checking previously mapping. PREV:" + QString(mappingValue_ ? "TRUE" : "FALSE"));
-    if (mappingValue_) {
-
-      
-      if (nextMapValue_ != mapValue_ && !nextMapValue_.isEmpty()) {
-        qWarning("See you later! MV: " + mapValue_ + "PREV: " + QString(nextMapValue_.isEmpty() ? "": nextMapValue_));
-        nextMapValue_ = mapValue_;
-        QTimer::singleShot(100, this, SLOT(setMapValue()));
-      } else {
-        qWarning("Discarting " + mapValue_);
-      }
-      
+  if (mappingValue_) {
+    if (!nextMapValue_.isEmpty()) {
+      qWarning("Already exists nextMapValue " + nextMapValue_ + ". discarting " + mapValue_);
       return;
     }
+    nextMapValue_ = mapValue_;
+    QTimer::singleShot(50, this, SLOT(setMapValue()));     
+    return;
+  } else {
+      if (!nextMapValue_.isEmpty()) {
+        qWarning("Restoring mapValue " + mapValue_ + " with " + nextMapValue_);
+        mapValue_ = nextMapValue_;
+        nextMapValue_ = "";
+      } else {
+        qWarning("nextMapValue is empty...");
+      }
+  }
 
-    if (!nextMapValue_.isEmpty()) {
-      qWarning("Restoring mapValue " + mapValue_ + " with " + nextMapValue_);
-      mapValue_ = nextMapValue_;
-    }
-    nextMapValue_ = "";
     qWarning("mapping ..." + mapValue_);
     mappingValue_ = true;
   }
