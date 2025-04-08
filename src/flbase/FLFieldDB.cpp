@@ -2505,6 +2505,7 @@ void FLFieldDB::setMapValue()
       return;
     }
     nextMapValue_ = mapValue_;
+    qWarning("LATER: " + nextMapValue_);
     QTimer::singleShot(50, this, SLOT(setMapValue()));     
     return;
   } else {
@@ -2558,7 +2559,7 @@ void FLFieldDB::setMapValue()
     }
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
-    qWarning("Un mapping");
+    qWarning("Un mapping , NMV:" + nextMapValue_);
     mappingValue_ = false;
   }
 }
