@@ -2502,8 +2502,9 @@ void FLFieldDB::setMapValue()
     qWarning("Checking previously mapping. PREV:" + QString(mappingValue_ ? "TRUE" : "FALSE"));
     if (mappingValue_) {
 
-      qWarning("See you later! MV: " + mapValue_ + "PREV: " + QString(nextMapValue_.isEmpty() ? "": nextMapValue_));
-      if (nextMapValue_ != mapValue_ && nextMapValue_ != value().toString()) {
+      
+      if (nextMapValue_ != mapValue_ && !nextMapValue_.isEmpty()) {
+        qWarning("See you later! MV: " + mapValue_ + "PREV: " + QString(nextMapValue_.isEmpty() ? "": nextMapValue_));
         nextMapValue_ = mapValue_;
         QTimer::singleShot(100, this, SLOT(setMapValue()));
       } else {
