@@ -2506,7 +2506,7 @@ void FLFieldDB::setMapValue()
       QTimer::singleShot(100, this, SLOT(setMapValue()));
       return;
     }
-    if (!nextMapValue_.isEmpty()) {
+    if (nextMapValue_ != QString::null) {
       qWarning("Restoring PREV!");
       mapValue_ = nextMapValue_;
       nextMapValue_ = QString::null;
