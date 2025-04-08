@@ -2506,10 +2506,10 @@ void FLFieldDB::setMapValue()
       QTimer::singleShot(100, this, SLOT(setMapValue()));
       return;
     }
-    if (nextMapValue_ != QString::null) {
-      qWarning("Restoring PREV!");
+    if (!nextMapValue_.isEmpty()) {
+      qWarning("Restoring PREV!" + nextMapValue_);
       mapValue_ = nextMapValue_;
-      nextMapValue_ = QString::null;
+      nextMapValue_ = "";
     }
     qWarning("mapping ..." + mapValue_);
     mappingValue_ = true;
