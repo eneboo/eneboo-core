@@ -273,7 +273,7 @@ FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
   showEditor_(true), fieldMapValue_(0), autoCompMode_(OnDemandF4), timerAutoComp_(0),
-  textFormat_(Qt::AutoText), initNotNullColor_(false)
+  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0)
 {
 
   pushButtonDB->setFlat(true);
@@ -2488,6 +2488,8 @@ void FLFieldDB::setMapValue()
   if (!tMD)
     return;
 
+
+
   QString fSN = fieldMapValue_->fieldName();
   FLFieldMetaData *field = tMD->field(fieldName_);
   FLFieldMetaData *fieldSender = tMD->field(fSN);
@@ -2495,6 +2497,12 @@ void FLFieldDB::setMapValue()
   if (!field || !fieldSender)
     return;
 
+  while (mappingValue_) {
+      qApp->processEvents()
+  }
+  
+  mappingValue_ = true;
+  qWarning("mapping ...");
   if (field->relationM1()) {
     if (field->relationM1()->foreignTable() != tMD->name()) {
       FLManager *mng = cursor_->db()->manager();
@@ -2530,6 +2538,7 @@ void FLFieldDB::setMapValue()
       }
     }
   }
+  mappingValue_ = false;
 }
 
 void FLFieldDB::emitKeyF2Pressed()
