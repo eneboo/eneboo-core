@@ -744,6 +744,7 @@ private:
   FLFieldDB *fieldMapValue_;
   QString mapValue_;
   QString nextMapValue_;
+  QStringList listPendindMapValue_;
 
   /**
   Tamaño máximo de las imágenes en los campos pixmaps (en píxeles)

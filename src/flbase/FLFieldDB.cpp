@@ -2498,30 +2498,37 @@ void FLFieldDB::setMapValue()
     return;
 
   if (cursor_->db()->driverName() == "FLsqlapi") {
+    bool found = false;
+    int count = 0;
+    QString last_value = "";
+    for (QStringList::Iterator it = listPendindMapValue_.begin(); it != listPendindMapValue_.end(); ++it) {
+      count++;
+      last_value = QString(*it);
 
-  if (mappingValue_) {
-    if (!nextMapValue_.isEmpty() && nextMapValue_ == mapValue_) {
-      qWarning("Already exists nextMapValue " + nextMapValue_ + ". discarting " + mapValue_);
-      return;
-    }
-    nextMapValue_ = mapValue_;
-    qWarning("LATER: " + nextMapValue_);
-    QTimer::singleShot(50, this, SLOT(setMapValue()));     
-    return;
-  } else {
-      if (!nextMapValue_.isEmpty()) {
-        qWarning("Restoring mapValue " + mapValue_ + " with " + nextMapValue_);
-        mapValue_ = nextMapValue_;
-        nextMapValue_ = "";
-      } else {
-        qWarning("nextMapValue is empty...");
+      if (last_value == mapValue_) {
+        found = true;
       }
-  }
+    }
 
-    qWarning("mapping ..." + mapValue_);
-    mappingValue_ = true;
+    if (!found) {
+      qWarning("NEW MapValue " + mapValue_);
+      listPendindMapValue_.append(mapValue_);
+      last_value = mapValue_;
+    }
+
+    if (count > 0) {
+      if (last_value == mapValue_) {
+        qWarning("DELAYED ..." + mapValue_);
+        QTimer::singleShot(50, this, SLOT(setMapValue()));
+        return;
+      } else {
+        qWarning("Discarting ... " + mapValue_);
+        listPendindMapValue_.remove(mapValue_);
+        return;
+      }
+      
+    }
   }
-  
 
   if (field->relationM1()) {
     if (field->relationM1()->foreignTable() != tMD->name()) {
@@ -2559,12 +2566,8 @@ void FLFieldDB::setMapValue()
     }
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
-    qWarning("Un mapping , NMV:" + nextMapValue_);
-    if (nextMapValue_ == value().toString()) {
-      qWarning("Discarting nextMapValue");
-      nextMapValue_ = "";
-    }
-    mappingValue_ = false;
+   listPendindMapValue_.remove(mapValue_); // Elimino el registro, para que netre el siguiente...
+
   }
 }
 
