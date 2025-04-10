@@ -570,6 +570,7 @@ void FLFieldDB::setValue(const QVariant &cv)
   }
 
   QVariant v(cv);
+  qWarning("SETEANDO " + v.toString() + " en " + fieldName_);
   if (field->hasOptionsList()) {
     int idxItem = -1;
     if (v.type() == QVariant::String)
@@ -2554,8 +2555,8 @@ void FLFieldDB::setMapValue()
    nextMapValue_ = QString::null;
    if (!mv_.isEmpty()) {
     qWarning("PROCCESSING PENDING: " + mv_);
-
-    setMapValue(mv_);
+    mapValue_ = mv_;
+    QTimer::singleShot(0, this, SLOT(setMapValue()));
    }
   }
 }
