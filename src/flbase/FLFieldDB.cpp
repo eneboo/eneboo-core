@@ -2550,15 +2550,19 @@ void FLFieldDB::setMapValue()
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
    qWarning("FINISHED MapValue " + currentMapValue_);
-   QString mv_ = nextMapValue_;
-   currentMapValue_ = QString::null;
-   nextMapValue_ = QString::null;
-   if (!mv_.isEmpty()) {
-    qWarning("PROCCESSING PENDING: " + mv_);
-    mapValue_ = mv_;
-    QTimer::singleShot(0, this, SLOT(setMapValue()));
+
+   if (!nextMapValue_.isEmpty()) {
+    QTimer::singleShot(50, this, SLOT(setMapValueDelayed()));
    }
   }
+}
+
+void FLFieldDB::setMapValueDelayed()
+{
+  qWarning("PROCCESSING PENDING: " + nextMapValue_);
+  QString mv = nextMapValue_;
+  nextMapValue_ = QString::null;
+  setMapValue(mv);
 }
 
 void FLFieldDB::emitKeyF2Pressed()
