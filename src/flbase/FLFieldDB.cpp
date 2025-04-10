@@ -273,7 +273,7 @@ FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
   showEditor_(true), fieldMapValue_(0), autoCompMode_(OnDemandF4), timerAutoComp_(0),
-  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0), currentMapValue_(QString::null), nextMapValue_(QString::null)
+  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0), currentMapValue_(QString("")), nextMapValue_(QString::null)
 {
 
   pushButtonDB->setFlat(true);
@@ -2550,7 +2550,7 @@ void FLFieldDB::setMapValue()
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
    qWarning("FINISHED MapValue " + currentMapValue_);
-
+    currentMapValue_ = "";
    if (!nextMapValue_.isEmpty()) {
     QTimer::singleShot(50, this, SLOT(setMapValueDelayed()));
    }
@@ -2561,7 +2561,7 @@ void FLFieldDB::setMapValueDelayed()
 {
   qWarning("PROCCESSING PENDING: " + nextMapValue_);
   QString mv = nextMapValue_;
-  nextMapValue_ = QString::null;
+  nextMapValue_ = "";
   setMapValue(mv);
 }
 
