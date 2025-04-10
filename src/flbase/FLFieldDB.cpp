@@ -2503,17 +2503,10 @@ void FLFieldDB::setMapValue()
         if (!mapValue_.isEmpty()) { // Si viene valor, lo guardamos para usarlo a continuación
           nextMapValue_ = mapValue_; 
           qWarning("DELAYED ... " + nextMapValue_);
-          QTimer::singleShot(50, this, SLOT(setMapValue()));
         }
       return;
     }
     
-    if (mapValue_.isEmpty() && !nextMapValue_.isEmpty()) {
-      qWarning("OVERLOAD " + nextMapValue_);
-      mapValue_ = nextMapValue_;
-      nextMapValue_ = QString::null;
-    }
-
   qWarning("STARTED MapValue " + mapValue_);
   }
 
@@ -2556,7 +2549,14 @@ void FLFieldDB::setMapValue()
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
    qWarning("FINISHED MapValue " + currentMapValue_);
+   QString mv_ = nextMapValue_;
    currentMapValue_ = QString::null;
+   nextMapValue_ = QString::null;
+   if (!mv_.isEmpty()) {
+    qWarning("PROCCESSING PENDING: " + mv_);
+
+    setMapValue(mv_);
+   }
   }
 }
 
