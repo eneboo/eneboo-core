@@ -580,11 +580,6 @@ private:
   void setMapValue();
 
   void setMapValueDelayed();
-  /**
-  Bandera que indica que se está haciendo un mapping value
-   */
-
-  bool mappingValue_;
 
   /**
   Editor para el contenido del campo que representa el componente

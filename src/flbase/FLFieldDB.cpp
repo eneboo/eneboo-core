@@ -273,7 +273,7 @@ FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
   showEditor_(true), fieldMapValue_(0), autoCompMode_(OnDemandF4), timerAutoComp_(0),
-  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0), currentMapValue_(QString("")), nextMapValue_(QString(""))
+  textFormat_(Qt::AutoText), initNotNullColor_(false), currentMapValue_(QString("")), nextMapValue_(QString(""))
 {
 
   pushButtonDB->setFlat(true);
@@ -2552,7 +2552,7 @@ void FLFieldDB::setMapValue()
    qWarning("FINISHED MapValue " + currentMapValue_);
     currentMapValue_ = "";
    if (!nextMapValue_.isEmpty()) {
-    int wait_time_ = 50;
+    int wait_time_ = 0;
     qWarning("WAITING %d FOR CALL " + nextMapValue_, wait_time_);
     QTimer::singleShot(wait_time_, this, SLOT(setMapValueDelayed()));
    }
