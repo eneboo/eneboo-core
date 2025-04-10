@@ -273,7 +273,7 @@ FLFieldDB::FLFieldDB(QWidget *parent, const char *name) :
   datePickerOn_(false), autoComPopup_(0), autoComFrame_(0), accel_(0), keepDisabled_(false),
   editorImg_(0), pbAux_(0), pbAux2_(0), pbAux3_(0), pbAux4_(0), fieldAlias_(QString::null),
   showEditor_(true), fieldMapValue_(0), autoCompMode_(OnDemandF4), timerAutoComp_(0),
-  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0), nextMapValue_(QString::null)
+  textFormat_(Qt::AutoText), initNotNullColor_(false), mappingValue_(0), currentMapValue_(QString::null), nextMapValue_(QString::null)
 {
 
   pushButtonDB->setFlat(true);
@@ -2488,7 +2488,7 @@ void FLFieldDB::setMapValue()
   if (!tMD)
     return;
 
-
+  qWarning("RECEIVED MapValue '" + mapValue_ + "' ,field:" + fieldName_);
 
   QString fSN = fieldMapValue_->fieldName();
   FLFieldMetaData *field = tMD->field(fieldName_);
@@ -2498,42 +2498,26 @@ void FLFieldDB::setMapValue()
     return;
 
   if (cursor_->db()->driverName() == "FLsqlapi") {
-    bool found = false;
-    int count = 0;
-    QString last_value = "";
-    for (QStringList::Iterator it = listPendindMapValue_.begin(); it != listPendindMapValue_.end(); ++it) {
-      count++;
-      last_value = QString(*it);
 
-      if (last_value == mapValue_) {
-        found = true;
-      }
+    if (!currentMapValue_.isEmpty()) { // Si actualmente estamos ocupados.
+        if (!mapValue_.isEmpty()) { // Si viene valor, lo guardamos para usarlo a continuación
+          nextMapValue_ = mapValue_; 
+          qWarning("DELAYED ... " + nextMapValue_);
+          QTimer::singleShot(50, this, SLOT(setMapValue()));
+        }
+      return;
     }
-
-    if (!found) {
-      qWarning("NEW MapValue " + mapValue_);
-      listPendindMapValue_.append(mapValue_);
-      last_value = mapValue_;
+    
+    if (mapValue_.isEmpty() && !nextMapValue_.isEmpty()) {
+      qWarning("OVERLOAD " + nextMapValue_);
+      mapValue_ = nextMapValue_;
+      nextMapValue_ = QString::null;
     }
-
-    if (count > 0) {
-      qWarning("COUNT %d.", count);
-      if (last_value == mapValue_) {
-        qWarning("DELAYED ... " + mapValue_);
-        QTimer::singleShot(50, this, SLOT(setMapValue()));
-        return;
-      } else {
-        qWarning("Discarting ... " + mapValue_);
-        listPendindMapValue_.remove(mapValue_);
-        return;
-      }
-      
-    } else {
-      qWarning("LIST IS EMPTY");
-    }
-  }
 
   qWarning("STARTED MapValue " + mapValue_);
+  }
+
+  currentMapValue_ = mapValue_;
 
   if (field->relationM1()) {
     if (field->relationM1()->foreignTable() != tMD->name()) {
@@ -2546,7 +2530,7 @@ void FLFieldDB::setMapValue()
       q.setSelect(field->relationM1()->foreignField() + "," + fF);
       q.setFrom(rt);
 
-      QString where(mng->formatAssignValue(fF, fieldSender, mapValue_, true));
+      QString where(mng->formatAssignValue(fF, fieldSender, currentMapValue_, true));
       FLTableMetaData *assocTmd = mng->metadata(rt);
       QString filterAc(cursor_->filterAssoc(fF, assocTmd));
       if (assocTmd && !assocTmd->inCache())
@@ -2571,9 +2555,10 @@ void FLFieldDB::setMapValue()
     }
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
-   qWarning("FINISHED MapValue " + mapValue_);
-   listPendindMapValue_.remove(mapValue_); // Elimino el registro, para que netre el siguiente...
-
+   qWarning("FINISHED MapValue " + currentMapValue_);
+   listPendindMapValue_.remove(currentMapValue_); // Elimino el registro, para que netre el siguiente...
+   mapValue_ = QString::null;
+   currentMapValue_ = QString::null;
   }
 }
 
