@@ -2554,20 +2554,20 @@ void FLFieldDB::setMapValue()
    if (!nextMapValue_.isEmpty()) {
     int wait_time_ = 50;
     qWarning("WAITING %d FOR CALL " + nextMapValue_, wait_time_);
-    QTimer::singleShot(wait_time_, this, SLOT(setMapValue(nextMapValue_)));
-    nextMapValue_ = "";
-    qWarning("DONE");
+    QTimer::singleShot(wait_time_, this, SLOT(setMapValueDelayed()));
    }
   }
 }
 
-/* void FLFieldDB::setMapValueDelayed()
+void FLFieldDB::setMapValueDelayed()
 {
   qWarning("PROCCESSING PENDING: " + nextMapValue_);
-  QString mv = nextMapValue_;
-  nextMapValue_ = "";
-  setMapValue(mv);
-} */
+  QString mv_ = nextMapValue_;
+  nextMapValue_ = ""; // Limpia nextMapValue_
+  mapValue_ = mv_; // Setea mapValue_
+  setMapValue();
+  qWarning("FINISHED PENDING: " + mv_);
+}
 
 void FLFieldDB::emitKeyF2Pressed()
 {
