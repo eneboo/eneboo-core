@@ -2517,8 +2517,9 @@ void FLFieldDB::setMapValue()
     }
 
     if (count > 0) {
+      qWarning("COUNT %d.", count);
       if (last_value == mapValue_) {
-        qWarning("DELAYED ..." + mapValue_);
+        qWarning("DELAYED ... " + mapValue_);
         QTimer::singleShot(50, this, SLOT(setMapValue()));
         return;
       } else {
@@ -2527,8 +2528,12 @@ void FLFieldDB::setMapValue()
         return;
       }
       
+    } else {
+      qWarning("LIST IS EMPTY");
     }
   }
+
+  qWarning("STARTED MapValue " + mapValue_);
 
   if (field->relationM1()) {
     if (field->relationM1()->foreignTable() != tMD->name()) {
@@ -2566,6 +2571,7 @@ void FLFieldDB::setMapValue()
     }
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
+   qWarning("FINISHED MapValue " + mapValue_);
    listPendindMapValue_.remove(mapValue_); // Elimino el registro, para que netre el siguiente...
 
   }
