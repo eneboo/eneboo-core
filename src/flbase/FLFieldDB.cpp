@@ -2556,8 +2556,6 @@ void FLFieldDB::setMapValue()
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
    qWarning("FINISHED MapValue " + currentMapValue_);
-   listPendindMapValue_.remove(currentMapValue_); // Elimino el registro, para que netre el siguiente...
-   mapValue_ = QString::null;
    currentMapValue_ = QString::null;
   }
 }
