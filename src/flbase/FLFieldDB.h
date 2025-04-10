@@ -513,6 +513,8 @@ public slots:
   @param v Valor
   */
   void setMapValue(const QString &v);
+  
+  void setMapValueDelayed();
 
   /**
   Emite la señal de keyF2Pressed.
@@ -578,9 +580,6 @@ private:
   Auxiliar para refrescar filtros utilizando fieldMapValue_ y mapValue_
   */
   void setMapValue();
-
-  void setMapValueDelayed();
-
   /**
   Editor para el contenido del campo que representa el componente
   */
