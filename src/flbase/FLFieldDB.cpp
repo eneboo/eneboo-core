@@ -570,7 +570,6 @@ void FLFieldDB::setValue(const QVariant &cv)
   }
 
   QVariant v(cv);
-  qWarning("SETEANDO " + v.toString() + " en " + fieldName_);
   if (field->hasOptionsList()) {
     int idxItem = -1;
     if (v.type() == QVariant::String)
@@ -2489,7 +2488,7 @@ void FLFieldDB::setMapValue()
   if (!tMD)
     return;
 
-  qWarning("RECEIVED MapValue '" + mapValue_ + "' ,field:" + fieldName_);
+  //qWarning("RECEIVED MapValue '" + mapValue_ + "' ,field:" + fieldName_);
 
   QString fSN = fieldMapValue_->fieldName();
   FLFieldMetaData *field = tMD->field(fieldName_);
@@ -2549,11 +2548,11 @@ void FLFieldDB::setMapValue()
     }
   }
   if (cursor_->db()->driverName() == "FLsqlapi") {
-   qWarning("FINISHED MapValue " + currentMapValue_);
+   //qWarning("FINISHED MapValue " + currentMapValue_);
     currentMapValue_ = "";
    if (!nextMapValue_.isEmpty()) {
     int wait_time_ = 0;
-    qWarning("WAITING %d FOR CALL " + nextMapValue_, wait_time_);
+    //qWarning("WAITING %d FOR CALL " + nextMapValue_, wait_time_);
     QTimer::singleShot(wait_time_, this, SLOT(setMapValueDelayed()));
    }
   }
