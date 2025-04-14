@@ -536,21 +536,33 @@ bool FLFormRecordDB::validateForm()
                 cursor_->modeAccess() == FLSqlCursor::EDIT))
   {
 
-    if (cursor_->db()->driverName().lower() == "flsqlapi")
-      {
+  if (cursor_->db()->driverName().lower() == "flsqlapi")
+    {
         // TODO: Recoger FLFieldDB y comprobar si estos están isMapValueActive() a false
-        QObjectList *l = static_cast<QObject *>(this)->queryList("FLFieldDB");
-        QObjectListIt itf(*l);
-        FLFieldDB *fdb;
-        while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0) {
-          ++itf;
-          while (fdb->isMapValueActive()) {
-            qWarning("FLFormRecordDB::validateForm(%s) - isMapValueActive devolvió true. Esperando...", fdb->name());
-            qApp->processEvents();
+      while (true) {
+          QObjectList *l = static_cast<QObject *>(this)->queryList("FLFieldDB");
+          QObjectListIt itf(*l);
+          FLFieldDB *fdb;
+          bool allReady = true;
+          while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0) {
+            ++itf;
+            if (fdb->isMapValueActive()) {
+              qWarning("FLFormRecordDB::validateForm() - FLFieldDB(%s)->isMapValueActive devolvió true");
+              allReady = false;
+              break;
+            }
+        
           }
-      
-        }
+
+          if (allReady) {
+            qWarning("FLFormRecordDB::validateForm() - Todos los FLFieldDB están listos...");
+            break;
+          } 
+          
+          qWarning("FLFormRecordDB::validateForm() - Esperando a que todos los FLFieldDB estén listos...");
+          qApp->processEvents();
       }
+    }
 
     QVariant v(aqApp->call("validateForm", QSArgumentList(), iface).variant());
     if (v.isValid() && !v.toBool())
