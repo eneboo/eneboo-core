@@ -336,6 +336,7 @@ public:
   void setAutoCompletionMode(AutoCompMode m) {
     autoCompMode_ = m;
   }
+  
   AutoCompMode autoCompletionMode() const {
     return autoCompMode_;
   }
