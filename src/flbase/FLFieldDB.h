@@ -340,6 +340,10 @@ public:
     return autoCompMode_;
   }
 
+  bool isMapValueActive() const {
+    return nextMapValue_.isEmpty() && currentMapValue_.isEmpty();
+  }
+
 protected slots:
 
   /**
