@@ -336,13 +336,13 @@ public:
   void setAutoCompletionMode(AutoCompMode m) {
     autoCompMode_ = m;
   }
-  
+
   AutoCompMode autoCompletionMode() const {
     return autoCompMode_;
   }
 
   bool isMapValueActive() const {
-    return nextMapValue_.isEmpty() && currentMapValue_.isEmpty();
+    return !(nextMapValue_.isEmpty() && currentMapValue_.isEmpty());
   }
 
 protected slots:
