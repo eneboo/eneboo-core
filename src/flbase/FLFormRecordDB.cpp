@@ -545,7 +545,7 @@ bool FLFormRecordDB::validateForm()
         while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0) {
           ++itf;
           while (fdb->isMapValueActive()) {
-            qWarning("FLFormRecordDB::validateForm(" + fdb->name() + ") - isMapValueActive devolvió true. Esperando...");
+            qWarning("FLFormRecordDB::validateForm(%s) - isMapValueActive devolvió true. Esperando...", fdb->name());
             qApp->processEvents();
           }
       
