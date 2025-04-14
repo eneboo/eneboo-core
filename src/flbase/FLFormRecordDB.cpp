@@ -539,7 +539,7 @@ bool FLFormRecordDB::validateForm()
     if (cursor_->db()->driverName().lower() == "flsqlapi")
       {
         // TODO: Recoger FLFieldDB y comprobar si estos están isMapValueActive() a false
-        QObjectList *l = static_cast<QObject *>(mWidget)->queryList("FLFieldDB");
+        QObjectList *l = static_cast<QObject *>(this)->queryList("FLFieldDB");
         QObjectListIt itf(*l);
         FLFieldDB *fdb;
         while ((fdb = static_cast<FLFieldDB *>(itf.current())) != 0) {
