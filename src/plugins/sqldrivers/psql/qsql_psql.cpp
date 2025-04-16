@@ -974,6 +974,11 @@ bool QPSQLResult::reset(const QString &query)
   }
 
   cleanup();
+
+
+
+
+
   if (d->isUtf8) {
     d->result = PQexec(d->connection, qLimit.utf8().data());
     d->flresult = new FLPGresult(d->result);
@@ -1245,8 +1250,10 @@ bool QPSQLDriver::open(const QString &db, const QString &user, const QString &pa
   if (port > -1)
     connectString.append(" port='").append(QString::number(port)).append("'");
 
-  if (!connOpts.isEmpty())
+  if (!connOpts.isEmpty())  {
     connectString += " " + QStringList::split(';', connOpts).join(" ");
+    qWarning("CONNECT STRINGS: " + connectString);
+  }
 
   d->connection = PQconnectdb(connectString.local8Bit().data());
   if (PQstatus(d->connection) == CONNECTION_BAD) {
