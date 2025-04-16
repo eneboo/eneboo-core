@@ -120,7 +120,7 @@ bool FLSqlDatabase::needConnOption(const QString &alias, const int connOption)
 
 QString FLSqlDatabase::defaultPort(const QString &alias)
 {
-  if (alias == "PostgreSQL")
+  if (alias == "PostgreSQL" || alias == "PostgreSQL_Olula")
     return "5432";
   if (alias == "MySQL" || alias == "MySQL_NO_INNODB")
     return "3306";
