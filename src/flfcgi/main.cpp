@@ -85,6 +85,11 @@ static inline bool silentConnect(const QString &conn)
       connOpts = "connect_timeout=30";
     else
       connOpts += ";connect_timeout=30";
+  } else if (driverName == "FLQPSQL7_OLULA") {
+    if (connOpts.isEmpty())
+      connOpts = "connect_timeout=0";
+    else
+      connOpts += ";connect_timeout=0";
   }
 
   if (!sqlDb->connectDB(namedb, user, password, host, port.toInt(),

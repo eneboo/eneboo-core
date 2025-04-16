@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
  Este  programa es software libre. Puede redistribuirlo y/o modificarlo
- bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
- versión 2, publicada  por  la  Free  Software Foundation.
+ bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+ versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 // C Libraries ----
@@ -140,6 +140,11 @@ static inline bool silentConnect(const QString &conn)
       connOpts = "connect_timeout=30";
     else
       connOpts += ";connect_timeout=30";
+  } else if (driverName == "FLQPSQL7_OLULA") {
+    if (connOpts.isEmpty())
+      connOpts = "connect_timeout=0";
+    else
+      connOpts += ";connect_timeout=0";
   }
 
   if (!sqlDb->connectDB(namedb, user, password, host, port.toInt(),

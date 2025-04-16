@@ -79,6 +79,8 @@ QString FLSqlDatabase::driverAliasToDriverName(const QString &alias)
 {
   if (alias == "PostgreSQL")
     return "FLQPSQL7";
+  if (alias == "PostgreSQL_Olula")
+    return "FLQPSQL7_OLULA";
   if (alias == "SQLite3")
     return "FLsqlite";
   if (alias == "MySQL")
@@ -95,6 +97,8 @@ QString FLSqlDatabase::driverNameToDriverAlias(const QString &name)
 {
   if (name == "FLQPSQL7")
     return "PostgreSQL";
+  if (name == "FLQPSQL7_OLULA")
+    return "PostgreSQL_Olula";
   if (name == "FLsqlite")
     return "SQLite3";
   if (name == "FLQMYSQL4")
@@ -136,7 +140,7 @@ bool FLSqlDatabase::loadDriver(const QString &driverName, const QString &connNam
   if (db_->isOpen())
     db_->close();
 
-  if (driverName == "FLQPSQL7" || driverName == "FLQMYSQL3" || driverName == "FLQMYSQL4" || driverName == "FLQMYSQL4_NO_INNODB") {
+  if (driverName == "FLQPSQL7" || driverName == "FLQPSQL7_OLULA" || driverName == "FLQMYSQL3" || driverName == "FLQMYSQL4" || driverName == "FLQMYSQL4_NO_INNODB") {
     dbAux_ = QSqlDatabase::addDatabase(driverName, connName + "Aux" + QDateTime::currentDateTime().toString("ddMMyyyyhhmmsszzz"));
     if (!dbAux_->lastError().driverText().isEmpty())
       return false;
@@ -299,7 +303,7 @@ bool FLSqlDatabase::canRegenTables()
 {
   if (driverName_.isEmpty() || !dbAux_)
     return false;
-  if (driverName_ == "FLQPSQL7")
+  if (driverName_ == "FLQPSQL7" || driverName_ == "FLQPSQL7_OLULA")
     return true;
   if (driverName_ == "FLsqlite")
     return true;
@@ -445,7 +449,7 @@ void FLSqlDatabase::Mr_Proper()
 
 bool FLSqlDatabase::canDetectLocks() const
 {
-  if (driverName_ == "FLQPSQL7")
+  if (driverName_ == "FLQPSQL7" || driverName_ == "FLQPSQL7_OLULA")
     return true;
   return false;
 }

@@ -145,6 +145,10 @@ void FLConnectDBDialog::tryConnect()
   QString connOpts;
   if (db->driverName() == "FLQPSQL7")
     connOpts = "connect_timeout=30";
+  else if (db->driverName() == "FLQPSQL7_OLULA") {
+    connOpts = "connect_timeout=0";
+  }
+    
   if (comboBoxDB->currentText() == "SQLite3" || comboBoxDB->currentText() == "SQLApi") 
   	DBName = DBName + ".s3db";
   if (!db->connectDB(DBName, usuario,

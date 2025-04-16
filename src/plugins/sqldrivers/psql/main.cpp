@@ -68,7 +68,7 @@ QPSQLDriverPlugin::QPSQLDriverPlugin() : QSqlDriverPlugin() {}
 
 QSqlDriver *QPSQLDriverPlugin::create( const QString & name )
 {
-    if ( name == "FLQPSQL7" ) {
+    if ( name == "FLQPSQL7" || name == "FLQPSQL7_OLULA" ) {
         QPSQLDriver * driver = new QPSQLDriver();
         return driver;
     }
@@ -78,7 +78,7 @@ QSqlDriver *QPSQLDriverPlugin::create( const QString & name )
 QStringList QPSQLDriverPlugin::keys() const
 {
     QStringList l;
-    l.append( "FLQPSQL7" );
+    l << "FLQPSQL7" << "FLQPSQL7_OLULA";
     return l;
 }
 

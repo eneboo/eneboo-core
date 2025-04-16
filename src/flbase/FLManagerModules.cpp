@@ -361,7 +361,7 @@ void FLManagerModules::init()
       tmpTMD = db_->manager()->metadata("flfiles");
       if (db_->regenTable("flfiles", tmpTMD)) {
         modVer = QString::null;
-      } else if (driverName != "FLQPSQL7") {
+      } else if (driverName != "FLQPSQL7" && driverName != "FLQPSQL7_OLULA") {
         QString xmlNew(contentCached("flfiles.mtd"));
         QString xmlOld(xmlNew);
         db_->manager()->alterTable(xmlOld.replace("255", "300"), xmlNew);
