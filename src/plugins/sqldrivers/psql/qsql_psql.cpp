@@ -1252,10 +1252,12 @@ bool QPSQLDriver::open(const QString &db, const QString &user, const QString &pa
 
   if (!connOpts.isEmpty())  {
     connectString += " " + QStringList::split(';', connOpts).join(" ");
-    qWarning("CONNECT STRINGS: " + connectString);
   }
 
   d->connection = PQconnectdb(connectString.local8Bit().data());
+  if (connectString.endsWith("connect_timeout=0")) {
+    d->connection->connect_timeout = '0';   
+  }
   if (PQstatus(d->connection) == CONNECTION_BAD) {
     setLastError(
       qMakeError(QApplication::tr("No se puede conectar a la base de datos"),
