@@ -1250,11 +1250,11 @@ PGresult *
 PQexec(PGconn *conn, const char *query)
 {
 
-int max_retries = conn->connect_timeout == '0' ? 5 : 1;
+int max_retries = conn->connect_timeout == NULL ? 5 : 1;
 int retries = 0;
 
 #ifdef FL_SQL_LOG
-fprintf(stdout,"********* POSTGRESQL %s*********\n", conn->connect_timeout == '0' ? "OLULA " : "");
+fprintf(stdout,"********* POSTGRESQL %s (%s)*********\n", conn->connect_timeout == NULL ? "OLULA " : "", conn->connect_timeout);
 fprintf(stdout,"%s\n",query);
 #endif
 
