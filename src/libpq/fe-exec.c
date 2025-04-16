@@ -1249,15 +1249,32 @@ PQgetResult(PGconn *conn)
 PGresult *
 PQexec(PGconn *conn, const char *query)
 {
+
+int max_retries = conn->connect_timeout == 0 ? 5 : 1;
+int retries = 0;
+
 #ifdef FL_SQL_LOG
-	fprintf(stdout,"********* POSTGRESQL *********\n");
-	fprintf(stdout,"%s\n",query);
+fprintf(stdout,"********* POSTGRESQL *********\n");
+fprintf(stdout,"%s\n",query);
 #endif
-	if (!PQexecStart(conn))
-		return NULL;
-	if (!PQsendQuery(conn, query))
-		return NULL;
-	return PQexecFinish(conn);
+
+PGresult *result = NULL;
+while (retries < max_retries)
+{
+	if (PQexecStart(conn)) {
+		if (PQsendQuery(conn, query)) {
+			result = PQexecFinish(conn);
+			if (result->resultStatus != PGRES_FATAL_ERROR) {
+				break;
+			}
+		}
+	}
+	#ifdef FL_SQL_LOG
+	fprintf(stdout, "Retrying query %d/%d...\n", retries, max_retries);
+	#endif
+	retries++;
+}
+   return result;
 }
 
 /*
