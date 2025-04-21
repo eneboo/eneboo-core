@@ -1270,7 +1270,7 @@ while (retries < max_retries)
 		}
 	}
 	#ifdef FL_SQL_LOG
-	fprintf(stdout, "Retrying query %d/%d...\n", retries, max_retries);
+	fprintf(stdout, "Retrying query %d/%d...\n", retries + 1, max_retries);
 	#endif
 	retries++;
 }
