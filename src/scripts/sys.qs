@@ -25,7 +25,7 @@ function init() {
 
   var settings = new AQSettings;
 
-  if (settings.readBoolEntry("ebcomportamiento/keepAlive")) {
+  if (settings.readBoolEntry("ebcomportamiento/keepAlive") || aqApp.db().driverName() == 'FLQPSQL7_OLULA') {
     sys.keepAlive();
   }
 

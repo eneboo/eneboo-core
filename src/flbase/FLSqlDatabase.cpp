@@ -215,11 +215,6 @@ bool FLSqlDatabase::connectDB(const QString &database, const QString &user,
       setRemoteDatabase(dr->databaseApi);
     }
 
-    if (driverName_ == "FLQPSQL7_OLULA") {
-      // Creamos los timers con los select periodicos cada 30 segundos
-      qWarning("FLManager : Timer - 30 seconds enabled!");
-      aqApp->call("sys.keepAlive",QSArgumentList(),0);
-    }
     connectionName_ = connName;
     initInternal();
     return true;
