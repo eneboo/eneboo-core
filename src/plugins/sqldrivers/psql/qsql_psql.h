@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 /****************************************************************************
 **
@@ -111,6 +111,7 @@ public:
   bool open(const QString &db, const QString &user = QString::null,
             const QString &password = QString::null, const QString &host = QString::null, int port = -1);
   void close();
+  bool databaseClosed() const;
   QSqlQuery createQuery() const;
   QStringList tables(const QString &user) const;
   bool existsTable(const QString &n) const;
@@ -119,6 +120,7 @@ public:
   QSqlRecord record(const QSqlQuery &query) const;
   QSqlRecordInfo recordInfo(const QString &tablename) const;
   QSqlRecordInfo recordInfo(const QSqlQuery &query) const;
+  QString driverName;
 
   Protocol protocol() const {
     return pro;

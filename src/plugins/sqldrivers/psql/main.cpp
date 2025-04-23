@@ -70,6 +70,7 @@ QSqlDriver *QPSQLDriverPlugin::create( const QString & name )
 {
     if ( name == "FLQPSQL7" || name == "FLQPSQL7_OLULA" ) {
         QPSQLDriver * driver = new QPSQLDriver();
+        driver->driverName = name;
         return driver;
     }
     return 0;

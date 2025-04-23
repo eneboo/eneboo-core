@@ -12,8 +12,8 @@
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #ifndef FLSQLDRIVER_H
@@ -29,12 +29,12 @@ class FLSqlCursor;
 class FLSqlDatabase;
 
 /**
-Clase de abstracción para controladores de bases de datos.
+Clase de abstracciï¿½n para controladores de bases de datos.
 
 Mediante esta clase se definen de forma unificada los distintos controladores para la
-gestión de sistemas de gestión de bases de datos específicos.
+gestiï¿½n de sistemas de gestiï¿½n de bases de datos especï¿½ficos.
 
-Esta clase no debería utilizarse directamente, se recomienda utilizar FLSqlDatabase.
+Esta clase no deberï¿½a utilizarse directamente, se recomienda utilizar FLSqlDatabase.
 
 @author InfoSiAL S.L.
 */
@@ -55,7 +55,7 @@ public:
   ~FLSqlDriver();
 
   /**
-  Obtiene el nombre de la base de datos formateado correctamente para realizar una conexión
+  Obtiene el nombre de la base de datos formateado correctamente para realizar una conexiï¿½n
 
   @param name Nombre de la base de datos
   @return Cadena con el nombre debidamente formateado
@@ -63,25 +63,25 @@ public:
   virtual QString formatDatabaseName(const QString &name);
 
   /**
-  Intentar realizar una conexión a una base de datos.
+  Intentar realizar una conexiï¿½n a una base de datos.
 
   Si la base de datos no existe intenta crearla.
 
   @param database Nombre de la base de datos a la que conectar
   @param user  Usuario
-  @param password Contraseña
+  @param password Contraseï¿½a
   @param host  Servidor de la base de datos
-  @param port  Puerto TCP de conexión
-  @return True si la conexión tuvo éxito, false en caso contrario
+  @param port  Puerto TCP de conexiï¿½n
+  @return True si la conexiï¿½n tuvo ï¿½xito, false en caso contrario
   */
   virtual bool tryConnect(const QString &db, const QString &user = QString::null, const QString &password = QString::null,
                           const QString &host = QString::null, int port = -1);
 
   /**
-  Sentencia SQL específica de la base de datos que soporta el controlador, necesaria para crear
+  Sentencia SQL especï¿½fica de la base de datos que soporta el controlador, necesaria para crear
   la tabla solicitada.
 
-  @param tmd Metadatos con la descripción de la tabla que se desea crear
+  @param tmd Metadatos con la descripciï¿½n de la tabla que se desea crear
   @return Sentencia SQL debidamente formateada para el tipo de base de datos soportada por el controlador
   */
   virtual QString sqlCreateTable(const FLTableMetaData *tmd);
@@ -127,7 +127,7 @@ public:
   /** Ver FLSqlDatabase::existsTable() */
   virtual bool existsTable(const QString &n) const;
 
-  /** Indica si se puede usar la extensión unnacent */
+  /** Indica si se puede usar la extensiï¿½n unnacent */
   virtual bool canUnaccent();
   /**
   Informa al driver de la base de datos que lo utiliza
@@ -142,7 +142,6 @@ public:
   QString urlApi;
   QString userApi;
   QString passwordApi;
-
 protected:
 
   void msgBoxCritical(const QString &title, const QString &msg);

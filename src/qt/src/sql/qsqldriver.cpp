@@ -126,6 +126,11 @@ QSqlDriver::~QSqlDriver()
     FALSE.
 */
 
+bool QSqlDriver::databaseClosed() const
+{
+  return !isOpen() || isOpenError();
+}
+
 bool QSqlDriver::isOpen() const
 {
     if ( !qSqlDriverExtDict()->isEmpty() ) {

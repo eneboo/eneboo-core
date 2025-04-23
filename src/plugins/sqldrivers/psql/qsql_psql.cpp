@@ -2338,6 +2338,28 @@ void QPSQLDriver::close()
   }
 }
 
+bool QPSQLDriver::databaseClosed() const
+{
+  bool result = !isOpen() || isOpenError();
+  if (result && driverName == "FLQPSQL7_OLULA") {
+    qWarning("QPSQLDriver::databaseClosed: Database not open");
+    QString db = d->connection->dbName;
+    QString host = d->connection->pghost;
+    QString port = d->connection->pgport;
+    QString user = d->connection->pguser;
+    QString pass = d->connection->pgpass;
+    QString options = d->connection->pgoptions;
+    if (open(db, user, pass, host, port, options)) {
+      qWarning("QPSQLDriver::databaseClosed: Database reopened");
+      result = false;
+    } else {
+      qWarning("QPSQLDriver::databaseClosed: Database not reopened :(");
+    }
+  }
+
+  return result;
+}
+
 QSqlQuery QPSQLDriver::createQuery() const
 {
   return QSqlQuery(new QPSQLResult(this, d));
