@@ -73,7 +73,7 @@ QSqlDriver::QSqlDriver( QObject * parent, const char * name )
 {
     databaseName = name;
     driverName = "";
-    password = "";
+    password_ = "";
     userName = "";
     hostName = "";
     port = 0;
