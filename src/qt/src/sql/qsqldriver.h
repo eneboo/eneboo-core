@@ -74,6 +74,12 @@ public:
     bool			isOpen() const;
     bool			isOpenError() const;
     QString           driverName;
+    QString           databaseName;
+    QString           userName;
+    QString           password;
+    QString           hostName;
+    int			port;
+    QString           connectionOptions;
 
     virtual bool		beginTransaction();
     virtual bool		commitTransaction();

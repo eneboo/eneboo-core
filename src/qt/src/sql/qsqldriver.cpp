@@ -71,6 +71,13 @@ QSqlDriver::QSqlDriver( QObject * parent, const char * name )
   dbState(0),
   error()
 {
+    databaseName = name;
+    driverName = "";
+    password = "";
+    userName = "";
+    hostName = "";
+    port = 0;
+    connectionOptions="";
 }
 
 /*!
@@ -494,6 +501,14 @@ bool QSqlDriver::open( const QString& db,
 		       int port,
 		       const QString& connOpts )
 {
+
+    databaseName = db;
+    userName = user;
+    password = password;
+    hostName = host;
+    port = port;
+    connectionOptions = connOpts;
+
     if ( !qSqlOpenExtDict()->isEmpty() ) {
 	QSqlOpenExtension *ext = qSqlOpenExtDict()->find( (QSqlDriver *) this );
 	if ( ext )

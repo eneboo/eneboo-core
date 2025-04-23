@@ -362,16 +362,16 @@ bool QSqlQuery::exec ( const QString& query )
         if (driver()->driverName == "FLQPSQL7_OLULA") {
             
             qWarning("QPSQLDriver::databaseClosed: 1/3 Load credentials");
-            QString db = driver()->connection()->dbName;
-            QString host = driver()->connection()->pghost;
-            int port = QVariant(driver()->connection()->pgport).asUInt();
-            QString user = driver()->connection()->pguser;
-            QString pass = driver()->connection()->pgpass;
-            QString options = driver()->connection()->pgoptions;
+            QString db = driver()->databaseName;
+            QString host = driver()->hostName;
+            int port = driver()->port;
+            QString user = driver()->userName;
+            QString pass = driver()->password;
+            QString options = driver()->connectionOptions;
 /*             qWarning("QPSQLDriver::databaseClosed: 2/3 Close");
             driver()->close(); */
             qWarning("QPSQLDriver::databaseClosed: 3/3 Open");
-            if (open(db, user, pass, host, port, options)) {
+            if (driver()->open(db, user, pass, host, port, options)) {
                 qWarning("QPSQLDriver::databaseClosed: Database reopened");
                 result = !driver()->isOpen() || driver()->isOpenError();
             }  
