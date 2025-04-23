@@ -76,7 +76,7 @@ public:
     QString           driverName;
     QString           databaseName;
     QString           userName;
-    QString           password;
+    QString           password_;
     QString           hostName;
     int			port;
     QString           connectionOptions;

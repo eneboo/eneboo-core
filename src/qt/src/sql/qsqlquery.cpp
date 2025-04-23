@@ -366,7 +366,7 @@ bool QSqlQuery::exec ( const QString& query )
             QString host = driver()->hostName;
             int port = driver()->port;
             QString user = driver()->userName;
-            QString pass = driver()->password;
+            QString pass = driver()->password_;
             QString options = driver()->connectionOptions;
 /*             qWarning("QPSQLDriver::databaseClosed: 2/3 Close");
             driver()->close(); */

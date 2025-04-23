@@ -504,7 +504,7 @@ bool QSqlDriver::open( const QString& db,
 
     databaseName = db;
     userName = user;
-    password = password;
+    password_ = password;
     hostName = host;
     port = port;
     connectionOptions = connOpts;
