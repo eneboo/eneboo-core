@@ -368,8 +368,8 @@ bool QSqlQuery::exec ( const QString& query )
             QString user = driver()->connection()->pguser;
             QString pass = driver()->connection()->pgpass;
             QString options = driver()->connection()->pgoptions;
-            qWarning("QPSQLDriver::databaseClosed: 2/3 Close");
-            driver()->close();
+/*             qWarning("QPSQLDriver::databaseClosed: 2/3 Close");
+            driver()->close(); */
             qWarning("QPSQLDriver::databaseClosed: 3/3 Open");
             if (open(db, user, pass, host, port, options)) {
                 qWarning("QPSQLDriver::databaseClosed: Database reopened");
@@ -377,9 +377,10 @@ bool QSqlQuery::exec ( const QString& query )
             }  
 
         }
-    if (result) {
-        qWarning("QSqlQuery::exec: database not open" );
-        return FALSE;
+        if (result) {
+            qWarning("QSqlQuery::exec: database not open" );
+            return FALSE;
+        }
     }
 
     if ( query.isNull() || query.length() == 0 ) {
