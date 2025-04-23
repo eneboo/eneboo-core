@@ -111,7 +111,6 @@ public:
   bool open(const QString &db, const QString &user = QString::null,
             const QString &password = QString::null, const QString &host = QString::null, int port = -1);
   void close();
-  bool databaseClosed() const;
   QSqlQuery createQuery() const;
   QStringList tables(const QString &user) const;
   bool existsTable(const QString &n) const;

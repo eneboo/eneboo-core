@@ -357,12 +357,31 @@ bool QSqlQuery::exec ( const QString& query )
 	*this = driver()->createQuery();
     d->sqlResult->setQuery( query.stripWhiteSpace() );
     d->executedQuery = d->sqlResult->lastQuery();
-    if ( driver()->databaseClosed()) {
-//#ifdef QT_CHECK_RANGE
-	qWarning("QSqlQuery::exec: database not open" );
-//#endif
-	return FALSE;
+    if ( !driver()->isOpen() || driver()->isOpenError()) {
+        bool result = true;
+        if (driver()->driverName == "FLQPSQL7_OLULA") {
+            
+            qWarning("QPSQLDriver::databaseClosed: 1/3 Load credentials");
+            QString db = connection()->dbName;
+            QString host = connection()->pghost;
+            int port = std::atoi(connection()->pgport);
+            QString user = connection()->pguser;
+            QString pass = connection()->pgpass;
+            QString options = connection()->pgoptions;
+            qWarning("QPSQLDriver::databaseClosed: 2/3 Close");
+            driver()->close();
+            qWarning("QPSQLDriver::databaseClosed: 3/3 Open");
+            if (open(db, user, pass, host, port, options)) {
+                qWarning("QPSQLDriver::databaseClosed: Database reopened");
+                result = !isOpen() || isOpenError();
+            }  
+
+        }
+    if (result) {
+        qWarning("QSqlQuery::exec: database not open" );
+        return FALSE;
     }
+
     if ( query.isNull() || query.length() == 0 ) {
 //#ifdef QT_CHECK_RANGE
 	qWarning("QSqlQuery::exec: empty query" );
@@ -940,7 +959,7 @@ bool QSqlQuery::prepare( const QString& query )
     if ( d->count > 1 )
 	*this = driver()->createQuery();
     d->sqlResult->setQuery( query.stripWhiteSpace() );
-    if ( driver()->databaseClosed()) {
+    if ( !driver()->isOpen() || driver()->isOpenError()) {
 #ifdef QT_CHECK_RANGE
 	qWarning("QSqlQuery::prepare: database not open" );
 #endif

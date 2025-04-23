@@ -73,7 +73,6 @@ public:
     ~QSqlDriver();
     bool			isOpen() const;
     bool			isOpenError() const;
-    virtual bool    databaseClosed() const;
 
     virtual bool		beginTransaction();
     virtual bool		commitTransaction();
