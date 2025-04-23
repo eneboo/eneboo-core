@@ -371,7 +371,7 @@ bool QSqlQuery::exec ( const QString& query )
 /*             qWarning("QPSQLDriver::databaseClosed: 2/3 Close");
             driver()->close(); */
             qWarning("QPSQLDriver::databaseClosed: 3/3 Open");
-            if (driver()->open(db, user, pass, host, port, options)) {
+            if (driver().open(db, user, pass, host, port, options)) {
                 qWarning("QPSQLDriver::databaseClosed: Database reopened");
                 result = !driver()->isOpen() || driver()->isOpenError();
             }  
