@@ -2345,11 +2345,11 @@ bool QPSQLDriver::databaseClosed() const
     qWarning("QPSQLDriver::databaseClosed: Database not open");
 
     qWarning("QPSQLDriver::databaseClosed: 1/3 Clear");
-    this->close();
-    this->setOpenError(false);
-    this->setLastError(QSqlError());
+    close();
+    setOpen(true);
 
-    qWarning("QPSQLDriver::databaseClosed: 2/3 Load credentials");
+
+    /* qWarning("QPSQLDriver::databaseClosed: 2/3 Load credentials");
     QString db = connection()->dbName;
     QString host = connection()->pghost;
     int port = std::atoi(connection()->pgport);
@@ -2361,7 +2361,9 @@ bool QPSQLDriver::databaseClosed() const
     if (open(db, user, pass, host, port, options)) {
       qWarning("QPSQLDriver::databaseClosed: Database reopened");
       result = !isOpen() || isOpenError();
-    } 
+    }  */
+
+    result = !isOpen() || isOpenError();
 
     if(!result) {
       qWarning("QPSQLDriver::databaseClosed: Database not reopened :(");
