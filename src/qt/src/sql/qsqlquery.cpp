@@ -357,7 +357,7 @@ bool QSqlQuery::exec ( const QString& query )
 	*this = driver()->createQuery();
     d->sqlResult->setQuery( query.stripWhiteSpace() );
     d->executedQuery = d->sqlResult->lastQuery();
-    if ( !driver()->isOpen() || driver()->isOpenError() ) {
+    if (databaseOpened()) {
 //#ifdef QT_CHECK_RANGE
 	qWarning("QSqlQuery::exec: database not open" );
 //#endif
@@ -373,6 +373,27 @@ bool QSqlQuery::exec ( const QString& query )
     qDebug( "\n QSqlQuery: " + query );
 #endif
     return d->sqlResult->reset( query );
+}
+
+bool QSqlQuery::databaseOpened() const
+{
+    bool result = !driver()->isOpen() || driver()->isOpenError();
+    if (!result && driver()->name() == "FLQPSQL7_OLULA") {
+        qWarning("QSqlQuery::databaseOpened: FLQPSQL7_OLULA is not open. Reopening ...");
+        QString _db = driver()->connectionName();
+        QString _host = driver()->hostName();
+        QString _user = driver()->userName();
+        QString _pass = driver()->password();
+        QString _port = driver()->port();
+        driver()->open(_db, _user, _pass, _host, _port);
+        result = !driver()->isOpen() || driver()->isOpenError();
+        if (result) {
+            qWarning("QSqlQuery::databaseOpened: FLQPSQL7_OLULA is open.");
+        } else {
+            qWarning("QSqlQuery::databaseOpened: FLQPSQL7_OLULA is not open YET.");
+        }
+    }
+    return result;
 }
 
 /*!
