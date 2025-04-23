@@ -73,6 +73,7 @@ public:
     ~QSqlDriver();
     bool			isOpen() const;
     bool			isOpenError() const;
+    QString           driverName;
 
     virtual bool		beginTransaction();
     virtual bool		commitTransaction();
@@ -110,7 +111,6 @@ protected:
 private:
     // ### This class needs a d-pointer in 4.0.
     int		          dbState;
-    QString           driverName;
     QSqlError	          error;
 #if defined(Q_DISABLE_COPY)
     QSqlDriver( const QSqlDriver & );
