@@ -374,7 +374,7 @@ bool QSqlQuery::exec ( const QString& query )
             // Nuevo driver 
             
 
-            if (d->sqlResult->driver()->open(db, user, pass, host, port)) {
+            if (driver()->open(db, user, pass, host, port)) { // FIX const!
                 qWarning("QPSQLDriver::databaseClosed: Database reopened");
                 result = !driver()->isOpen() || driver()->isOpenError();
             }  
