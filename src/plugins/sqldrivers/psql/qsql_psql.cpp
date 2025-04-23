@@ -2345,9 +2345,9 @@ bool QPSQLDriver::databaseClosed() const
     qWarning("QPSQLDriver::databaseClosed: Database not open");
 
     qWarning("QPSQLDriver::databaseClosed: 1/3 Clear");
-    close();
-    setOpenError(false);
-    setLastError(QSqlError());
+    this->close();
+    this->setOpenError(false);
+    this->setLastError(QSqlError());
 
     qWarning("QPSQLDriver::databaseClosed: 2/3 Load credentials");
     QString db = connection()->dbName;
