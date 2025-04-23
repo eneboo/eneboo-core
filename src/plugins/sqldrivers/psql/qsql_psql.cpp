@@ -2343,16 +2343,27 @@ bool QPSQLDriver::databaseClosed() const
   bool result = !isOpen() || isOpenError();
   if (result && driverName == "FLQPSQL7_OLULA") {
     qWarning("QPSQLDriver::databaseClosed: Database not open");
-    QString db = d->connection->dbName;
-    QString host = d->connection->pghost;
-    QString port = d->connection->pgport;
-    QString user = d->connection->pguser;
-    QString pass = d->connection->pgpass;
-    QString options = d->connection->pgoptions;
+
+    qWarning("QPSQLDriver::databaseClosed: 1/3 Clear");
+    close();
+    setOpenError(false);
+    setLastError(QSqlError());
+
+    qWarning("QPSQLDriver::databaseClosed: 2/3 Load credentials");
+    QString db = connection()->dbName;
+    QString host = connection()->pghost;
+    int port = std::atoi(connection()->pgport);
+    QString user = connection()->pguser;
+    QString pass = connection()->pgpass;
+    QString options = connection()->pgoptions;
+    qWarning("QPSQLDriver::databaseClosed: 2/3 Open");
+
     if (open(db, user, pass, host, port, options)) {
       qWarning("QPSQLDriver::databaseClosed: Database reopened");
-      result = false;
-    } else {
+      result = !isOpen() || isOpenError();
+    } 
+
+    if(!result) {
       qWarning("QPSQLDriver::databaseClosed: Database not reopened :(");
     }
   }
