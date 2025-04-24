@@ -1262,20 +1262,16 @@ PGresult *result = NULL;
 while (retries < max_retries)
 {
 	if (PQexecStart(conn)) {
-		fprintf(stdout, "A\n");
 		if (PQsendQuery(conn, query)) {
-			fprintf(stdout, "B\n");
 			result = PQexecFinish(conn);
 			if (result->resultStatus != PGRES_FATAL_ERROR) {
 				break;
-			} else {
-				fprintf(stdout, "C\n");				
-			}
+			} 
+		} else {
+			fprintf(stdout, "D\n");
+			// reinit connection
 		}
-	} else {
-		fprintf(stdout, "D\n");
-		// reinit connection
-	}
+	} 
 	#ifdef FL_SQL_LOG
 	fprintf(stdout, "Retrying query %d/%d...\n", retries + 1, max_retries);
 	#endif
