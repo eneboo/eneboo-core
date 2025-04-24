@@ -3329,22 +3329,23 @@ function keepAlive()
   for (var i=0; i<connections.length; i++) {
     const connName = connections[i];
     debug("keep alive " + connName);
-    AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
+    try {
+      AQUtil.execSql("select current_time", connName);
+    } catch (e) {
+      debug("Error keep alive " + connName + ": " + e.toString());
+    }
   }
 
-  var db = aqApp.db().db();
   var dbAux = aqApp.db().dbAux();
-
   var sql = "select current_time";
-  var q = new QSqlSelectCursor(sql, db);
-  if (q.isActive() && q.next()) {
-    //
+  try {
+    var q = new QSqlSelectCursor(sql, dbAux);
+    if (q.isActive() && q.next()) {
+      //
+    }
+  } catch (e) {
+    debug("Error keep alive dbAux: " + e.toString());
   }
-
-  var q2 = new QSqlSelectCursor(sql, dbAux);
-  if (q2.isActive() && q2.next()) {
-    //
-  } 
 
  sys.AQTimer.singleShot(30000, sys.keepAlive);
 }
