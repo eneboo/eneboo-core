@@ -3325,12 +3325,26 @@ function useDelegateCommit(cursor) {
 function keepAlive()
 {
 
- const connections = sys.dictDatabases();
- for (var i=0; i<connections.length; i++) {
- 	const connName = connections[i];
-   debug("keep alive " + connName);
- 	AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
- }
+  const connections = sys.dictDatabases();
+  for (var i=0; i<connections.length; i++) {
+    const connName = connections[i];
+    debug("keep alive " + connName);
+    AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
+  }
+
+  var db = aqApp.db().db();
+  var dbAux = aqApp.db().dbAux();
+
+  var sql = "select current_time";
+  var q = new QSqlSelectCursor(sql, db);
+  if (q.isActive() && q.next()) {
+    //
+  }
+
+  var q2 = new QSqlSelectCursor(sql, dbAux);
+  if (q2.isActive() && q2.next()) {
+    //
+  } 
 
  sys.AQTimer.singleShot(30000, sys.keepAlive);
 }
