@@ -359,9 +359,9 @@ bool QSqlQuery::exec ( const QString& query )
     d->executedQuery = d->sqlResult->lastQuery();
     if ( !driver()->isOpen() || driver()->isOpenError()) {
         bool result = true;
-        if (driver()->driverName == "FLQPSQL7_OLULA") {
+        //if (driver()->driverName == "FLQPSQL7_OLULA") {
             
-            qWarning("QPSQLDriver::databaseClosed: 1/3 Load credentials");
+            qWarning("QPSQLDriver::databaseClosed: 1/3 Load credentials " + driver()->driverName);
             QString db = driver()->databaseName;
             QString host = driver()->hostName;
             int port = driver()->port;
@@ -376,7 +376,7 @@ bool QSqlQuery::exec ( const QString& query )
             qWarning("QPSQLDriver::databaseClosed: Database reopened");
             result = !driver()->isOpen() || driver()->isOpenError();
 
-        }
+        //}
         if (result) {
             qWarning("QSqlQuery::exec: database not open" );
             return FALSE;
