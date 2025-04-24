@@ -1254,7 +1254,7 @@ int max_retries = !conn->connect_timeout || strcmp(conn->connect_timeout, "0") =
 int retries = 0;
 
 #ifdef FL_SQL_LOG
-fprintf(stdout,"********* POSTGRESQL %s (%s)*********\n", max_retries == 1 ? "" : "OLULA ", conn->connect_timeout ? conn->connect_timeout : "0");
+fprintf(stdout,"********* POSTGRESQL %s(%s)*********\n", max_retries == 1 ? " " : "OLULA ", conn->connect_timeout ? conn->connect_timeout : "0");
 fprintf(stdout,"%s\n",query);
 #endif
 
