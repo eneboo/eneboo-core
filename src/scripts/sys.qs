@@ -3330,14 +3330,14 @@ function keepAlive()
     const connName = connections[i];
     try {
       debug("keep alive " + connName);
-      AQUtil.execSql("select current_time", connName);
+      AQUtil.execSql("select current_time as " + connName, connName);
     } catch (e) {
       debug("Error keep alive " + connName + ": " + e.toString());
     }
   }
 
   var dbAux = aqApp.db().dbAux();
-  var sql = "select current_time";
+  var sql = "select current_time as dbAux";
   try {
     debug("keep alive dbAux");
     var q = new QSqlSelectCursor(sql, dbAux);
