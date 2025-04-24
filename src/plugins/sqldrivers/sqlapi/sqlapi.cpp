@@ -1188,7 +1188,7 @@ QVariant SqliteResult::data(int i)
   field_value fV = (*fields_object)[i].val;
   
   QString str_val = QString::fromLatin1(fV.get_asString().c_str());
-  qWarning("NAME: %s , val: %s", fieldName, fV);
+  qWarning("NAME: " + fieldName + ", VAL: %s", fV);
   if (str_val.contains("\xA4")) {
     str_val = str_val.replace("\xA4", QString::fromUtf8("\xE2\x82\xAC"));
   }
