@@ -72,12 +72,12 @@ QSqlDriver::QSqlDriver( QObject * parent, const char * name )
   error()
 {
     databaseName = name;
-/*     driverName = "";
+    driverName = "";
     password_ = "";
     userName = "";
     hostName = "";
     port = 0;
-    connectionOptions=""; */
+    connectionOptions="";
 }
 
 /*!

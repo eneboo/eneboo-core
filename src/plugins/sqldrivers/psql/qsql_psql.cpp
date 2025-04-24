@@ -1288,6 +1288,14 @@ bool QPSQLDriver::open(const QString &db, const QString &user, const QString &pa
   setOpen(true);
   setOpenError(false);
 
+  driverName = connOpts == "connect_timeout=0" ? "FLQPSQL7_OLULA" : "FLQPSQL7";
+  password_ = value_password;
+  userName = value_user;
+  databaseName = value_db;
+  hostName = value_host;
+  port = port;
+  connectionOptions= connOpts;
+
   return true;
 }
 
