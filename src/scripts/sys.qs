@@ -3328,8 +3328,8 @@ function keepAlive()
   const connections = sys.dictDatabases();
   for (var i=0; i<connections.length; i++) {
     const connName = connections[i];
-    debug("keep alive " + connName);
     try {
+      debug("keep alive " + connName);
       AQUtil.execSql("select current_time", connName);
     } catch (e) {
       debug("Error keep alive " + connName + ": " + e.toString());
@@ -3339,6 +3339,7 @@ function keepAlive()
   var dbAux = aqApp.db().dbAux();
   var sql = "select current_time";
   try {
+    debug("keep alive dbAux");
     var q = new QSqlSelectCursor(sql, dbAux);
     if (q.isActive() && q.next()) {
       //
