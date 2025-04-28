@@ -1932,8 +1932,8 @@ void FLManager::insertMetadataCache(QString &name, FLTableMetaData *tmd) {
   }
 
 bool FLManager::initCacheLite(bool force) {
-  if (db_->driverName() != "FLsqlapi" && !force) {
-    qWarning("FLManager::checkTablaCache : " + QApplication::tr("El driver %1 no es FLsqlapi").arg(db_->driverName()));
+  if (db_->driverName() != "FLsqlapi" && db_->driverName() != "FLQPSQL7_OLULA" && !force) {
+    qWarning("FLManager::checkTablaCache : " + QApplication::tr("No es un driver válido").arg(db_->driverName()));
     return false;
   }
 
@@ -2026,72 +2026,76 @@ QString FLManager::resolveMandatoryValues(QString &query)
     q->setForwardOnly(true);
 
     QString result = "";
-    QString tipoCampo = "<class 'str'>";
-    int fltype = tmd->field(fieldName)->type();
-    switch (fltype) {
-      case QVariant::Int:
-        tipoCampo = "<class 'int'>";
-        break;
-      case FLFieldMetaData::Serial:
-      case QVariant::UInt:
-        tipoCampo = "<class 'int'>";
-        break;
-      case QVariant::Bool:
-      case FLFieldMetaData::Unlock:
-        tipoCampo = "<class 'bool'>";
-        break;
-      case QVariant::Double:
-        tipoCampo = "<class 'double'>";
-        break;
-      case QVariant::Time:
-        tipoCampo = "<class 'datetime.time'>";
-        break;
-      case QVariant::Date:
-        tipoCampo = "<class 'datetime.date'>";
-        break;
-/*       case QVariant::String:
-      case QVariant::Pixmap:
-      case QVariant::StringList:
-        tipoCampo = "<class 'str'>";
-        break; */
-/*       case QVariant::ByteArray:
-        type = QVariant::ByteArray;
-        break;
-      case QVariant::DateTime:
-        type=QVariant::DateTime;
-        break; */
-  }
+    if (db_->driverName() == "FLsqlapi") {
+      QString tipoCampo = "<class 'str'>";
+      int fltype = tmd->field(fieldName)->type();
+      switch (fltype) {
+        case QVariant::Int:
+          tipoCampo = "<class 'int'>";
+          break;
+        case FLFieldMetaData::Serial:
+        case QVariant::UInt:
+          tipoCampo = "<class 'int'>";
+          break;
+        case QVariant::Bool:
+        case FLFieldMetaData::Unlock:
+          tipoCampo = "<class 'bool'>";
+          break;
+        case QVariant::Double:
+          tipoCampo = "<class 'double'>";
+          break;
+        case QVariant::Time:
+          tipoCampo = "<class 'datetime.time'>";
+          break;
+        case QVariant::Date:
+          tipoCampo = "<class 'datetime.date'>";
+          break;
+  /*       case QVariant::String:
+        case QVariant::Pixmap:
+        case QVariant::StringList:
+          tipoCampo = "<class 'str'>";
+          break; */
+  /*       case QVariant::ByteArray:
+          type = QVariant::ByteArray;
+          break;
+        case QVariant::DateTime:
+          type=QVariant::DateTime;
+          break; */
+    }
 
-    if (q->exec(newQuery)) {
-      QString separador_campos = "|^|";
-      QString separador_lineas = "|^^|";
-      QString separador_total = "@";
-      result = QString::number(q->size());
-      result += separador_total;
-      result += fieldName + ":" +tipoCampo + separador_lineas;
-      QString lineas = "";
-      while (q->next()) {
-        //qWarning("Recogiendo linea");
-        if (lineas != "") {
-          lineas += separador_lineas;
-        }
-          QString new_value = q->value(0).toString();
-          
-          if (new_value == "") {
-            new_value = "|^V^|";
-          } 
-          
-          if (q->value(0).isNull()) {
-            new_value = "|^N^|";
-          } 
-          
-          if (fltype == QVariant::Bool || fltype == FLFieldMetaData::Unlock) {
-            new_value = new_value == "1" ? "true" : "false";
+      if (q->exec(newQuery)) {
+        QString separador_campos = "|^|";
+        QString separador_lineas = "|^^|";
+        QString separador_total = "@";
+        result = QString::number(q->size());
+        result += separador_total;
+        result += fieldName + ":" +tipoCampo + separador_lineas;
+        QString lineas = "";
+        while (q->next()) {
+          //qWarning("Recogiendo linea");
+          if (lineas != "") {
+            lineas += separador_lineas;
           }
-          
-          lineas += new_value;
+            QString new_value = q->value(0).toString();
+            
+            if (new_value == "") {
+              new_value = "|^V^|";
+            } 
+            
+            if (q->value(0).isNull()) {
+              new_value = "|^N^|";
+            } 
+            
+            if (fltype == QVariant::Bool || fltype == FLFieldMetaData::Unlock) {
+              new_value = new_value == "1" ? "true" : "false";
+            }
+            
+            lineas += new_value;
+        }
+        result += lineas;
       }
-      result += lineas;
+    } else if (db_->driverName() == "FLQPSQL7_OLULA") {
+      qWarning("FLManager::resolveMandatoryValues : No implementado para este driver AUN");
     }
       
     qWarning("FLManager::resolveMandatoryValues : Result: " + result); 

@@ -29,6 +29,9 @@
 #include <unistd.h>
 #endif
 
+#include "../flbase/FLManager.h"
+#include "../flbase/FLApplication.h"
+
 /* keep this in same order as ExecStatusType in libpq-fe.h */
 char	   *const pgresStatus[] = {
 	"PGRES_EMPTY_QUERY",
@@ -1256,6 +1259,14 @@ PQexec(PGconn *conn, const char *query)
 	fprintf(stdout,"********* POSTGRESQL %s(%s)*********\n", max_retries == 1 ? " " : "OLULA ", conn->connect_timeout ? conn->connect_timeout : "0");
 	fprintf(stdout,"%s\n",query);
 	#endif
+
+    FLManager *_manager = aqApp->db()->manager();
+	if (max_retries >1 && _manager->isMandatoryQuery(query)) {
+		if (_manager->initCacheLite(true)) {
+		  QString salida = _manager->resolveMandatoryValues(query);
+		  qWarning("La salida devuelta de mandatory OLULA es " + salida);
+		}
+	}
 
 	if (!PQexecStart(conn))
 		return NULL;
