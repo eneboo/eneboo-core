@@ -972,15 +972,14 @@ bool QPSQLResult::reset(const QString &query)
                 qUpper.endsWith("NOWAIT");
     if (!forUpdate && !qUpper.contains(" LIMIT "))
     
-    FLManager *_manager = dr->db()->manager();
-    bool use_cache = false;
-   if (dr->driverName == "FLQPSQL7_OLULA" && _manager->isMandatoryQuery(qLimit)) {
     
-    if (_manager->initCacheLite(true)) {
+   if (dr->driverName == "FLQPSQL7_OLULA" && dr->db()->manager()->isMandatoryQuery(qLimit)) {
+    
+    if (dr->db()->manager()->initCacheLite(true)) {
       qWarning("QPSQLResult::reset: Mandatory query");
-      QString salida = _manager->resolveMandatoryValues(qLimit);
-      use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
-      qWarning("QPSQLResult::reset: use_cache " + (use_cache ? "TRUE" : "FALSE"));
+      QString salida = dr->db()->manager()->resolveMandatoryValues(qLimit);
+      bool use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
+      qWarning("QPSQLResult::reset: use_cache " +QString(use_cache ? "TRUE" : "FALSE"));
     }
    }
     
