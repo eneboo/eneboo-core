@@ -23,6 +23,8 @@ TARGET = pq
 unix:INCLUDEPATH = . $$ROOT/src/libpq/include
 win32:INCLUDEPATH = . $$ROOT/src/pthreads $$ROOT/src/libpq/include $$ROOT/src/libpq/include/port/win32
 
+INCLUDEPATH += $$ROOT/src/qt/include ./$$ROOT/src/flbase
+
 unix:!mac:LIBS += -lcrypt -lresolv -lnsl
 win32:LIBS += -L$$PREFIX/lib -lpthreadAQ -lshfolder -lws2_32 -lm
 
