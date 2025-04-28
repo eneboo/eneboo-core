@@ -974,10 +974,13 @@ bool QPSQLResult::reset(const QString &query)
     
     FLManager *_manager = dr->db()->manager();
     bool use_cache = false;
-   if (_manager->isMandatoryQuery(qLimit)) {
+   if (dr->driverName == "FLQPSQL7_OLULA" && _manager->isMandatoryQuery(qLimit)) {
+    
     if (_manager->initCacheLite(true)) {
+      qWarning("QPSQLResult::reset: Mandatory query");
       QString salida = _manager->resolveMandatoryValues(qLimit);
       use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
+      qWarning("QPSQLResult::reset: use_cache " + (use_cache ? "TRUE" : "FALSE"));
     }
    }
     
