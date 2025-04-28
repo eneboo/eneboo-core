@@ -965,33 +965,51 @@ bool QPSQLResult::reset(const QString &query)
   QString qLimit(q);
   QString qUpper(q.upper());
   bool forUpdate = false;
+  bool use_cache = false;
 
   if (qUpper.left(7).contains("SELECT")) {
     forUpdate = qUpper.endsWith("FOR UPDATE") ||
                 qUpper.endsWith("FOR SHARE") ||
                 qUpper.endsWith("NOWAIT");
-    if (!forUpdate && !qUpper.contains(" LIMIT "))
+    if (!forUpdate && !qUpper.contains(" LIMIT ")) {
     
     
-   if (dr->driverName == "FLQPSQL7_OLULA" && dr->db()->manager()->isMandatoryQuery(qLimit)) {
-    
-    if (dr->db()->manager()->initCacheLite(true)) {
-      qWarning("QPSQLResult::reset: Mandatory query");
-      QString salida = dr->db()->manager()->resolveMandatoryValues(qLimit);
-      bool use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
-      qWarning("QPSQLResult::reset: use_cache " +QString(use_cache ? "TRUE" : "FALSE"));
+    if (dr->driverName == "FLQPSQL7_OLULA" && dr->db()->manager()->isMandatoryQuery(qLimit)) {
+      
+      if (dr->db()->manager()->initCacheLite(true)) {
+        qWarning("QPSQLResult::reset: Mandatory query");
+        QString salida = dr->db()->manager()->resolveMandatoryValues(qLimit);
+        use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
+        qWarning("QPSQLResult::reset: use_cache " +QString(use_cache ? "TRUE" : "FALSE"));
+        if (use_cache && salida.startsWith("1@")) {
+          // TODO: sacar dato desde respuesta y simular result.
+          cleanup();
+          
+          d->result = new PGresult();
+          // TODO: parsear respuesta y simular result.
+          d->result->ntuples = 1;
+          d->result->binary = 0;
+          d->result->tupArrSize=1;
+          d->result->resultStatus = PGRES_TUPLES_OK;
+          d->result->cmdStatus = qLimit;
+          //d->result->tuples = 
+          //d->result->attDescs
+
+          d->flresult = new FLPGresult(d->result);
+          use_cache = false; // Quitar cuando esté completo.
+        } else {
+          use_cache = false;
+        }
+      }
     }
-   }
-    
-      qLimit += " LIMIT " + QString::number(LIMIT_RESULT + 1);
+      
+        qLimit += " LIMIT " + QString::number(LIMIT_RESULT + 1);
+    }
 
   }
 
+if (!use_cache) {
   cleanup();
-
-
-
-
 
   if (d->isUtf8) {
     d->result = PQexec(d->connection, qLimit.utf8().data());
@@ -1000,6 +1018,7 @@ bool QPSQLResult::reset(const QString &query)
     d->result = PQexec(d->connection, qLimit.local8Bit().data());
     d->flresult = new FLPGresult(d->result);
   }
+}
 
   int status = PQresultStatus(d->result);
   if (status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK) {
