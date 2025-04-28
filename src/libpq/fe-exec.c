@@ -29,7 +29,6 @@
 #include <unistd.h>
 #endif
 
-#include "../flbase/FLManager.h"
 #include "../flbase/FLApplication.h"
 
 /* keep this in same order as ExecStatusType in libpq-fe.h */

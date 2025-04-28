@@ -20,8 +20,9 @@ win32 {
 DEFINES +=  SYSCONFDIR='"$$PREFIX"' FRONTEND ENABLE_THREAD_SAFETY _THREAD_SAFE _POSIX_PTHREAD_SEMANTICS
 DESTDIR = $$PREFIX/lib
 TARGET = pq
-INCLUDEPATH = . $$ROOT/src/libpq/include $$ROOT/src/qt/include ./$$ROOT/src/flbase
-win32:INCLUDEPATH = . $$ROOT/src/pthreads $$ROOT/src/libpq/include/port/win32
+INCLUDEPATH += $$ROOT/src/qt/include ./$$ROOT/src/flbase
+unix:INCLUDEPATH = . $$ROOT/src/libpq/include
+win32:INCLUDEPATH = . $$ROOT/src/pthreads $$ROOT/src/libpq/include $$ROOT/src/libpq/include/port/win32
 
 
 
