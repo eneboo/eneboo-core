@@ -1075,7 +1075,9 @@ bool FLUtil::execSql(const QString &sql, const QString &connName)
   tareas = tareas.replace("%","%%");
 
 #ifdef FL_DEBUG
+#ifdef FL_SQL_LOG
     qWarning("FLUtil : " + QApplication::tr("Ejecutando la sentencia \"%1;\"").arg(tareas));
+#endif
 #endif
   return q.exec(tareas);
 }
