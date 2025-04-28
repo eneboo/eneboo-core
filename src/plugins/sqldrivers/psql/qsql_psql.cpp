@@ -72,7 +72,6 @@ email                : mail@infosial.com
 #endif
 #include <postgres.h>
 #include <libpq/libpq-fs.h>
-#include <libpq/libpq-fe.h>
 #if defined(errno)
 # undef errno
 #endif
@@ -986,16 +985,16 @@ bool QPSQLResult::reset(const QString &query)
           // TODO: sacar dato desde respuesta y simular result.
           cleanup();
           
-          d->result = new PGresult();
+          PGresult *result = (PGresult *) malloc(sizeof(PGresult));
           // TODO: parsear respuesta y simular result.
-          d->result->ntuples = 1;
-          d->result->binary = 0;
-          d->result->tupArrSize=1;
-          d->result->resultStatus = PGRES_TUPLES_OK;
-          d->result->cmdStatus = qLimit;
+          result->ntuples = 1;
+          result->binary = 0;
+          result->tupArrSize=1;
+          result->resultStatus = PGRES_TUPLES_OK;
+          result->cmdStatus = qLimit;
           //d->result->tuples = 
           //d->result->attDescs
-
+          d->result = result;
           d->flresult = new FLPGresult(d->result);
           use_cache = false; // Quitar cuando esté completo.
         } else {
