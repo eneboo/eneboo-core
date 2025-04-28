@@ -72,6 +72,7 @@ email                : mail@infosial.com
 #endif
 #include <postgres.h>
 #include <libpq/libpq-fs.h>
+#include <libpq/libpq-fe.h>
 #if defined(errno)
 # undef errno
 #endif
