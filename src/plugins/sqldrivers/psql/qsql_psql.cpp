@@ -66,6 +66,7 @@ email                : mail@infosial.com
 #include <qsqlselectcursor.h>
 #include <qtextcodec.h>
 #include <qcache.h>
+#include "../flbase/FLManager.h"
 #if defined(DEBUG)
 # undef DEBUG
 #endif
@@ -970,7 +971,18 @@ bool QPSQLResult::reset(const QString &query)
                 qUpper.endsWith("FOR SHARE") ||
                 qUpper.endsWith("NOWAIT");
     if (!forUpdate && !qUpper.contains(" LIMIT "))
+    
+    FLManager *_manager = dr->db()->manager();
+    bool use_cache = false;
+   if (_manager->isMandatoryQuery(qLimit)) {
+    if (_manager->initCacheLite(true)) {
+      QString salida = _manager->resolveMandatoryValues(qLimit);
+      use_cache = !salida.startsWith("0@valor:"); // Si no existe registro de flsettings en cache, lanzo llamada a servidor.
+    }
+   }
+    
       qLimit += " LIMIT " + QString::number(LIMIT_RESULT + 1);
+
   }
 
   cleanup();
