@@ -1250,35 +1250,18 @@ PGresult *
 PQexec(PGconn *conn, const char *query)
 {
 
-int max_retries = !conn->connect_timeout || strcmp(conn->connect_timeout, "0") == 0 ? 5 : 1;
-int retries = 0;
+	int max_retries = !conn->connect_timeout || strcmp(conn->connect_timeout, "0") == 0 ? 5 : 1;
 
-#ifdef FL_SQL_LOG
-fprintf(stdout,"********* POSTGRESQL %s(%s)*********\n", max_retries == 1 ? " " : "OLULA ", conn->connect_timeout ? conn->connect_timeout : "0");
-fprintf(stdout,"%s\n",query);
-#endif
-
-PGresult *result = NULL;
-while (retries < max_retries)
-{
-	if (PQexecStart(conn)) {
-		if (PQsendQuery(conn, query)) {
-			result = PQexecFinish(conn);
-			if (result->resultStatus != PGRES_FATAL_ERROR) {
-				break;
-			} 
-		} else {
-			fprintf(stdout, "D\n");
-			// reinit connection
-		}
-	} 
 	#ifdef FL_SQL_LOG
-	fprintf(stdout, "Retrying query %d/%d...\n", retries + 1, max_retries);
+	fprintf(stdout,"********* POSTGRESQL %s(%s)*********\n", max_retries == 1 ? " " : "OLULA ", conn->connect_timeout ? conn->connect_timeout : "0");
+	fprintf(stdout,"%s\n",query);
 	#endif
-	retries++;
-	
-}
-   return result;
+
+	if (!PQexecStart(conn))
+		return NULL;
+	if (!PQsendQuery(conn, query))
+		return NULL;
+	return PQexecFinish(conn);
 }
 
 /*
