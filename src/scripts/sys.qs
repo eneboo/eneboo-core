@@ -3325,14 +3325,30 @@ function useDelegateCommit(cursor) {
 function keepAlive()
 {
 
- const connections = sys.dictDatabases();
- for (var i=0; i<connections.length; i++) {
- 	const connName = connections[i];
-   debug("keep alive " + connName);
- 	AQUtil.execSql("SELECT * from flfiles where 1 = 0", connName);
- }
+  const connections = sys.dictDatabases();
+  for (var i=0; i<connections.length; i++) {
+    const connName = connections[i];
+    try {
+      //debug("keep alive " + connName);
+      AQUtil.execSql("select current_time as " + connName, connName);
+    } catch (e) {
+      debug("Error keep alive " + connName + ": " + e.toString());
+    }
+  }
 
- sys.AQTimer.singleShot(60000, sys.keepAlive);
+  var dbAux = aqApp.db().dbAux();
+  var sql = "select current_time as dbAux";
+  try {
+    //debug("keep alive dbAux");
+    var q = new QSqlSelectCursor(sql, dbAux);
+    if (q.isActive() && q.next()) {
+      //
+    }
+  } catch (e) {
+    debug("Error keep alive dbAux: " + e.toString());
+  }
+
+ sys.AQTimer.singleShot(30000, sys.keepAlive);
 }
 
 function updateCachedTables(tableNames, excluirPermanentes)
