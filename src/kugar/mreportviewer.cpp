@@ -251,10 +251,10 @@ bool MReportViewer::printGhostReport()
       stream << "    <<" << "\n";
       stream << "      /DocumentName  (AbanQ document)" << "\n";
       if (!printerName_.isEmpty()) {
-       stream << QString("      /DocumentRange [1 %1]").arg(cnt) << "\n";
        stream << QString("      /SelectedRange [1 %1]").arg(cnt) << "\n";
        stream << QString("      /Copies %1").arg(numCopies_) << "\n";
       }
+      stream << QString("      /DocumentRange [1 %1]").arg(cnt) << "\n";
       stream << QString("      /MaxResolution %1").arg(dpi_) << "\n";
       
       stream << "    >>";
@@ -344,7 +344,7 @@ bool MReportViewer::printGhostReport()
 
   qWarning("Lanzando :" + comando);
   if (!proc->start()) {
-    qWarning("Error al lanzar el proceso de impresi?n: %s", proc->readStderr().data());
+    qWarning("Error al lanzar el proceso de impresión: %s", proc->readStderr().data());
     delete proc;
     return false;
   }
