@@ -250,10 +250,13 @@ bool MReportViewer::printGhostReport()
       stream << "  /UserSettings" << "\n";
       stream << "    <<" << "\n";
       stream << "      /DocumentName  (AbanQ document)" << "\n";
-      //stream << QString("      /DocumentRange [1 %1]").arg(cnt) << "\n";
-      //stream << QString("      /SelectedRange [1 %1]").arg(cnt) << "\n";
+      if (!printerName_.isEmpty()) {
+       stream << QString("      /DocumentRange [1 %1]").arg(cnt) << "\n";
+       stream << QString("      /SelectedRange [1 %1]").arg(cnt) << "\n";
+       stream << QString("      /Copies %1").arg(numCopies_) << "\n";
+      }
       stream << QString("      /MaxResolution %1").arg(dpi_) << "\n";
-      //stream << QString("      /Copies %1").arg(numCopies_) << "\n";
+      
       stream << "    >>";
       stream << "  /OutputDevice /mswinpr2" << "\n";
       stream << ">>";
