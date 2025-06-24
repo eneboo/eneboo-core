@@ -132,7 +132,7 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
     report = 0;
   }
   
-  //Si el report previo no genero paginas, también ponemos report = 0
+  //Si el report previo no genero paginas, tambi?n ponemos report = 0
   if (report && report->pageCount() == 0) {
     report = 0;
   }
@@ -250,10 +250,10 @@ bool MReportViewer::printGhostReport()
       stream << "  /UserSettings" << "\n";
       stream << "    <<" << "\n";
       stream << "      /DocumentName  (AbanQ document)" << "\n";
-      stream << QString("      /DocumentRange [1 %1]").arg(cnt) << "\n";
-      stream << QString("      /SelectedRange [1 %1]").arg(cnt) << "\n";
+      //stream << QString("      /DocumentRange [1 %1]").arg(cnt) << "\n";
+      //stream << QString("      /SelectedRange [1 %1]").arg(cnt) << "\n";
       stream << QString("      /MaxResolution %1").arg(dpi_) << "\n";
-      stream << QString("      /Copies %1").arg(numCopies_) << "\n";
+      //stream << QString("      /Copies %1").arg(numCopies_) << "\n";
       stream << "    >>";
       stream << "  /OutputDevice /mswinpr2" << "\n";
       stream << ">>";
@@ -341,7 +341,7 @@ bool MReportViewer::printGhostReport()
 
   qWarning("Lanzando :" + comando);
   if (!proc->start()) {
-    qWarning("Error al lanzar el proceso de impresión: %s", proc->readStderr().data());
+    qWarning("Error al lanzar el proceso de impresi?n: %s", proc->readStderr().data());
     delete proc;
     return false;
   }
@@ -512,8 +512,8 @@ bool MReportViewer::printReportToPDF(const QString &outPdfFile)
   if (!gsOk) {
     QMessageBox *m =
       new QMessageBox(tr("Falta Ghostscript"),
-                      tr("Para poder exportar a PDF debe instalar Ghostscript (http://www.ghostscript.com) y añadir\n"
-                         "el directorio de instalación a la ruta de búsqueda de programas\ndel sistema (PATH).\n\n"),
+                      tr("Para poder exportar a PDF debe instalar Ghostscript (http://www.ghostscript.com) y a?adir\n"
+                         "el directorio de instalaci?n a la ruta de b?squeda de programas\ndel sistema (PATH).\n\n"),
                       QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, this, 0,
                       false);
     m->show();
@@ -656,7 +656,7 @@ bool MReportViewer::printReportToPS(const QString &outPsFile)
 
   // Check if there is a report or any pages to print
   if (cnt == 0) {
-    QMessageBox::critical(this, "Kugar", tr("No hay páginas en el\ninforme para."), QMessageBox::Ok,
+    QMessageBox::critical(this, "Kugar", tr("No hay p?ginas en el\ninforme para."), QMessageBox::Ok,
                           QMessageBox::NoButton, QMessageBox::NoButton);
     return false;
   }
@@ -771,10 +771,10 @@ bool MReportViewer::printReport()
   }
 
   QMessageBox *m = new QMessageBox(tr("Sugerencia"),
-                                   tr("Si instala Ghostscript (http://www.ghostscript.com) y añade\n"
-                                      "el directorio de instalación a la ruta de búsqueda de programas\n"
-                                      "del sistema (PATH), Eneboo podrá utilizarlo para optimizar\n"
-                                      "sustancialmente la calidad de impresión y para poder generar códigos\nde barras.\n\n"),
+                                   tr("Si instala Ghostscript (http://www.ghostscript.com) y a?ade\n"
+                                      "el directorio de instalaci?n a la ruta de b?squeda de programas\n"
+                                      "del sistema (PATH), Eneboo podr? utilizarlo para optimizar\n"
+                                      "sustancialmente la calidad de impresi?n y para poder generar c?digos\nde barras.\n\n"),
                                    QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, this, 0, false);
   m->show();
 #endif
@@ -784,7 +784,7 @@ bool MReportViewer::printReport()
 
   // Check if there is a report or any pages to print
   if (cnt == 0) {
-    QMessageBox::critical(this, "Kugar", tr("No hay páginas en el\ninforme para."), QMessageBox::Ok,
+    QMessageBox::critical(this, "Kugar", tr("No hay p?ginas en el\ninforme para."), QMessageBox::Ok,
                           QMessageBox::NoButton, QMessageBox::NoButton);
     return false;
   }
