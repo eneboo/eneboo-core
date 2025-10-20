@@ -368,11 +368,11 @@ function registerUpdate(input)
   var modulesDef = sys.toUnicode(unpacker.getText(), "utf8");
   var filesDef = sys.toUnicode(unpacker.getText(), "utf8");
   var shaGlobal = calculateShaGlobal();
-
   AQSql.update("flupdates", ["actual"], [false]);
+  const last_id = AQUtil.sqlSelect("flupdates","max(id)", "1=1");
   AQSql.insert("flupdates",
-               ["fecha", "hora", "nombre", "modulesdef", "filesdef", "shaglobal"],
-               [now, now.toString().right(8), fileName, modulesDef, filesDef, shaGlobal]);
+               ["id", "fecha", "hora", "nombre", "modulesdef", "filesdef", "shaglobal"],
+               [last_id +1, now, now.toString().right(8), fileName, modulesDef, filesDef, shaGlobal]);
 }
 
 function warnLocalChanges(changes)
@@ -564,7 +564,7 @@ function xmlFilesDefBd()
   doc.appendChild(root);
 
   var qry = new AQSqlQuery;
-  qry.setSelect("idmodulo,nombre,contenido");
+  qry.setSelect("idmodulo,nombre,contenido,binario");
   qry.setFrom("flfiles");
 
   if (!qry.exec())
@@ -1166,7 +1166,21 @@ function resolveSql(tableName, dirty_column, mode)
   }
 
   var allow = false;
-  const defaultVal = 'default_val' in dirty_column ? dirty_column.default_val:  "";
+  var defaultVal = 'default_val' in dirty_column ? dirty_column.default_val:  "";
+  const relations = 'relation' in dirty_column ? dirty_column.relation:  false;
+
+  if (defaultVal == "" && typeBd == 1) {
+    if (dirty_column.type == "date") {
+      defaultVal = 'CURRENT_DATE'; 
+    }
+    if (dirty_column.type == "time") {
+      defaultVal = 'CURRENT_TIME'; 
+    }
+  } 
+
+
+
+
   const defaultSQL = [alterSQL, mode == "CREATE" ? add_column : alter_column, column_name].join(" ");
 
 
@@ -1177,7 +1191,7 @@ function resolveSql(tableName, dirty_column, mode)
     if (typeBd == 1) {
       type_ = "TYPE " + type_;
       if ('length' in dirty_column && dirty_column.length > 0) {
-        type_ += "(" + dirty_column.length + ") " + "USING substr(" + column_name + ", 1, " + dirty_column.length  +")";
+        type_ += "(" + dirty_column.length + ") " + "USING substr(CAST(" + column_name + " AS text), 1, " + dirty_column.length  +")";
       }
 
     } else if (typeBd == 2) {
@@ -1214,8 +1228,8 @@ function resolveSql(tableName, dirty_column, mode)
     }
   }
 
-  const valueSep = separator + defaultVal + separator;
-  const allow = 'allowNull' in dirty_column && dirty_column.allowNull == "true";
+  const valueSep = defaultVal == "CURRENT_DATE" || defaultVal == "CURRENT_TIME" ? defaultVal : separator + defaultVal + separator;
+  allow = 'allowNull' in dirty_column && dirty_column.allowNull == "true";
 
 
   if (mode == "ALTER") { // ALTER
@@ -1238,7 +1252,7 @@ function resolveSql(tableName, dirty_column, mode)
     }
 
     if ('allowNull' in dirty_column) {
-      if (!allow) {
+      if (!allow && valueSep) {
         beforeSQL.push(["UPDATE", (typeBd == 1 ? "public.": "") +  tableName, "SET", column_name + " = " + valueSep, "WHERE", column_name, "IS", "NULL"].join(" "));
       }
       beforeSQL.push([defaultSQL, typeBd == 1 ? (allow ? "DROP" : "SET") : "", typeBd == 1 ? "NOT NULL" : allow ? "NULL": "NOT NULL"].join(" "));
@@ -1268,7 +1282,7 @@ function resolveSql(tableName, dirty_column, mode)
 
     if (!allow) {
       if (typeBd == 1) {
-        sql += ["DEFAULT", valueSep].join(" "); //CREA CON DEFAULT , porque sin el dará FALLO
+        sql += " " + ["DEFAULT", valueSep].join(" "); //CREA CON DEFAULT , porque sin el dará FALLO
         afterSQL.push([alterSQL, alter_column, column_name, "DROP", "DEFAULT"].join(" ")); // QUITAMOS EL DEFAULT DE ANTES.
       }
     }
@@ -1276,8 +1290,11 @@ function resolveSql(tableName, dirty_column, mode)
   }
 
 
-  if (!allow && defaultVal == "") {
-    debug("No se puede usar el campo " + tableName + "." + column_name + " sin default y no nulo");
+
+  if (!allow && defaultVal == "" && !relations) {
+    debug("No se puede usar el campo " + tableName + "." + column_name + " sin default y no nulo. Relations:" + relations);
+    debug("SQL: " + sql);
+    return [];
     return false;
   }
   
@@ -1309,8 +1326,9 @@ function resolveMetaFromElem(elem)
     "partI": elem.namedItem("partI") && elem.namedItem("partI").toElement().text() ? elem.namedItem("partI").toElement().text(): 0,
     "partD": elem.namedItem("partD") && elem.namedItem("partD").toElement().text() ? elem.namedItem("partD").toElement().text(): 0,
     "default_val": elem.namedItem("default") && elem.namedItem("default").toElement().text() ? elem.namedItem("default").toElement().text(): undefined,
+    "searchable": elem.namedItem("searchable") && elem.namedItem("searchable").toElement().text() ? elem.namedItem("searchable").toElement().text() : false,
+    "relation" : elem.namedItem("relation") ? elem.namedItem("relation").toElement().text() : false
   };
-
   if (meta['length'] == "") {
     meta['length'] = 0;
   }
@@ -1570,6 +1588,7 @@ function resolveDiff(newMeta, metaField) {
     result["length"] = ("length" in result) ? result["length"] : newMeta["length"];
     result["default_val"] = newMeta['default_val'];
     result["allowNull"] = ("allowNull" in result) ? result["allowNull"] : newMeta["allowNull"];
+    result["relation"] = newMeta["relation"];
   }
 
 
@@ -1625,7 +1644,7 @@ function loadFilesDef(un, legacy)
       if (fil.id.length == 0 || fil.skip == "true")
       continue;
 
-      debug("Fichero " + ( i + 1 )  + "/" + sizeFiles +", name: " + fil.id + ", length: " + fil.data.length);
+      // debug("Fichero " + ( i + 1 )  + "/" + sizeFiles +", name: " + fil.id + ", length: " + fil.data.length);
 
       dataFiles[fil.id] = fil;
     }
