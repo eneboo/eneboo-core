@@ -517,9 +517,8 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
       else
         finalFilter += " and " + tdbFilterLastWhere_;
     }
-    debug("P31 " + finalFilter);
     tableRecords()->setPersistentFilter(finalFilter);
-    debug("P32");
+
   
 
   if (!showed && cursor_->db()->driverName() == "FLsqlapi") {
@@ -532,19 +531,21 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
   }
   qDebug("P5");    
   }
-
+  qDebug("P6"); 
   if (!initSearch_.isEmpty()) {
+    qDebug("P61"); 
     disconnect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
     lineEditSearch->setText(initSearch_);
     connect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
     lineEditSearch->selectAll();
     initSearch_ = QString::null;
     if (do_refresh) {
+      qDebug("P7"); 
       seekCursor();
     }
-    
+    qDebug("P8"); 
   }
-
+  qDebug("P9"); 
   if (readonly_ != reqReadOnly_ ||
       (tableRecords_ && readonly_ != tableRecords_->flReadOnly()))
     setReadOnly(reqReadOnly_);
@@ -1149,7 +1150,7 @@ void FLTableDB::seekCursor()
   QString textSearch(lineEditSearch->text());
   if (textSearch.isEmpty())
     return;
-
+  qDebug("PR1"); 
   if (!cursor_)
     return;
 
@@ -1157,9 +1158,11 @@ void FLTableDB::seekCursor()
   textSearch.replace("%", "");
 
   if (!textSearch.contains("'") && !textSearch.contains("\\")) {
+    qDebug("PR2"); 
     QString sql(cursor_->executedQuery() + " LIMIT 1");
+    qDebug("PR3 " + sql); 
     QSqlQuery qry(sql, cursor_->db()->db());
-
+    qDebug("PR4 " + sql); 
     if (qry.first()) {
       QString v(qry.value(0).toString());
       int pos = -1;
