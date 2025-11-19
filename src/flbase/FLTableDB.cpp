@@ -517,8 +517,9 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
       else
         finalFilter += " and " + tdbFilterLastWhere_;
     }
+    debug("P31 " + finalFilter);
     tableRecords()->setPersistentFilter(finalFilter);
-
+    debug("P32");
   
 
   if (!showed && cursor_->db()->driverName() == "FLsqlapi") {
