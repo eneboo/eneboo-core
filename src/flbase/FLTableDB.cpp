@@ -465,13 +465,10 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
         }
       } else {
         qDebug("functionQSA: (empty)");
-      }
-      qDebug("P0");      
+      }      
       tableRecords_->setSort(s);
     }
-    qDebug("P1");    
     tableRecords_->QDataTable::refresh(QDataTable::RefreshColumns);
-    qDebug("P2");    
     comboBoxFieldToSearch->clear();
     for (int i = sortColumn_; i < tableRecords_->numCols(); ++i) {
       field = tMD->field(tMD->fieldAliasToName(horizHeader->label(i)));
@@ -507,7 +504,6 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     }
     horizHeader->show();
   }
-  qDebug("P3");    
   bool do_refresh = true;
   if (refreshData || sender()) {
     QString finalFilter = filter_;
@@ -525,27 +521,25 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     qWarning("FLTableDB (FLSqlApi) : No se refrescan los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
     do_refresh = false;
   }
-  qDebug("P4");    
+
   if (do_refresh) {
     tableRecords_->refresh();
   }
-  qDebug("P5");    
+    
   }
-  qDebug("P6"); 
+
   if (!initSearch_.isEmpty()) {
-    qDebug("P61"); 
     disconnect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
     lineEditSearch->setText(initSearch_);
     connect(lineEditSearch, SIGNAL(textChanged(const QString &)), this, SLOT(filterRecords(const QString &)));
     lineEditSearch->selectAll();
     initSearch_ = QString::null;
     if (do_refresh) {
-      qDebug("P7"); 
       seekCursor();
     }
-    qDebug("P8"); 
+    
   }
-  qDebug("P9"); 
+
   if (readonly_ != reqReadOnly_ ||
       (tableRecords_ && readonly_ != tableRecords_->flReadOnly()))
     setReadOnly(reqReadOnly_);
@@ -1150,19 +1144,17 @@ void FLTableDB::seekCursor()
   QString textSearch(lineEditSearch->text());
   if (textSearch.isEmpty())
     return;
-  qDebug("PR1"); 
+
   if (!cursor_)
     return;
 
   QString fN(sortField_->name());
   textSearch.replace("%", "");
 
-  if (!textSearch.contains("'") && !textSearch.contains("\\")) {
-    qDebug("PR2"); 
+  if (!textSearch.contains("'") && !textSearch.contains("\\") && cursor_->executedQuery() != "") {
     QString sql(cursor_->executedQuery() + " LIMIT 1");
-    qDebug("PR3 " + sql); 
     QSqlQuery qry(sql, cursor_->db()->db());
-    qDebug("PR4 " + sql); 
+
     if (qry.first()) {
       QString v(qry.value(0).toString());
       int pos = -1;
