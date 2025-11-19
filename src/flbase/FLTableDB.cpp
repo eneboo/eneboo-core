@@ -12,8 +12,8 @@ email                : mail@infosial.com
  ***************************************************************************/
 /***************************************************************************
    Este  programa es software libre. Puede redistribuirlo y/o modificarlo
-   bajo  los  términos  de  la  Licencia  Pública General de GNU   en  su
-   versión 2, publicada  por  la  Free  Software Foundation.
+   bajo  los  tï¿½rminos  de  la  Licencia  Pï¿½blica General de GNU   en  su
+   versiï¿½n 2, publicada  por  la  Free  Software Foundation.
  ***************************************************************************/
 
 #include <math.h>
@@ -465,10 +465,13 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
         }
       } else {
         qDebug("functionQSA: (empty)");
-      }      
+      }
+      qDebug("P0");      
       tableRecords_->setSort(s);
     }
+    qDebug("P1");    
     tableRecords_->QDataTable::refresh(QDataTable::RefreshColumns);
+    qDebug("P2");    
     comboBoxFieldToSearch->clear();
     for (int i = sortColumn_; i < tableRecords_->numCols(); ++i) {
       field = tMD->field(tMD->fieldAliasToName(horizHeader->label(i)));
@@ -504,6 +507,7 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     }
     horizHeader->show();
   }
+  qDebug("P3");    
   bool do_refresh = true;
   if (refreshData || sender()) {
     QString finalFilter = filter_;
@@ -521,11 +525,11 @@ void FLTableDB::refresh(const bool refreshHead, const bool refreshData)
     qWarning("FLTableDB (FLSqlApi) : No se refrescan los datos del FLTableDB " + tableName_ + " porque no esta mostrada");
     do_refresh = false;
   }
-
+  qDebug("P4");    
   if (do_refresh) {
     tableRecords_->refresh();
   }
-    
+  qDebug("P5");    
   }
 
   if (!initSearch_.isEmpty()) {
@@ -879,9 +883,9 @@ void FLTableDB::initCursor()
       rMD = new FLRelationMetaData(tableName_, fieldRelation_, FLRelationMetaData::RELATION_1M, false, false, checkIntegrity);
       fMD->addRelationMD(rMD);
 #ifdef FL_DEBUG
-      qWarning(tr("FLTableDB : La relación entre la tabla del formulario %1 y esta tabla %2 de este campo no existe, pero sin embargo se han indicado los campos de relación( %3, %4 )")
+      qWarning(tr("FLTableDB : La relaciï¿½n entre la tabla del formulario %1 y esta tabla %2 de este campo no existe, pero sin embargo se han indicado los campos de relaciï¿½n( %3, %4 )")
                .arg(curName).arg(tableName_).arg(fieldRelation_).arg(foreignField_));
-      qWarning(tr("FLTableDB : Creando automáticamente %1.%2 --1M--> %3.%4")
+      qWarning(tr("FLTableDB : Creando automï¿½ticamente %1.%2 --1M--> %3.%4")
                .arg(curName).arg(foreignField_).arg(tableName_).arg(fieldRelation_));
 #endif
     }
@@ -900,7 +904,7 @@ void FLTableDB::initCursor()
       rMD = new FLRelationMetaData(curName, foreignField_, FLRelationMetaData::RELATION_1M, false, false, false);
       fMD->addRelationMD(rMD);
 #ifdef FL_DEBUG
-      qWarning(tr("FLTableDB : Creando automáticamente %1.%2 --1M--> %3.%4")
+      qWarning(tr("FLTableDB : Creando automï¿½ticamente %1.%2 --1M--> %3.%4")
                .arg(tableName_).arg(fieldRelation_).arg(curName).arg(foreignField_));
 #endif
     }
@@ -1265,7 +1269,7 @@ void FLTableDB::refreshTabFilter()
     tdbFilter->setNumCols(5);
     tdbFilter->setNumRows(hCount);
     tdbFilter->setColumnReadOnly(0, true);
-    tdbFilter->setColumnLabels(QStringList::split(',', tr("Campo,Condición,Valor,Desde,Hasta")));
+    tdbFilter->setColumnLabels(QStringList::split(',', tr("Campo,Condiciï¿½n,Valor,Desde,Hasta")));
 
     mapCondType.insert(tr("Todos"),              FLTableDB::All);
     mapCondType.insert(tr("Contiene Valor"),     FLTableDB::Contains);
@@ -1276,8 +1280,8 @@ void FLTableDB::refreshTabFilter()
     mapCondType.insert(tr("Mayor que Valor"),    FLTableDB::Greater);
     mapCondType.insert(tr("Menor que Valor"),    FLTableDB::Less);
     mapCondType.insert(tr("Desde - Hasta"),      FLTableDB::FromTo);
-    mapCondType.insert(tr("Vacío"),              FLTableDB::Null);
-    mapCondType.insert(tr("No Vacío"),           FLTableDB::NotNull);
+    mapCondType.insert(tr("Vacï¿½o"),              FLTableDB::Null);
+    mapCondType.insert(tr("No Vacï¿½o"),           FLTableDB::NotNull);
 
     for (int i = 0; i < hCount; ++i) {
       tdbFilter->setText(i, 0, horizHeader->label(i + sortColumn_)) ;
@@ -1300,8 +1304,8 @@ void FLTableDB::refreshTabFilter()
         condList << tr("Todos") <<
                  tr("Igual a Valor") <<
                  tr("Distinto de Valor") <<
-                 tr("Vacío") <<
-                 tr("No Vacío");
+                 tr("Vacï¿½o") <<
+                 tr("No Vacï¿½o");
         if (type != QVariant::Bool) {
           condList << tr("Contiene Valor") <<
                    tr("Empieza por Valor") <<
@@ -1539,7 +1543,7 @@ QString FLTableDB::tdbFilterBuildWhere()
       case FLFieldMetaData::Unlock:
       case QVariant::Bool: {
         FLCheckBox *editorOp1 = ::qt_cast<FLCheckBox *>(tdbFilter->cellWidget(i, 2));
-        arg2 = cursor_->db()->manager()->formatValue(type, QString(editorOp1->isChecked() ? tr("Sí") : tr("No")));
+        arg2 = cursor_->db()->manager()->formatValue(type, QString(editorOp1->isChecked() ? tr("Sï¿½") : tr("No")));
       }
       break;
     }
@@ -1747,8 +1751,8 @@ if (!functionQSA.isEmpty()) {
 	
 if (ods_disabled)
 	{
-	QMessageBox::information(this, tr("Opción deshabilitada"),
-                                                 tr("Esta opción ha sido deshabilitada"),
+	QMessageBox::information(this, tr("Opciï¿½n deshabilitada"),
+                                                 tr("Esta opciï¿½n ha sido deshabilitada"),
                                                   QMessageBox::Yes);
 	return;
 	}
@@ -1825,7 +1829,7 @@ if (ods_disabled)
         break;
 
         case QVariant::Bool: {
-          QString str(val.toBool() ? tr("Sí") : tr("No"));
+          QString str(val.toBool() ? tr("Sï¿½") : tr("No"));
           row.opIn(italic);
           row.opIn(str);
         }
