@@ -1151,7 +1151,7 @@ void FLTableDB::seekCursor()
   QString fN(sortField_->name());
   textSearch.replace("%", "");
 
-  if (!textSearch.contains("'") && !textSearch.contains("\\") && cursor_->executedQuery() != "") {
+  if (!textSearch.contains("'") && !textSearch.contains("\\") && cursor_->executedQuery() == "") {
     QString sql(cursor_->executedQuery() + " LIMIT 1");
     QSqlQuery qry(sql, cursor_->db()->db());
 
