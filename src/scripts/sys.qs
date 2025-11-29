@@ -1361,10 +1361,7 @@ function resolveMetaFromElem(elem)
 function resolveDiffs(newXml)
 {
 
-  var dirty = [];
-  var news = [];
-  var deleted = [];
-  var errors = [];
+
 
 
 
@@ -1374,13 +1371,25 @@ function resolveDiffs(newXml)
   var tableName = newXml.namedItem("name").toElement().text();
   var isQuery = newXml.namedItem("query").toElement().text() != "";
 
+  var result_list = {'dirty':[],'new':[],'deleted':[], 'errors':[]};
+
   //debug("Query " + tableName + ":" + (isQuery ? "SI" : "NO"));
 
   if (!isQuery) {
 
+    var dirty = [];
+    var news = [];
+    var deleted = [];
+    var errors = [];
+
     //debug("dataNew :" + tableName); 
 
     const oldMetadata = manager.metadata(tableName);
+
+    if (!oldMetadata) {
+      debug("No se encuentra metadata de " + tableName);
+      return result_list;
+    }
 
     //debug ("dataOld :"  + oldMetadata.name);
     deleted = oldMetadata.fieldList(false).split(",");
@@ -1505,14 +1514,11 @@ function resolveDiffs(newXml)
 
     }
 
-  }
-
-  var result_list = {'dirty':[],'new':[],'deleted':[], 'errors':[]};
-  if (!isQuery) {
     result_list['dirty'] = dirty;
     result_list['new'] = news;
     result_list['deleted'] = deleted;
     result_list['errors'] = errors;
+
   }
 
   return result_list;
@@ -1520,7 +1526,7 @@ function resolveDiffs(newXml)
 
 function resolveDiff(newMeta, metaField) {
 
-
+  var field_type = metaField.type();
 
   const array_types = {
     3 : "string",
@@ -1544,15 +1550,15 @@ function resolveDiff(newMeta, metaField) {
 
 
 
-  if (!(metaField.type() in array_types)) {
-    debug("No se encuentra tipo de campo " + newMeta["name"] + ", tipo:" + metaField.type());
+  if (!(field_type in array_types)) {
+    debug("No se encuentra tipo de campo " + newMeta["name"] + ", tipo:" + field_type);
     return false;
   }
 
   var old_meta = {
     "length": metaField.length(),
     "allowNull":  metaField.allowNull(),
-    "type" : array_types[metaField.type()],
+    "type" : array_types[field_type],
     "pk": metaField.isPrimaryKey(),
     "unique": metaField.isUnique(),
     "searchable": metaField.isSearchable(),
