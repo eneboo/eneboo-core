@@ -894,7 +894,8 @@ function updateTable(dataStr)
 
   var root = newXml.firstChild();
   var tableName = root.namedItem("name").toElement().text();
-  
+  const label = "updateTable(" + tableName + ") : ";
+    
   var cachePath = sys.diskCacheAbsDirPath();
   if (!cachePath.endsWith("/")) {
     cachePath += "/";
@@ -907,25 +908,26 @@ function updateTable(dataStr)
   const changes = resolveDiffs(root);
   var ok = changes != false;
 
+ 
   
 
   if (ok) {
     const errors = changes['errors'];
     if (errors.length > 0) {
       for (var i = 0; i < errors.length; i++) {
-        debug("Error :: " + errors[i]);
+        debug(label + "Error :: " + errors[i]);
         ok = false;
       }
     }
 
     if (ok) {
       if (changes['dirty'].length > 0 || changes['new'].length > 0 || changes['deleted'].length > 0) {
-        debug("Cambios en " + tableName);
+        debug(label + "¡Cambios detectados!");
         ok = backupTable(tableName, sqlFileName);
-        debug("Backup " + (ok ? "ok": "ko"));
+        debug(label + "Backup " + (ok ? "ok": "ko"));
         if (ok) {
           ok = applyChanges(tableName, changes);
-          debug("Cambios aplicados " + (ok ? "ok": "ko"));
+          debug(label + "Cambios aplicados " + (ok ? "ok": "ko"));
           if (ok) {
               ok = updateMetadata(tableName, dataStr);
               if (ok){
@@ -934,10 +936,14 @@ function updateTable(dataStr)
           } 
           
         if (!ok) {
-            debug("Error aplicando cambios a tabla " + tableName + ".\nLa copia de respaldo está en " + sqlFileName + ".sql");
+            debug(label + "Error aplicando cambios a tabla " + tableName + ".\nLa copia de respaldo está en " + sqlFileName + ".sql");
           }
         }
-      }  
+      } else {
+        // No hay cambios.
+        debug(label + "sin cambios");
+        return true;
+      } 
     }
   }
   
@@ -1649,29 +1655,21 @@ function loadFilesDef(un, legacy)
       dataFiles[fil.id] = fil;
     }
 
-    const modifiedTables = loadModified("mtd");
+    //const modifiedTables = loadModified("mtd");
 
     if (ok) {
       if (!legacy) {
         debug("Usando modo inmediato");
         var manager = aqApp.db().manager();
         for (key in dataFiles) {
-          for (idx in modifiedTables) {
-            if (modifiedTables[idx] == key) {
-              if (!updateTable(dataFiles[key].data)) {
-                debug("Error actualizando tabla " + key);
-                ok = false;
-                break;
-              
-              }
+          if (key.endsWith(".mtd")) {
+            if (!updateTable(dataFiles[key].data)) {
+              debug("Error actualizando tabla " + key);
+              ok = false;
+              break;
+            
             }
-
           }
-
-          if (!ok) {
-            break;
-          }
-
         }
       } else {
         debug("Usando modo tradicional");
