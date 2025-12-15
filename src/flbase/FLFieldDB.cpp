@@ -1546,7 +1546,7 @@ if (useFirstRefresh_) {
     qWarning("FLFieldDB::searchValue() : " + v.toString());
     if (v.isValid() && !v.isNull()) {
       
-      if (!field.isCompoundKey()) {
+      if (!field->isCompoundKey()) {
         qWarning("FLFieldDB::searchValue() : Aplicando valor al campo paso 1");
         setValue(QVariant());
       }
