@@ -490,10 +490,13 @@ void FLFieldDB::updateValue(const QString &t)
     s = ::qt_cast<FLLineEdit *>(editor_)->text();
   }
 
-  if (s.isEmpty())
+  if (s.isEmpty()) {
+    qWarning(tr("FLFieldDB::updateValue() : No se aplica valor ") + tAux);
     cursor_->setValueBuffer(fieldName_, QVariant());
-  else
+  } else {
+    qWarning(tr("FLFieldDB::updateValue() : Se aplica valor ") + s);
     cursor_->setValueBuffer(fieldName_, s);
+  }
 
   if (isVisible() && hasFocus() && field->type() == QVariant::String &&
       field->length() == s.length())
@@ -1540,8 +1543,15 @@ if (useFirstRefresh_) {
       QTimer::singleShot(0, objTdb->lineEditSearch, SLOT(setFocus()));
     }
     QVariant v(f->exec(field->relationM1()->foreignField()));
+    qWarning("FLFieldDB::searchValue() : " + v.toString());
     if (v.isValid() && !v.isNull()) {
-      setValue(QVariant());
+      
+      if (!field.isCompoundKey()) {
+        qWarning("FLFieldDB::searchValue() : Aplicando valor al campo paso 1");
+        setValue(QVariant());
+      }
+      
+      qWarning("FLFieldDB::searchValue() : Aplicando valor al campo paso 2");
       setValue(v);
     }
   }
