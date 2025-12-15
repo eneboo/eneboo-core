@@ -1541,7 +1541,11 @@ if (useFirstRefresh_) {
     }
     QVariant v(f->exec(field->relationM1()->foreignField()));
     if (v.isValid() && !v.isNull()) {
-      setValue(QVariant());
+      if (!field->isCompoundKey()) {
+        setValue(QVariant());
+      } else {
+        qWarning("FLFieldDB::searchValue() : Omitiendo setValue(QVariant()) en CompoundKey");
+      }
       setValue(v);
     }
   }
