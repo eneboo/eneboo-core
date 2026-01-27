@@ -26,7 +26,7 @@
 MReportViewer::MReportViewer(QWidget *parent, const char *name) :
   QWidget(parent, name), progress(0), totalSteps(0), printer(0),
   posprinter(0), numCopies_(1), printToPos_(false),
-  printerName_(QString::null), dpi_(300), colorMode_(PrintColor)
+  printerName_(QString::null), dpi_(300), colorMode_(PrintColor), displayReport_(0)
 {
 #if defined(Q_OS_WIN32) || defined(Q_OS_MACX)
   psprinter = 0;
@@ -119,7 +119,7 @@ bool MReportViewer::renderReport(int initRow, int initCol,
 bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
 {
   bool append = flags & MReportViewer::Append;
-  bool displayReport = flags & MReportViewer::Display;
+  displayReport_ = flags & MReportViewer::Display;
   bool pageBreak = flags & MReportViewer::PageBreak;
 
   if (!rptEngine)
@@ -144,7 +144,7 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   // Render the report
   report = rptEngine->renderReport(initRow, initCol, report, flags);
   insertChild(report);
-  if (displayReport) {
+  if (displayReport_) {
     printToPos_ = report->printToPos();
     qWarning("printToPos es %s", (printToPos_ ? "SI" : "NO"));
   }
@@ -154,7 +154,7 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   }
 
   // Display the first page of the report
-  if (displayReport && report != 0 && report->getFirstPage() != 0) {
+  if (displayReport_ && report != 0 && report->getFirstPage() != 0) {
     display->setPageDimensions(report->pageDimensions());
     display->setPage(report->getFirstPage());
     display->show();
@@ -989,17 +989,20 @@ void MReportViewer::slotRenderProgress(int p)
   if (!rptEngine)
     return;
 
-  if (!progress) {
-    totalSteps = rptEngine->getRenderSteps();
-    if (totalSteps <= 0)
-      totalSteps = 1;
-    progress = new QProgressDialog(tr("Creando informe..."), tr("Cancelar"), totalSteps, 0, tr("progreso"), true);
-    progress->setMinimumDuration(M_PROGRESS_DELAY);
-    connect(progress, SIGNAL(canceled()), rptEngine, SLOT(slotCancelRendering()));
-  }
+  if (displayReport_) {
 
-  progress->setProgress(p);
-  qApp->processEvents();
+    if (!progress) {
+      totalSteps = rptEngine->getRenderSteps();
+      if (totalSteps <= 0)
+        totalSteps = 1;
+      progress = new QProgressDialog(tr("Creando informe..."), tr("Cancelar"), totalSteps, 0, tr("progreso"), true);
+      progress->setMinimumDuration(M_PROGRESS_DELAY);
+      connect(progress, SIGNAL(canceled()), rptEngine, SLOT(slotCancelRendering()));
+    }
+
+    progress->setProgress(p);
+    qApp->processEvents();
+  }
 }
 
 // Return the preferred size.
