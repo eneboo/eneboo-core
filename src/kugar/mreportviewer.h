@@ -144,6 +144,7 @@ protected:
   QString printerName_;
   int dpi_;
   uint colorMode_;
+  bool displayReport_;
 };
 
 inline void MReportViewer::setNumCopies(const int numCopies)
