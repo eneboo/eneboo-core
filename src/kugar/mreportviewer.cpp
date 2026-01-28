@@ -26,7 +26,7 @@
 MReportViewer::MReportViewer(QWidget *parent, const char *name) :
   QWidget(parent, name), progress(0), totalSteps(0), printer(0),
   posprinter(0), numCopies_(1), printToPos_(false),
-  printerName_(QString::null), dpi_(300), colorMode_(PrintColor), displayReport_(0)
+  printerName_(QString::null), dpi_(300), colorMode_(PrintColor), displayReport_(false)
 {
 #if defined(Q_OS_WIN32) || defined(Q_OS_MACX)
   psprinter = 0;
