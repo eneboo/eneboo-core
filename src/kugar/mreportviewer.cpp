@@ -990,7 +990,7 @@ void MReportViewer::slotRenderProgress(int p)
     return;
 
   if (displayReport_) {
-
+    qWarning("Muestra!!");
     if (!progress) {
       totalSteps = rptEngine->getRenderSteps();
       if (totalSteps <= 0)
