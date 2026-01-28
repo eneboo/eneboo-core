@@ -3353,7 +3353,7 @@ function keepAlive()
     const connName = connections[i];
     try {
       //debug("keep alive " + connName);
-      AQUtil.execSql("select current_time as " + connName, connName);
+      AQUtil.execSql("select current_time as " + connName + "_conn", connName);
     } catch (e) {
       debug("Error keep alive " + connName + ": " + e.toString());
     }
