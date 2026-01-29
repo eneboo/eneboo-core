@@ -118,12 +118,20 @@ bool MReportViewer::renderReport(int initRow, int initCol,
 
 bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
 {
+  qWarning("renderReport() called");
+  qWarning("Valor PRE display: %s", (displayReport_ ? "true" : "false"));
   bool append = flags & MReportViewer::Append;
   displayReport_ = flags & MReportViewer::Display;
   bool pageBreak = flags & MReportViewer::PageBreak;
 
   if (!rptEngine)
     return false;
+
+  qWarning("Valor flags %d",  flags);
+  qWarning("Valor append %s", (append ? "true" : "false"));
+  qWarning("Valor display: %s", (displayReport_ ? "true" : "false"));
+  qWarning("Valor pageBreak: %s", (pageBreak ? "true" : "false"));
+
 
   // Check if a previous report exists and
   // if so de-allocated it
@@ -145,6 +153,7 @@ bool MReportViewer::renderReport(int initRow, int initCol, uint flags)
   report = rptEngine->renderReport(initRow, initCol, report, flags);
   insertChild(report);
   if (displayReport_) {
+    
     printToPos_ = report->printToPos();
     qWarning("printToPos es %s", (printToPos_ ? "SI" : "NO"));
   }
