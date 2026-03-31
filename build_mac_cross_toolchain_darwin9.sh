@@ -481,6 +481,42 @@ else
     ok "SDK instalado: ${SDK_DEST}"
 fi
 
+# ── 4b. Parche SDK: neutralizar __AVAILABILITY_INTERNAL_* para GCC 4.2.4 ────
+# GCC 4.2.4 no soporta __attribute__((availability(...))). Las cabeceras del
+# SDK 10.5 usan estas macros en declaraciones de funciones. Si no se definen
+# como vacías, qmake y eneboo fallan al compilar con Carbon/CoreServices.
+step "Parche SDK: availability macros para GCC 4.2.4"
+
+AVAIL_H="${SDK_DEST}/usr/include/AvailabilityMacros.h"
+AVAIL_INT_H="${SDK_DEST}/usr/include/AvailabilityInternal.h"
+
+patch_availability_header() {
+    local f="$1"
+    [[ -f "$f" ]] || return 0
+    if grep -q "GCC42_PATCHED" "$f" 2>/dev/null; then
+        ok "$(basename $f) ya parcheado"
+        return 0
+    fi
+    # Sustituir __attribute__((availability(...))) por nada
+    $SUDO sed -i \
+        's/__attribute__((availability([^)]*)))/  /g' \
+        "$f" 2>/dev/null || true
+    # Añadir marca para no reparchear
+    echo "/* GCC42_PATCHED */" | $SUDO tee -a "$f" > /dev/null
+    ok "$(basename $f) parcheado"
+}
+
+patch_availability_header "$AVAIL_H"
+patch_availability_header "$AVAIL_INT_H"
+
+# Parchear también todos los headers de frameworks que usen estas macros
+find "${SDK_DEST}" -name "*.h" -not -type l 2>/dev/null | while read -r f; do
+    if grep -q '__attribute__((availability(' "$f" 2>/dev/null; then
+        $SUDO sed -i 's/__attribute__((availability([^)]*)))//g' "$f" 2>/dev/null || true
+    fi
+done
+ok "Parche availability macros aplicado en el SDK"
+
 # ── 5. GCC cross-compiler ────────────────────────────────────────────────────
 step "GCC ${GCC_VERSION} cross-compiler → ${TARGET}"
 
