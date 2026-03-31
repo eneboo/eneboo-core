@@ -136,9 +136,9 @@ install_cmake_from_source() {
   else
     fail "No se encuentra g++ ni clang++ para compilar cmake."
   fi
-  export CXX=$CMAKE_CXX
-  export CC=$(command -v gcc || command -v cc || echo cc)
-  ./bootstrap || fail "cmake bootstrap falló"
+  CMAKE_CC=$(command -v gcc || command -v cc)
+  ./bootstrap -- -DCMAKE_CXX_COMPILER="${CMAKE_CXX}" -DCMAKE_C_COMPILER="${CMAKE_CC}" \
+    || fail "cmake bootstrap falló"
   make        || fail "cmake make falló"
   $SUDO make install || fail "cmake make install falló"
   cd - > /dev/null
