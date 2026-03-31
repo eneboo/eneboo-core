@@ -181,11 +181,28 @@ if $need_clang; then
     fi
 
     # Ubuntu 12.04 tiene GCC 4.6 por defecto pero LLVM 3.5 requiere >= 4.7.
-    # gcc-4.7 está disponible en los repos oficiales de precise.
-    if ! command -v gcc-4.7 &>/dev/null; then
-        echo "  Instalando gcc-4.7 / g++-4.7 desde repos de Ubuntu 12.04 ..."
+    # old-releases.ubuntu.com solo tiene gcc-4.7-base (runtime), no el compilador.
+    # Se usa el PPA ubuntu-toolchain-r que sí tiene gcc-4.7 para precise.
+    if ! command -v gcc-4.7 &>/dev/null || ! command -v g++-4.7 &>/dev/null; then
+        echo "  Añadiendo PPA ubuntu-toolchain-r para gcc-4.7 ..."
+        $SUDO apt-get install -y python-software-properties 2>/dev/null || \
+            $SUDO apt-get install -y software-properties-common 2>/dev/null || true
+
+        # Añadir PPA manualmente (sin add-apt-repository por si no está disponible)
+        echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main" \
+            | $SUDO tee /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+
+        # Clave GPG del PPA
+        $SUDO apt-key adv --keyserver keyserver.ubuntu.com \
+                          --recv-keys 1E9377A2BA9EF27F \
+            || $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
+                                 --recv-keys 1E9377A2BA9EF27F \
+            || warn "No se pudo importar la clave GPG del PPA — continuando de todas formas"
+
+        $SUDO apt-get update -q
+
         $SUDO apt-get install -y gcc-4.7 g++-4.7 \
-            || fail "No se pudo instalar gcc-4.7 — comprueba /etc/apt/sources.list"
+            || fail "No se pudo instalar gcc-4.7 desde ubuntu-toolchain-r PPA"
     fi
     ok "gcc-4.7: $(gcc-4.7 --version | head -1)"
 
