@@ -42,7 +42,9 @@
 #define __IMAGECAPTURE__
 #endif
 #include <Carbon/Carbon.h>
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 101200
 #include <QuickTime/Movies.h>
+#endif
 #undef QT_BUILD_KEY
 #include <qconfig.h> //We need this to get QT_MACOSX_VERSION
 #include "qglobal.h"

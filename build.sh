@@ -214,6 +214,9 @@ fi
 if [ "$OPT_QMAKESPEC" == "macx-g++-cross" ]; then
   BUILD_MACX="yes"
 fi
+if [ "$OPT_QMAKESPEC" == "macx-clang-cross" ]; then
+  BUILD_MACX="yes"
+fi
 if [ "$OPT_QUICK_CLIENT" == "yes" ]; then
   QT_DEBUG="$QT_DEBUG -DFL_QUICK_CLIENT"
   BUILD_NUMBER="$BUILD_NUMBER-quick"
@@ -272,9 +275,14 @@ echo -e "\nUtilidad de compilación e instalación de Eneboo $VERSION ( - ESTABL
 echo -e "(C) 2003-2013 InfoSiAL, S.L. http://infosial.com - http://abanq.org\n"
 echo -e "(C) 2012 Gestiweb Integración de Soluciones Web S.L.  http://www.gestiweb.com \n"
 
-if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cross" ];then
-  export CC=${CROSS}gcc
-  export CXX=${CROSS}g++
+if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cross" -o "$OPT_QMAKESPEC" == "macx-clang-cross" ];then
+  if [ "$OPT_QMAKESPEC" == "macx-clang-cross" ]; then
+    export CC=${CROSS}clang
+    export CXX=${CROSS}clang++
+  else
+    export CC=${CROSS}gcc
+    export CXX=${CROSS}g++
+  fi
   export LD=${CROSS}ld
   export AR=${CROSS}ar
   export AS=${CROSS}as
@@ -471,6 +479,9 @@ echo -e "\n\nRecopilando datos de la compilación \n"
 
 if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cross" ];then
 DATOS_CROSS="Versión CROSS-GCC: $CC ( $(${CROSS}gcc -v 2> temp && cat temp | grep 'gcc ver' | cut -f3 -d ' ') ) \n"
+fi
+if  [ "$OPT_QMAKESPEC" == "macx-clang-cross" ];then
+DATOS_CROSS="Versión CROSS-Clang: $CC ( $(${CROSS}clang --version 2>/dev/null | head -1) ) \n"
 fi
 DATOS_COMPILACION="\n Versión eneboo: $VERSION \n  Mkspecs: $OPT_QMAKESPEC \n $DATOS_CROSS Make: $CMD_MAKE \n Versión GCC: $(gcc -v 2> temp && cat temp | grep 'gcc ver' | cut -f3 -d ' ') \n\n Opciones de Compilación : \n QWT: $OPT_QWT \n DIGIDOC: $OPT_DIGIDOC \n MULTICORE: $OPT_MULTICORE \n HOARD: $OPT_HOARD \n REBUILD_QT: $REBUILD_QT \n QT_DEBUG_OPT: $QT_DEBUG_OPT" 
 
@@ -702,7 +713,7 @@ fi
 if  [ "$OPT_QMAKESPEC" == "macx-g++-cross" ];then
  case `uname -m` in
   amd64 | x86_64)
-    ln -s /opt/mac/cross/uic_64 $PWD/src/qt/bin/uic   
+    ln -s /opt/mac/cross/uic_64 $PWD/src/qt/bin/uic
   ;;
   *)
     ln -s /opt/mac/cross/uic_32 $PWD/src/qt/bin/uic
@@ -716,6 +727,14 @@ ln -s /opt/mac/cross/libz.1.2.7_ppc.dylib $PWD/src/qt/lib/libz.dylib
 fi
 fi
 
+if  [ "$OPT_QMAKESPEC" == "macx-clang-cross" ];then
+  # uic se compila para el host Linux; el binario generado por Qt ya estará en bin/
+  # Crear symlink a libiconv y libz desde el SDK de osxcross
+  OSXCROSS_SDK="/opt/osxcross/SDK/MacOSX12.3.sdk"
+  ln -sf ${OSXCROSS_SDK}/usr/lib/libiconv.tbd $PWD/src/qt/lib/libiconv.dylib 2>/dev/null || true
+  ln -sf ${OSXCROSS_SDK}/usr/lib/libz.tbd $PWD/src/qt/lib/libz.dylib 2>/dev/null || true
+fi
+
 cd $QTDIR
 $CMD_MAKE $MAKE_INSTALL || exit 1
 
@@ -726,7 +745,7 @@ cd $BASEDIR/src/$QSADIR
 cp -fv ../qt/.qmake.cache .qmake.cache
 cp -fv ../qt/.qmake.cache src/$QSADIR/
 cp -fv ../qt/.qmake.cache src/plugin/
-if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cross" ];then
+if  [ "$OPT_QMAKESPEC" == "win32-g++-cross" -o "$OPT_QMAKESPEC" == "macx-g++-cross" -o "$OPT_QMAKESPEC" == "macx-clang-cross" ];then
   cd configure2
   export QTDIR=/usr/share/qt3
   /usr/bin/qmake-qt3 -nocache -spec linux-g++ configure2.pro

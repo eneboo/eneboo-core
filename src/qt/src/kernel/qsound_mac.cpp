@@ -36,6 +36,27 @@
 
 #ifndef QT_NO_SOUND
 
+#include "qt_mac.h"
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= 101200
+// QuickTime (Movies API) is not available in macOS 12+ SDK.
+// Provide a no-op audio server so the build succeeds.
+class QAuServerMacStub : public QAuServer {
+    Q_OBJECT
+public:
+    QAuServerMacStub(QObject *parent) : QAuServer(parent, "Mac Audio Server (stub)") {}
+    void play(const QString &) {}
+    void play(QSound *) {}
+    void stop(QSound *) {}
+    bool okay() { return FALSE; }
+};
+QAuServer *qt_new_audio_server()
+{
+    return new QAuServerMacStub(qApp);
+}
+#include "qsound_mac.moc"
+#else // MAC_OS_X_VERSION_MAX_ALLOWED < 101200
+
 #include <qdir.h>
 #include <qpixmap.h>
 #include <qpainter.h>
@@ -201,4 +222,5 @@ QAuServer* qt_new_audio_server()
 
 #include "qsound_mac.moc"
 
+#endif // MAC_OS_X_VERSION_MAX_ALLOWED < 101200
 #endif // QT_NO_SOUND
