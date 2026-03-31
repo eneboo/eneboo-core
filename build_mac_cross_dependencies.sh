@@ -136,8 +136,10 @@ install_cmake_from_source() {
   else
     fail "No se encuentra g++ ni clang++ para compilar cmake."
   fi
-  $SUDO env CXX=$CMAKE_CXX ./bootstrap || fail "cmake bootstrap falló"
-  $SUDO make        || fail "cmake make falló"
+  export CXX=$CMAKE_CXX
+  export CC=$(command -v gcc || command -v cc || echo cc)
+  ./bootstrap || fail "cmake bootstrap falló"
+  make        || fail "cmake make falló"
   $SUDO make install || fail "cmake make install falló"
   cd - > /dev/null
   ok "cmake ${CMAKE_MIN} instalado desde fuente."
