@@ -510,10 +510,23 @@ patch_availability_header "$AVAIL_H"
 patch_availability_header "$AVAIL_INT_H"
 
 # Parchear también todos los headers de frameworks que usen estas macros
-find "${SDK_DEST}" -name "*.h" -not -type l 2>/dev/null | while read -r f; do
-    if grep -q '__attribute__((availability(' "$f" 2>/dev/null; then
-        $SUDO sed -i 's/__attribute__((availability([^)]*)))//g' "$f" 2>/dev/null || true
-    fi
+# Parchear todos los headers del SDK que usen __attribute__((availability(...)))
+# Usar python para evitar problemas de escape con sed y paréntesis anidados
+find "${SDK_DEST}" -name "*.h" -not -type l 2>/dev/null \
+  | xargs grep -l '__attribute__.*availability' 2>/dev/null \
+  | while read -r f; do
+    $SUDO python - "$f" << 'PYEOF' 2>/dev/null || true
+import sys, re
+f = sys.argv[1]
+try:
+    content = open(f).read()
+    # Eliminar __attribute__((availability(...))) con paréntesis anidados
+    patched = re.sub(r'__attribute__\s*\(\s*\(\s*availability\s*\([^)]*\)\s*\)\s*\)', '', content)
+    if patched != content:
+        open(f, 'w').write(patched)
+except Exception:
+    pass
+PYEOF
 done
 ok "Parche availability macros aplicado en el SDK"
 
@@ -522,8 +535,10 @@ step "GCC ${GCC_VERSION} cross-compiler → ${TARGET}"
 
 GCC_STAMP="${INSTALL_PREFIX}/bin/${TARGET}-gcc"
 
-if [[ -x "$GCC_STAMP" ]]; then
-    ok "GCC cross ya instalado: $GCC_STAMP"
+# GCC siempre se recompila para que los parches (t-darwin, etc.) tomen efecto
+$SUDO rm -f "${GCC_STAMP}"
+if false; then
+    ok "GCC cross ya instalado: $GCC_STAMP"  # rama muerta, nunca se ejecuta
 else
     GCC_SRC="${BUILD_DIR}/gcc-${GCC_VERSION}"
     GCC_BUILD="${BUILD_DIR}/gcc-${GCC_VERSION}-build"
