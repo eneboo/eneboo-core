@@ -189,9 +189,28 @@
 #  if !defined(MAC_OS_X_VERSION_10_6)
 #       define MAC_OS_X_VERSION_10_6 MAC_OS_X_VERSION_10_5 + 1
 #  endif
-#  if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_6)
-#    error "This version of Mac OS X is unsupported"
+#  if !defined(MAC_OS_X_VERSION_10_7)
+#       define MAC_OS_X_VERSION_10_7 MAC_OS_X_VERSION_10_6 + 1
 #  endif
+#  if !defined(MAC_OS_X_VERSION_10_8)
+#       define MAC_OS_X_VERSION_10_8 MAC_OS_X_VERSION_10_7 + 1
+#  endif
+#  if !defined(MAC_OS_X_VERSION_10_9)
+#       define MAC_OS_X_VERSION_10_9 MAC_OS_X_VERSION_10_8 + 1
+#  endif
+#  if !defined(MAC_OS_X_VERSION_10_10)
+#       define MAC_OS_X_VERSION_10_10 MAC_OS_X_VERSION_10_9 + 1
+#  endif
+#  if !defined(MAC_OS_X_VERSION_10_11)
+#       define MAC_OS_X_VERSION_10_11 MAC_OS_X_VERSION_10_10 + 1
+#  endif
+#  if !defined(MAC_OS_X_VERSION_10_12)
+#       define MAC_OS_X_VERSION_10_12 MAC_OS_X_VERSION_10_11 + 1
+#  endif
+#  if !defined(MAC_OS_X_VERSION_10_13)
+#       define MAC_OS_X_VERSION_10_13 MAC_OS_X_VERSION_10_12 + 1
+#  endif
+/* macOS 10.7+ soportado mediante cross-compilación con SDK moderno */
 #endif
 
 

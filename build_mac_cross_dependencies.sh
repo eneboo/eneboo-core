@@ -5,7 +5,7 @@
 # de eneboo hacia macOS x86_64 usando osxcross + Clang.
 #
 # Uso:
-#   sudo ./build_mac_cross_dependencies.sh [--sdk /ruta/al/MacOSX12.3.sdk.tar.xz]
+#   sudo ./build_mac_cross_dependencies.sh [--sdk /ruta/al/MacOSX10.13.sdk.tar.xz]
 #
 # Si no se proporciona --sdk, el script espera que el SDK ya esté en
 # osxcross/tarballs/ o en /opt/osxcross (instalación previa).
@@ -16,7 +16,7 @@ OSXCROSS_INSTALL_PREFIX="/opt/osxcross"
 OSXCROSS_REPO="https://github.com/tpoechtrager/osxcross"
 OSXCROSS_CLONE_DIR="/tmp/osxcross_build"
 SDK_TARBALL=""
-SDK_VERSION="12.3"
+SDK_VERSION="10.13"
 
 # ── Parseo de argumentos ────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     -h|--help)
-      echo "Uso: $0 [--sdk /ruta/MacOSX12.3.sdk.tar.xz] [--prefix /opt/osxcross] [--sdk-version 12.3]"
+      echo "Uso: $0 [--sdk /ruta/MacOSX10.13.sdk.tar.xz] [--prefix /opt/osxcross] [--sdk-version 10.13]"
       exit 0
       ;;
     *)
@@ -110,58 +110,56 @@ echo "── Dependencias del sistema ──────────────
 
 check_cmd git         git
 
+# build-essential: gcc, g++, binutils y libc-dev — clang los necesita como backend para enlazar
+echo "  Asegurando build-essential ..."
+case "$PKG_MANAGER" in
+  apt) $SUDO apt-get install -y build-essential ;;
+  dnf|yum) $SUDO "$PKG_MANAGER" groupinstall -y "Development Tools" ;;
+  pacman) $SUDO pacman -S --noconfirm base-devel ;;
+  *) warn "Instala gcc, g++, binutils y libc-dev manualmente." ;;
+esac
+check_cmd gcc         gcc
+check_cmd g++         g++
+check_cmd ld          binutils
+check_cmd ar          binutils
+
 # clang: osxcross requiere >= 3.5. Si el del sistema es inferior, instalar desde llvm.org
 CLANG_MIN_MAJOR=3
 CLANG_MIN_MINOR=5
 
 install_clang_from_llvm() {
-  local CLANG_VER="3.5.0"
-  local LLVM_URL="http://releases.llvm.org/${CLANG_VER}/llvm-${CLANG_VER}.src.tar.xz"
-  local CFE_URL="http://releases.llvm.org/${CLANG_VER}/cfe-${CLANG_VER}.src.tar.xz"
-  local CLANG_TMPDIR="/tmp/clang_build"
-  local LLVM_SRC="${CLANG_TMPDIR}/llvm-${CLANG_VER}.src"
-
-  echo "  Descargando fuentes de LLVM/Clang ${CLANG_VER} ..."
-  mkdir -p "${CLANG_TMPDIR}"
+  echo "  Instalando clang mediante el script oficial de LLVM ..."
   check_cmd wget wget
+  wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh
+  chmod +x /tmp/llvm.sh
+  $SUDO bash /tmp/llvm.sh || fail "Falló la instalación de LLVM via llvm.sh"
 
-  wget -O "${CLANG_TMPDIR}/llvm-${CLANG_VER}.src.tar.xz" "${LLVM_URL}" \
-    || fail "No se pudo descargar LLVM desde ${LLVM_URL}"
-  wget -O "${CLANG_TMPDIR}/cfe-${CLANG_VER}.src.tar.xz" "${CFE_URL}" \
-    || fail "No se pudo descargar Clang desde ${CFE_URL}"
+  # Crear symlinks genéricos si el binario instalado tiene sufijo de versión
+  for bin in clang clang++; do
+    if ! command -v "$bin" &>/dev/null; then
+      local versioned
+      versioned=$(ls /usr/bin/${bin}-* 2>/dev/null | sort -V | tail -1)
+      if [[ -n "$versioned" ]]; then
+        $SUDO ln -sf "$versioned" "/usr/bin/${bin}"
+        ok "Symlink creado: ${bin} -> ${versioned}"
+      fi
+    fi
+  done
+  ok "clang instalado: $(clang --version 2>/dev/null | head -1)"
+}
 
-  echo "  Extrayendo fuentes ..."
-  tar xf "${CLANG_TMPDIR}/llvm-${CLANG_VER}.src.tar.xz" -C "${CLANG_TMPDIR}"
-  tar xf "${CLANG_TMPDIR}/cfe-${CLANG_VER}.src.tar.xz"  -C "${CLANG_TMPDIR}"
-  # clang (cfe) debe estar dentro de llvm/tools/clang
-  mv "${CLANG_TMPDIR}/cfe-${CLANG_VER}.src" "${LLVM_SRC}/tools/clang"
-
-  echo "  Configurando con cmake ..."
-  mkdir -p "${CLANG_TMPDIR}/build"
-  cd "${CLANG_TMPDIR}/build"
-  cmake "${LLVM_SRC}" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DLLVM_ENABLE_ASSERTIONS=OFF \
-    -DLLVM_TARGETS_TO_BUILD="X86" \
-    -DLLVM_BUILD_TOOLS=ON \
-    -DCLANG_BUILD_EXAMPLES=OFF \
-    -DLLVM_BUILD_EXAMPLES=OFF \
-    || fail "cmake de LLVM/Clang falló"
-
-  echo "  Compilando LLVM + Clang (puede tardar bastante) ..."
-  make -j$(nproc) || fail "make de LLVM/Clang falló"
-
-  echo "  Instalando ..."
-  $SUDO make install || fail "make install de LLVM/Clang falló"
-
-  cd - > /dev/null
-  ok "clang ${CLANG_VER} compilado e instalado en /usr/local/bin/clang"
+clang_real_bin() {
+  for ver in 20 19 18 17 16 15 14 13 12 11; do
+    command -v "clang-${ver}" &>/dev/null && echo "clang-${ver}" && return 0
+  done
+  command -v clang || true
 }
 
 clang_version_ok() {
-  local ver major minor
-  ver=$(clang --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+  local bin ver major minor
+  bin=$(clang_real_bin)
+  [[ -z "$bin" ]] && return 1
+  ver=$("$bin" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | head -1)
   [[ -z "$ver" ]] && return 1
   major=$(echo "$ver" | cut -d. -f1)
   minor=$(echo "$ver" | cut -d. -f2)
@@ -170,7 +168,7 @@ clang_version_ok() {
   return 1
 }
 
-if ! command -v clang &>/dev/null; then
+if ! command -v clang &>/dev/null && ! clang_real_bin | grep -q clang; then
   warn "clang no encontrado. Instalando desde LLVM ..."
   install_clang_from_llvm
 elif ! clang_version_ok; then
@@ -288,17 +286,45 @@ echo "── Dependencias de build del host (eneboo) ─────────
 check_cmd g++          g++
 check_cmd flex         flex
 check_cmd yacc         bison        # yacc suele ser bison
-check_cmd qmake-qt3    qt3-dev-tools 2>/dev/null || warn "qmake-qt3 no encontrado (necesario para QSA configure2)"
+# qmake-qt3: solo disponible en Ubuntu antiguo; en Ubuntu moderno Qt3 no está en repos.
+# El proyecto compila su propio Qt3 y genera qmake internamente, así que no es obligatorio.
+if command -v qmake-qt3 &>/dev/null; then
+  ok "qmake-qt3 encontrado ($(command -v qmake-qt3))"
+else
+  warn "qmake-qt3 no encontrado. En Ubuntu moderno Qt3 no está en los repos — el build genera su propio qmake."
+fi
 
 # ── Comprobación / instalación de osxcross ───────────────────────────────────
 echo ""
 echo "── osxcross ────────────────────────────────────────────"
 
-CROSS_BIN="${OSXCROSS_INSTALL_PREFIX}/bin/x86_64-apple-darwin21-clang"
+CROSS_BIN="${OSXCROSS_INSTALL_PREFIX}/bin/x86_64-apple-darwin17-clang"
+
+check_osxcross_sdk_version() {
+  # El wrapper de osxcross es un script shell que contiene la ruta al SDK
+  # Buscamos la línea: OSXCROSS_SDK="MacOSX12.3.sdk" o -isysroot .../MacOSX12.3.sdk
+  local wrapper="$CROSS_BIN"
+  local detected
+  detected=$(grep -oE 'MacOSX[0-9]+\.[0-9]+\.sdk' "$wrapper" 2>/dev/null | head -1)
+  if [[ -z "$detected" ]]; then
+    # Alternativa: preguntar al compilador su sysroot
+    detected=$("$wrapper" -v 2>&1 | grep -oE 'MacOSX[0-9]+\.[0-9]+\.sdk' | head -1)
+  fi
+  echo "${detected:-desconocido}"
+}
 
 if [[ -x "$CROSS_BIN" ]]; then
-  ok "osxcross ya instalado: $CROSS_BIN"
-  ok "Versión: $("$CROSS_BIN" --version 2>&1 | head -1)"
+  DETECTED_SDK=$(check_osxcross_sdk_version)
+  EXPECTED_SDK="MacOSX${SDK_VERSION}.sdk"
+  ok "osxcross instalado: $CROSS_BIN"
+  ok "Versión compilador: $("$CROSS_BIN" --version 2>&1 | head -1)"
+  if [[ "$DETECTED_SDK" == "$EXPECTED_SDK" ]]; then
+    ok "SDK del compilador cruzado: ${DETECTED_SDK} (coincide con SDK_VERSION=${SDK_VERSION})"
+  else
+    warn "SDK del compilador cruzado detectado: ${DETECTED_SDK}"
+    warn "SDK esperado: ${EXPECTED_SDK} (SDK_VERSION=${SDK_VERSION})"
+    warn "Puede haber inconsistencia — considera borrar /opt/osxcross y relanzar el script."
+  fi
 else
   warn "osxcross no encontrado en ${OSXCROSS_INSTALL_PREFIX}."
 
@@ -352,10 +378,92 @@ else
 
     echo "  Compilando osxcross (esto puede tardar varios minutos) ..."
     cd "${OSXCROSS_CLONE_DIR}"
-    SDK_VERSION="${SDK_VERSION}" OSXCROSS_INSTALL_DESTDIR="${OSXCROSS_INSTALL_PREFIX}" \
-      TARGET_DIR="${OSXCROSS_INSTALL_PREFIX}" bash build.sh
 
-    if [[ -x "${OSXCROSS_INSTALL_PREFIX}/bin/x86_64-apple-darwin21-clang" ]]; then
+    # Buscar el binario real de clang: preferir el versionado (clang-20, clang-14...)
+    # sobre el genérico /usr/bin/clang que en Ubuntu puede ser un stub
+    find_real_clang() {
+      for ver in 20 19 18 17 16 15 14 13 12 11; do
+        local bin
+        bin=$(command -v "clang-${ver}" 2>/dev/null || true)
+        if [[ -n "$bin" ]]; then
+          if echo "int main(){return 0;}" | "$bin" -x c - -o /tmp/_clang_probe 2>/dev/null; then
+            rm -f /tmp/_clang_probe
+            echo "$bin"   # ruta absoluta
+            return 0
+          fi
+        fi
+      done
+      command -v clang || true
+    }
+    find_real_clangpp() {
+      for ver in 20 19 18 17 16 15 14 13 12 11; do
+        local bin
+        bin=$(command -v "clang++-${ver}" 2>/dev/null || true)
+        if [[ -n "$bin" ]]; then
+          echo "$bin"   # ruta absoluta
+          return 0
+        fi
+      done
+      command -v clang++ || true
+    }
+
+    CLANG_BIN=$(find_real_clang)
+    CLANGPP_BIN=$(find_real_clangpp)
+    [[ -n "$CLANG_BIN" ]]   || fail "clang no encontrado en PATH"
+    [[ -n "$CLANGPP_BIN" ]] || fail "clang++ no encontrado en PATH"
+    ok "Usando clang: ${CLANG_BIN}"
+
+    # Sobreescribir /usr/bin/clang y /usr/bin/clang++ si son stubs
+    # Los wrappers generados por osxcross llaman a 'clang' por nombre y deben encontrar el real
+    for pair in "clang:${CLANG_BIN}" "clang++:${CLANGPP_BIN}"; do
+      name="${pair%%:*}"
+      real="${pair##*:}"
+      generic="/usr/bin/${name}"
+      if [[ "$real" != "$generic" ]]; then
+        warn "Sobreescribiendo stub ${generic} -> ${real}"
+        $SUDO ln -sf "${real}" "${generic}"
+        ok "${generic} -> ${real}"
+      fi
+    done
+
+    if ! echo "int main(){return 0;}" | "${CLANG_BIN}" -x c - -o /tmp/_clang_test 2>/tmp/_clang_test.err; then
+      warn "clang no puede compilar. Error:"
+      cat /tmp/_clang_test.err
+      warn "Intentando instalar dependencias adicionales de clang ..."
+      if [[ "$PKG_MANAGER" == "apt" ]]; then
+        # Extraer versión mayor del nombre del binario (clang-20 → 20)
+        CLANG_VER_NUM=$(basename "${CLANG_BIN}" | grep -oE '[0-9]+$' || true)
+        if [[ -n "$CLANG_VER_NUM" ]]; then
+          $SUDO apt-get install -y \
+            "libclang-common-${CLANG_VER_NUM}-dev" \
+            "libclang-rt-${CLANG_VER_NUM}-dev" \
+            libc6-dev linux-libc-dev || true
+        else
+          $SUDO apt-get install -y libc6-dev linux-libc-dev || true
+        fi
+      fi
+      # Reintentar
+      if ! echo "int main(){return 0;}" | "${CLANG_BIN}" -x c - -o /tmp/_clang_test 2>/tmp/_clang_test.err; then
+        cat /tmp/_clang_test.err
+        fail "clang sigue sin poder compilar. Revisa los errores anteriores."
+      fi
+    fi
+    rm -f /tmp/_clang_test /tmp/_clang_test.err
+    ok "clang compila correctamente (${CLANG_BIN})"
+
+    # Exportar explícitamente CC/CXX y añadir /usr/bin al frente del PATH
+    # para que los subprocesos de osxcross encuentren clang por nombre y ruta
+    export CC="${CLANG_BIN}"
+    export CXX="${CLANGPP_BIN}"
+    export PATH="/usr/bin:/usr/local/bin:${PATH}"
+
+    UNATTENDED=1 \
+      SDK_VERSION="${SDK_VERSION}" \
+      OSXCROSS_INSTALL_DESTDIR="${OSXCROSS_INSTALL_PREFIX}" \
+      TARGET_DIR="${OSXCROSS_INSTALL_PREFIX}" \
+      bash build.sh
+
+    if [[ -x "${OSXCROSS_INSTALL_PREFIX}/bin/x86_64-apple-darwin17-clang" ]]; then
       ok "osxcross instalado correctamente en ${OSXCROSS_INSTALL_PREFIX}"
     else
       fail "La compilación de osxcross falló. Revisa la salida anterior."
@@ -364,12 +472,13 @@ else
   fi
 fi
 
+
 # ── Resumen final ────────────────────────────────────────────────────────────
 echo ""
 echo "════════════════════════════════════════════════════════"
 
 CROSS_OK=false
-if [[ -x "${OSXCROSS_INSTALL_PREFIX}/bin/x86_64-apple-darwin21-clang" ]]; then
+if [[ -x "${OSXCROSS_INSTALL_PREFIX}/bin/x86_64-apple-darwin17-clang" ]]; then
   CROSS_OK=true
 fi
 
