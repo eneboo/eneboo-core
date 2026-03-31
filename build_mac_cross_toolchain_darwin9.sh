@@ -314,6 +314,33 @@ STUB
         warn "otool/Makefile.in reemplazado con stub (no necesario para cross-compilación)"
     fi
 
+    # Parchear OutputFile.cpp en ld64: usa std::map::emplace con initializer_list
+    # que requiere libstdc++-4.8 completo. Lo reemplazamos con insert() equivalente
+    # que funciona con cualquier libstdc++ C++11.
+    OUTPUT_FILE=$(find . -name "OutputFile.cpp" -path "*/ld64/*" | head -1)
+    if [[ -n "$OUTPUT_FILE" ]]; then
+        # Línea: auto it = addedSymbols.emplace(symbolName, std::initializer_list<std::string>{name});
+        # Línea: auto it = hiddenSymbols.emplace(symbolName, std::initializer_list<std::string>{name});
+        sed -i \
+            's/auto it = \(addedSymbols\|hiddenSymbols\)\.emplace(\(.*\), std::initializer_list<std::string>{\(.*\)});/std::vector<std::string> _v_; _v_.push_back(\3); auto it = \1.insert(std::make_pair(\2, _v_));/g' \
+            "$OUTPUT_FILE" \
+        && warn "OutputFile.cpp parcheado: emplace → insert" \
+        || warn "No se pudo parchear OutputFile.cpp con sed (expresión compleja)"
+
+        # Parche alternativo más simple línea a línea si el sed anterior falla
+        python - "$OUTPUT_FILE" << 'PYEOF'
+import sys, re
+f = sys.argv[1]
+content = open(f).read()
+for var in ('addedSymbols', 'hiddenSymbols'):
+    pattern = r'auto it = ' + var + r'\.emplace\((\w+), std::initializer_list<std::string>\{(\w+)\}\);'
+    repl    = r'std::vector<std::string> _v_; _v_.push_back(\2); auto it = ' + var + r'.insert(std::make_pair(\1, _v_));'
+    content = re.sub(pattern, repl, content)
+open(f, 'w').write(content)
+print("OutputFile.cpp parcheado OK")
+PYEOF
+    fi
+
     # Regenerar configure si autoconf está disponible
     command -v autoconf &>/dev/null && autoconf 2>/dev/null || true
 
