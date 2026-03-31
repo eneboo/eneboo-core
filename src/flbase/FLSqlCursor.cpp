@@ -1615,7 +1615,7 @@ void FLSqlCursor::setValueBuffer(const QString &fN, const QVariant &v)
   }
   else
     d->buffer_->setValue(fN, vv);
-  qWarning("Emitiendo bufferChange por setValueBuffer de " d->metadata_->name() + "." + fN + ", valor: " + vv.toString());
+  qWarning("Emitiendo bufferChange por setValueBuffer de " + d->metadata_->name() + "." + fN + ", valor: " + QString(vv));
   emit bufferChanged(fN);
 }
 
