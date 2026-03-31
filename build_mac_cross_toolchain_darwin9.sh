@@ -287,17 +287,29 @@ else
     #
     # Parchear TODOS los Makefile.in y configure.ac del árbol fuente,
     # incluyendo subdirectorios (otool, etc.) que referencian ../libobjc2/libobjc.la
-    find . -name "Makefile.in" -o -name "Makefile.am" -o -name "configure.ac" \
+    # Parchear todos los Makefile.in/configure.ac del árbol para eliminar
+    # referencias a libobjc2 y otool (ambos tienen dependencias ObjC duras
+    # que el libtool/headers de Ubuntu 12.04 no puede satisfacer).
+    # Para cross-compilar C/C++ no son necesarios.
+    find . \( -name "Makefile.in" -o -name "Makefile.am" -o -name "configure.ac" \) \
         | while read -r f; do
-            if grep -q "libobjc" "$f" 2>/dev/null; then
-                sed -i \
-                    -e 's|\.\./libobjc2/libobjc\.la||g' \
-                    -e 's|\blibobjc2\b||g' \
-                    -e 's|-lobjc||g' \
-                    "$f"
-                warn "libobjc parchado: $f"
-            fi
+            sed -i \
+                -e 's|\.\./libobjc2/libobjc\.la||g' \
+                -e 's|\blibobjc2\b||g' \
+                -e 's|-lobjc||g' \
+                -e 's/\botool\b//g' \
+                "$f"
         done
+    # Si existe el directorio otool, reemplazar su Makefile.in con uno vacío
+    # para que make no entre en él
+    if [[ -d otool ]]; then
+        cat > otool/Makefile.in << 'STUB'
+all:
+install:
+clean:
+STUB
+        warn "otool/Makefile.in reemplazado con stub (no necesario para cross-compilación)"
+    fi
 
     # Regenerar configure si autoconf está disponible
     command -v autoconf &>/dev/null && autoconf 2>/dev/null || true
