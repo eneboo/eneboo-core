@@ -108,5 +108,11 @@ https://github.com/mazhe/odcctools
 
 
 
-
+ROSETA 2
+Instrucciones para instalar depednecias
+git clone https://github.com/tpoechtrager/osxcross
+# Obtener MacOSX12.3.sdk.tar.xz (desde Xcode 14 en un Mac real, o fuente comunitaria)
+# y colocarlo en osxcross/tarballs/
+SDK_VERSION=12.3 ./osxcross/build.sh
+# Instalar en /opt/osxcross (o ajustar rutas en los scripts)
 
