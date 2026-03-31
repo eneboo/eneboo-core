@@ -40,7 +40,7 @@
 #include <qregexp.h>
 #include <stdlib.h>
 #include <time.h>
-#if !defined(QWS) && defined(__APPLE__)
+#if 0 /* Carbon only needed on native macOS host, not cross-compile */
 #include <Carbon/Carbon.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -618,7 +618,7 @@ MetrowerksMakefileGenerator::findTemplate(const QString &file)
 bool
 MetrowerksMakefileGenerator::createFork(const QString &f)
 {
-#if !defined(QWS) && defined(__APPLE__)
+#if 0 /* Carbon only on native macOS host */
     FSRef fref;
     FSSpec fileSpec;
     if(QFile::exists(f)) {
@@ -661,7 +661,7 @@ MetrowerksMakefileGenerator::fixifyToMacPath(QString &p, QString &v, bool )
     static QString st_volume;
     if(st_volume.isEmpty()) {
 	st_volume = var("QMAKE_VOLUMENAME");
-#if !defined(QWS) && defined(__APPLE__)
+#if 0 /* Carbon only on native macOS host */
 	if(st_volume.isEmpty()) {
 	    uchar foo[512];
 	    HVolumeParam pb;
