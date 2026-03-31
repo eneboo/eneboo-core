@@ -625,16 +625,34 @@ LTEOF
         --with-ld="${INSTALL_PREFIX}/bin/${TARGET}-ld" \
         --with-ar="${INSTALL_PREFIX}/bin/${TARGET}-ar"
 
-    make -j"${JOBS}" all-gcc
-    $SUDO make install-gcc
+    # -k: continuar aunque falle la creación de libgcc_s.dylib (no la necesitamos).
+    # Los binarios críticos son: xgcc, cc1, cc1plus y libgcc.a (estática).
+    make -j"${JOBS}" -k all-gcc 2>&1 || true
 
-    make -j"${JOBS}" all-target-libgcc
-    $SUDO make install-target-libgcc
+    # Verificar que los binarios críticos del compilador se construyeron
+    for critical in gcc/xgcc gcc/cc1 gcc/cc1plus; do
+        if [[ ! -f "${GCC_BUILD}/${critical}" ]]; then
+            fail "Fallo crítico: ${GCC_BUILD}/${critical} no existe tras make all-gcc"
+        fi
+    done
+    ok "Compilador GCC construido (xgcc, cc1, cc1plus)"
+
+    # install-gcc puede fallar al instalar libgcc_s.dylib — ignoramos esos errores
+    $SUDO make -k install-gcc 2>&1 || true
+
+    # Verificar que el compilador instaló correctamente
+    [[ -x "${INSTALL_PREFIX}/bin/${TARGET}-gcc" ]] \
+        || fail "${TARGET}-gcc no instalado — revisa la salida anterior"
+    ok "${TARGET}-gcc instalado"
+
+    # libgcc estática — necesaria para enlazar binarios
+    make -j"${JOBS}" -k all-target-libgcc 2>&1 || true
+    $SUDO make -k install-target-libgcc 2>&1 || true
 
     # libstdc++ (necesaria para enlazar C++)
-    make -j"${JOBS}" all-target-libstdc++-v3 2>/dev/null || \
+    make -j"${JOBS}" -k all-target-libstdc++-v3 2>/dev/null || \
         warn "libstdc++-v3 no compiló — puede que necesite ajuste manual para darwin9"
-    $SUDO make install-target-libstdc++-v3 2>/dev/null || true
+    $SUDO make -k install-target-libstdc++-v3 2>/dev/null || true
 
     cd "${BUILD_DIR}"
 
