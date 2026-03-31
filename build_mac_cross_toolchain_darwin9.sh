@@ -315,20 +315,27 @@ STUB
     command -v autoconf &>/dev/null && autoconf 2>/dev/null || true
 
     # Configurar para el target darwin9
+    # --disable-lto-support: evita compilar lto_file.cpp que usa la API C
+    # de LLVM de forma incompatible con versiones antiguas. No necesitamos
+    # LTO para cross-compilar eneboo.
     CC="${CLANG_BIN}" CXX="${CLANGPP_BIN}" \
+    LTO_SUPPORT=0 \
     ./configure \
         --prefix="${INSTALL_PREFIX}" \
         --target="${TARGET}" \
+        --disable-lto-support \
         --with-sysroot="${INSTALL_PREFIX}/SDKs/${SDK_DIR_NAME}" \
         LDFLAGS="-lstdc++" 2>/dev/null \
     || \
     CC="${CLANG_BIN}" CXX="${CLANGPP_BIN}" \
+    LTO_SUPPORT=0 \
     ./configure \
         --prefix="${INSTALL_PREFIX}" \
-        --target="${TARGET}"
+        --target="${TARGET}" \
+        --disable-lto-support
 
-    make -j"${JOBS}"
-    $SUDO make install
+    make -j"${JOBS}" LTO_SUPPORT=0
+    $SUDO make install LTO_SUPPORT=0
     cd "${BUILD_DIR}"
 
     [[ -x "${CCTOOLS_STAMP}" ]] || fail "cctools-port: no se creó ${CCTOOLS_STAMP}"
