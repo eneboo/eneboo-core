@@ -529,6 +529,46 @@ else
     rm -f /tmp/_gcc48_test
     ok "gcc-4.8 puede crear ejecutables"
 
+    # Crear wrapper Apple libtool en /opt/mac/bin/libtool
+    # GCC 4.2.4 para darwin llama a "libtool -dynamic ..." para crear dylibs.
+    # En Linux solo existe GNU libtool que no entiende -dynamic.
+    # Este wrapper traduce las llamadas Apple libtool a ld64.
+    APPLE_LIBTOOL="${INSTALL_PREFIX}/bin/libtool"
+    if [[ ! -x "${APPLE_LIBTOOL}" ]]; then
+        cat > "${APPLE_LIBTOOL}" << LTEOF
+#!/bin/bash
+# Apple libtool wrapper para cross-compilación en Linux
+# Traduce: libtool -dynamic ... → ld -dylib ...
+#          libtool -static ...  → ar cq ...
+BINDIR="\$(dirname "\$(readlink -f "\$0")")"
+LD="\${BINDIR}/${TARGET}-ld"
+AR="\${BINDIR}/${TARGET}-ar"
+mode="static"
+output=""
+args=()
+while [[ \$# -gt 0 ]]; do
+    case "\$1" in
+        -dynamic)        mode=dynamic;  shift ;;
+        -static)         mode=static;   shift ;;
+        -o)              output="\$2";  args+=(-o "\$2"); shift 2 ;;
+        -install_name|-compatibility_version|-current_version|-exported_symbols_list)
+                         args+=("\$1" "\$2"); shift 2 ;;
+        -single_module|-nodefaultlibs|-lc)
+                         args+=("\$1"); shift ;;
+        *)               args+=("\$1"); shift ;;
+    esac
+done
+if [[ "\$mode" == "dynamic" ]]; then
+    exec "\$LD" -dylib "\${args[@]}"
+else
+    [[ -n "\$output" ]] || output="\${args[-1]}"
+    exec "\$AR" cq "\$output" "\${args[@]}"
+fi
+LTEOF
+        chmod +x "${APPLE_LIBTOOL}"
+        ok "Apple libtool wrapper creado: ${APPLE_LIBTOOL}"
+    fi
+
     rm -rf "${GCC_BUILD}"
     mkdir -p "${GCC_BUILD}"
     cd "${GCC_BUILD}"
