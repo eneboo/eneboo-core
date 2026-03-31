@@ -502,9 +502,25 @@ else
         true  # Los parches específicos dependen de qué errores aparezcan en tiempo de build
     fi
 
-    # GCC 4.2.x necesita gmp, mpfr — en Ubuntu 12.04 están en sistema.
-    # Si hay errores de "mpc" (GCC >= 4.5 lo necesita), instalamos libmpc-dev:
-    # ya está en el apt-get del paso 1.
+    # Asegurar que gcc-4.8 puede crear ejecutables antes de usarlo como
+    # compilador del cross-GCC. Si falla, instalar los paquetes de runtime
+    # que a veces el PPA no instala automáticamente.
+    if ! echo "int main(){return 0;}" | gcc-4.8 -x c - -o /tmp/_gcc48_test 2>/dev/null; then
+        warn "gcc-4.8 no puede crear ejecutables — instalando paquetes faltantes ..."
+        $SUDO apt-get install -y \
+            gcc-4.8 g++-4.8 cpp-4.8 \
+            libgcc-4.8-dev \
+            libc6-dev \
+            linux-libc-dev \
+            binutils \
+            || warn "Algunos paquetes no se pudieron instalar"
+        rm -f /tmp/_gcc48_test
+        # Segundo intento
+        echo "int main(){return 0;}" | gcc-4.8 -x c - -o /tmp/_gcc48_test \
+            || fail "gcc-4.8 sigue sin poder crear ejecutables — revisa la instalación"
+    fi
+    rm -f /tmp/_gcc48_test
+    ok "gcc-4.8 puede crear ejecutables"
 
     rm -rf "${GCC_BUILD}"
     mkdir -p "${GCC_BUILD}"
