@@ -180,31 +180,34 @@ if $need_clang; then
         mv "${BUILD_DIR}/cfe-${LLVM_SRC_VERSION}.src" "${LLVM_SRC_DIR}/tools/clang"
     fi
 
-    # Ubuntu 12.04 tiene GCC 4.6 por defecto pero LLVM 3.5 requiere >= 4.7.
-    # old-releases.ubuntu.com solo tiene gcc-4.7-base (runtime), no el compilador.
-    # Se usa el PPA ubuntu-toolchain-r que sí tiene gcc-4.7 para precise.
-    if ! command -v gcc-4.7 &>/dev/null || ! command -v g++-4.7 &>/dev/null; then
-        echo "  Añadiendo PPA ubuntu-toolchain-r para gcc-4.7 ..."
+    # Ubuntu 12.04 tiene GCC 4.6 por defecto.
+    # LLVM 3.5 requiere >= 4.7 para compilar, y cctools-port usa std::map::emplace
+    # (C++11 completo) que requiere GCC >= 4.8 + libstdc++-4.8.
+    # Instalamos gcc-4.8/g++-4.8 desde el PPA ubuntu-toolchain-r.
+    if ! command -v gcc-4.8 &>/dev/null || ! command -v g++-4.8 &>/dev/null; then
+        echo "  Añadiendo PPA ubuntu-toolchain-r para gcc-4.8 ..."
         $SUDO apt-get install -y python-software-properties 2>/dev/null || \
             $SUDO apt-get install -y software-properties-common 2>/dev/null || true
 
-        # Añadir PPA manualmente (sin add-apt-repository por si no está disponible)
-        echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main" \
-            | $SUDO tee /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+        if ! grep -r "ubuntu-toolchain-r" /etc/apt/sources.list.d/ &>/dev/null; then
+            echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main" \
+                | $SUDO tee /etc/apt/sources.list.d/ubuntu-toolchain-r.list
 
-        # Clave GPG del PPA
-        $SUDO apt-key adv --keyserver keyserver.ubuntu.com \
-                          --recv-keys 1E9377A2BA9EF27F \
-            || $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
-                                 --recv-keys 1E9377A2BA9EF27F \
-            || warn "No se pudo importar la clave GPG del PPA — continuando de todas formas"
+            $SUDO apt-key adv --keyserver keyserver.ubuntu.com \
+                              --recv-keys 1E9377A2BA9EF27F \
+                || $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
+                                     --recv-keys 1E9377A2BA9EF27F \
+                || warn "No se pudo importar la clave GPG del PPA"
 
-        $SUDO apt-get update -q
+            $SUDO apt-get update -q
+        fi
 
-        $SUDO apt-get install -y gcc-4.7 g++-4.7 \
-            || fail "No se pudo instalar gcc-4.7 desde ubuntu-toolchain-r PPA"
+        $SUDO apt-get install -y gcc-4.8 g++-4.8 libstdc++-4.8-dev \
+            || fail "No se pudo instalar gcc-4.8 desde ubuntu-toolchain-r PPA"
     fi
-    ok "gcc-4.7: $(gcc-4.7 --version | head -1)"
+    ok "gcc-4.8: $(gcc-4.8 --version | head -1)"
+    GCC48="gcc-4.8"
+    GXX48="g++-4.8"
 
     # Compilar — solo X86 target y componentes mínimos para reducir tiempo
     rm -rf "${LLVM_BUILD_DIR}"
@@ -218,8 +221,8 @@ if $need_clang; then
           -DLLVM_INCLUDE_DOCS=OFF \
           -DCLANG_INCLUDE_TESTS=OFF \
           -DCLANG_INCLUDE_DOCS=OFF \
-          -DCMAKE_C_COMPILER=gcc-4.7 \
-          -DCMAKE_CXX_COMPILER=g++-4.7 \
+          -DCMAKE_C_COMPILER="${GCC48}" \
+          -DCMAKE_CXX_COMPILER="${GXX48}" \
           -DCMAKE_INSTALL_PREFIX="${LLVM_INSTALL_DIR}" \
           "${LLVM_SRC_DIR}"
 
@@ -314,11 +317,10 @@ STUB
     # Regenerar configure si autoconf está disponible
     command -v autoconf &>/dev/null && autoconf 2>/dev/null || true
 
-    # Configurar para el target darwin9
-    # --disable-lto-support: evita compilar lto_file.cpp que usa la API C
-    # de LLVM de forma incompatible con versiones antiguas. No necesitamos
-    # LTO para cross-compilar eneboo.
-    CC="${CLANG_BIN}" CXX="${CLANGPP_BIN}" \
+    # Configurar para el target darwin9.
+    # Usamos clang para archivos C/ObjC y g++-4.8 para C++ (C++11 completo).
+    # --disable-lto-support: evita lto_file.cpp que requiere API LLVM incompatible.
+    CC="${CLANG_BIN}" CXX="${GXX48}" \
     LTO_SUPPORT=0 \
     ./configure \
         --prefix="${INSTALL_PREFIX}" \
@@ -327,7 +329,7 @@ STUB
         --with-sysroot="${INSTALL_PREFIX}/SDKs/${SDK_DIR_NAME}" \
         LDFLAGS="-lstdc++" 2>/dev/null \
     || \
-    CC="${CLANG_BIN}" CXX="${CLANGPP_BIN}" \
+    CC="${CLANG_BIN}" CXX="${GXX48}" \
     LTO_SUPPORT=0 \
     ./configure \
         --prefix="${INSTALL_PREFIX}" \
