@@ -569,6 +569,22 @@ LTEOF
         ok "Apple libtool wrapper creado: ${APPLE_LIBTOOL}"
     fi
 
+    # Parchear gcc/config/t-darwin para deshabilitar libgcc_s.dylib.
+    # En Linux no tenemos las librerías de sistema macOS necesarias para enlazarla.
+    # Para cross-compilar solo necesitamos la versión estática de libgcc.
+    T_DARWIN="${GCC_SRC}/gcc/config/t-darwin"
+    if [[ -f "$T_DARWIN" ]]; then
+        sed -i \
+            -e 's|^SHLIB_LINK\s*=.*|SHLIB_LINK = :|' \
+            -e 's|^SHLIB_MKMAP\s*=.*|SHLIB_MKMAP = :|' \
+            -e 's|^SHLIB_INSTALL\s*=.*|SHLIB_INSTALL = :|' \
+            -e 's|^SHLIB_MKMAP_OPTS\s*=.*|SHLIB_MKMAP_OPTS = :|' \
+            "$T_DARWIN"
+        ok "t-darwin parcheado: libgcc_s.dylib deshabilitada"
+    else
+        warn "gcc/config/t-darwin no encontrado — omitiendo parche dylib"
+    fi
+
     rm -rf "${GCC_BUILD}"
     mkdir -p "${GCC_BUILD}"
     cd "${GCC_BUILD}"
