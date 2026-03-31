@@ -107,21 +107,25 @@ $SUDO apt-get install -y \
 
 ok "Paquetes del sistema instalados"
 
-# ── 2. Clang 3.5 (necesario para compilar cctools-port) ──────────────────────
+# ── 2. Clang >= 3.5 (necesario para compilar cctools-port) ───────────────────
 step "Clang >= 3.5"
 
-# El PPA de LLVM para Ubuntu 12.04 (precise) está offline desde 2017.
-# Se usa el binario precompilado oficial de releases.llvm.org.
-LLVM_PREBUILT_VERSION="3.5.2"
-LLVM_PREBUILT_DIR="/usr/local/clang-${LLVM_PREBUILT_VERSION}"
-# Binario genérico Linux x86_64 sin dependencia de distro específica
-LLVM_PREBUILT_URL="https://releases.llvm.org/${LLVM_PREBUILT_VERSION}/clang+llvm-${LLVM_PREBUILT_VERSION}-x86_64-linux-gnu.tar.xz"
-LLVM_PREBUILT_TAR="${BUILD_DIR}/clang-${LLVM_PREBUILT_VERSION}-linux-x86_64.tar.xz"
+# El PPA de LLVM para Ubuntu 12.04 está offline.
+# No existe binario 3.5.x precompilado con glibc 2.15 (Ubuntu 12.04).
+# Solución: compilar LLVM/clang 3.5.2 desde fuente usando el GCC del sistema.
+#
+# LLVM_SRC_VERSION puede sobreescribirse con --llvm-version si se desea otra.
+LLVM_SRC_VERSION="${LLVM_SRC_VERSION:-3.5.2}"
+LLVM_SRC_DIR="${BUILD_DIR}/llvm-${LLVM_SRC_VERSION}.src"
+LLVM_BUILD_DIR="${BUILD_DIR}/llvm-${LLVM_SRC_VERSION}-build"
+LLVM_INSTALL_DIR="/usr/local/llvm-${LLVM_SRC_VERSION}"
 
 clang_version_ok() {
     local bin="$1"
+    [[ -x "$bin" ]] || command -v "$bin" &>/dev/null || return 1
+    local real; real=$(command -v "$bin" 2>/dev/null || echo "$bin")
     local ver major minor
-    ver=$("$bin" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | head -1)
+    ver=$("$real" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | head -1)
     [[ -z "$ver" ]] && return 1
     major=$(echo "$ver" | cut -d. -f1)
     minor=$(echo "$ver" | cut -d. -f2)
@@ -131,48 +135,87 @@ clang_version_ok() {
 }
 
 need_clang=true
-for candidate in clang clang-3.5 "${LLVM_PREBUILT_DIR}/bin/clang"; do
-    if command -v "$candidate" &>/dev/null && clang_version_ok "$(command -v "$candidate")"; then
-        ok "clang suficiente encontrado: $(command -v "$candidate")  ($($candidate --version 2>/dev/null | head -1))"
+for candidate in \
+    "${LLVM_INSTALL_DIR}/bin/clang" \
+    /usr/local/bin/clang \
+    /usr/bin/clang; do
+    if clang_version_ok "$candidate"; then
+        ok "clang suficiente encontrado: $candidate  ($($candidate --version 2>/dev/null | head -1))"
         need_clang=false
+        CLANG_BIN="$candidate"
+        CLANGPP_BIN="${candidate}++"
+        [[ -x "${CLANGPP_BIN}" ]] || CLANGPP_BIN="$(dirname "$candidate")/clang++"
         break
     fi
 done
 
 if $need_clang; then
-    warn "clang >= 3.5 no encontrado. Descargando binario precompilado de releases.llvm.org ..."
+    warn "clang >= 3.5 no encontrado. Compilando LLVM ${LLVM_SRC_VERSION} desde fuente ..."
+    warn "(esto puede tardar 30-60 min en una VM — solo se hace una vez)"
 
-    if [[ ! -f "$LLVM_PREBUILT_TAR" ]]; then
-        wget --progress=bar:force -O "${LLVM_PREBUILT_TAR}" "${LLVM_PREBUILT_URL}" \
-            || curl -L --progress-bar -o "${LLVM_PREBUILT_TAR}" "${LLVM_PREBUILT_URL}" \
-            || fail "No se pudo descargar clang ${LLVM_PREBUILT_VERSION} desde releases.llvm.org"
+    # cmake >= 2.8.8 es necesario; Ubuntu 12.04 trae 2.8.7.
+    # El paso 1 ya instala cmake moderno si es necesario — comprobamos aquí.
+    CMAKE_BIN=$(command -v cmake)
+    CMAKE_VER=$("$CMAKE_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+    ok "cmake: ${CMAKE_VER}"
+
+    # Descargar fuentes LLVM + Clang si no están ya
+    LLVM_URL="https://releases.llvm.org/${LLVM_SRC_VERSION}/llvm-${LLVM_SRC_VERSION}.src.tar.xz"
+    CFE_URL="https://releases.llvm.org/${LLVM_SRC_VERSION}/cfe-${LLVM_SRC_VERSION}.src.tar.xz"
+
+    if [[ ! -d "${LLVM_SRC_DIR}" ]]; then
+        echo "  Descargando llvm-${LLVM_SRC_VERSION}.src.tar.xz ..."
+        wget --progress=bar:force -O "${BUILD_DIR}/llvm.tar.xz" "${LLVM_URL}" \
+            || curl -L --progress-bar -o "${BUILD_DIR}/llvm.tar.xz" "${LLVM_URL}" \
+            || fail "No se pudo descargar LLVM ${LLVM_SRC_VERSION}"
+        tar xf "${BUILD_DIR}/llvm.tar.xz" -C "${BUILD_DIR}"
     fi
 
-    echo "  Extrayendo en ${LLVM_PREBUILT_DIR} ..."
-    $SUDO mkdir -p "${LLVM_PREBUILT_DIR}"
-    $SUDO tar xf "${LLVM_PREBUILT_TAR}" -C "${LLVM_PREBUILT_DIR}" --strip-components=1
-    ok "clang ${LLVM_PREBUILT_VERSION} extraído en ${LLVM_PREBUILT_DIR}"
+    if [[ ! -d "${LLVM_SRC_DIR}/tools/clang" ]]; then
+        echo "  Descargando cfe-${LLVM_SRC_VERSION}.src.tar.xz ..."
+        wget --progress=bar:force -O "${BUILD_DIR}/cfe.tar.xz" "${CFE_URL}" \
+            || curl -L --progress-bar -o "${BUILD_DIR}/cfe.tar.xz" "${CFE_URL}" \
+            || fail "No se pudo descargar Clang ${LLVM_SRC_VERSION}"
+        tar xf "${BUILD_DIR}/cfe.tar.xz" -C "${BUILD_DIR}"
+        mv "${BUILD_DIR}/cfe-${LLVM_SRC_VERSION}.src" "${LLVM_SRC_DIR}/tools/clang"
+    fi
 
-    # Crear symlinks en /usr/local/bin para que sean accesibles en PATH
-    for bin in clang clang++ llvm-ar llvm-ranlib; do
-        if [[ -x "${LLVM_PREBUILT_DIR}/bin/${bin}" ]]; then
-            $SUDO ln -sf "${LLVM_PREBUILT_DIR}/bin/${bin}" "/usr/local/bin/${bin}-3.5"
-            # Solo crear el symlink genérico si no hay uno mejor ya
-            if ! command -v "${bin}" &>/dev/null || ! clang_version_ok "$(command -v "${bin}" 2>/dev/null)"; then
-                $SUDO ln -sf "${LLVM_PREBUILT_DIR}/bin/${bin}" "/usr/local/bin/${bin}"
-            fi
+    # Compilar — solo X86 target y componentes mínimos para reducir tiempo
+    rm -rf "${LLVM_BUILD_DIR}"
+    mkdir -p "${LLVM_BUILD_DIR}"
+    cd "${LLVM_BUILD_DIR}"
+
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DLLVM_TARGETS_TO_BUILD="X86" \
+          -DLLVM_INCLUDE_TESTS=OFF \
+          -DLLVM_INCLUDE_EXAMPLES=OFF \
+          -DLLVM_INCLUDE_DOCS=OFF \
+          -DCLANG_INCLUDE_TESTS=OFF \
+          -DCLANG_INCLUDE_DOCS=OFF \
+          -DCMAKE_INSTALL_PREFIX="${LLVM_INSTALL_DIR}" \
+          "${LLVM_SRC_DIR}"
+
+    make -j"${JOBS}" clang
+    $SUDO make install-clang install-clang-headers
+
+    cd "${BUILD_DIR}"
+
+    # Symlinks en /usr/local/bin
+    for bin in clang clang++; do
+        if [[ -x "${LLVM_INSTALL_DIR}/bin/${bin}" ]]; then
+            $SUDO ln -sf "${LLVM_INSTALL_DIR}/bin/${bin}" "/usr/local/bin/${bin}"
         fi
     done
 
-    # Verificar
     clang_version_ok "/usr/local/bin/clang" \
-        || fail "clang instalado pero la versión sigue siendo insuficiente — revisa ${LLVM_PREBUILT_DIR}"
-    ok "clang $(/usr/local/bin/clang --version 2>/dev/null | head -1)"
+        || fail "La compilación de clang falló — revisa la salida anterior"
+    ok "clang compilado: $(/usr/local/bin/clang --version 2>/dev/null | head -1)"
+
+    CLANG_BIN="/usr/local/bin/clang"
+    CLANGPP_BIN="/usr/local/bin/clang++"
 fi
 
-CLANG_BIN=$(command -v clang-3.5 2>/dev/null || command -v clang)
-CLANGPP_BIN=$(command -v clang++-3.5 2>/dev/null || command -v clang++)
-ok "clang: $CLANG_BIN  ($($CLANG_BIN --version 2>/dev/null | head -1))"
+ok "clang: ${CLANG_BIN}  ($(${CLANG_BIN} --version 2>/dev/null | head -1))"
 
 # ── 3. cctools-port (ld64, ar, ranlib, as para darwin) ──────────────────────
 step "cctools-port (linker/assembler darwin9)"
