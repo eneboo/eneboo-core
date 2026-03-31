@@ -180,6 +180,15 @@ if $need_clang; then
         mv "${BUILD_DIR}/cfe-${LLVM_SRC_VERSION}.src" "${LLVM_SRC_DIR}/tools/clang"
     fi
 
+    # Ubuntu 12.04 tiene GCC 4.6 por defecto pero LLVM 3.5 requiere >= 4.7.
+    # gcc-4.7 está disponible en los repos oficiales de precise.
+    if ! command -v gcc-4.7 &>/dev/null; then
+        echo "  Instalando gcc-4.7 / g++-4.7 desde repos de Ubuntu 12.04 ..."
+        $SUDO apt-get install -y gcc-4.7 g++-4.7 \
+            || fail "No se pudo instalar gcc-4.7 — comprueba /etc/apt/sources.list"
+    fi
+    ok "gcc-4.7: $(gcc-4.7 --version | head -1)"
+
     # Compilar — solo X86 target y componentes mínimos para reducir tiempo
     rm -rf "${LLVM_BUILD_DIR}"
     mkdir -p "${LLVM_BUILD_DIR}"
@@ -192,6 +201,8 @@ if $need_clang; then
           -DLLVM_INCLUDE_DOCS=OFF \
           -DCLANG_INCLUDE_TESTS=OFF \
           -DCLANG_INCLUDE_DOCS=OFF \
+          -DCMAKE_C_COMPILER=gcc-4.7 \
+          -DCMAKE_CXX_COMPILER=g++-4.7 \
           -DCMAKE_INSTALL_PREFIX="${LLVM_INSTALL_DIR}" \
           "${LLVM_SRC_DIR}"
 
