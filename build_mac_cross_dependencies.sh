@@ -109,8 +109,57 @@ echo ""
 echo "── Dependencias del sistema ────────────────────────────"
 
 check_cmd git         git
-check_cmd clang       clang
-check_cmd clang++     clang
+
+# clang: osxcross requiere >= 3.5. Si el del sistema es inferior, instalar desde llvm.org
+CLANG_MIN_MAJOR=3
+CLANG_MIN_MINOR=5
+LLVM_VERSION="7"   # versión LTS ampliamente disponible en llvm.org/apt
+
+install_clang_from_llvm() {
+  echo "  Instalando clang ${LLVM_VERSION} desde repositorio LLVM ..."
+  check_cmd wget wget
+  wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh || fail "No se pudo descargar llvm.sh"
+  chmod +x /tmp/llvm.sh
+  $SUDO bash /tmp/llvm.sh "${LLVM_VERSION}" || fail "Falló la instalación de LLVM ${LLVM_VERSION}"
+  # Crear symlinks genéricos si no existen
+  for bin in clang clang++; do
+    if ! command -v "$bin" &>/dev/null && command -v "${bin}-${LLVM_VERSION}" &>/dev/null; then
+      $SUDO ln -sf "$(command -v "${bin}-${LLVM_VERSION}")" "/usr/local/bin/${bin}"
+      ok "Symlink creado: ${bin} -> ${bin}-${LLVM_VERSION}"
+    fi
+  done
+}
+
+clang_version_ok() {
+  local ver major minor
+  ver=$(clang --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+  [[ -z "$ver" ]] && return 1
+  major=$(echo "$ver" | cut -d. -f1)
+  minor=$(echo "$ver" | cut -d. -f2)
+  [[ "$major" -gt "$CLANG_MIN_MAJOR" ]] && return 0
+  [[ "$major" -eq "$CLANG_MIN_MAJOR" && "$minor" -ge "$CLANG_MIN_MINOR" ]] && return 0
+  return 1
+}
+
+if ! command -v clang &>/dev/null; then
+  warn "clang no encontrado. Instalando desde LLVM ..."
+  install_clang_from_llvm
+elif ! clang_version_ok; then
+  CURRENT_CLANG=$(clang --version 2>/dev/null | head -1)
+  warn "clang instalado (${CURRENT_CLANG}) es inferior a ${CLANG_MIN_MAJOR}.${CLANG_MIN_MINOR}. Instalando desde LLVM ..."
+  install_clang_from_llvm
+else
+  ok "clang encontrado y versión suficiente ($(clang --version | head -1))"
+fi
+
+# Asegurar clang++ también
+if ! command -v clang++ &>/dev/null; then
+  warn "clang++ no encontrado. Intentando instalar clang ..."
+  install_pkg clang
+  command -v clang++ &>/dev/null || fail "clang++ sigue sin encontrarse."
+else
+  ok "clang++ encontrado ($(command -v clang++))"
+fi
 check_cmd make        make
 
 # cmake: requiere >= 3.13.4; si no existe o es inferior, compilar desde fuente
