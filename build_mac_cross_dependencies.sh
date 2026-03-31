@@ -128,7 +128,15 @@ install_cmake_from_source() {
   tar zxf "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" -C "${CMAKE_TMPDIR}"
   echo "  Compilando cmake (puede tardar varios minutos) ..."
   cd "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}"
-  $SUDO ./bootstrap || fail "cmake bootstrap falló"
+  # Determinar compilador C++ disponible para el bootstrap
+  if command -v g++ &>/dev/null; then
+    CMAKE_CXX=g++
+  elif command -v clang++ &>/dev/null; then
+    CMAKE_CXX=clang++
+  else
+    fail "No se encuentra g++ ni clang++ para compilar cmake."
+  fi
+  $SUDO env CXX=$CMAKE_CXX ./bootstrap || fail "cmake bootstrap falló"
   $SUDO make        || fail "cmake make falló"
   $SUDO make install || fail "cmake make install falló"
   cd - > /dev/null
