@@ -122,7 +122,7 @@ install_cmake_from_source() {
   echo "  Descargando cmake ${CMAKE_MIN} desde fuente ..."
   mkdir -p "${CMAKE_TMPDIR}"
   check_cmd wget wget
-  wget -q --show-progress -O "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" "${CMAKE_URL}" \
+  wget -O "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" "${CMAKE_URL}" \
     || fail "No se pudo descargar cmake desde ${CMAKE_URL}"
   echo "  Extrayendo ..."
   tar zxf "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" -C "${CMAKE_TMPDIR}"
