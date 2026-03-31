@@ -70,6 +70,16 @@ echo "════════════════════════�
 # ── 1. Dependencias del sistema ──────────────────────────────────────────────
 step "Dependencias del sistema"
 
+# Eliminar entrada stale del PPA de LLVM para precise (offline desde 2017)
+# que puede haber quedado de una ejecución anterior del script
+if [[ -f /etc/apt/sources.list.d/llvm-35.list ]]; then
+    warn "Eliminando PPA LLVM offline: /etc/apt/sources.list.d/llvm-35.list"
+    $SUDO rm -f /etc/apt/sources.list.d/llvm-35.list
+fi
+# Por si acaso hay otras entradas de apt.llvm.org para precise
+$SUDO grep -rl "apt.llvm.org.*precise" /etc/apt/sources.list.d/ 2>/dev/null \
+    | xargs -r $SUDO rm -f && true
+
 $SUDO apt-get update -q
 
 $SUDO apt-get install -y \
