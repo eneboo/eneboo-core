@@ -317,19 +317,35 @@ STUB
     # Regenerar configure si autoconf está disponible
     command -v autoconf &>/dev/null && autoconf 2>/dev/null || true
 
+    # Forzar clang a usar los headers de libstdc++-4.8 (que tiene map::emplace)
+    # en lugar de los de 4.6 (default en Ubuntu 12.04).
+    STDCXX48_INC=""
+    for d in \
+        /usr/include/c++/4.8 \
+        /usr/include/x86_64-linux-gnu/c++/4.8; do
+        [[ -d "$d" ]] && STDCXX48_INC="${STDCXX48_INC} -I${d}"
+    done
+    STDCXX48_LIB=$(ls -d /usr/lib/gcc/x86_64-linux-gnu/4.8 2>/dev/null || true)
+
+    EXTRA_CXXFLAGS="-std=c++11 ${STDCXX48_INC}"
+    EXTRA_LDFLAGS="-lstdc++"
+    [[ -n "$STDCXX48_LIB" ]] && EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L${STDCXX48_LIB}"
+
     # Configurar para el target darwin9.
-    # Usamos clang para archivos C/ObjC y g++-4.8 para C++ (C++11 completo).
     # --disable-lto-support: evita lto_file.cpp que requiere API LLVM incompatible.
-    CC="${CLANG_BIN}" CXX="${GXX48}" \
+    CC="${CLANG_BIN}" CXX="${CLANG_BIN}++" \
+    CXXFLAGS="${EXTRA_CXXFLAGS}" \
+    LDFLAGS="${EXTRA_LDFLAGS}" \
     LTO_SUPPORT=0 \
     ./configure \
         --prefix="${INSTALL_PREFIX}" \
         --target="${TARGET}" \
         --disable-lto-support \
-        --with-sysroot="${INSTALL_PREFIX}/SDKs/${SDK_DIR_NAME}" \
-        LDFLAGS="-lstdc++" 2>/dev/null \
+        --with-sysroot="${INSTALL_PREFIX}/SDKs/${SDK_DIR_NAME}" 2>/dev/null \
     || \
-    CC="${CLANG_BIN}" CXX="${GXX48}" \
+    CC="${CLANG_BIN}" CXX="${CLANG_BIN}++" \
+    CXXFLAGS="${EXTRA_CXXFLAGS}" \
+    LDFLAGS="${EXTRA_LDFLAGS}" \
     LTO_SUPPORT=0 \
     ./configure \
         --prefix="${INSTALL_PREFIX}" \
