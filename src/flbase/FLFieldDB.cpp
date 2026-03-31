@@ -1806,7 +1806,7 @@ QString FLFieldDB::fieldAlias() const
 
 void FLFieldDB::refreshQuick(const QString &fN)
 {
-  qWarning("FLFieldDB : ENTRAAA " + fN.lower());
+
   if (fN.isEmpty() || fN != fieldName_ || !cursor_)
     return;
 
