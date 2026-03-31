@@ -214,7 +214,7 @@ else
     echo "  Clonando osxcross en ${OSXCROSS_CLONE_DIR} ..."
     if [[ -d "${OSXCROSS_CLONE_DIR}/.git" ]]; then
       ok "osxcross ya clonado, actualizando ..."
-      git -C "${OSXCROSS_CLONE_DIR}" pull --ff-only
+      (cd "${OSXCROSS_CLONE_DIR}" && git pull --ff-only)
     else
       git clone "${OSXCROSS_REPO}" "${OSXCROSS_CLONE_DIR}"
     fi
