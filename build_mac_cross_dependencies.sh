@@ -113,21 +113,38 @@ check_cmd git         git
 # clang: osxcross requiere >= 3.5. Si el del sistema es inferior, instalar desde llvm.org
 CLANG_MIN_MAJOR=3
 CLANG_MIN_MINOR=5
-LLVM_VERSION="7"   # versión LTS ampliamente disponible en llvm.org/apt
 
 install_clang_from_llvm() {
-  echo "  Instalando clang ${LLVM_VERSION} desde repositorio LLVM ..."
+  local ARCH
+  ARCH=$(uname -m)
+  # Binario precompilado de LLVM 3.9.1 específico para Ubuntu 12.04
+  local CLANG_PKG="clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-12.04"
+  local CLANG_URL="https://releases.llvm.org/3.9.1/${CLANG_PKG}.tar.xz"
+  local CLANG_DEST="/tmp/${CLANG_PKG}.tar.xz"
+  local CLANG_DIR="/tmp/${CLANG_PKG}"
+  local CLANG_INSTALL="/usr/local"
+
+  echo "  Descargando clang 3.9.1 precompilado para Ubuntu 12.04 ..."
   check_cmd wget wget
-  wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh || fail "No se pudo descargar llvm.sh"
-  chmod +x /tmp/llvm.sh
-  $SUDO bash /tmp/llvm.sh "${LLVM_VERSION}" || fail "Falló la instalación de LLVM ${LLVM_VERSION}"
-  # Crear symlinks genéricos si no existen
+  wget -O "${CLANG_DEST}" "${CLANG_URL}" \
+    || fail "No se pudo descargar clang desde ${CLANG_URL}"
+
+  echo "  Extrayendo ..."
+  tar xf "${CLANG_DEST}" -C /tmp/
+
+  echo "  Instalando en ${CLANG_INSTALL} ..."
+  $SUDO cp -r "${CLANG_DIR}/bin/"*     "${CLANG_INSTALL}/bin/"
+  $SUDO cp -r "${CLANG_DIR}/lib/"*     "${CLANG_INSTALL}/lib/"
+  $SUDO cp -r "${CLANG_DIR}/include/"* "${CLANG_INSTALL}/include/" 2>/dev/null || true
+
+  # Asegurar que clang y clang++ apuntan a los binarios instalados
   for bin in clang clang++; do
-    if ! command -v "$bin" &>/dev/null && command -v "${bin}-${LLVM_VERSION}" &>/dev/null; then
-      $SUDO ln -sf "$(command -v "${bin}-${LLVM_VERSION}")" "/usr/local/bin/${bin}"
-      ok "Symlink creado: ${bin} -> ${bin}-${LLVM_VERSION}"
+    if [[ -f "${CLANG_INSTALL}/bin/${bin}" ]]; then
+      $SUDO ln -sf "${CLANG_INSTALL}/bin/${bin}" "/usr/bin/${bin}" 2>/dev/null || true
     fi
   done
+
+  ok "clang 3.9.1 instalado en ${CLANG_INSTALL}/bin/clang"
 }
 
 clang_version_ok() {
