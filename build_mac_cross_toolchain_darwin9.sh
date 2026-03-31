@@ -100,64 +100,64 @@ ok "Paquetes del sistema instalados"
 # ── 2. Clang 3.5 (necesario para compilar cctools-port) ──────────────────────
 step "Clang >= 3.5"
 
-# Ubuntu 12.04 (precise) tiene LLVM PPA con clang 3.5
-need_clang=true
-if command -v clang &>/dev/null; then
-    ver=$(clang --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | head -1)
+# El PPA de LLVM para Ubuntu 12.04 (precise) está offline desde 2017.
+# Se usa el binario precompilado oficial de releases.llvm.org.
+LLVM_PREBUILT_VERSION="3.5.2"
+LLVM_PREBUILT_DIR="/usr/local/clang-${LLVM_PREBUILT_VERSION}"
+# Binario genérico Linux x86_64 sin dependencia de distro específica
+LLVM_PREBUILT_URL="https://releases.llvm.org/${LLVM_PREBUILT_VERSION}/clang+llvm-${LLVM_PREBUILT_VERSION}-x86_64-linux-gnu.tar.xz"
+LLVM_PREBUILT_TAR="${BUILD_DIR}/clang-${LLVM_PREBUILT_VERSION}-linux-x86_64.tar.xz"
+
+clang_version_ok() {
+    local bin="$1"
+    local ver major minor
+    ver=$("$bin" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | head -1)
+    [[ -z "$ver" ]] && return 1
     major=$(echo "$ver" | cut -d. -f1)
     minor=$(echo "$ver" | cut -d. -f2)
-    if [[ "$major" -gt 3 ]] || { [[ "$major" -eq 3 ]] && [[ "$minor" -ge 5 ]]; }; then
-        ok "clang $ver ya instalado"
+    [[ "$major" -gt 3 ]] && return 0
+    [[ "$major" -eq 3 && "$minor" -ge 5 ]] && return 0
+    return 1
+}
+
+need_clang=true
+for candidate in clang clang-3.5 "${LLVM_PREBUILT_DIR}/bin/clang"; do
+    if command -v "$candidate" &>/dev/null && clang_version_ok "$(command -v "$candidate")"; then
+        ok "clang suficiente encontrado: $(command -v "$candidate")  ($($candidate --version 2>/dev/null | head -1))"
         need_clang=false
-    else
-        warn "clang $ver es demasiado antiguo para cctools-port (necesita >= 3.5)"
+        break
     fi
-fi
+done
 
 if $need_clang; then
-    warn "Instalando clang 3.5 desde LLVM PPA (para Ubuntu 12.04 / precise) ..."
+    warn "clang >= 3.5 no encontrado. Descargando binario precompilado de releases.llvm.org ..."
 
-    # Añadir clave y repo LLVM
-    wget -qO /tmp/llvm-snapshot.gpg.key http://apt.llvm.org/llvm-snapshot.gpg.key
-    $SUDO apt-key add /tmp/llvm-snapshot.gpg.key
-
-    # precise (12.04) solo llega hasta llvm-3.9 en el PPA
-    if ! grep -r "apt.llvm.org" /etc/apt/sources.list /etc/apt/sources.list.d/ &>/dev/null; then
-        echo "deb http://apt.llvm.org/precise/ llvm-toolchain-precise-3.5 main" \
-            | $SUDO tee /etc/apt/sources.list.d/llvm-35.list
-        $SUDO apt-get update -q
+    if [[ ! -f "$LLVM_PREBUILT_TAR" ]]; then
+        wget --progress=bar:force -O "${LLVM_PREBUILT_TAR}" "${LLVM_PREBUILT_URL}" \
+            || curl -L --progress-bar -o "${LLVM_PREBUILT_TAR}" "${LLVM_PREBUILT_URL}" \
+            || fail "No se pudo descargar clang ${LLVM_PREBUILT_VERSION} desde releases.llvm.org"
     fi
 
-    $SUDO apt-get install -y clang-3.5 llvm-3.5-dev || {
-        warn "Fallo al instalar clang-3.5 desde PPA. Intentando compilar desde fuente ..."
-        # Descarga y compilación mínima de clang 3.5 (fallback)
-        LLVM_SRC="${BUILD_DIR}/llvm-3.5.2.src"
-        CLANG_SRC="${BUILD_DIR}/cfe-3.5.2.src"
-        if [[ ! -d "$LLVM_SRC" ]]; then
-            wget -q "http://releases.llvm.org/3.5.2/llvm-3.5.2.src.tar.xz" -O "${BUILD_DIR}/llvm.tar.xz"
-            wget -q "http://releases.llvm.org/3.5.2/cfe-3.5.2.src.tar.xz"  -O "${BUILD_DIR}/cfe.tar.xz"
-            tar xf "${BUILD_DIR}/llvm.tar.xz" -C "${BUILD_DIR}"
-            tar xf "${BUILD_DIR}/cfe.tar.xz"  -C "${BUILD_DIR}"
-            mv "${BUILD_DIR}/cfe-3.5.2.src" "${LLVM_SRC}/tools/clang"
-        fi
-        mkdir -p "${BUILD_DIR}/llvm-build"
-        cd "${BUILD_DIR}/llvm-build"
-        cmake -DCMAKE_BUILD_TYPE=Release \
-              -DLLVM_TARGETS_TO_BUILD="X86" \
-              -DCMAKE_INSTALL_PREFIX=/usr/local \
-              "$LLVM_SRC"
-        make -j"${JOBS}"
-        $SUDO make install
-        cd -
-    }
+    echo "  Extrayendo en ${LLVM_PREBUILT_DIR} ..."
+    $SUDO mkdir -p "${LLVM_PREBUILT_DIR}"
+    $SUDO tar xf "${LLVM_PREBUILT_TAR}" -C "${LLVM_PREBUILT_DIR}" --strip-components=1
+    ok "clang ${LLVM_PREBUILT_VERSION} extraído en ${LLVM_PREBUILT_DIR}"
 
-    # Crear symlinks sin sufijo de versión si no existen
-    for bin in clang clang++; do
-        if ! command -v "$bin" &>/dev/null; then
-            versioned=$(ls /usr/bin/${bin}-3.5 2>/dev/null || ls /usr/local/bin/${bin} 2>/dev/null || true)
-            [[ -n "$versioned" ]] && $SUDO ln -sf "$versioned" "/usr/bin/${bin}" && ok "symlink: $bin"
+    # Crear symlinks en /usr/local/bin para que sean accesibles en PATH
+    for bin in clang clang++ llvm-ar llvm-ranlib; do
+        if [[ -x "${LLVM_PREBUILT_DIR}/bin/${bin}" ]]; then
+            $SUDO ln -sf "${LLVM_PREBUILT_DIR}/bin/${bin}" "/usr/local/bin/${bin}-3.5"
+            # Solo crear el symlink genérico si no hay uno mejor ya
+            if ! command -v "${bin}" &>/dev/null || ! clang_version_ok "$(command -v "${bin}" 2>/dev/null)"; then
+                $SUDO ln -sf "${LLVM_PREBUILT_DIR}/bin/${bin}" "/usr/local/bin/${bin}"
+            fi
         fi
     done
+
+    # Verificar
+    clang_version_ok "/usr/local/bin/clang" \
+        || fail "clang instalado pero la versión sigue siendo insuficiente — revisa ${LLVM_PREBUILT_DIR}"
+    ok "clang $(/usr/local/bin/clang --version 2>/dev/null | head -1)"
 fi
 
 CLANG_BIN=$(command -v clang-3.5 2>/dev/null || command -v clang)
