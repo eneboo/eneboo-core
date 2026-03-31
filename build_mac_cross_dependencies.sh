@@ -118,31 +118,25 @@ CMAKE_MIN="3.13.4"
 CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_MIN}/cmake-${CMAKE_MIN}.tar.gz"
 CMAKE_TMPDIR="/tmp/cmake_build"
 
-install_cmake_from_source() {
-  echo "  Descargando cmake ${CMAKE_MIN} desde fuente ..."
+install_cmake_binary() {
+  # Descarga el binario precompilado de cmake para Linux x86_64 (no requiere compilador C++11)
+  local ARCH
+  ARCH=$(uname -m)
+  local BIN_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_MIN}/cmake-${CMAKE_MIN}-Linux-${ARCH}.tar.gz"
+  local BIN_DEST="${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}-Linux-${ARCH}.tar.gz"
+
+  echo "  Descargando binario precompilado de cmake ${CMAKE_MIN} para Linux ${ARCH} ..."
   mkdir -p "${CMAKE_TMPDIR}"
   check_cmd wget wget
-  wget -O "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" "${CMAKE_URL}" \
-    || fail "No se pudo descargar cmake desde ${CMAKE_URL}"
-  echo "  Extrayendo ..."
-  tar zxf "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" -C "${CMAKE_TMPDIR}"
-  echo "  Compilando cmake (puede tardar varios minutos) ..."
-  cd "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}"
-  # Determinar compilador C++ disponible para el bootstrap
-  if command -v g++ &>/dev/null; then
-    CMAKE_CXX=g++
-  elif command -v clang++ &>/dev/null; then
-    CMAKE_CXX=clang++
-  else
-    fail "No se encuentra g++ ni clang++ para compilar cmake."
-  fi
-  CMAKE_CC=$(command -v gcc || command -v cc)
-  ./bootstrap -- -DCMAKE_CXX_COMPILER="${CMAKE_CXX}" -DCMAKE_C_COMPILER="${CMAKE_CC}" \
-    || fail "cmake bootstrap falló"
-  make        || fail "cmake make falló"
-  $SUDO make install || fail "cmake make install falló"
-  cd - > /dev/null
-  ok "cmake ${CMAKE_MIN} instalado desde fuente."
+  wget -O "${BIN_DEST}" "${BIN_URL}" \
+    || fail "No se pudo descargar cmake desde ${BIN_URL}"
+
+  echo "  Instalando en /usr/local ..."
+  tar zxf "${BIN_DEST}" -C "${CMAKE_TMPDIR}"
+  local EXTRACTED_DIR="${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}-Linux-${ARCH}"
+  $SUDO cp -r "${EXTRACTED_DIR}/bin/"*   /usr/local/bin/
+  $SUDO cp -r "${EXTRACTED_DIR}/share/"* /usr/local/share/
+  ok "cmake ${CMAKE_MIN} instalado en /usr/local/bin/cmake"
 }
 
 cmake_version_ok() {
@@ -154,12 +148,12 @@ cmake_version_ok() {
 }
 
 if ! command -v cmake &>/dev/null; then
-  warn "cmake no encontrado. Instalando desde fuente ..."
-  install_cmake_from_source
+  warn "cmake no encontrado. Instalando binario precompilado ..."
+  install_cmake_binary
 elif ! cmake_version_ok; then
   CURRENT_CMAKE=$(cmake --version 2>/dev/null | head -1)
-  warn "cmake instalado (${CURRENT_CMAKE}) es inferior a ${CMAKE_MIN}. Instalando desde fuente ..."
-  install_cmake_from_source
+  warn "cmake instalado (${CURRENT_CMAKE}) es inferior a ${CMAKE_MIN}. Instalando binario precompilado ..."
+  install_cmake_binary
 else
   ok "cmake encontrado y versión suficiente ($(cmake --version | head -1))"
 fi
