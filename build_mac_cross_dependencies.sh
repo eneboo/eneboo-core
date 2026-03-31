@@ -115,36 +115,48 @@ CLANG_MIN_MAJOR=3
 CLANG_MIN_MINOR=5
 
 install_clang_from_llvm() {
-  local ARCH
-  ARCH=$(uname -m)
-  # Binario precompilado de LLVM 3.9.1 específico para Ubuntu 12.04
-  local CLANG_PKG="clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-12.04"
-  local CLANG_URL="https://releases.llvm.org/3.9.1/${CLANG_PKG}.tar.xz"
-  local CLANG_DEST="/tmp/${CLANG_PKG}.tar.xz"
-  local CLANG_DIR="/tmp/${CLANG_PKG}"
-  local CLANG_INSTALL="/usr/local"
+  local CLANG_VER="3.5.0"
+  local LLVM_URL="http://releases.llvm.org/${CLANG_VER}/llvm-${CLANG_VER}.src.tar.xz"
+  local CFE_URL="http://releases.llvm.org/${CLANG_VER}/cfe-${CLANG_VER}.src.tar.xz"
+  local CLANG_TMPDIR="/tmp/clang_build"
+  local LLVM_SRC="${CLANG_TMPDIR}/llvm-${CLANG_VER}.src"
 
-  echo "  Descargando clang 3.9.1 precompilado para Ubuntu 12.04 ..."
+  echo "  Descargando fuentes de LLVM/Clang ${CLANG_VER} ..."
+  mkdir -p "${CLANG_TMPDIR}"
   check_cmd wget wget
-  wget -O "${CLANG_DEST}" "${CLANG_URL}" \
-    || fail "No se pudo descargar clang desde ${CLANG_URL}"
 
-  echo "  Extrayendo ..."
-  tar xf "${CLANG_DEST}" -C /tmp/
+  wget -O "${CLANG_TMPDIR}/llvm-${CLANG_VER}.src.tar.xz" "${LLVM_URL}" \
+    || fail "No se pudo descargar LLVM desde ${LLVM_URL}"
+  wget -O "${CLANG_TMPDIR}/cfe-${CLANG_VER}.src.tar.xz" "${CFE_URL}" \
+    || fail "No se pudo descargar Clang desde ${CFE_URL}"
 
-  echo "  Instalando en ${CLANG_INSTALL} ..."
-  $SUDO cp -r "${CLANG_DIR}/bin/"*     "${CLANG_INSTALL}/bin/"
-  $SUDO cp -r "${CLANG_DIR}/lib/"*     "${CLANG_INSTALL}/lib/"
-  $SUDO cp -r "${CLANG_DIR}/include/"* "${CLANG_INSTALL}/include/" 2>/dev/null || true
+  echo "  Extrayendo fuentes ..."
+  tar xf "${CLANG_TMPDIR}/llvm-${CLANG_VER}.src.tar.xz" -C "${CLANG_TMPDIR}"
+  tar xf "${CLANG_TMPDIR}/cfe-${CLANG_VER}.src.tar.xz"  -C "${CLANG_TMPDIR}"
+  # clang (cfe) debe estar dentro de llvm/tools/clang
+  mv "${CLANG_TMPDIR}/cfe-${CLANG_VER}.src" "${LLVM_SRC}/tools/clang"
 
-  # Asegurar que clang y clang++ apuntan a los binarios instalados
-  for bin in clang clang++; do
-    if [[ -f "${CLANG_INSTALL}/bin/${bin}" ]]; then
-      $SUDO ln -sf "${CLANG_INSTALL}/bin/${bin}" "/usr/bin/${bin}" 2>/dev/null || true
-    fi
-  done
+  echo "  Configurando con cmake ..."
+  mkdir -p "${CLANG_TMPDIR}/build"
+  cd "${CLANG_TMPDIR}/build"
+  cmake "${LLVM_SRC}" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DLLVM_ENABLE_ASSERTIONS=OFF \
+    -DLLVM_TARGETS_TO_BUILD="X86" \
+    -DLLVM_BUILD_TOOLS=ON \
+    -DCLANG_BUILD_EXAMPLES=OFF \
+    -DLLVM_BUILD_EXAMPLES=OFF \
+    || fail "cmake de LLVM/Clang falló"
 
-  ok "clang 3.9.1 instalado en ${CLANG_INSTALL}/bin/clang"
+  echo "  Compilando LLVM + Clang (puede tardar bastante) ..."
+  make -j$(nproc) || fail "make de LLVM/Clang falló"
+
+  echo "  Instalando ..."
+  $SUDO make install || fail "make install de LLVM/Clang falló"
+
+  cd - > /dev/null
+  ok "clang ${CLANG_VER} compilado e instalado en /usr/local/bin/clang"
 }
 
 clang_version_ok() {
