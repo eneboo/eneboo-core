@@ -472,6 +472,38 @@ else
   fi
 fi
 
+# ── Parchear SDK: reemplazar #pragma options align=mac68k ────────────────────
+# ColorSyncDeprecated.h usa pragmas de CodeWarrior que clang rechaza como error
+SDK_DIR="${OSXCROSS_INSTALL_PREFIX}/SDK/MacOSX${SDK_VERSION}.sdk"
+if [[ -d "$SDK_DIR" ]]; then
+  echo "── Parche SDK ColorSyncDeprecated.h ────────────────────"
+  COLORSYNC_FILES=$(find "$SDK_DIR" -name "ColorSyncDeprecated.h" -not -type l 2>/dev/null)
+  if [[ -n "$COLORSYNC_FILES" ]]; then
+    NEED_PATCH=false
+    while IFS= read -r f; do
+      if grep -q '#pragma options align=mac68k' "$f" 2>/dev/null; then
+        NEED_PATCH=true
+        break
+      fi
+    done <<< "$COLORSYNC_FILES"
+
+    if $NEED_PATCH; then
+      echo "  Aplicando parche en $SDK_DIR ..."
+      while IFS= read -r f; do
+        sed -i \
+          -e 's/#pragma options align=mac68k/#pragma pack(push, 2)/g' \
+          -e 's/#pragma options align=reset/#pragma pack(pop)/g' \
+          "$f" && echo "  Parcheado: $f"
+      done <<< "$COLORSYNC_FILES"
+      ok "Parche ColorSyncDeprecated.h aplicado"
+    else
+      ok "ColorSyncDeprecated.h ya parcheado (no requiere cambios)"
+    fi
+  else
+    warn "No se encontró ColorSyncDeprecated.h en el SDK — omitiendo parche"
+  fi
+fi
+
 
 # ── Resumen final ────────────────────────────────────────────────────────────
 echo ""

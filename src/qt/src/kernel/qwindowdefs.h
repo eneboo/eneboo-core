@@ -110,7 +110,9 @@ typedef struct Point Point;
 typedef struct OpaqueEventHandlerRef*   EventHandlerRef;
 typedef struct OpaqueEventHandlerCallRef*  EventHandlerCallRef;
 typedef struct OpaqueEventRef*          EventRef;
+#if !defined(__MACTYPES__) && !defined(__LP64__)
 typedef long int OSStatus;
+#endif
 typedef struct OpaqueScrapRef *ScrapRef;
 typedef struct OpaqueRgnHandle *RgnHandle;
 typedef struct OpaqueWindowPtr *WindowPtr;
@@ -122,7 +124,11 @@ typedef struct ColorTable ColorTable;
 typedef struct BitMap BitMap;
 typedef struct EventRecord EventRecord;
 typedef void * MSG;
+#ifdef __LP64__
+typedef long WId;   /* pointers are 64-bit in LP64 */
+#else
 typedef int WId;
+#endif
 typedef struct AEDesc AppleEvent;
 
 #endif // Q_WS_MAC

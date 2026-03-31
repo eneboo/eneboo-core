@@ -297,10 +297,10 @@
  */
 
 #if defined(PNG_FLOATING_POINT_SUPPORTED)
-#  if defined(MACOS)
+#  if defined(MACOS) && !defined(__LP64__)
      /* We need to check that <math.h> hasn't already been included earlier
       * as it seems it doesn't agree with <fp.h>, yet we should really use
-      * <fp.h> if possible.
+      * <fp.h> if possible.  fp.h is not available in 64-bit macOS builds.
       */
 #    if !defined(__MATH_H__) && !defined(__MATH_H) && !defined(__cmath__)
 #      include <fp.h>

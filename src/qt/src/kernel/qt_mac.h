@@ -41,7 +41,9 @@
 #ifndef __IMAGECAPTURE__
 #define __IMAGECAPTURE__
 #endif
+
 #include <Carbon/Carbon.h>
+#include <qt_mac_lp64_compat.h>
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 101200
 #include <QuickTime/Movies.h>
 #endif
@@ -94,7 +96,13 @@ protected:
     void timerEvent(QTimerEvent *);
 };
 
-class QMacSavedFontInfo 
+// ----------------------------------------------------------------------------
+// QMacSavedFontInfo
+// In 64-bit macOS the QuickDraw text-port APIs (GetPortTextFont etc.) do not
+// exist.  The class is a complete no-op in that case.
+// ----------------------------------------------------------------------------
+#ifndef __LP64__
+class QMacSavedFontInfo
 {
 private:
     void init(CGrafPtr);
@@ -107,7 +115,7 @@ public:
     ~QMacSavedFontInfo();
 };
 
-inline QMacSavedFontInfo::~QMacSavedFontInfo() 
+inline QMacSavedFontInfo::~QMacSavedFontInfo()
 {
     if(mac_window_count) {
 	TextFont(tfont);
@@ -116,7 +124,7 @@ inline QMacSavedFontInfo::~QMacSavedFontInfo()
     }
 }
 
-inline void QMacSavedFontInfo::init(CGrafPtr w) 
+inline void QMacSavedFontInfo::init(CGrafPtr w)
 {
     if(mac_window_count) {
 	tfont = GetPortTextFont(w);
@@ -124,15 +132,36 @@ inline void QMacSavedFontInfo::init(CGrafPtr w)
 	tsize = GetPortTextSize(w);
     }
 }
+#else  // __LP64__
+// QuickDraw font state not available in 64-bit macOS; no-op class.
+// Keep tfont/tface/tsize as public members so qfont_mac.cpp can compile.
+class QMacSavedFontInfo
+{
+public:
+    short tfont, tface;
+    int   tsize;
+    inline QMacSavedFontInfo() : tfont(0), tface(0), tsize(0) {}
+    inline QMacSavedFontInfo(void *) : tfont(0), tface(0), tsize(0) {}
+    ~QMacSavedFontInfo() {}
+};
+#endif // __LP64__
 
+// ----------------------------------------------------------------------------
+// QMacFontInfo
+// ATSUI (ATSUStyle, ATSUDisposeStyle, RGBColor from QD) is not available in
+// 64-bit macOS.  The QATSUStyle struct and the related dispose calls are
+// stubbed out with __LP64__ guards.
+// ----------------------------------------------------------------------------
 class QMacFontInfo
 {
 public:
     inline QMacFontInfo() : fi_fnum(0), fi_face(0), fi_size(0), fi_enc(0), fi_astyle(0)
 	{ }
-    inline ~QMacFontInfo() 
+    inline ~QMacFontInfo()
 	{ if(fi_astyle && fi_astyle->deref()) {
+#ifndef __LP64__
 	    ATSUDisposeStyle(fi_astyle->style);
+#endif
 	    delete fi_astyle;
 	} }
     inline QMacFontInfo &operator=(const QMacFontInfo &rhs) {
@@ -145,7 +174,9 @@ public:
 	    setATSUStyle(rhs.atsuStyle());
 	} else {
 	    if(fi_astyle && fi_astyle->deref()) {
+#ifndef __LP64__
 		ATSUDisposeStyle(fi_astyle->style);
+#endif
 		delete fi_astyle;
 	    }
 	    setStyle(0);
@@ -166,8 +197,12 @@ public:
     inline void setSize(int f) { fi_size = f; }
 
     struct QATSUStyle : public QShared {
+#ifndef __LP64__
 	ATSUStyle style;
-	RGBColor rgb;
+#else
+	void *style; // unused in LP64 (ATSUI removed)
+#endif
+	RGBColor rgb;  // RGBColor struct is available in both 32-bit and LP64
     };
     inline QATSUStyle *atsuStyle() const { return fi_astyle; }
     inline void setATSUStyle(QATSUStyle *s) { fi_astyle = s; }
@@ -182,16 +217,16 @@ private:
 class QFontEngine;
 class QFontDef;
 class QFontPrivate;
-class QMacSetFontInfo : public QMacSavedFontInfo, public QMacFontInfo 
+class QMacSetFontInfo : public QMacSavedFontInfo, public QMacFontInfo
 {
 private:
     static QMacFontInfo *createFontInfo(const QFontEngine *fe, const QFontDef *def, QPaintDevice *pdev);
 
 public:
     //create this for temporary font settting
-    inline QMacSetFontInfo(const QFontPrivate *d, QPaintDevice *pdev) : QMacSavedFontInfo(), 
+    inline QMacSetFontInfo(const QFontPrivate *d, QPaintDevice *pdev) : QMacSavedFontInfo(),
 									QMacFontInfo() { setMacFont(d, this, pdev); }
-    inline QMacSetFontInfo(const QFontEngine *fe, QPaintDevice *pdev) : QMacSavedFontInfo(), 
+    inline QMacSetFontInfo(const QFontEngine *fe, QPaintDevice *pdev) : QMacSavedFontInfo(),
 									QMacFontInfo() { setMacFont(fe, this, pdev); }
 
     //you can use these to cause font setting, without restoring old
@@ -205,8 +240,16 @@ public:
 #include "qpaintdevice.h"
 extern QPaintDevice *qt_mac_safe_pdev; //qapplication_mac.cpp
 extern QPainter *qt_mac_current_painter; //qpainter_mac.cpp
+
+// ----------------------------------------------------------------------------
+// QMacSavedPortInfo
+// All QuickDraw port state (GWorld, pen, clip, colours) is absent in LP64.
+// The 64-bit version is a complete no-op; the static helper methods return
+// FALSE / do nothing.
+// ----------------------------------------------------------------------------
 class QMacSavedPortInfo
 {
+#ifndef __LP64__
     RgnHandle clip;
     GWorldPtr world;
     GDHandle handle;
@@ -216,16 +259,26 @@ class QMacSavedPortInfo
     QPainter *painter;
     bool valid_gworld;
     void init();
-    
+#endif
+
 public:
+#ifndef __LP64__
     inline QMacSavedPortInfo() { init(); }
     inline QMacSavedPortInfo(QPaintDevice *pd) { init(); setPaintDevice(pd); }
     inline QMacSavedPortInfo(QWidget *w, bool set_clip=FALSE) { init(); setPaintDevice(w, set_clip); }
-    inline QMacSavedPortInfo(QPaintDevice *pd, const QRect &r) 
+    inline QMacSavedPortInfo(QPaintDevice *pd, const QRect &r)
 	{ init(); setPaintDevice(pd); setClipRegion(r); }
-    inline QMacSavedPortInfo(QPaintDevice *pd, const QRegion &r) 
+    inline QMacSavedPortInfo(QPaintDevice *pd, const QRegion &r)
 	{ init(); setPaintDevice(pd); setClipRegion(r); }
     ~QMacSavedPortInfo();
+#else  // __LP64__
+    inline QMacSavedPortInfo() {}
+    inline QMacSavedPortInfo(QPaintDevice *) {}
+    inline QMacSavedPortInfo(QWidget *, bool=FALSE) {}
+    inline QMacSavedPortInfo(QPaintDevice *, const QRect &) {}
+    inline QMacSavedPortInfo(QPaintDevice *, const QRegion &) {}
+    ~QMacSavedPortInfo() {}
+#endif // __LP64__
     static bool setClipRegion(const QRect &r);
     static bool setClipRegion(const QRegion &r);
     static bool setPaintDevice(QPaintDevice *);
@@ -235,27 +288,27 @@ public:
     static void setWindowAlpha(QWidget *, float);
 };
 
-inline bool 
-QMacSavedPortInfo::flush(QPaintDevice *pdev) 
+inline bool
+QMacSavedPortInfo::flush(QPaintDevice *pdev)
 {
-#ifdef Q_WS_MACX
+#if defined(Q_WS_MACX) && !defined(__LP64__)
     if(pdev->devType() == QInternal::Widget) {
 	QWidget *w = (QWidget *)pdev;
 	if(!w->isHidden() && QDIsPortBuffered(GetWindowPort((WindowPtr)w->handle()))) {
 	    QDFlushPortBuffer(GetWindowPort((WindowPtr)w->handle()), NULL);
 	    return TRUE;
 	}
-    } 
+    }
 #else
     Q_UNUSED(pdev);
 #endif
     return FALSE;
 }
 
-inline bool 
-QMacSavedPortInfo::flush(QPaintDevice *pdev, QRegion r, bool force) 
+inline bool
+QMacSavedPortInfo::flush(QPaintDevice *pdev, QRegion r, bool force)
 {
-#ifdef Q_WS_MACX
+#if defined(Q_WS_MACX) && !defined(__LP64__)
     if(pdev->devType() == QInternal::Widget) {
 	QWidget *w = (QWidget *)pdev;
 	r.translate(w->topLevelWidget()->geometry().x(), w->topLevelWidget()->geometry().y());
@@ -263,7 +316,7 @@ QMacSavedPortInfo::flush(QPaintDevice *pdev, QRegion r, bool force)
 	    QDFlushPortBuffer(GetWindowPort((WindowPtr)w->handle()), r.handle(force));
 	    return TRUE;
 	}
-    } 
+    }
 #else
     Q_UNUSED(pdev);
     Q_UNUSED(r);
@@ -281,11 +334,11 @@ extern "C" {
     extern CGSConnectionRef _CGSDefaultConnection();
 }
 #endif
-inline void 
+inline void
 QMacSavedPortInfo::setWindowAlpha(QWidget *w, float l)
 {
 #ifdef Q_WS_MACX
-    CGSSetWindowAlpha(_CGSDefaultConnection(), 
+    CGSSetWindowAlpha(_CGSDefaultConnection(),
 		      GetNativeWindowFromWindowRef((WindowRef)w->handle()), l);
 #else
     Q_UNUSED(w);
@@ -293,52 +346,62 @@ QMacSavedPortInfo::setWindowAlpha(QWidget *w, float l)
 #endif
 }
 
-inline bool 
+inline bool
 QMacSavedPortInfo::setClipRegion(const QRect &rect)
 {
+#ifndef __LP64__
     Rect r;
     SetRect(&r, rect.x(), rect.y(), rect.right()+1, rect.bottom()+1);
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->lock();
-#endif
+# endif
     qt_mac_current_painter = NULL;
     ClipRect(&r);
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->unlock();
-#endif
+# endif
     return TRUE;
+#else
+    Q_UNUSED(rect);
+    return FALSE;
+#endif
 }
 
-inline bool 
+inline bool
 QMacSavedPortInfo::setClipRegion(const QRegion &r)
 {
+#ifndef __LP64__
     if(r.isNull())
 	return setClipRegion(QRect());
     else if(!r.handle())
 	return setClipRegion(r.boundingRect());
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->lock();
-#endif
+# endif
     qt_mac_current_painter = NULL;
     SetClip(r.handle());
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->unlock();
-#endif
+# endif
     return TRUE;
+#else
+    Q_UNUSED(r);
+    return FALSE;
+#endif
 }
 
 inline bool
-QMacSavedPortInfo::setPaintDevice(QWidget *w, bool set_clip, bool with_child) 
+QMacSavedPortInfo::setPaintDevice(QWidget *w, bool set_clip, bool with_child)
 {
     if(!w)
 	return FALSE;
     if(!setPaintDevice((QPaintDevice *)w))
 	return FALSE;
-    if(set_clip) 
+    if(set_clip)
 	return setClipRegion(w->clippedRegion(with_child));
     return TRUE;
 }
@@ -348,42 +411,47 @@ QMacSavedPortInfo::setPaintDevice(QPaintDevice *pd)
 {
     if(!pd)
 	return FALSE;
-#if 0
+#ifndef __LP64__
+# if 0
     if(qt_mac_current_painter && qt_mac_current_painter->handle() == pd->handle())
 	return TRUE;
-#endif
+# endif
     bool ret = TRUE;
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->lock();
-#endif
-//    if(qt_mac_current_painter && qt_mac_current_painter->handle() != pd->handle())
-	qt_mac_current_painter = NULL;
+# endif
+    qt_mac_current_painter = NULL;
     if(pd->devType() == QInternal::Widget)
 	SetPortWindowPort((WindowPtr)pd->handle());
     else if(pd->devType() == QInternal::Pixmap || pd->devType() == QInternal::Printer)
 	SetGWorld((GrafPtr)pd->handle(), 0); //set the gworld
     else
 	ret = FALSE;
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->unlock();
-#endif
+# endif
     return ret;
+#else
+    Q_UNUSED(pd);
+    return FALSE;
+#endif
 }
-    
 
-inline void 
+
+#ifndef __LP64__
+inline void
 QMacSavedPortInfo::init()
 {
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
 	qt_mac_port_mutex->lock();
-#endif
+# endif
     fi = NULL;
     painter = qt_mac_current_painter;
     if(mac_window_count) {
-   	GetBackColor(&back);
+	GetBackColor(&back);
 	GetForeColor(&fore);
 	GetGWorld(&world, &handle);
 	valid_gworld = TRUE;
@@ -416,11 +484,12 @@ inline QMacSavedPortInfo::~QMacSavedPortInfo()
     if(fi)
 	delete fi;
     qt_mac_current_painter = painter;
-#if defined(QT_THREAD_SUPPORT)
+# if defined(QT_THREAD_SUPPORT)
     if(qt_mac_port_mutex)
         qt_mac_port_mutex->unlock();
-#endif
+# endif
 }
+#endif // !__LP64__
 
 #endif //Q_WS_MAC
 #endif // QT_MAC_H
