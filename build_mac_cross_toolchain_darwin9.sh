@@ -253,8 +253,15 @@ step "cctools-port (linker/assembler darwin9)"
 
 CCTOOLS_SRC="${BUILD_DIR}/cctools-port"
 CCTOOLS_STAMP="${INSTALL_PREFIX}/bin/${TARGET}-ld"
+# Verificar también ar — si falta hay que reinstalar cctools
+cctools_complete() {
+    for t in ld ar as nm ranlib strip; do
+        [[ -x "${INSTALL_PREFIX}/bin/${TARGET}-${t}" ]] || return 1
+    done
+    return 0
+}
 
-if [[ -x "$CCTOOLS_STAMP" ]]; then
+if cctools_complete; then
     ok "cctools ya instalado en ${INSTALL_PREFIX}/bin"
 else
     if [[ -d "${CCTOOLS_SRC}/.git" ]]; then
@@ -526,6 +533,10 @@ else
     mkdir -p "${GCC_BUILD}"
     cd "${GCC_BUILD}"
 
+    # Asegurar que los cross-tools de cctools están en PATH para que GCC
+    # encuentre x86_64-apple-darwin9-ar, x86_64-apple-darwin9-as, etc.
+    export PATH="${INSTALL_PREFIX}/bin:${PATH}"
+
     # --build y --host deben ser el triple canónico de la máquina host,
     # no "gcc" ni "g++" — de lo contrario GCC configure los confunde con
     # tipos de máquina y falla con "invalid host type".
@@ -553,7 +564,8 @@ else
         --with-mpc=/usr \
         --enable-checking=release \
         --with-as="${INSTALL_PREFIX}/bin/${TARGET}-as" \
-        --with-ld="${INSTALL_PREFIX}/bin/${TARGET}-ld"
+        --with-ld="${INSTALL_PREFIX}/bin/${TARGET}-ld" \
+        --with-ar="${INSTALL_PREFIX}/bin/${TARGET}-ar"
 
     make -j"${JOBS}" all-gcc
     $SUDO make install-gcc
