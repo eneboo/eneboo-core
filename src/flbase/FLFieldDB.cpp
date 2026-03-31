@@ -1825,7 +1825,7 @@ void FLFieldDB::refreshQuick(const QString &fN)
     return;
 
   QVariant v(cursor_->valueBuffer(fieldName_));
-  qWarning("FLFieldDB : " + "Valor fN " + fN.lower() + " = " + v.toString());
+  qWarning("FLFieldDB Valor fN " + fN.lower() + " = " + QString(v));
   bool null = cursor_->bufferIsNull(fieldName_);
   int partDecimal = partDecimal_ != -1 ? partDecimal_ : field->partDecimal();
   bool ol = field->hasOptionsList();
