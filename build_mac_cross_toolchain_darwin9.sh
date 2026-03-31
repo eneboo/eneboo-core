@@ -224,7 +224,7 @@ if $need_clang; then
           "${LLVM_SRC_DIR}"
 
     make -j"${JOBS}" clang
-    $SUDO make install-clang install-clang-headers
+    $SUDO make install
 
     cd "${BUILD_DIR}"
 
