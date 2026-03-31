@@ -510,7 +510,15 @@ else
     mkdir -p "${GCC_BUILD}"
     cd "${GCC_BUILD}"
 
+    # --build y --host deben ser el triple canónico de la máquina host,
+    # no "gcc" ni "g++" — de lo contrario GCC configure los confunde con
+    # tipos de máquina y falla con "invalid host type".
+    BUILD_TRIPLE=$(gcc -dumpmachine 2>/dev/null || echo "x86_64-linux-gnu")
+
+    CC=gcc-4.8 CXX=g++-4.8 \
     "${GCC_SRC}/configure" \
+        --build="${BUILD_TRIPLE}" \
+        --host="${BUILD_TRIPLE}" \
         --target="${TARGET}" \
         --prefix="${INSTALL_PREFIX}" \
         --with-sysroot="${SDK_DEST}" \
@@ -524,8 +532,6 @@ else
         --enable-checking=release \
         --with-as="${INSTALL_PREFIX}/bin/${TARGET}-as" \
         --with-ld="${INSTALL_PREFIX}/bin/${TARGET}-ld" \
-        CC=gcc \
-        CXX=g++ \
         CFLAGS="-O2 -fno-stack-protector" \
         CXXFLAGS="-O2 -fno-stack-protector"
 
