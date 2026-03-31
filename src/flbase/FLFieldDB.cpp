@@ -1806,7 +1806,7 @@ QString FLFieldDB::fieldAlias() const
 
 void FLFieldDB::refreshQuick(const QString &fN)
 {
-  qWarning("FLFieldDB : " +"ENTRAAA " + fN);
+  qWarning("FLFieldDB : ENTRAAA " + fN.lower());
   if (fN.isEmpty() || fN != fieldName_ || !cursor_)
     return;
 
@@ -1825,7 +1825,7 @@ void FLFieldDB::refreshQuick(const QString &fN)
     return;
 
   QVariant v(cursor_->valueBuffer(fieldName_));
-  qWarning("FLFieldDB : " + "Valor fN " + fN + " = " + v.toString());
+  qWarning("FLFieldDB : " + "Valor fN " + fN.lower() + " = " + v.toString());
   bool null = cursor_->bufferIsNull(fieldName_);
   int partDecimal = partDecimal_ != -1 ? partDecimal_ : field->partDecimal();
   bool ol = field->hasOptionsList();
