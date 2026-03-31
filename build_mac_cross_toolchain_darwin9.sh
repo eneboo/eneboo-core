@@ -556,6 +556,8 @@ else
         --prefix="${INSTALL_PREFIX}" \
         --with-sysroot="${SDK_DEST}" \
         --enable-languages=c,c++ \
+        --disable-shared \
+        --enable-static \
         --disable-nls \
         --disable-multilib \
         --disable-werror \
