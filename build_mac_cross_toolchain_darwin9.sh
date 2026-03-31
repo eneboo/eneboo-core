@@ -303,16 +303,25 @@ else
                 -e 's/\botool\b//g' \
                 "$f"
         done
-    # Si existe el directorio otool, reemplazar su Makefile.in con uno vacío
-    # para que make no entre en él
-    if [[ -d otool ]]; then
-        cat > otool/Makefile.in << 'STUB'
+    # Reemplazar con stubs los directorios que no son necesarios para
+    # cross-compilación y causan errores en Ubuntu 12.04:
+    #   - otool:  depende de ObjC runtime
+    #   - man:    intenta generar páginas de manual con herramientas no disponibles
+    for stub_dir in otool man; do
+        if [[ -d "$stub_dir" ]]; then
+            cat > "${stub_dir}/Makefile.in" << 'STUB'
 all:
+all-am:
 install:
+install-am:
+install-data-am:
+install-exec-am:
 clean:
+distclean:
 STUB
-        warn "otool/Makefile.in reemplazado con stub (no necesario para cross-compilación)"
-    fi
+            warn "${stub_dir}/Makefile.in reemplazado con stub"
+        fi
+    done
 
     # Parchear OutputFile.cpp en ld64: usa std::map::emplace con initializer_list
     # que requiere libstdc++-4.8 completo. Lo reemplazamos con insert() equivalente
