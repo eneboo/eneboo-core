@@ -281,6 +281,22 @@ else
         cd "${CCTOOLS_SRC}"
     fi
 
+    # Eliminar libobjc2 del build: el libtool de Ubuntu 12.04 no soporta
+    # el tag ObjC y falla con "specify a tag with --tag". No necesitamos
+    # el runtime ObjC para cross-compilar C/C++.
+    for makefile_in in Makefile.in Makefile; do
+        if [[ -f "$makefile_in" ]]; then
+            sed -i 's/\blibobjc2\b//g' "$makefile_in"
+            ok "libobjc2 eliminado de $makefile_in"
+        fi
+    done
+    # Por si está en SUBDIRS dentro del configure.ac
+    if [[ -f configure.ac ]]; then
+        sed -i 's/\blibobjc2\b//g' configure.ac
+        # Regenerar configure si autoconf está disponible
+        command -v autoconf &>/dev/null && autoconf 2>/dev/null || true
+    fi
+
     # Configurar para el target darwin9
     CC="${CLANG_BIN}" CXX="${CLANGPP_BIN}" \
     ./configure \
