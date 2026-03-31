@@ -515,7 +515,13 @@ else
     # tipos de máquina y falla con "invalid host type".
     BUILD_TRIPLE=$(gcc -dumpmachine 2>/dev/null || echo "x86_64-linux-gnu")
 
-    CC=gcc-4.8 CXX=g++-4.8 \
+    # CFLAGS/CXXFLAGS deben ir como variables de entorno ANTES del configure,
+    # no como argumentos posicionales — GCC configure los interpreta como
+    # tipos de host si van al final y falla con "invalid host type".
+    CC=gcc-4.8 \
+    CXX=g++-4.8 \
+    CFLAGS="-O2 -fno-stack-protector" \
+    CXXFLAGS="-O2 -fno-stack-protector" \
     "${GCC_SRC}/configure" \
         --build="${BUILD_TRIPLE}" \
         --host="${BUILD_TRIPLE}" \
@@ -531,9 +537,7 @@ else
         --with-mpc=/usr \
         --enable-checking=release \
         --with-as="${INSTALL_PREFIX}/bin/${TARGET}-as" \
-        --with-ld="${INSTALL_PREFIX}/bin/${TARGET}-ld" \
-        CFLAGS="-O2 -fno-stack-protector" \
-        CXXFLAGS="-O2 -fno-stack-protector"
+        --with-ld="${INSTALL_PREFIX}/bin/${TARGET}-ld"
 
     make -j"${JOBS}" all-gcc
     $SUDO make install-gcc
