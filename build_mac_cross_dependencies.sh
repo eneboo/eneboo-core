@@ -219,9 +219,14 @@ else
       git clone "${OSXCROSS_REPO}" "${OSXCROSS_CLONE_DIR}"
     fi
 
-    echo "  Copiando SDK tarball a ${OSXCROSS_CLONE_DIR}/tarballs/ ..."
     mkdir -p "${OSXCROSS_CLONE_DIR}/tarballs"
-    cp -v "$SDK_TARBALL" "${OSXCROSS_CLONE_DIR}/tarballs/"
+    SDK_DEST_PATH="${OSXCROSS_CLONE_DIR}/tarballs/$(basename "$SDK_TARBALL")"
+    if [[ "$(realpath "$SDK_TARBALL")" != "$(realpath "$SDK_DEST_PATH" 2>/dev/null)" ]]; then
+      echo "  Copiando SDK tarball a ${OSXCROSS_CLONE_DIR}/tarballs/ ..."
+      cp -v "$SDK_TARBALL" "${OSXCROSS_CLONE_DIR}/tarballs/"
+    else
+      ok "SDK tarball ya en destino, no es necesario copiar."
+    fi
 
     echo "  Compilando osxcross (esto puede tardar varios minutos) ..."
     cd "${OSXCROSS_CLONE_DIR}"
