@@ -111,8 +111,48 @@ echo "── Dependencias del sistema ──────────────
 check_cmd git         git
 check_cmd clang       clang
 check_cmd clang++     clang
-check_cmd cmake       cmake
 check_cmd make        make
+
+# cmake: requiere >= 3.13.4; si no existe o es inferior, compilar desde fuente
+CMAKE_MIN="3.13.4"
+CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_MIN}/cmake-${CMAKE_MIN}.tar.gz"
+CMAKE_TMPDIR="/tmp/cmake_build"
+
+install_cmake_from_source() {
+  echo "  Descargando cmake ${CMAKE_MIN} desde fuente ..."
+  mkdir -p "${CMAKE_TMPDIR}"
+  check_cmd wget wget
+  wget -q --show-progress -O "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" "${CMAKE_URL}" \
+    || fail "No se pudo descargar cmake desde ${CMAKE_URL}"
+  echo "  Extrayendo ..."
+  tar zxf "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}.tar.gz" -C "${CMAKE_TMPDIR}"
+  echo "  Compilando cmake (puede tardar varios minutos) ..."
+  cd "${CMAKE_TMPDIR}/cmake-${CMAKE_MIN}"
+  $SUDO ./bootstrap || fail "cmake bootstrap falló"
+  $SUDO make        || fail "cmake make falló"
+  $SUDO make install || fail "cmake make install falló"
+  cd - > /dev/null
+  ok "cmake ${CMAKE_MIN} instalado desde fuente."
+}
+
+cmake_version_ok() {
+  local ver
+  ver=$(cmake --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+  [[ -z "$ver" ]] && return 1
+  # Comparación de versiones: devuelve 0 si ver >= CMAKE_MIN
+  printf '%s\n%s\n' "${CMAKE_MIN}" "${ver}" | sort -V -C
+}
+
+if ! command -v cmake &>/dev/null; then
+  warn "cmake no encontrado. Instalando desde fuente ..."
+  install_cmake_from_source
+elif ! cmake_version_ok; then
+  CURRENT_CMAKE=$(cmake --version 2>/dev/null | head -1)
+  warn "cmake instalado (${CURRENT_CMAKE}) es inferior a ${CMAKE_MIN}. Instalando desde fuente ..."
+  install_cmake_from_source
+else
+  ok "cmake encontrado y versión suficiente ($(cmake --version | head -1))"
+fi
 check_cmd patch       patch
 check_cmd tar         tar
 check_cmd xz          xz-utils     # Debian/Ubuntu; en Fedora es 'xz'
