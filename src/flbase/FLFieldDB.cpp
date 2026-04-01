@@ -1825,23 +1825,27 @@ void FLFieldDB::refreshQuick(const QString &fN)
     return;
 
   QVariant v(cursor_->valueBuffer(fieldName_));
-  qWarning("FLFieldDB Valor fN " + fN.lower() + " = " + QString(v.toString()));
+  qWarning("FLFieldDB:" + fN.lower() + " = " + QString(v.toString()));
   bool null = cursor_->bufferIsNull(fieldName_);
   int partDecimal = partDecimal_ != -1 ? partDecimal_ : field->partDecimal();
   bool ol = field->hasOptionsList();
 
   switch (type) {
     case QVariant::Double:
-      if (v.toDouble() == ::qt_cast<FLLineEdit *>(editor_)->text().toDouble())
+      QString current = ::qt_cast<FLLineEdit *>(editor_)->text();
+      if (v.toDouble() == ::qt_cast<FLLineEdit *>(editor_)->text().toDouble()) {
+        qWarning("FLFieldDB:" + fN.lower() + " Mismo valor!! " + current);
         return;
+      }
       disconnect(editor_, SIGNAL(textChanged(const QString &)), this,
                  SLOT(updateValue(const QString &)));
-      {
-        QString s;
-        if (!null)
-          s.setNum(v.toDouble(), 'f', partDecimal);
-        ::qt_cast<FLLineEdit *>(editor_)->setText(s, false);
+      
+      QString s;
+      if (!null) {
+        s.setNum(v.toDouble(), 'f', partDecimal);
       }
+      ::qt_cast<FLLineEdit *>(editor_)->setText(s, false);
+      qWarning("FLFieldDB:" + fN.lower() + "Aplicado! " + s);
       connect(editor_, SIGNAL(textChanged(const QString &)), this,
               SLOT(updateValue(const QString &)));
       break;
@@ -1883,12 +1887,12 @@ void FLFieldDB::refreshQuick(const QString &fN)
         return;
       disconnect(editor_, SIGNAL(textChanged(const QString &)), this,
                  SLOT(updateValue(const QString &)));
-      {
-        QString s;
-        if (!null)
-          s.setNum(v.toUInt());
-        ::qt_cast<FLLineEdit *>(editor_)->setText(s, false);
-      }
+      
+      QString s;
+      if (!null)
+        s.setNum(v.toUInt());
+      ::qt_cast<FLLineEdit *>(editor_)->setText(s, false);
+      
       connect(editor_, SIGNAL(textChanged(const QString &)), this,
               SLOT(updateValue(const QString &)));
       break;
@@ -1898,12 +1902,12 @@ void FLFieldDB::refreshQuick(const QString &fN)
         return;
       disconnect(editor_, SIGNAL(textChanged(const QString &)), this,
                  SLOT(updateValue(const QString &)));
-      {
-        QString s;
-        if (!null)
-          s.setNum(v.toInt());
-        ::qt_cast<FLLineEdit *>(editor_)->setText(s, false);
-      }
+      
+      QString s;
+      if (!null)
+        s.setNum(v.toInt());
+      ::qt_cast<FLLineEdit *>(editor_)->setText(s, false);
+      
       connect(editor_, SIGNAL(textChanged(const QString &)), this,
               SLOT(updateValue(const QString &)));
       break;
