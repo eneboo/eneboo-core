@@ -150,12 +150,17 @@ void FLLineEdit::focusOutEvent(QFocusEvent *f)
   if (v) {
     QString s(text());
     v->fixup(s);
+    qWarning("Fout!");
     setText(s);
-  } else if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt)
+  } else if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt) {
+    qWarning("Fout2!");
     setText(text());
+  }
 #else
-  if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt)
+  if (type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt) {
+  qWarning("Fout3!");
     setText(text());
+  }
 #endif
   QLineEdit::focusOutEvent(f);
 }
@@ -170,6 +175,7 @@ void FLLineEdit::focusInEvent(QFocusEvent *f)
       int pos = 0;
       v->validate(s, pos);
     }
+    qWarning("Fin!");
     QLineEdit::setText(s);
     blockSignals(false);
   }
@@ -2106,6 +2112,7 @@ void FLFieldDB::refresh(const QString &fN)
       disconnect(editor_, SIGNAL(textChanged(const QString &)), this,
                  SLOT(updateValue(const QString &)));
       {
+        qWarning("FLFieldDB::refresh Valor fN " + fN.lower() + " = " + QString(v.toString()));
         QString s;
         if (!null)
           s.setNum(v.toDouble(), 'f', partDecimal);
@@ -2418,6 +2425,7 @@ void FLFieldDB::showWidget()
 {
   if (!showed) {
     if (topWidget_) {
+      qWarning("ESPARTACO!!");
       refresh();
       if (cursorAux && cursor_ && cursor_->bufferIsNull(fieldName_)) {
         if (!cursorAux->bufferIsNull(foreignField_)) {
@@ -2774,6 +2782,7 @@ void FLFieldDB::autoCompletionUpdateValue()
         QString cval(cur->valueBuffer(autoComFieldName_).toString());
         QString val(ed->text());
         ed->autoSelect = false;
+        qWarning("AC!!");
         ed->setText(cval);
         ed->QLineEdit::setFocus();
         ed->setCursorPosition(cval.length());
@@ -2787,6 +2796,7 @@ void FLFieldDB::autoCompletionUpdateValue()
     } else if (!autoComFrame_->isVisible()) {
       QString cval(cur->valueBuffer(autoComFieldName_).toString());
       QString val(ed->text());
+      qWarning("AC2!!");
       ed->autoSelect = false;
       ed->setText(cval);
       ed->QLineEdit::setFocus();

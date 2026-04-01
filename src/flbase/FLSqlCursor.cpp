@@ -383,6 +383,7 @@ void FLSqlCursor::refreshDelayed(int msec)
   if (!seek(pos, false, true))
   {
     d->buffer_ = 0;
+    qWarning(tr("FLSqlCursor::refreshDelayed: newBuffer por seek fallido"));
     emit newBuffer();
   }
   else
@@ -423,6 +424,7 @@ void FLSqlCursor::refresh(const QString &fN)
     if (!seek(pos, false, true))
     {
       d->buffer_ = 0;
+      qWarning(tr("FLSqlCursor::refresh: newBuffer por refresh"));
       emit newBuffer();
     }
   }
@@ -606,6 +608,7 @@ bool FLSqlCursor::refreshBuffer()
     d->undoAcl();
 
     updateBufferCopy();
+    qWarning(tr("FLSqlCursor::refreshBuffer() INSERT newBuffer()"));
     emit newBuffer();
   }
   break;
@@ -622,6 +625,7 @@ bool FLSqlCursor::refreshBuffer()
     setNotGenerateds();
 
     updateBufferCopy();
+    qWarning(tr("FLSqlCursor::refreshBuffer() EDIT newBuffer()"));
     emit newBuffer();
   }
   break;
@@ -643,6 +647,7 @@ bool FLSqlCursor::refreshBuffer()
   case BROWSE:
     d->buffer_ = editBuffer(true);
     setNotGenerateds();
+    qWarning(tr("FLSqlCursor::refreshBuffer() BROWSE newBuffer()"));
     emit newBuffer();
     break;
   }
@@ -1837,6 +1842,7 @@ void FLSqlCursor::copyRecord()
   }
 
   delete bufferAux;
+  qWarning(tr("FLSqlCursor::copyRecord newBuffer()"));
   emit newBuffer();
 }
 
