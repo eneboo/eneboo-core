@@ -94,6 +94,7 @@ void FLLineEdit::setText(const QString &text, bool checkfocus)
 {
   if (checkfocus) {
     if (text.isEmpty() || hasFocus()) {
+      qWarning("FLLineEdit entra por focus! ==>" + QString(text));
       QLineEdit::setText(text);
       return;
     }
@@ -115,6 +116,8 @@ void FLLineEdit::setText(const QString &text, bool checkfocus)
 
       if (minus)
         s.prepend('-');
+
+      qWarning("FLLineEdit FM ==>" + s);
     }
     break;
     case QVariant::UInt: {
@@ -130,7 +133,7 @@ void FLLineEdit::setText(const QString &text, bool checkfocus)
     }
     break;
   }
-
+  qWarning("FLLineEdit entra formateado ==>" + QString(text));
   QLineEdit::setText(s);
 
 }
