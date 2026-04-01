@@ -625,7 +625,7 @@ bool FLSqlCursor::refreshBuffer()
     setNotGenerateds();
 
     updateBufferCopy();
-    qWarning(tr("FLSqlCursor::refreshBuffer() EDIT newBuffer()"));
+    qWarning(tr("FLSqlCursor::refreshBuffer() EDIT newBuffer() " + QString(d->metadata_->name())));
     emit newBuffer();
   }
   break;
@@ -647,7 +647,7 @@ bool FLSqlCursor::refreshBuffer()
   case BROWSE:
     d->buffer_ = editBuffer(true);
     setNotGenerateds();
-    qWarning(tr("FLSqlCursor::refreshBuffer() BROWSE newBuffer()"));
+    qWarning(tr("FLSqlCursor::refreshBuffer() BROWSE newBuffer() " + QString(d->metadata_->name())));
     emit newBuffer();
     break;
   }
