@@ -513,6 +513,7 @@ bool FLSqlCursor::commitBufferCursorRelation()
         {
           d->cursorRelation_->refresh();
           d->cursorRelation_->setModeAccess(EDIT);
+          qWarning("CBCR REFRESHBUFFER!!!!! DESDE " + QString(d->metadata_->name()) + " A " + QString(d->cursorRelation_->metadata_->name()));
           d->cursorRelation_->refreshBuffer();
         }
 
