@@ -53,6 +53,7 @@
 #include "libpq-int.h"
 #include "fe-auth.h"
 #include "libpq/crypt.h"
+#include "fe-auth-scram.h"
 
 
 #ifdef KRB5
@@ -501,6 +502,177 @@ pg_fe_sendauth(AuthRequest areq, PGconn *conn, const char *hostname,
 			if (pg_local_sendauth(PQerrormsg, conn) != STATUS_OK)
 				return STATUS_ERROR;
 			break;
+
+		case AUTH_REQ_SASL:
+		{
+			/*
+			 * Initialize SCRAM state and send client-first-message.
+			 */
+			char	   *output;
+			int			outputlen;
+			bool		done;
+			bool		success;
+			char	   *errormsg;
+
+			if (password == NULL || *password == '\0')
+			{
+				(void) snprintf(PQerrormsg, PQERRORMSG_LENGTH,
+								PQnoPasswordSupplied);
+				return STATUS_ERROR;
+			}
+
+			/* Initialize SCRAM if not already done */
+			if (conn->scram_state == NULL)
+			{
+				conn->scram_state = pg_fe_scram_init(conn, password,
+													  "SCRAM-SHA-256");
+				if (conn->scram_state == NULL)
+				{
+					(void) snprintf(PQerrormsg, PQERRORMSG_LENGTH,
+									"SCRAM initialization failed\n");
+					return STATUS_ERROR;
+				}
+			}
+
+			/* Generate and send client-first-message */
+			pg_fe_scram_exchange(conn->scram_state, NULL, 0,
+								 &output, &outputlen,
+								 &done, &success, &errormsg);
+
+			if (output == NULL)
+			{
+				if (errormsg)
+				{
+					snprintf(PQerrormsg, PQERRORMSG_LENGTH, "%s", errormsg);
+					free(errormsg);
+				}
+				else
+					snprintf(PQerrormsg, PQERRORMSG_LENGTH,
+							 "SCRAM: no client-first-message\n");
+				return STATUS_ERROR;
+			}
+
+			/* Send client-first-message */
+			if (PG_PROTOCOL_MAJOR(conn->pversion) >= 3)
+			{
+				if (pqPacketSend(conn, 'p', output, outputlen + 1) != STATUS_OK)
+				{
+					free(output);
+					return STATUS_ERROR;
+				}
+			}
+			else
+			{
+				if (pqPacketSend(conn, 0, output, outputlen + 1) != STATUS_OK)
+				{
+					free(output);
+					return STATUS_ERROR;
+				}
+			}
+			free(output);
+			break;
+		}
+
+		case AUTH_REQ_SASL_CONT:
+		{
+			/*
+			 * Process server-first-message and send client-final-message.
+			 * The server payload was read into conn->inBuffer by fe-connect.c.
+			 */
+			char	   *output;
+			int			outputlen;
+			bool		done;
+			bool		success;
+			char	   *errormsg;
+			char	   *input;
+			int			inputlen;
+
+			if (conn->scram_state == NULL)
+			{
+				snprintf(PQerrormsg, PQERRORMSG_LENGTH,
+						 "SCRAM: state not initialized\n");
+				return STATUS_ERROR;
+			}
+
+			/*
+			 * TODO: Extract the server payload from conn->inBuffer.
+			 * For now, this is a placeholder. fe-connect.c needs to
+			 * pass the server message bytes to this function.
+			 */
+			input = NULL;
+			inputlen = 0;
+
+			pg_fe_scram_exchange(conn->scram_state, input, inputlen,
+								 &output, &outputlen,
+								 &done, &success, &errormsg);
+
+			if (output == NULL)
+			{
+				if (errormsg)
+				{
+					snprintf(PQerrormsg, PQERRORMSG_LENGTH, "%s", errormsg);
+					free(errormsg);
+				}
+				return STATUS_ERROR;
+			}
+
+			/* Send client-final-message */
+			if (PG_PROTOCOL_MAJOR(conn->pversion) >= 3)
+				pqPacketSend(conn, 'p', output, outputlen + 1);
+			else
+				pqPacketSend(conn, 0, output, outputlen + 1);
+			free(output);
+			break;
+		}
+
+		case AUTH_REQ_SASL_FIN:
+		{
+			/*
+			 * Process server-final-message and verify the signature.
+			 * Similar to AUTH_REQ_SASL_CONT, server payload needs to be
+			 * extracted from conn->inBuffer.
+			 */
+			char	   *output;
+			int			outputlen;
+			bool		done;
+			bool		success;
+			char	   *errormsg;
+			char	   *input;
+			int			inputlen;
+
+			if (conn->scram_state == NULL)
+			{
+				snprintf(PQerrormsg, PQERRORMSG_LENGTH,
+						 "SCRAM: state not initialized\n");
+				return STATUS_ERROR;
+			}
+
+			/* TODO: Extract server payload from conn->inBuffer */
+			input = NULL;
+			inputlen = 0;
+
+			pg_fe_scram_exchange(conn->scram_state, input, inputlen,
+								 &output, &outputlen,
+								 &done, &success, &errormsg);
+
+			if (!success)
+			{
+				if (errormsg)
+				{
+					snprintf(PQerrormsg, PQERRORMSG_LENGTH, "%s", errormsg);
+					free(errormsg);
+				}
+				else
+					snprintf(PQerrormsg, PQERRORMSG_LENGTH,
+							 "SCRAM: server signature verification failed\n");
+				return STATUS_ERROR;
+			}
+
+			/* Clean up SCRAM state */
+			pg_fe_scram_free(conn->scram_state);
+			conn->scram_state = NULL;
+			break;
+		}
 
 		default:
 			snprintf(PQerrormsg, PQERRORMSG_LENGTH,

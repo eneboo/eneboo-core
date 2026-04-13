@@ -348,6 +348,10 @@ struct pg_conn
 
 	/* Buffer for receiving various parts of messages */
 	PQExpBufferData workBuffer; /* expansible string */
+
+	/* SCRAM authentication state (for SCRAM-SHA-256 support) */
+	void	   *scram_state;		/* private state for SCRAM negotiation */
+	AuthRequest auth_req_received;	/* last AUTH_REQ_* code from server */
 };
 
 /* PGcancel stores all data necessary to cancel a connection. A copy of this

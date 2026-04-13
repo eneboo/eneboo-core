@@ -1613,6 +1613,32 @@ keep_going:						/* We will come back to here until there is
 				}
 
 				/*
+				 * For SASL authentication methods (SCRAM-SHA-256, etc.),
+				 * read the authentication data payload.
+				 */
+				if (areq == AUTH_REQ_SASL ||
+					areq == AUTH_REQ_SASL_CONT ||
+					areq == AUTH_REQ_SASL_FIN)
+				{
+					/*
+					 * Read the 4-byte length of SASL payload, then the payload.
+					 * This is stored temporarily in conn's work buffer or a
+					 * dedicated SCRAM buffer. For initial implementation, we'll
+					 * read it into a temporary buffer and pass to pg_fe_sendauth.
+					 *
+					 * NOTE: The exact handling depends on whether fe-auth.c will
+					 * handle reading from conn->inBuffer directly or if fe-connect.c
+					 * should pre-read it. For now, we assume fe-auth.c will read
+					 * from conn->inBuffer at conn->inCursor.
+					 *
+					 * In a full implementation, AUTH_REQ_SASL_CONT and AUTH_REQ_SASL_FIN
+					 * messages have variable-length payloads. We defer this to
+					 * a subsequent implementation pass once fe-auth.c SCRAM handling
+					 * is tested with AUTH_REQ_SASL first.
+					 */
+				}
+
+				/*
 				 * OK, we successfully read the message; mark data consumed
 				 */
 				conn->inStart = conn->inCursor;
