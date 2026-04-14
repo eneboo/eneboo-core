@@ -1077,6 +1077,12 @@ verify_server_signature(fe_scram_state *state, bool *match)
 			 state->server_first_message,
 			 state->client_final_message_without_proof);
 
+	SCRAM_LOG("verify_server_signature: client_first_bare='%s'",
+			  state->client_first_message_bare ? state->client_first_message_bare : "(null)");
+	SCRAM_LOG("verify_server_signature: server_first='%s'",
+			  state->server_first_message ? state->server_first_message : "(null)");
+	SCRAM_LOG("verify_server_signature: client_final_without_proof='%s'",
+			  state->client_final_message_without_proof ? state->client_final_message_without_proof : "(null)");
 	SCRAM_LOG("verify_server_signature: auth_message='%s'", auth_message);
 
 	/* HMAC(ServerKey, AuthMessage) */
@@ -1102,6 +1108,24 @@ verify_server_signature(fe_scram_state *state, bool *match)
 
 	*match = (memcmp(state->ServerSignature, expected_ServerSignature,
 					 SCRAM_KEY_LEN) == 0);
+	{
+		/* Print hex of both signatures for comparison */
+		int _i;
+		char _srv[SCRAM_KEY_LEN * 2 + 1];
+		char _exp[SCRAM_KEY_LEN * 2 + 1];
+		static const char _hx[] = "0123456789abcdef";
+		for (_i = 0; _i < SCRAM_KEY_LEN; _i++)
+		{
+			_srv[_i*2]   = _hx[(state->ServerSignature[_i] >> 4) & 0xf];
+			_srv[_i*2+1] = _hx[state->ServerSignature[_i] & 0xf];
+			_exp[_i*2]   = _hx[(expected_ServerSignature[_i] >> 4) & 0xf];
+			_exp[_i*2+1] = _hx[expected_ServerSignature[_i] & 0xf];
+		}
+		_srv[SCRAM_KEY_LEN*2] = '\0';
+		_exp[SCRAM_KEY_LEN*2] = '\0';
+		SCRAM_LOG("verify_server_signature: server_sig =%s", _srv);
+		SCRAM_LOG("verify_server_signature: expected   =%s", _exp);
+	}
 	SCRAM_LOG("verify_server_signature: match=%d", (int) *match);
 	return true;
 }
