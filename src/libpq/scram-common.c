@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <openssl/evp.h>
+#include <openssl/hmac.h>
 
 #include "scram_crypto.h"
 
@@ -88,8 +88,8 @@ scram_HMAC(const unsigned char *key, int keylen, const unsigned char *str, int s
  *
  *   SaltedPassword := Hi(Normalize(password), salt, i)
  *
- * Uses OpenSSL PKCS5_PBKDF2_HMAC directly to avoid custom malloc/free cycles
- * that can corrupt the heap on some platforms.
+ * Uses a single HMAC_CTX reused across all PBKDF2 iterations to avoid
+ * thousands of malloc/free cycles that can corrupt the heap.
  *
  * 'output' must be SCRAM_KEY_LEN bytes.
  * Returns 0 on success, -1 on error.
@@ -100,16 +100,79 @@ scram_SaltedPassword(const char *password,
 					 int iterations,
 					 unsigned char *output)
 {
-	int plen = (int) strlen(password);
+	unsigned char		Ui[SCRAM_KEY_LEN];
+	unsigned char		Ui_prev[SCRAM_KEY_LEN];
+	unsigned char		saltbuf[1024 + 4];
+	int					plen = (int) strlen(password);
+	int					i,
+						j;
+	unsigned int		outlen;
 
-	if (PKCS5_PBKDF2_HMAC(password, plen,
-						   (const unsigned char *) salt, saltlen,
-						   iterations,
-						   EVP_sha256(),
-						   SCRAM_KEY_LEN, output) != 1)
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+	HMAC_CTX		   *hctx;
+#else
+	HMAC_CTX			hctx_buf;
+	HMAC_CTX		   *hctx = &hctx_buf;
+#endif
+
+	if (saltlen > 1024)
 		return -1;
 
+	/* Build salt || INT(1) */
+	memcpy(saltbuf, salt, saltlen);
+	saltbuf[saltlen + 0] = 0;
+	saltbuf[saltlen + 1] = 0;
+	saltbuf[saltlen + 2] = 0;
+	saltbuf[saltlen + 3] = 1;
+
+	/* Allocate / initialise a single HMAC context */
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+	hctx = HMAC_CTX_new();
+	if (!hctx)
+		return -1;
+#else
+	HMAC_CTX_init(hctx);
+#endif
+
+	/* U1 = HMAC(password, salt || INT(1)) */
+	if (HMAC_Init_ex(hctx, password, plen, EVP_sha256(), NULL) <= 0 ||
+		HMAC_Update(hctx, saltbuf, (size_t)(saltlen + 4)) <= 0 ||
+		HMAC_Final(hctx, Ui_prev, &outlen) <= 0 ||
+		outlen != SCRAM_KEY_LEN)
+		goto fail;
+
+	memcpy(output, Ui_prev, SCRAM_KEY_LEN);
+
+	/* U2 ... Ui: HMAC(password, U_{i-1}), XOR into output */
+	for (i = 2; i <= iterations; i++)
+	{
+		/* Reinitialise with same key: pass NULL for md to reuse algorithm */
+		if (HMAC_Init_ex(hctx, password, plen, EVP_sha256(), NULL) <= 0 ||
+			HMAC_Update(hctx, Ui_prev, SCRAM_KEY_LEN) <= 0 ||
+			HMAC_Final(hctx, Ui, &outlen) <= 0 ||
+			outlen != SCRAM_KEY_LEN)
+			goto fail;
+
+		for (j = 0; j < SCRAM_KEY_LEN; j++)
+			output[j] ^= Ui[j];
+
+		memcpy(Ui_prev, Ui, SCRAM_KEY_LEN);
+	}
+
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+	HMAC_CTX_free(hctx);
+#else
+	HMAC_CTX_cleanup(hctx);
+#endif
 	return 0;
+
+fail:
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+	HMAC_CTX_free(hctx);
+#else
+	HMAC_CTX_cleanup(hctx);
+#endif
+	return -1;
 }
 
 /*
