@@ -403,11 +403,16 @@ scram_b64_encode(const char *input, int inputlen)
 	char	   *result;
 
 	encoded_len = pg_b64_enc_len(inputlen);
+	SCRAM_LOG("scram_b64_encode: inputlen=%d enc_len=%d", inputlen, encoded_len);
 	result = (char *) malloc(encoded_len + 1);
 	if (!result)
+	{
+		SCRAM_LOG("scram_b64_encode: malloc(%d) failed", encoded_len + 1);
 		return NULL;
+	}
 
 	encoded_len = pg_b64_encode(input, inputlen, result, encoded_len + 1);
+	SCRAM_LOG("scram_b64_encode: pg_b64_encode returned %d", encoded_len);
 	if (encoded_len < 0)
 	{
 		free(result);
