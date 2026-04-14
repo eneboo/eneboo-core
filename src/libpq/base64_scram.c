@@ -50,6 +50,8 @@ pg_b64_encode(const char *src, int len, char *dst, int dstlen)
 	int			pos = 2;
 	uint32_t	buf = 0;
 
+	fprintf(stderr, "[B64-ENTRY] pg_b64_encode: len=%d dstlen=%d\n", len, dstlen);
+
 	s = src;
 	p = dst;
 
