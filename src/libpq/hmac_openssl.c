@@ -88,7 +88,7 @@ pg_hmac_create(int type)
  * -1 on failure.
  */
 int
-pg_hmac_init(pg_hmac_ctx *ctx, const uint8_t *key, size_t len)
+pg_hmac_init(pg_hmac_ctx *ctx, const unsigned char *key, size_t len)
 {
 	const EVP_MD *md;
 
@@ -128,7 +128,7 @@ pg_hmac_init(pg_hmac_ctx *ctx, const uint8_t *key, size_t len)
  * Update an HMAC context with new data.  Returns 0 on success, -1 on failure.
  */
 int
-pg_hmac_update(pg_hmac_ctx *ctx, const uint8_t *data, size_t len)
+pg_hmac_update(pg_hmac_ctx *ctx, const unsigned char *data, size_t len)
 {
 	if (ctx == NULL)
 		return -1;
@@ -146,7 +146,7 @@ pg_hmac_update(pg_hmac_ctx *ctx, const uint8_t *data, size_t len)
  * Returns 0 on success, -1 on failure.
  */
 int
-pg_hmac_final(pg_hmac_ctx *ctx, uint8_t *dest, size_t len)
+pg_hmac_final(pg_hmac_ctx *ctx, unsigned char *dest, size_t len)
 {
 	unsigned int outlen;
 

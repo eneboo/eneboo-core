@@ -32,17 +32,17 @@ typedef struct pg_cryptohash_ctx pg_cryptohash_ctx;
 
 extern pg_cryptohash_ctx *pg_cryptohash_create(int type);
 extern int	pg_cryptohash_init(pg_cryptohash_ctx *ctx);
-extern int	pg_cryptohash_update(pg_cryptohash_ctx *ctx, const uint8_t *data, size_t len);
-extern int	pg_cryptohash_final(pg_cryptohash_ctx *ctx, uint8_t *dest, size_t len);
+extern int	pg_cryptohash_update(pg_cryptohash_ctx *ctx, const unsigned char *data, size_t len);
+extern int	pg_cryptohash_final(pg_cryptohash_ctx *ctx, unsigned char *dest, size_t len);
 extern void pg_cryptohash_free(pg_cryptohash_ctx *ctx);
 
 /* Opaque HMAC context */
 typedef struct pg_hmac_ctx pg_hmac_ctx;
 
 extern pg_hmac_ctx *pg_hmac_create(int type);
-extern int	pg_hmac_init(pg_hmac_ctx *ctx, const uint8_t *key, size_t len);
-extern int	pg_hmac_update(pg_hmac_ctx *ctx, const uint8_t *data, size_t len);
-extern int	pg_hmac_final(pg_hmac_ctx *ctx, uint8_t *dest, size_t len);
+extern int	pg_hmac_init(pg_hmac_ctx *ctx, const unsigned char *key, size_t len);
+extern int	pg_hmac_update(pg_hmac_ctx *ctx, const unsigned char *data, size_t len);
+extern int	pg_hmac_final(pg_hmac_ctx *ctx, unsigned char *dest, size_t len);
 extern void pg_hmac_free(pg_hmac_ctx *ctx);
 
 /* base64 */

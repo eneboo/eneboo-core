@@ -82,17 +82,17 @@ typedef struct
 	int			iterations;
 
 	/* Computed keys */
-	uint8_t		SaltedPassword[SCRAM_KEY_LEN];
-	uint8_t		ClientKey[SCRAM_KEY_LEN];
-	uint8_t		StoredKey[SCRAM_KEY_LEN];
-	uint8_t		ServerKey[SCRAM_KEY_LEN];
+	unsigned char		SaltedPassword[SCRAM_KEY_LEN];
+	unsigned char		ClientKey[SCRAM_KEY_LEN];
+	unsigned char		StoredKey[SCRAM_KEY_LEN];
+	unsigned char		ServerKey[SCRAM_KEY_LEN];
 
 	/* Messages used in auth-message construction */
 	char	   *client_first_message_bare;
 	char	   *client_final_message_without_proof;
 
 	/* Server signature for verification */
-	uint8_t		ServerSignature[SCRAM_KEY_LEN];
+	unsigned char		ServerSignature[SCRAM_KEY_LEN];
 } fe_scram_state;
 
 /* ---------- forward declarations of static helpers ---------- */
@@ -104,7 +104,7 @@ static char *build_client_final_message(fe_scram_state *state);
 static bool verify_server_signature(fe_scram_state *state, bool *match);
 static bool calculate_client_proof(fe_scram_state *state,
 								   const char *auth_message,
-								   uint8_t *result);
+								   unsigned char *result);
 static char *sanitize_char(char c);
 static char *sanitize_str(const char *s);
 static char *scram_b64_encode(const char *input, int inputlen);
@@ -543,7 +543,7 @@ build_client_first_message(fe_scram_state *state)
 	 * a ~24-character nonce string that contains only printable ASCII.
 	 */
 	static const int NONCE_RAW_BYTES = 18;
-	uint8_t		raw[18];			/* must match NONCE_RAW_BYTES */
+	unsigned char		raw[18];			/* must match NONCE_RAW_BYTES */
 	char	   *nonce_b64;
 	PGconn	   *conn = state->conn;
 	const char *username;
@@ -623,7 +623,7 @@ build_client_final_message(fe_scram_state *state)
 	const char *gs2_header = "n,,";
 	char	   *channel_binding_b64;
 	char	   *client_final_without_proof;
-	uint8_t		proof[SCRAM_KEY_LEN];
+	unsigned char		proof[SCRAM_KEY_LEN];
 	char	   *proof_b64;
 	char	   *auth_message;
 	char	   *result;
@@ -860,9 +860,9 @@ read_server_final_message(fe_scram_state *state, char *input)
 static bool
 calculate_client_proof(fe_scram_state *state,
 					   const char *auth_message,
-					   uint8_t *result)
+					   unsigned char *result)
 {
-	uint8_t		ClientSignature[SCRAM_KEY_LEN];
+	unsigned char		ClientSignature[SCRAM_KEY_LEN];
 	int			i;
 
 	/*
@@ -904,7 +904,7 @@ calculate_client_proof(fe_scram_state *state,
 		if (!hctx)
 			return false;
 		if (pg_hmac_init(hctx, state->StoredKey, SCRAM_KEY_LEN) < 0 ||
-			pg_hmac_update(hctx, (const uint8_t *) auth_message,
+			pg_hmac_update(hctx, (const unsigned char *) auth_message,
 						   strlen(auth_message)) < 0 ||
 			pg_hmac_final(hctx, ClientSignature, SCRAM_KEY_LEN) < 0)
 		{
@@ -937,7 +937,7 @@ calculate_client_proof(fe_scram_state *state,
 static bool
 verify_server_signature(fe_scram_state *state, bool *match)
 {
-	uint8_t		expected_ServerSignature[SCRAM_KEY_LEN];
+	unsigned char		expected_ServerSignature[SCRAM_KEY_LEN];
 	char	   *auth_message;
 	int			msglen;
 	pg_hmac_ctx *hctx;
@@ -964,7 +964,7 @@ verify_server_signature(fe_scram_state *state, bool *match)
 		return false;
 	}
 	if (pg_hmac_init(hctx, state->ServerKey, SCRAM_KEY_LEN) < 0 ||
-		pg_hmac_update(hctx, (const uint8_t *) auth_message,
+		pg_hmac_update(hctx, (const unsigned char *) auth_message,
 					   strlen(auth_message)) < 0 ||
 		pg_hmac_final(hctx, expected_ServerSignature, SCRAM_KEY_LEN) < 0)
 	{

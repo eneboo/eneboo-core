@@ -13,7 +13,6 @@
 #ifndef SCRAM_COMMON_H
 #define SCRAM_COMMON_H
 
-#include <stdint.h>
 #include "scram_crypto.h"
 
 /* SCRAM-SHA-256 specific constants */
@@ -37,10 +36,10 @@
 extern int	scram_SaltedPassword(const char *password,
 								 const char *salt, int saltlen,
 								 int iterations,
-								 uint8_t *output);
-extern int	scram_ClientKey(const uint8_t *salted_password, uint8_t *output);
-extern int	scram_ServerKey(const uint8_t *salted_password, uint8_t *output);
-extern int	scram_H(const uint8_t *input, int len, uint8_t *dest);
+								 unsigned char *output);
+extern int	scram_ClientKey(const unsigned char *salted_password, unsigned char *output);
+extern int	scram_ServerKey(const unsigned char *salted_password, unsigned char *output);
+extern int	scram_H(const unsigned char *input, int len, unsigned char *dest);
 
 #ifndef FRONTEND
 extern int	scram_build_secret(const char *salt, int saltlen, int iterations,

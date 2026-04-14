@@ -109,7 +109,7 @@ pg_cryptohash_init(pg_cryptohash_ctx *ctx)
  * Update a hash context with new data.  Returns 0 on success, -1 on failure.
  */
 int
-pg_cryptohash_update(pg_cryptohash_ctx *ctx, const uint8_t *data, size_t len)
+pg_cryptohash_update(pg_cryptohash_ctx *ctx, const unsigned char *data, size_t len)
 {
 	if (ctx == NULL)
 		return -1;
@@ -127,7 +127,7 @@ pg_cryptohash_update(pg_cryptohash_ctx *ctx, const uint8_t *data, size_t len)
  * Returns 0 on success, -1 on failure.
  */
 int
-pg_cryptohash_final(pg_cryptohash_ctx *ctx, uint8_t *dest, size_t len)
+pg_cryptohash_final(pg_cryptohash_ctx *ctx, unsigned char *dest, size_t len)
 {
 	unsigned int outlen;
 

@@ -32,7 +32,7 @@
  * Returns 0 on success, -1 on error.
  */
 int
-scram_H(const uint8_t *input, int len, uint8_t *dest)
+scram_H(const unsigned char *input, int len, unsigned char *dest)
 {
 	pg_cryptohash_ctx *ctx;
 
@@ -59,7 +59,7 @@ scram_H(const uint8_t *input, int len, uint8_t *dest)
  * which must be SCRAM_KEY_LEN bytes.  Returns 0 on success, -1 on error.
  */
 static int
-scram_HMAC(const uint8_t *key, int keylen, const uint8_t *str, int slen, uint8_t *dest)
+scram_HMAC(const unsigned char *key, int keylen, const unsigned char *str, int slen, unsigned char *dest)
 {
 	pg_hmac_ctx *ctx;
 
@@ -93,12 +93,12 @@ int
 scram_SaltedPassword(const char *password,
 					 const char *salt, int saltlen,
 					 int iterations,
-					 uint8_t *output)
+					 unsigned char *output)
 {
 	int			i,
 				j;
-	uint8_t		Ui[SCRAM_KEY_LEN];
-	uint8_t		Ui_prev[SCRAM_KEY_LEN];
+	unsigned char		Ui[SCRAM_KEY_LEN];
+	unsigned char		Ui_prev[SCRAM_KEY_LEN];
 
 	/*
 	 * Compute U1: Hi(str XOR opad, Hi(str XOR ipad, salt || INT(1)))
@@ -107,7 +107,7 @@ scram_SaltedPassword(const char *password,
 	 * U1 = HMAC(password, salt || INT(1))
 	 */
 	{
-		uint8_t		saltbuf[1024 + 4];
+		unsigned char		saltbuf[1024 + 4];
 		int			plen = (int) strlen(password);
 
 		if (saltlen > 1024)
@@ -120,7 +120,7 @@ scram_SaltedPassword(const char *password,
 		saltbuf[saltlen + 2] = 0;
 		saltbuf[saltlen + 3] = 1;
 
-		if (scram_HMAC((const uint8_t *) password, plen,
+		if (scram_HMAC((const unsigned char *) password, plen,
 					   saltbuf, saltlen + 4, Ui_prev) < 0)
 			return -1;
 	}
@@ -132,7 +132,7 @@ scram_SaltedPassword(const char *password,
 	{
 		int			plen = (int) strlen(password);
 
-		if (scram_HMAC((const uint8_t *) password, plen,
+		if (scram_HMAC((const unsigned char *) password, plen,
 					   Ui_prev, SCRAM_KEY_LEN, Ui) < 0)
 			return -1;
 
@@ -153,9 +153,9 @@ scram_SaltedPassword(const char *password,
  * Returns 0 on success, -1 on error.
  */
 int
-scram_ClientKey(const uint8_t *salted_password, uint8_t *output)
+scram_ClientKey(const unsigned char *salted_password, unsigned char *output)
 {
-	static const uint8_t client_key_str[] = "Client Key";
+	static const unsigned char client_key_str[] = "Client Key";
 
 	return scram_HMAC(salted_password, SCRAM_KEY_LEN,
 					  client_key_str, sizeof(client_key_str) - 1,
@@ -170,9 +170,9 @@ scram_ClientKey(const uint8_t *salted_password, uint8_t *output)
  * Returns 0 on success, -1 on error.
  */
 int
-scram_ServerKey(const uint8_t *salted_password, uint8_t *output)
+scram_ServerKey(const unsigned char *salted_password, unsigned char *output)
 {
-	static const uint8_t server_key_str[] = "Server Key";
+	static const unsigned char server_key_str[] = "Server Key";
 
 	return scram_HMAC(salted_password, SCRAM_KEY_LEN,
 					  server_key_str, sizeof(server_key_str) - 1,
@@ -197,11 +197,11 @@ int
 scram_build_secret(const char *salt, int saltlen, int iterations,
 				   const char *password, char *buf, int buflen)
 {
-	uint8_t		salted_password[SCRAM_KEY_LEN];
-	uint8_t		stored_key[SCRAM_KEY_LEN];
-	uint8_t		server_key[SCRAM_KEY_LEN];
-	uint8_t		client_key[SCRAM_KEY_LEN];
-	uint8_t		H_client_key[SCRAM_KEY_LEN];
+	unsigned char		salted_password[SCRAM_KEY_LEN];
+	unsigned char		stored_key[SCRAM_KEY_LEN];
+	unsigned char		server_key[SCRAM_KEY_LEN];
+	unsigned char		client_key[SCRAM_KEY_LEN];
+	unsigned char		H_client_key[SCRAM_KEY_LEN];
 	char		salt_b64[512];
 	char		stored_key_b64[512];
 	char		server_key_b64[512];
