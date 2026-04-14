@@ -661,6 +661,13 @@ build_client_final_message(fe_scram_state *state)
 	SCRAM_LOG("build_client_final_message: start, combined_nonce='%s'",
 			  state->combined_nonce ? state->combined_nonce : "(null)");
 
+	/* Heap sanity check BEFORE PBKDF2 */
+	{
+		void *pre256 = malloc(256);
+		SCRAM_LOG("PRE-PBKDF2 heap check: malloc(256)=%p", pre256);
+		if (pre256) free(pre256);
+	}
+
 	channel_binding_b64 = scram_b64_encode(gs2_header, (int) strlen(gs2_header));
 	if (!channel_binding_b64)
 	{
@@ -710,6 +717,13 @@ build_client_final_message(fe_scram_state *state)
 			 client_final_without_proof);
 	SCRAM_LOG("build_client_final_message: auth_message='%s'", auth_message);
 
+	/* Heap sanity check BEFORE PBKDF2 (after auth_message alloc) */
+	{
+		void *pre = malloc(256);
+		SCRAM_LOG("PRE-PBKDF2 heap check 2: malloc(256)=%p", pre);
+		if (pre) free(pre);
+	}
+
 	/* Compute client proof */
 	SCRAM_LOG("build_client_final_message: calling calculate_client_proof");
 	if (!calculate_client_proof(state, auth_message, proof))
@@ -720,6 +734,13 @@ build_client_final_message(fe_scram_state *state)
 	}
 	free(auth_message);
 	SCRAM_LOG("build_client_final_message: calculate_client_proof OK");
+
+	/* Heap sanity check AFTER PBKDF2 */
+	{
+		void *post = malloc(256);
+		SCRAM_LOG("POST-PBKDF2 heap check: malloc(256)=%p", post);
+		if (post) free(post);
+	}
 
 	proof_b64 = scram_b64_encode((const char *) proof, SCRAM_KEY_LEN);
 	if (!proof_b64)
@@ -732,23 +753,27 @@ build_client_final_message(fe_scram_state *state)
 	 * client-final-message =
 	 *   client-final-message-without-proof "," "p=" proof-b64
 	 */
-	SCRAM_LOG("build_client_final_message: proof_b64='%.10s...' len=%d cfwp=%p='%.20s'",
-			  proof_b64, (int) strlen(proof_b64),
-			  (void *) client_final_without_proof,
-			  client_final_without_proof ? client_final_without_proof : "(null)");
-	msglen = (int) strlen(client_final_without_proof) +
-		(int) strlen(",p=") + (int) strlen(proof_b64) + 1;
-	SCRAM_LOG("build_client_final_message: final msglen=%d", msglen);
+	{
+		int n1 = (int) strlen(client_final_without_proof);
+		int n3 = (int) strlen(proof_b64);
+		void *t1 = malloc(1);
+		void *t8 = malloc(8);
+		msglen = n1 + 3 + n3 + 1;
+		SCRAM_LOG("build_final: n1=%d n3=%d msglen=%d test_malloc1=%p test_malloc8=%p",
+				  n1, n3, msglen, t1, t8);
+		if (t1) free(t1);
+		if (t8) free(t8);
+	}
 	result = (char *) malloc(msglen);
-	SCRAM_LOG("build_client_final_message: final malloc result=%p", (void *) result);
+	SCRAM_LOG("build_final: malloc(%d)=%p", msglen, (void *) result);
 	if (!result)
 	{
-		SCRAM_LOG("build_client_final_message: final malloc FAILED");
+		SCRAM_LOG("build_final: FAILED - heap corrupt");
 		free(proof_b64);
 		return NULL;
 	}
 	snprintf(result, msglen, "%s,p=%s", client_final_without_proof, proof_b64);
-	SCRAM_LOG("build_client_final_message: final msg='%.40s...'", result);
+	SCRAM_LOG("build_final: msg='%.30s...'", result);
 	free(proof_b64);
 
 	return result;
