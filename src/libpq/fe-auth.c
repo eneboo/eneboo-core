@@ -552,40 +552,53 @@ pg_fe_sendauth(AuthRequest areq, PGconn *conn, const char *hostname,
 				return STATUS_ERROR;
 			}
 
-			/* Send client-first-message */
-			if (PG_PROTOCOL_MAJOR(conn->pversion) >= 3)
+			/*
+			 * Send SASLInitialResponse:
+			 *   mechanism name (null-terminated) + Int32 data length + data
+			 */
 			{
-				if (pqPacketSend(conn, 'p', output, outputlen + 1) != STATUS_OK)
+				const char *mech = "SCRAM-SHA-256";
+				int			mechlen = (int) strlen(mech) + 1; /* include NUL */
+				int			pktlen = mechlen + 4 + outputlen;
+				char	   *pkt = (char *) malloc(pktlen);
+				int			n;
+
+				if (!pkt)
 				{
 					free(output);
 					return STATUS_ERROR;
 				}
-			}
-			else
-			{
-				if (pqPacketSend(conn, 0, output, outputlen + 1) != STATUS_OK)
+				memcpy(pkt, mech, mechlen);
+				/* big-endian Int32 data length */
+				n = outputlen;
+				pkt[mechlen + 0] = (char) ((n >> 24) & 0xFF);
+				pkt[mechlen + 1] = (char) ((n >> 16) & 0xFF);
+				pkt[mechlen + 2] = (char) ((n >>  8) & 0xFF);
+				pkt[mechlen + 3] = (char) (n & 0xFF);
+				memcpy(pkt + mechlen + 4, output, outputlen);
+				free(output);
+
+				if (pqPacketSend(conn, 'p', pkt, pktlen) != STATUS_OK)
 				{
-					free(output);
+					free(pkt);
 					return STATUS_ERROR;
 				}
+				free(pkt);
 			}
-			free(output);
 			break;
 		}
 
 		case AUTH_REQ_SASL_CONT:
 		{
 			/*
-			 * Process server-first-message and send client-final-message.
-			 * The server payload was read into conn->inBuffer by fe-connect.c.
+			 * Process server-first-message (from conn->sasl_buf) and send
+			 * client-final-message as SASLResponse.
 			 */
 			char	   *output;
 			int			outputlen;
 			bool		done;
 			bool		success;
 			char	   *errormsg;
-			char	   *input;
-			int			inputlen;
 
 			if (conn->scram_state == NULL)
 			{
@@ -594,15 +607,8 @@ pg_fe_sendauth(AuthRequest areq, PGconn *conn, const char *hostname,
 				return STATUS_ERROR;
 			}
 
-			/*
-			 * TODO: Extract the server payload from conn->inBuffer.
-			 * For now, this is a placeholder. fe-connect.c needs to
-			 * pass the server message bytes to this function.
-			 */
-			input = NULL;
-			inputlen = 0;
-
-			pg_fe_scram_exchange(conn->scram_state, input, inputlen,
+			pg_fe_scram_exchange(conn->scram_state,
+								 conn->sasl_buf, conn->sasl_buflen,
 								 &output, &outputlen,
 								 &done, &success, &errormsg);
 
@@ -616,11 +622,12 @@ pg_fe_sendauth(AuthRequest areq, PGconn *conn, const char *hostname,
 				return STATUS_ERROR;
 			}
 
-			/* Send client-final-message */
-			if (PG_PROTOCOL_MAJOR(conn->pversion) >= 3)
-				pqPacketSend(conn, 'p', output, outputlen + 1);
-			else
-				pqPacketSend(conn, 0, output, outputlen + 1);
+			/* Send SASLResponse: just the data, no mechanism name */
+			if (pqPacketSend(conn, 'p', output, outputlen) != STATUS_OK)
+			{
+				free(output);
+				return STATUS_ERROR;
+			}
 			free(output);
 			break;
 		}
@@ -628,17 +635,14 @@ pg_fe_sendauth(AuthRequest areq, PGconn *conn, const char *hostname,
 		case AUTH_REQ_SASL_FIN:
 		{
 			/*
-			 * Process server-final-message and verify the signature.
-			 * Similar to AUTH_REQ_SASL_CONT, server payload needs to be
-			 * extracted from conn->inBuffer.
+			 * Process server-final-message (from conn->sasl_buf) and verify
+			 * the server signature.
 			 */
 			char	   *output;
 			int			outputlen;
 			bool		done;
 			bool		success;
 			char	   *errormsg;
-			char	   *input;
-			int			inputlen;
 
 			if (conn->scram_state == NULL)
 			{
@@ -647,13 +651,13 @@ pg_fe_sendauth(AuthRequest areq, PGconn *conn, const char *hostname,
 				return STATUS_ERROR;
 			}
 
-			/* TODO: Extract server payload from conn->inBuffer */
-			input = NULL;
-			inputlen = 0;
-
-			pg_fe_scram_exchange(conn->scram_state, input, inputlen,
+			pg_fe_scram_exchange(conn->scram_state,
+								 conn->sasl_buf, conn->sasl_buflen,
 								 &output, &outputlen,
 								 &done, &success, &errormsg);
+
+			if (output)
+				free(output);
 
 			if (!success)
 			{

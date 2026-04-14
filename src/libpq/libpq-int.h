@@ -352,6 +352,8 @@ struct pg_conn
 	/* SCRAM authentication state (for SCRAM-SHA-256 support) */
 	void	   *scram_state;		/* private state for SCRAM negotiation */
 	AuthRequest auth_req_received;	/* last AUTH_REQ_* code from server */
+	char	   *sasl_buf;			/* server SASL payload (mechanism list or server msg) */
+	int			sasl_buflen;		/* length of sasl_buf */
 };
 
 /* PGcancel stores all data necessary to cancel a connection. A copy of this

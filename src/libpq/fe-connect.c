@@ -31,6 +31,7 @@
 #include "libpq-fe.h"
 #include "libpq-int.h"
 #include "fe-auth.h"
+#include "fe-auth-scram.h"
 //#include "pg_config_paths.h"
 
 #ifdef WIN32
@@ -1614,28 +1615,50 @@ keep_going:						/* We will come back to here until there is
 
 				/*
 				 * For SASL authentication methods (SCRAM-SHA-256, etc.),
-				 * read the authentication data payload.
+				 * read the authentication data payload and store in conn->sasl_buf.
+				 *
+				 * AUTH_REQ_SASL payload: list of mechanism names (null-separated,
+				 *   double-null terminated), e.g. "SCRAM-SHA-256\0\0"
+				 * AUTH_REQ_SASL_CONT payload: server-first-message (raw bytes)
+				 * AUTH_REQ_SASL_FIN  payload: server-final-message (raw bytes)
+				 *
+				 * msgLength was already reduced by 4 (areq int), so remaining
+				 * bytes = msgLength = payload size.
 				 */
 				if (areq == AUTH_REQ_SASL ||
 					areq == AUTH_REQ_SASL_CONT ||
 					areq == AUTH_REQ_SASL_FIN)
 				{
-					/*
-					 * Read the 4-byte length of SASL payload, then the payload.
-					 * This is stored temporarily in conn's work buffer or a
-					 * dedicated SCRAM buffer. For initial implementation, we'll
-					 * read it into a temporary buffer and pass to pg_fe_sendauth.
-					 *
-					 * NOTE: The exact handling depends on whether fe-auth.c will
-					 * handle reading from conn->inBuffer directly or if fe-connect.c
-					 * should pre-read it. For now, we assume fe-auth.c will read
-					 * from conn->inBuffer at conn->inCursor.
-					 *
-					 * In a full implementation, AUTH_REQ_SASL_CONT and AUTH_REQ_SASL_FIN
-					 * messages have variable-length payloads. We defer this to
-					 * a subsequent implementation pass once fe-auth.c SCRAM handling
-					 * is tested with AUTH_REQ_SASL first.
-					 */
+					int payloadlen = msgLength; /* bytes remaining after areq */
+
+					/* Free any previous SASL buffer */
+					if (conn->sasl_buf)
+					{
+						free(conn->sasl_buf);
+						conn->sasl_buf = NULL;
+						conn->sasl_buflen = 0;
+					}
+
+					if (payloadlen > 0)
+					{
+						conn->sasl_buf = (char *) malloc(payloadlen + 1);
+						if (!conn->sasl_buf)
+						{
+							printfPQExpBuffer(&conn->errorMessage,
+											  libpq_gettext("out of memory\n"));
+							goto error_return;
+						}
+						if (pqGetnchar(conn->sasl_buf, payloadlen, conn))
+						{
+							/* Not enough data yet */
+							free(conn->sasl_buf);
+							conn->sasl_buf = NULL;
+							conn->sasl_buflen = 0;
+							return PGRES_POLLING_READING;
+						}
+						conn->sasl_buf[payloadlen] = '\0';
+						conn->sasl_buflen = payloadlen;
+					}
 				}
 
 				/*
@@ -1957,6 +1980,10 @@ freePGconn(PGconn *conn)
 		free(conn->inBuffer);
 	if (conn->outBuffer)
 		free(conn->outBuffer);
+	if (conn->sasl_buf)
+		free(conn->sasl_buf);
+	if (conn->scram_state)
+		pg_fe_scram_free(conn->scram_state);
 	termPQExpBuffer(&conn->errorMessage);
 	termPQExpBuffer(&conn->workBuffer);
 	free(conn);
