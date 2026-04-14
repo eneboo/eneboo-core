@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <openssl/evp.h>
+
 #include "scram_crypto.h"
 
 /* SCRAM-SHA-256 output length */
@@ -86,6 +88,9 @@ scram_HMAC(const unsigned char *key, int keylen, const unsigned char *str, int s
  *
  *   SaltedPassword := Hi(Normalize(password), salt, i)
  *
+ * Uses OpenSSL PKCS5_PBKDF2_HMAC directly to avoid custom malloc/free cycles
+ * that can corrupt the heap on some platforms.
+ *
  * 'output' must be SCRAM_KEY_LEN bytes.
  * Returns 0 on success, -1 on error.
  */
@@ -95,52 +100,14 @@ scram_SaltedPassword(const char *password,
 					 int iterations,
 					 unsigned char *output)
 {
-	int			i,
-				j;
-	unsigned char		Ui[SCRAM_KEY_LEN];
-	unsigned char		Ui_prev[SCRAM_KEY_LEN];
+	int plen = (int) strlen(password);
 
-	/*
-	 * Compute U1: Hi(str XOR opad, Hi(str XOR ipad, salt || INT(1)))
-	 * Using PBKDF2 with HMAC-SHA256.
-	 *
-	 * U1 = HMAC(password, salt || INT(1))
-	 */
-	{
-		unsigned char		saltbuf[1024 + 4];
-		int			plen = (int) strlen(password);
-
-		if (saltlen > 1024)
-			return -1;
-
-		memcpy(saltbuf, salt, saltlen);
-		/* INT(1) = 0x00000001 big-endian */
-		saltbuf[saltlen + 0] = 0;
-		saltbuf[saltlen + 1] = 0;
-		saltbuf[saltlen + 2] = 0;
-		saltbuf[saltlen + 3] = 1;
-
-		if (scram_HMAC((const unsigned char *) password, plen,
-					   saltbuf, saltlen + 4, Ui_prev) < 0)
-			return -1;
-	}
-
-	memcpy(output, Ui_prev, SCRAM_KEY_LEN);
-
-	/* U2 ... Ui: HMAC(password, U_{i-1}) XOR'd cumulatively */
-	for (i = 2; i <= iterations; i++)
-	{
-		int			plen = (int) strlen(password);
-
-		if (scram_HMAC((const unsigned char *) password, plen,
-					   Ui_prev, SCRAM_KEY_LEN, Ui) < 0)
-			return -1;
-
-		for (j = 0; j < SCRAM_KEY_LEN; j++)
-			output[j] ^= Ui[j];
-
-		memcpy(Ui_prev, Ui, SCRAM_KEY_LEN);
-	}
+	if (PKCS5_PBKDF2_HMAC(password, plen,
+						   (const unsigned char *) salt, saltlen,
+						   iterations,
+						   EVP_sha256(),
+						   SCRAM_KEY_LEN, output) != 1)
+		return -1;
 
 	return 0;
 }
