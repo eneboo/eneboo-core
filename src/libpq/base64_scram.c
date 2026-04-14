@@ -64,12 +64,6 @@ pg_b64_encode(const char *src, int len, char *dst, int dstlen)
 		/* write it out */
 		if (pos < 0)
 		{
-			if ((p - dst + 4) > dstlen)
-			{
-				fprintf(stderr, "[B64] complete group overflow: p-dst=%d p-dst+4=%d dstlen=%d srclen=%d\n",
-						(int)(p - dst), (int)(p - dst + 4), dstlen, len);
-				return -1;
-			}
 			*p++ = _base64[(buf >> 18) & 0x3f];
 			*p++ = _base64[(buf >> 12) & 0x3f];
 			*p++ = _base64[(buf >> 6) & 0x3f];
@@ -81,12 +75,6 @@ pg_b64_encode(const char *src, int len, char *dst, int dstlen)
 	}
 	if (pos != 2)
 	{
-		if ((p - dst + 4) > dstlen)
-		{
-			fprintf(stderr, "[B64] partial group overflow: p-dst=%d p-dst+4=%d dstlen=%d srclen=%d pos=%d\n",
-					(int)(p - dst), (int)(p - dst + 4), dstlen, len, pos);
-			return -1;
-		}
 		*p++ = _base64[(buf >> 18) & 0x3f];
 		*p++ = _base64[(buf >> 12) & 0x3f];
 		*p++ = (pos == 0) ? _base64[(buf >> 6) & 0x3f] : '=';
@@ -177,8 +165,8 @@ pg_b64_decode(const char *src, int len, char *dst, int dstlen)
 int
 pg_b64_enc_len(int srclen)
 {
-	/* 3 bytes => 4 chars, with possible padding */
-	return (srclen + 2) * 4 / 3;
+	/* ceil(srclen/3)*4, guaranteed >= actual output */
+	return ((srclen + 2) / 3) * 4 + 4;
 }
 
 /*
