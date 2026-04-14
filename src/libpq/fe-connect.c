@@ -1622,14 +1622,17 @@ keep_going:						/* We will come back to here until there is
 				 * AUTH_REQ_SASL_CONT payload: server-first-message (raw bytes)
 				 * AUTH_REQ_SASL_FIN  payload: server-final-message (raw bytes)
 				 *
-				 * msgLength was already reduced by 4 (areq int), so remaining
-				 * bytes = msgLength = payload size.
+				 * msgLength was reduced by 4 (length field itself), then we
+				 * read 4 more bytes for areq, so payload = msgLength - 4.
 				 */
 				if (areq == AUTH_REQ_SASL ||
 					areq == AUTH_REQ_SASL_CONT ||
 					areq == AUTH_REQ_SASL_FIN)
 				{
-					int payloadlen = msgLength; /* bytes remaining after areq */
+					int payloadlen = msgLength - 4; /* subtract areq int already read */
+
+					fprintf(stderr, "[SCRAM-CONN] areq=%d payloadlen=%d\n",
+							(int) areq, payloadlen);
 
 					/* Free any previous SASL buffer */
 					if (conn->sasl_buf)
@@ -1650,7 +1653,8 @@ keep_going:						/* We will come back to here until there is
 						}
 						if (pqGetnchar(conn->sasl_buf, payloadlen, conn))
 						{
-							/* Not enough data yet */
+							/* Not enough data yet — will retry from inStart */
+							fprintf(stderr, "[SCRAM-CONN] pqGetnchar short read, retrying\n");
 							free(conn->sasl_buf);
 							conn->sasl_buf = NULL;
 							conn->sasl_buflen = 0;
@@ -1658,6 +1662,7 @@ keep_going:						/* We will come back to here until there is
 						}
 						conn->sasl_buf[payloadlen] = '\0';
 						conn->sasl_buflen = payloadlen;
+						fprintf(stderr, "[SCRAM-CONN] sasl_buf='%s'\n", conn->sasl_buf);
 					}
 				}
 
@@ -1677,13 +1682,17 @@ keep_going:						/* We will come back to here until there is
 				 * XXX fe-auth.c has not been fixed to support PQExpBuffers,
 				 * so:
 				 */
+				fprintf(stderr, "[SCRAM-CONN] calling pg_fe_sendauth areq=%d\n", (int) areq);
 				if (pg_fe_sendauth(areq, conn, conn->pghost, conn->pgpass,
 								   conn->errorMessage.data) != STATUS_OK)
 				{
 					conn->errorMessage.len = strlen(conn->errorMessage.data);
+					fprintf(stderr, "[SCRAM-CONN] pg_fe_sendauth failed: %s\n",
+							conn->errorMessage.data);
 					goto error_return;
 				}
 				conn->errorMessage.len = strlen(conn->errorMessage.data);
+				fprintf(stderr, "[SCRAM-CONN] pg_fe_sendauth OK, flushing\n");
 
 				/*
 				 * Just make sure that any data sent by pg_fe_sendauth is
