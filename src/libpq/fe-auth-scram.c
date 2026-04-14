@@ -351,8 +351,13 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 
 			{
 				bool		match;
+				bool		vsok;
 
-				if (!verify_server_signature(state, &match))
+				SCRAM_LOG("state=PROOF_SENT: calling verify_server_signature");
+				vsok = verify_server_signature(state, &match);
+				SCRAM_LOG("state=PROOF_SENT: verify_server_signature returned %d match=%d",
+						  (int) vsok, (int) match);
+				if (!vsok)
 				{
 					*errormessage = strdup(libpq_gettext("SCRAM: could not verify server signature"));
 					*done = true;
@@ -1072,10 +1077,13 @@ verify_server_signature(fe_scram_state *state, bool *match)
 			 state->server_first_message,
 			 state->client_final_message_without_proof);
 
+	SCRAM_LOG("verify_server_signature: auth_message='%s'", auth_message);
+
 	/* HMAC(ServerKey, AuthMessage) */
 	hctx = pg_hmac_create(PG_SHA256);
 	if (!hctx)
 	{
+		SCRAM_LOG("verify_server_signature: pg_hmac_create failed");
 		free(auth_message);
 		return false;
 	}
@@ -1084,6 +1092,7 @@ verify_server_signature(fe_scram_state *state, bool *match)
 					   strlen(auth_message)) < 0 ||
 		pg_hmac_final(hctx, expected_ServerSignature, SCRAM_KEY_LEN) < 0)
 	{
+		SCRAM_LOG("verify_server_signature: HMAC failed");
 		pg_hmac_free(hctx);
 		free(auth_message);
 		return false;
@@ -1093,6 +1102,7 @@ verify_server_signature(fe_scram_state *state, bool *match)
 
 	*match = (memcmp(state->ServerSignature, expected_ServerSignature,
 					 SCRAM_KEY_LEN) == 0);
+	SCRAM_LOG("verify_server_signature: match=%d", (int) *match);
 	return true;
 }
 
