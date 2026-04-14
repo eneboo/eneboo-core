@@ -399,31 +399,30 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 static char *
 scram_b64_encode(const char *input, int inputlen)
 {
-	int			encoded_len;
-	char	   *result;
+	int		need;
+	int		dstlen;
+	int		actual;
+	char   *result;
 
-	encoded_len = pg_b64_enc_len(inputlen);
-	SCRAM_LOG("scram_b64_encode: inputlen=%d enc_len=%d dstlen=%d",
-			  inputlen, encoded_len, encoded_len + 1);
-	result = (char *) malloc(encoded_len + 1);
+	need = pg_b64_enc_len(inputlen);
+	dstlen = need + 4;		/* +4 extra safety margin beyond formula */
+	result = (char *) malloc(dstlen + 1);
+	SCRAM_LOG("scram_b64_encode: inputlen=%d need=%d dstlen=%d malloc=%d",
+			  inputlen, need, dstlen, dstlen + 1);
 	if (!result)
 	{
-		SCRAM_LOG("scram_b64_encode: malloc(%d) failed", encoded_len + 1);
+		SCRAM_LOG("scram_b64_encode: malloc failed");
 		return NULL;
 	}
 
-	{
-		int actual = pg_b64_encode(input, inputlen, result, encoded_len + 1);
-		SCRAM_LOG("scram_b64_encode: pg_b64_encode returned %d (dstlen=%d)",
-				  actual, encoded_len + 1);
-		encoded_len = actual;
-	}
-	if (encoded_len < 0)
+	actual = pg_b64_encode(input, inputlen, result, dstlen);
+	SCRAM_LOG("scram_b64_encode: pg_b64_encode returned %d", actual);
+	if (actual < 0)
 	{
 		free(result);
 		return NULL;
 	}
-	result[encoded_len] = '\0';
+	result[actual] = '\0';
 	return result;
 }
 
