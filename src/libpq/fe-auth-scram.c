@@ -26,6 +26,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef SCRAM_DEBUG
+#define SCRAM_LOG(fmt, ...) fprintf(stderr, "[SCRAM] " fmt "\n", ##__VA_ARGS__)
+#else
+#define SCRAM_LOG(fmt, ...) ((void)0)
+#endif
+
 #include "libpq-fe.h"
 #include "libpq-int.h"
 #include "scram-common.h"
@@ -242,13 +248,16 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 			/*
 			 * Build and return the initial client-first-message.
 			 */
+			SCRAM_LOG("state=INIT: building client-first-message");
 			msg = build_client_first_message(state);
 			if (msg == NULL)
 			{
+				SCRAM_LOG("state=INIT: build_client_first_message failed");
 				*errormessage = strdup(libpq_gettext("out of memory"));
 				*done = true;
 				return;
 			}
+			SCRAM_LOG("state=INIT: client-first-message = '%s'", msg);
 			*output = msg;
 			*outputlen = (int) strlen(msg);
 			state->state = FE_SCRAM_NONCE_SENT;
@@ -259,8 +268,11 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 			 * We have received the server-first-message.  Parse it,
 			 * then build and return client-final-message.
 			 */
+			SCRAM_LOG("state=NONCE_SENT: input=%s inputlen=%d",
+					  input ? input : "(null)", inputlen);
 			if (input == NULL || inputlen == 0)
 			{
+				SCRAM_LOG("state=NONCE_SENT: no server-first-message received");
 				*errormessage = strdup(libpq_gettext("SCRAM: no server-first-message"));
 				*done = true;
 				return;
@@ -291,10 +303,12 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 			msg = build_client_final_message(state);
 			if (msg == NULL)
 			{
+				SCRAM_LOG("state=NONCE_SENT: build_client_final_message failed");
 				*errormessage = strdup(libpq_gettext("out of memory"));
 				*done = true;
 				return;
 			}
+			SCRAM_LOG("state=NONCE_SENT: client-final-message built OK");
 			*output = msg;
 			*outputlen = (int) strlen(msg);
 			state->state = FE_SCRAM_PROOF_SENT;
@@ -305,6 +319,8 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 			 * We have received the server-final-message.  Verify the
 			 * server signature.
 			 */
+			SCRAM_LOG("state=PROOF_SENT: input=%s inputlen=%d",
+					  input ? input : "(null)", inputlen);
 			if (input == NULL || inputlen == 0)
 			{
 				*errormessage = strdup(libpq_gettext("SCRAM: no server-final-message"));
@@ -350,6 +366,7 @@ pg_fe_scram_exchange(void *opaque, char *input, int inputlen,
 				}
 			}
 
+			SCRAM_LOG("state=PROOF_SENT: server signature verified OK");
 			*done = true;
 			*success = true;
 			state->state = FE_SCRAM_FINISHED;
@@ -551,7 +568,10 @@ build_client_first_message(fe_scram_state *state)
 	int			msglen;
 
 	if (pg_strong_random(raw, NONCE_RAW_BYTES) == 0)
+	{
+		SCRAM_LOG("pg_strong_random failed");
 		return NULL;
+	}
 
 	nonce_b64 = scram_b64_encode((const char *) raw, NONCE_RAW_BYTES);
 	if (!nonce_b64)

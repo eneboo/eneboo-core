@@ -20,14 +20,14 @@
  * pg_strong_random
  *
  * Fill 'buf' with 'len' bytes of cryptographically strong random data.
- * Returns 0 on success, -1 on failure.
+ * Returns 1 on success, 0 on failure (matches PG convention: true/false).
  */
 int
 pg_strong_random(void *buf, size_t len)
 {
 	if (RAND_bytes((unsigned char *) buf, (int) len) <= 0)
-		return -1;
-	return 0;
+		return 0;
+	return 1;
 }
 
 #endif /* LIBPQ_PG_STRONG_RANDOM_OPENSSL_C */
