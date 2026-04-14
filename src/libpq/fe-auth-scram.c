@@ -649,9 +649,16 @@ build_client_final_message(fe_scram_state *state)
 	char	   *result;
 	int			msglen;
 
+	SCRAM_LOG("build_client_final_message: start, combined_nonce='%s'",
+			  state->combined_nonce ? state->combined_nonce : "(null)");
+
 	channel_binding_b64 = scram_b64_encode(gs2_header, (int) strlen(gs2_header));
 	if (!channel_binding_b64)
+	{
+		SCRAM_LOG("build_client_final_message: b64_encode gs2_header failed");
 		return NULL;
+	}
+	SCRAM_LOG("build_client_final_message: channel_binding_b64='%s'", channel_binding_b64);
 
 	/*
 	 * client-final-message-without-proof =
@@ -662,12 +669,15 @@ build_client_final_message(fe_scram_state *state)
 	client_final_without_proof = (char *) malloc(msglen);
 	if (!client_final_without_proof)
 	{
+		SCRAM_LOG("build_client_final_message: malloc client_final_without_proof failed");
 		free(channel_binding_b64);
 		return NULL;
 	}
 	snprintf(client_final_without_proof, msglen,
 			 "c=%s,r=%s", channel_binding_b64, state->combined_nonce);
 	free(channel_binding_b64);
+	SCRAM_LOG("build_client_final_message: client_final_without_proof='%s'",
+			  client_final_without_proof);
 
 	state->client_final_message_without_proof = client_final_without_proof;
 
@@ -681,23 +691,33 @@ build_client_final_message(fe_scram_state *state)
 		(int) strlen(client_final_without_proof) + 1;
 	auth_message = (char *) malloc(msglen);
 	if (!auth_message)
+	{
+		SCRAM_LOG("build_client_final_message: malloc auth_message failed");
 		return NULL;
+	}
 	snprintf(auth_message, msglen, "%s,%s,%s",
 			 state->client_first_message_bare,
 			 state->server_first_message,
 			 client_final_without_proof);
+	SCRAM_LOG("build_client_final_message: auth_message='%s'", auth_message);
 
 	/* Compute client proof */
+	SCRAM_LOG("build_client_final_message: calling calculate_client_proof");
 	if (!calculate_client_proof(state, auth_message, proof))
 	{
+		SCRAM_LOG("build_client_final_message: calculate_client_proof failed");
 		free(auth_message);
 		return NULL;
 	}
 	free(auth_message);
+	SCRAM_LOG("build_client_final_message: calculate_client_proof OK");
 
 	proof_b64 = scram_b64_encode((const char *) proof, SCRAM_KEY_LEN);
 	if (!proof_b64)
+	{
+		SCRAM_LOG("build_client_final_message: b64_encode proof failed");
 		return NULL;
+	}
 
 	/*
 	 * client-final-message =
@@ -885,6 +905,9 @@ calculate_client_proof(fe_scram_state *state,
 	unsigned char		ClientSignature[SCRAM_KEY_LEN];
 	int			i;
 
+	SCRAM_LOG("calculate_client_proof: saltlen=%d iterations=%d",
+			  state->saltlen, state->iterations);
+
 	/*
 	 * SaltedPassword := Hi(password, salt, i)
 	 */
@@ -892,25 +915,41 @@ calculate_client_proof(fe_scram_state *state,
 							 state->salt, state->saltlen,
 							 state->iterations,
 							 state->SaltedPassword) < 0)
+	{
+		SCRAM_LOG("calculate_client_proof: scram_SaltedPassword failed");
 		return false;
+	}
+	SCRAM_LOG("calculate_client_proof: SaltedPassword OK");
 
 	/*
 	 * ClientKey := HMAC(SaltedPassword, "Client Key")
 	 */
 	if (scram_ClientKey(state->SaltedPassword, state->ClientKey) < 0)
+	{
+		SCRAM_LOG("calculate_client_proof: scram_ClientKey failed");
 		return false;
+	}
+	SCRAM_LOG("calculate_client_proof: ClientKey OK");
 
 	/*
 	 * StoredKey := H(ClientKey)
 	 */
 	if (scram_H(state->ClientKey, SCRAM_KEY_LEN, state->StoredKey) < 0)
+	{
+		SCRAM_LOG("calculate_client_proof: scram_H failed");
 		return false;
+	}
+	SCRAM_LOG("calculate_client_proof: StoredKey OK");
 
 	/*
 	 * ServerKey := HMAC(SaltedPassword, "Server Key")
 	 */
 	if (scram_ServerKey(state->SaltedPassword, state->ServerKey) < 0)
+	{
+		SCRAM_LOG("calculate_client_proof: scram_ServerKey failed");
 		return false;
+	}
+	SCRAM_LOG("calculate_client_proof: ServerKey OK");
 
 	/*
 	 * ClientSignature := HMAC(StoredKey, AuthMessage)
@@ -922,16 +961,31 @@ calculate_client_proof(fe_scram_state *state,
 		pg_hmac_ctx *hctx = pg_hmac_create(PG_SHA256);
 
 		if (!hctx)
-			return false;
-		if (pg_hmac_init(hctx, state->StoredKey, SCRAM_KEY_LEN) < 0 ||
-			pg_hmac_update(hctx, (const unsigned char *) auth_message,
-						   strlen(auth_message)) < 0 ||
-			pg_hmac_final(hctx, ClientSignature, SCRAM_KEY_LEN) < 0)
 		{
+			SCRAM_LOG("calculate_client_proof: pg_hmac_create failed");
+			return false;
+		}
+		if (pg_hmac_init(hctx, state->StoredKey, SCRAM_KEY_LEN) < 0)
+		{
+			SCRAM_LOG("calculate_client_proof: pg_hmac_init failed");
+			pg_hmac_free(hctx);
+			return false;
+		}
+		if (pg_hmac_update(hctx, (const unsigned char *) auth_message,
+						   strlen(auth_message)) < 0)
+		{
+			SCRAM_LOG("calculate_client_proof: pg_hmac_update failed");
+			pg_hmac_free(hctx);
+			return false;
+		}
+		if (pg_hmac_final(hctx, ClientSignature, SCRAM_KEY_LEN) < 0)
+		{
+			SCRAM_LOG("calculate_client_proof: pg_hmac_final failed");
 			pg_hmac_free(hctx);
 			return false;
 		}
 		pg_hmac_free(hctx);
+		SCRAM_LOG("calculate_client_proof: ClientSignature HMAC OK");
 	}
 
 	/*
