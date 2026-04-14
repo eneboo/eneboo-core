@@ -732,15 +732,23 @@ build_client_final_message(fe_scram_state *state)
 	 * client-final-message =
 	 *   client-final-message-without-proof "," "p=" proof-b64
 	 */
+	SCRAM_LOG("build_client_final_message: proof_b64='%.10s...' len=%d cfwp=%p='%.20s'",
+			  proof_b64, (int) strlen(proof_b64),
+			  (void *) client_final_without_proof,
+			  client_final_without_proof ? client_final_without_proof : "(null)");
 	msglen = (int) strlen(client_final_without_proof) +
 		(int) strlen(",p=") + (int) strlen(proof_b64) + 1;
+	SCRAM_LOG("build_client_final_message: final msglen=%d", msglen);
 	result = (char *) malloc(msglen);
+	SCRAM_LOG("build_client_final_message: final malloc result=%p", (void *) result);
 	if (!result)
 	{
+		SCRAM_LOG("build_client_final_message: final malloc FAILED");
 		free(proof_b64);
 		return NULL;
 	}
 	snprintf(result, msglen, "%s,p=%s", client_final_without_proof, proof_b64);
+	SCRAM_LOG("build_client_final_message: final msg='%.40s...'", result);
 	free(proof_b64);
 
 	return result;
