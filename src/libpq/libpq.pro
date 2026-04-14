@@ -24,7 +24,7 @@ unix:INCLUDEPATH = . $$ROOT/src/libpq/include
 win32:INCLUDEPATH = . $$ROOT/src/pthreads $$ROOT/src/libpq/include $$ROOT/src/libpq/include/port/win32
 
 unix:!mac:LIBS += -lcrypt -lresolv -lnsl -lssl -lcrypto
-win32:LIBS += -L$$PREFIX/lib -lpthreadAQ -lshfolder -lws2_32 -lm
+win32:LIBS += -L$$PREFIX/lib -lpthreadAQ -lshfolder -lws2_32 -ladvapi32 -lm
 
 win32:RC_FILES = libpq.rc
 
@@ -50,6 +50,7 @@ SOURCES =  encnames.c \
            thread.c \
            wchar.c \
            base64_scram.c \
+           scram_sha256.c \
            cryptohash_openssl.c \
            hmac_openssl.c \
            scram-common.c \
@@ -62,6 +63,7 @@ HEADERS  = libpq-fe.h \
            fe-auth-scram.h \
            pqexpbuffer.h \
            pqsignal.h \
+           scram_sha256.h \
            scram_crypto.h \
            scram-common.h
 
@@ -77,5 +79,3 @@ HEADERS += win32.h \
 	         pthread-win32.h \
 	         libpq-fe.h
 }	         
-
-

@@ -19,36 +19,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <openssl/hmac.h>
-#include <openssl/err.h>
-
 #include "scram_crypto.h"
 
 /* SCRAM-SHA-256 output length */
 #define SCRAM_KEY_LEN				PG_SHA256_DIGEST_LENGTH
-
-#ifdef SCRAM_DEBUG
-#define SCRAM_COMMON_LOG(fmt, ...) fprintf(stderr, "[SCRAM-COMMON] " fmt "\n", ##__VA_ARGS__)
-#else
-#define SCRAM_COMMON_LOG(fmt, ...) ((void)0)
-#endif
-
-static void
-scram_log_openssl_error(const char *where)
-{
-	unsigned long errcode;
-	char errbuf[256];
-
-	errcode = ERR_get_error();
-	if (errcode == 0)
-	{
-		SCRAM_COMMON_LOG("%s: OpenSSL returned failure without ERR_get_error()", where);
-		return;
-	}
-
-	ERR_error_string_n(errcode, errbuf, sizeof(errbuf));
-	SCRAM_COMMON_LOG("%s: OpenSSL error=%s", where, errbuf);
-}
 
 /*
  * scram_H
@@ -130,20 +104,9 @@ scram_SaltedPassword(const char *password,
 	int					plen = (int) strlen(password);
 	int					i,
 						j;
-	unsigned int		outlen;
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-	HMAC_CTX		   *hctx;
-#else
-	HMAC_CTX			hctx_buf;
-	HMAC_CTX		   *hctx = &hctx_buf;
-#endif
 
 	if (saltlen > 1024)
 		return -1;
-
-	SCRAM_COMMON_LOG("scram_SaltedPassword: saltlen=%d iterations=%d plen=%d",
-					 saltlen, iterations, plen);
 
 	/* Build salt || INT(1) */
 	memcpy(saltbuf, salt, saltlen);
@@ -152,98 +115,28 @@ scram_SaltedPassword(const char *password,
 	saltbuf[saltlen + 2] = 0;
 	saltbuf[saltlen + 3] = 1;
 
-	/* Allocate / initialise a single HMAC context */
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-	hctx = HMAC_CTX_new();
-	if (!hctx)
-	{
-		SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_CTX_new failed");
-		scram_log_openssl_error("HMAC_CTX_new");
-		return -1;
-	}
-#else
-	HMAC_CTX_init(hctx);
-#endif
-
 	/* U1 = HMAC(password, salt || INT(1)) */
-	if (HMAC_Init_ex(hctx, password, plen, EVP_sha256(), NULL) <= 0)
-	{
-		SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_Init_ex failed in U1");
-		scram_log_openssl_error("HMAC_Init_ex U1");
-		goto fail;
-	}
-	if (HMAC_Update(hctx, saltbuf, (size_t)(saltlen + 4)) <= 0)
-	{
-		SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_Update failed in U1");
-		scram_log_openssl_error("HMAC_Update U1");
-		goto fail;
-	}
-	if (HMAC_Final(hctx, Ui_prev, &outlen) <= 0)
-	{
-		SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_Final failed in U1");
-		scram_log_openssl_error("HMAC_Final U1");
-		goto fail;
-	}
-	if (outlen != SCRAM_KEY_LEN)
-	{
-		SCRAM_COMMON_LOG("scram_SaltedPassword: unexpected U1 outlen=%u expected=%d",
-						 outlen, SCRAM_KEY_LEN);
-		goto fail;
-	}
+	if (scram_HMAC((const unsigned char *) password, plen,
+				   saltbuf, saltlen + 4,
+				   Ui_prev) < 0)
+		return -1;
 
 	memcpy(output, Ui_prev, SCRAM_KEY_LEN);
 
 	/* U2 ... Ui: HMAC(password, U_{i-1}), XOR into output */
 	for (i = 2; i <= iterations; i++)
 	{
-		/* Reinitialise with same key: pass NULL for md to reuse algorithm */
-		if (HMAC_Init_ex(hctx, password, plen, EVP_sha256(), NULL) <= 0)
-		{
-			SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_Init_ex failed at iteration=%d", i);
-			scram_log_openssl_error("HMAC_Init_ex Ui");
-			goto fail;
-		}
-		if (HMAC_Update(hctx, Ui_prev, SCRAM_KEY_LEN) <= 0)
-		{
-			SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_Update failed at iteration=%d", i);
-			scram_log_openssl_error("HMAC_Update Ui");
-			goto fail;
-		}
-		if (HMAC_Final(hctx, Ui, &outlen) <= 0)
-		{
-			SCRAM_COMMON_LOG("scram_SaltedPassword: HMAC_Final failed at iteration=%d", i);
-			scram_log_openssl_error("HMAC_Final Ui");
-			goto fail;
-		}
-		if (outlen != SCRAM_KEY_LEN)
-		{
-			SCRAM_COMMON_LOG("scram_SaltedPassword: unexpected outlen=%u at iteration=%d expected=%d",
-							 outlen, i, SCRAM_KEY_LEN);
-			goto fail;
-		}
+		if (scram_HMAC((const unsigned char *) password, plen,
+					   Ui_prev, SCRAM_KEY_LEN,
+					   Ui) < 0)
+			return -1;
 
 		for (j = 0; j < SCRAM_KEY_LEN; j++)
 			output[j] ^= Ui[j];
 
 		memcpy(Ui_prev, Ui, SCRAM_KEY_LEN);
 	}
-
-	SCRAM_COMMON_LOG("scram_SaltedPassword: completed successfully");
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-	HMAC_CTX_free(hctx);
-#else
-	HMAC_CTX_cleanup(hctx);
-#endif
 	return 0;
-
-fail:
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-	HMAC_CTX_free(hctx);
-#else
-	HMAC_CTX_cleanup(hctx);
-#endif
-	return -1;
 }
 
 /*

@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------
  *
  * hmac_openssl.c
- *	  HMAC functions for SCRAM authentication, using OpenSSL HMAC API
+ *	  HMAC functions for SCRAM authentication, using local SHA-256 code
  *
  * Ported from PG14 src/common/hmac_openssl.c to eneboo-core libpq
  * $PostgreSQL: pgsql/src/common/hmac_openssl.c, ported to eneboo-core libpq
@@ -15,41 +15,20 @@
 
 #include "postgres_fe.h"
 
-#include <openssl/hmac.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "scram_crypto.h"
-
-/*
- * HMAC_CTX_new/free were introduced in OpenSSL 1.1.0.
- * For older versions, fall back to stack allocation with HMAC_CTX_init/cleanup.
- */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#include "scram_sha256.h"
 
 struct pg_hmac_ctx
 {
 	int			type;
-	HMAC_CTX	evpctx;		/* stack-allocated for OpenSSL < 1.1 */
+	scram_sha256_ctx inner_ctx;
+	scram_sha256_ctx outer_ctx;
+	unsigned char keybuf[SCRAM_SHA256_BLOCK_LENGTH];
+	int finalized;
 };
-
-#define PG_HMAC_CTX_NEW(ctx)	HMAC_CTX_init(&(ctx)->evpctx)
-#define PG_HMAC_CTX_FREE(ctx)	HMAC_CTX_cleanup(&(ctx)->evpctx)
-#define PG_HMAC_EVPCTX(ctx)		(&(ctx)->evpctx)
-
-#else /* OpenSSL >= 1.1.0 */
-
-struct pg_hmac_ctx
-{
-	int			type;
-	HMAC_CTX   *evpctx;		/* heap-allocated for OpenSSL >= 1.1 */
-};
-
-#define PG_HMAC_CTX_NEW(ctx)	((ctx)->evpctx = HMAC_CTX_new())
-#define PG_HMAC_CTX_FREE(ctx)	HMAC_CTX_free((ctx)->evpctx)
-#define PG_HMAC_EVPCTX(ctx)		((ctx)->evpctx)
-
-#endif /* OPENSSL_VERSION_NUMBER */
 
 /*
  * pg_hmac_create
@@ -66,17 +45,8 @@ pg_hmac_create(int type)
 		return NULL;
 
 	ctx->type = type;
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-	ctx->evpctx = HMAC_CTX_new();
-	if (ctx->evpctx == NULL)
-	{
-		free(ctx);
-		return NULL;
-	}
-#else
-	HMAC_CTX_init(&ctx->evpctx);
-#endif
+	memset(ctx->keybuf, 0, sizeof(ctx->keybuf));
+	ctx->finalized = 0;
 
 	return ctx;
 }
@@ -90,34 +60,44 @@ pg_hmac_create(int type)
 int
 pg_hmac_init(pg_hmac_ctx *ctx, const unsigned char *key, size_t len)
 {
-	const EVP_MD *md;
+	unsigned char hashed_key[SCRAM_SHA256_DIGEST_LENGTH];
+	unsigned char ipad[SCRAM_SHA256_BLOCK_LENGTH];
+	unsigned char opad[SCRAM_SHA256_BLOCK_LENGTH];
+	size_t i;
 
 	if (ctx == NULL)
 		return -1;
 
-	switch (ctx->type)
+	if (ctx->type != PG_SHA256)
+		return -1;
+
+	if (len > SCRAM_SHA256_BLOCK_LENGTH)
 	{
-		case PG_MD5:
-			md = EVP_md5();
-			break;
-		case PG_SHA224:
-			md = EVP_sha224();
-			break;
-		case PG_SHA256:
-			md = EVP_sha256();
-			break;
-		case PG_SHA384:
-			md = EVP_sha384();
-			break;
-		case PG_SHA512:
-			md = EVP_sha512();
-			break;
-		default:
-			return -1;
+		scram_sha256_ctx keyctx;
+
+		scram_sha256_init(&keyctx);
+		scram_sha256_update(&keyctx, key, len);
+		scram_sha256_final(&keyctx, hashed_key);
+		memset(ctx->keybuf, 0, sizeof(ctx->keybuf));
+		memcpy(ctx->keybuf, hashed_key, sizeof(hashed_key));
+	}
+	else
+	{
+		memset(ctx->keybuf, 0, sizeof(ctx->keybuf));
+		memcpy(ctx->keybuf, key, len);
 	}
 
-	if (HMAC_Init_ex(PG_HMAC_EVPCTX(ctx), key, (int) len, md, NULL) <= 0)
-		return -1;
+	for (i = 0; i < SCRAM_SHA256_BLOCK_LENGTH; i++)
+	{
+		ipad[i] = (unsigned char) (ctx->keybuf[i] ^ 0x36);
+		opad[i] = (unsigned char) (ctx->keybuf[i] ^ 0x5c);
+	}
+
+	scram_sha256_init(&ctx->inner_ctx);
+	scram_sha256_update(&ctx->inner_ctx, ipad, sizeof(ipad));
+	scram_sha256_init(&ctx->outer_ctx);
+	scram_sha256_update(&ctx->outer_ctx, opad, sizeof(opad));
+	ctx->finalized = 0;
 
 	return 0;
 }
@@ -133,9 +113,10 @@ pg_hmac_update(pg_hmac_ctx *ctx, const unsigned char *data, size_t len)
 	if (ctx == NULL)
 		return -1;
 
-	if (HMAC_Update(PG_HMAC_EVPCTX(ctx), data, len) <= 0)
+	if (ctx->type != PG_SHA256 || ctx->finalized)
 		return -1;
 
+	scram_sha256_update(&ctx->inner_ctx, data, len);
 	return 0;
 }
 
@@ -148,16 +129,18 @@ pg_hmac_update(pg_hmac_ctx *ctx, const unsigned char *data, size_t len)
 int
 pg_hmac_final(pg_hmac_ctx *ctx, unsigned char *dest, size_t len)
 {
-	unsigned int outlen;
+	unsigned char inner_digest[SCRAM_SHA256_DIGEST_LENGTH];
 
 	if (ctx == NULL)
 		return -1;
 
-	if (HMAC_Final(PG_HMAC_EVPCTX(ctx), dest, &outlen) <= 0)
+	if (ctx->type != PG_SHA256 || len < SCRAM_SHA256_DIGEST_LENGTH || ctx->finalized)
 		return -1;
 
-	if ((size_t) outlen > len)
-		return -1;
+	scram_sha256_final(&ctx->inner_ctx, inner_digest);
+	scram_sha256_update(&ctx->outer_ctx, inner_digest, sizeof(inner_digest));
+	scram_sha256_final(&ctx->outer_ctx, dest);
+	ctx->finalized = 1;
 
 	return 0;
 }
@@ -173,7 +156,6 @@ pg_hmac_free(pg_hmac_ctx *ctx)
 	if (ctx == NULL)
 		return;
 
-	PG_HMAC_CTX_FREE(ctx);
 	free(ctx);
 }
 
