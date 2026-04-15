@@ -371,9 +371,19 @@ void aq_main(int argc, char **argv)
   AbanQ->flushX();
   AbanQ->syncX();
   AbanQ->processEvents();
+
+  bool hasConfiguredCallFunction = false;
+  QString effectiveCallFunction =
+    FLSettings::readEntry("application/callFunction", callFunction, &hasConfiguredCallFunction);
+
+  if (!callFunction.isEmpty() && hasConfiguredCallFunction) {
+    qWarning("fllite: command line option -c ignored because local setting application/callFunction exists (effective value: %s)",
+             effectiveCallFunction.latin1());
+  }
+
   AbanQ->init(
     FLSettings::readEntry("application/formAlone", formAlone),
-    FLSettings::readEntry("application/callFunction", callFunction),
+    effectiveCallFunction,
     FLSettings::readEntry("application/arguments", arguments),
     FLSettings::readBoolEntry("application/quitAfterCall", quitAfterCall),
     FLSettings::readBoolEntry("application/noMax", noMax)
