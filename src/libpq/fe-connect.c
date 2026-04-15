@@ -31,6 +31,7 @@
 #include "libpq-fe.h"
 #include "libpq-int.h"
 #include "fe-auth.h"
+#include "fe-auth-scram.h"
 //#include "pg_config_paths.h"
 
 #ifdef WIN32
@@ -1613,6 +1614,59 @@ keep_going:						/* We will come back to here until there is
 				}
 
 				/*
+				 * For SASL authentication methods (SCRAM-SHA-256, etc.),
+				 * read the authentication data payload and store in conn->sasl_buf.
+				 *
+				 * AUTH_REQ_SASL payload: list of mechanism names (null-separated,
+				 *   double-null terminated), e.g. "SCRAM-SHA-256\0\0"
+				 * AUTH_REQ_SASL_CONT payload: server-first-message (raw bytes)
+				 * AUTH_REQ_SASL_FIN  payload: server-final-message (raw bytes)
+				 *
+				 * msgLength was reduced by 4 (length field itself), then we
+				 * read 4 more bytes for areq, so payload = msgLength - 4.
+				 */
+				if (areq == AUTH_REQ_SASL ||
+					areq == AUTH_REQ_SASL_CONT ||
+					areq == AUTH_REQ_SASL_FIN)
+				{
+					int payloadlen = msgLength - 4; /* subtract areq int already read */
+
+					fprintf(stderr, "[SCRAM-CONN] areq=%d payloadlen=%d\n",
+							(int) areq, payloadlen);
+
+					/* Free any previous SASL buffer */
+					if (conn->sasl_buf)
+					{
+						free(conn->sasl_buf);
+						conn->sasl_buf = NULL;
+						conn->sasl_buflen = 0;
+					}
+
+					if (payloadlen > 0)
+					{
+						conn->sasl_buf = (char *) malloc(payloadlen + 1);
+						if (!conn->sasl_buf)
+						{
+							printfPQExpBuffer(&conn->errorMessage,
+											  libpq_gettext("out of memory\n"));
+							goto error_return;
+						}
+						if (pqGetnchar(conn->sasl_buf, payloadlen, conn))
+						{
+							/* Not enough data yet — will retry from inStart */
+							fprintf(stderr, "[SCRAM-CONN] pqGetnchar short read, retrying\n");
+							free(conn->sasl_buf);
+							conn->sasl_buf = NULL;
+							conn->sasl_buflen = 0;
+							return PGRES_POLLING_READING;
+						}
+						conn->sasl_buf[payloadlen] = '\0';
+						conn->sasl_buflen = payloadlen;
+						fprintf(stderr, "[SCRAM-CONN] sasl_buf='%s'\n", conn->sasl_buf);
+					}
+				}
+
+				/*
 				 * OK, we successfully read the message; mark data consumed
 				 */
 				conn->inStart = conn->inCursor;
@@ -1628,13 +1682,17 @@ keep_going:						/* We will come back to here until there is
 				 * XXX fe-auth.c has not been fixed to support PQExpBuffers,
 				 * so:
 				 */
+				fprintf(stderr, "[SCRAM-CONN] calling pg_fe_sendauth areq=%d\n", (int) areq);
 				if (pg_fe_sendauth(areq, conn, conn->pghost, conn->pgpass,
 								   conn->errorMessage.data) != STATUS_OK)
 				{
 					conn->errorMessage.len = strlen(conn->errorMessage.data);
+					fprintf(stderr, "[SCRAM-CONN] pg_fe_sendauth failed: %s\n",
+							conn->errorMessage.data);
 					goto error_return;
 				}
 				conn->errorMessage.len = strlen(conn->errorMessage.data);
+				fprintf(stderr, "[SCRAM-CONN] pg_fe_sendauth OK, flushing\n");
 
 				/*
 				 * Just make sure that any data sent by pg_fe_sendauth is
@@ -1931,6 +1989,10 @@ freePGconn(PGconn *conn)
 		free(conn->inBuffer);
 	if (conn->outBuffer)
 		free(conn->outBuffer);
+	if (conn->sasl_buf)
+		free(conn->sasl_buf);
+	if (conn->scram_state)
+		pg_fe_scram_free(conn->scram_state);
 	termPQExpBuffer(&conn->errorMessage);
 	termPQExpBuffer(&conn->workBuffer);
 	free(conn);

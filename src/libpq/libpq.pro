@@ -17,14 +17,14 @@ win32 {
         DLLDESTDIR = $$PREFIX/bin
 }
 
-DEFINES +=  SYSCONFDIR='"$$PREFIX"' FRONTEND ENABLE_THREAD_SAFETY _THREAD_SAFE _POSIX_PTHREAD_SEMANTICS
+DEFINES +=  SYSCONFDIR='"$$PREFIX"' FRONTEND ENABLE_THREAD_SAFETY _THREAD_SAFE _POSIX_PTHREAD_SEMANTICS SCRAM_DEBUG
 DESTDIR = $$PREFIX/lib
 TARGET = pq
 unix:INCLUDEPATH = . $$ROOT/src/libpq/include
 win32:INCLUDEPATH = . $$ROOT/src/pthreads $$ROOT/src/libpq/include $$ROOT/src/libpq/include/port/win32
 
-unix:!mac:LIBS += -lcrypt -lresolv -lnsl
-win32:LIBS += -L$$PREFIX/lib -lpthreadAQ -lshfolder -lws2_32 -lm
+unix:!mac:LIBS += -lcrypt -lresolv -lnsl -lssl -lcrypto
+win32:LIBS += -L$$PREFIX/lib -lpthreadAQ -lshfolder -lws2_32 -ladvapi32 -lm
 
 win32:RC_FILES = libpq.rc
 
@@ -32,6 +32,7 @@ VERSION = 4.1
 
 SOURCES =  encnames.c \
            fe-auth.c \
+           fe-auth-scram.c \
            fe-connect.c \
            fe-exec.c \
            fe-lobj.c \
@@ -47,13 +48,24 @@ SOURCES =  encnames.c \
            pqexpbuffer.c \
            pqsignal.c \
            thread.c \
-           wchar.c
+           wchar.c \
+           base64_scram.c \
+           scram_sha256.c \
+           cryptohash_openssl.c \
+           hmac_openssl.c \
+           scram-common.c \
+           saslprep_stub.c \
+           pg_strong_random_openssl.c
 
 HEADERS  = libpq-fe.h \
            libpq-int.h \
            fe-auth.h \
+           fe-auth-scram.h \
            pqexpbuffer.h \
-           pqsignal.h
+           pqsignal.h \
+           scram_sha256.h \
+           scram_crypto.h \
+           scram-common.h
 
 win32 {
 SOURCES += win32.c \
@@ -67,5 +79,3 @@ HEADERS += win32.h \
 	         pthread-win32.h \
 	         libpq-fe.h
 }	         
-
-

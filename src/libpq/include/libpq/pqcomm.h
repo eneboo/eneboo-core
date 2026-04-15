@@ -165,6 +165,9 @@ extern bool Db_user_namespace;
 #define AUTH_REQ_CRYPT		4	/* crypt password */
 #define AUTH_REQ_MD5		5	/* md5 password */
 #define AUTH_REQ_SCM_CREDS	6	/* transfer SCM credentials */
+#define AUTH_REQ_SASL		10	/* SASL authentication (added for SCRAM) */
+#define AUTH_REQ_SASL_CONT	11	/* SASL continuation response */
+#define AUTH_REQ_SASL_FIN	12	/* SASL final response */
 
 typedef uint32 AuthRequest;
 
